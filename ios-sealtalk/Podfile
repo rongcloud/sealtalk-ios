@@ -28,8 +28,3 @@ target 'SealTalk' do
   pod 'RongCloudRTC/RongCallKit'
 end
 
-target 'SealTalkNotificationService' do
-  use_frameworks!
- pod 'RongCloudIM/IMLibCore', '5.1.5'
-end
-

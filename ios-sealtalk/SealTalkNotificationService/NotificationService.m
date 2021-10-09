@@ -7,7 +7,6 @@
 //
 
 #import "NotificationService.h"
-#import <RongIMLibCore/RongIMLibCore.h>
 #import "RCDCommonDefine.h"
 @interface NotificationService ()
 
@@ -23,11 +22,8 @@
     self.bestAttemptContent = [request.content mutableCopy];
     
     NSDictionary *userInfo = self.bestAttemptContent.userInfo;
-    [[RCCoreClient sharedCoreClient] initWithAppKey:RONGCLOUD_IM_APPKEY];
     if (RONGCLOUD_STATS_SERVER.length > 0) {
-        [[RCCoreClient sharedCoreClient] setStatisticServer:RONGCLOUD_STATS_SERVER];
     }
-    [[RCCoreClient sharedCoreClient] recordReceivedRemoteNotificationEvent:userInfo];
     
     self.contentHandler(self.bestAttemptContent);
 }
