@@ -77,6 +77,10 @@ sed -i '' -e "/RongSticker.strings in Resources/d"  ${Project}
 
 sed -i '' -e "/RongSight.framework/d"  ${Project}
 
+# app extention 不支持手动引入 XCFramework；pod 1.11.2 不支持 app 与 extension 导入同一 SDK start
+sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationService.m
+sed -i '' -e "/RCCoreClient/d" ./SealTalkNotificationService/NotificationService.m
+# app extention 不支持手动引入 XCFramework，pod 1.11.2 不支持 app 与 extension 导入同一 SDK end
 
 
 # 移除本地使用的库

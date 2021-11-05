@@ -29,6 +29,7 @@
 #import "RCDChatNotificationMessage.h"
 #import "RCDUtilities.h"
 #import "RCDNavigationViewController.h"
+#import "RCDGroupManager.h"
 @interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate>
 @property (nonatomic, strong) RCDNavigationViewController *searchNavigationController;
 @property (nonatomic, strong) UIView *headerView;
@@ -213,11 +214,31 @@
 - (void)rcConversationListTableView:(UITableView *)tableView
                  commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
                   forRowAtIndexPath:(NSIndexPath *)indexPath {
-    //可以从数据库删除数据
     RCConversationModel *model = self.conversationListDataSource[indexPath.row];
-    [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_SYSTEM targetId:model.targetId];
-    [self.conversationListDataSource removeObjectAtIndex:indexPath.row];
-    [self.conversationListTableView reloadData];
+    if (model.conversationType == ConversationType_PRIVATE && [model.targetId isEqualToString:RCDGroupNoticeTargetId]) {
+        [RCAlertView showAlertController:nil message:RCDLocalizedString(@"DeleteGroupNoticeList") actionTitles:nil cancelTitle:RCLocalizedString(@"Cancel") confirmTitle:RCLocalizedString(@"Confirm") preferredStyle:(UIAlertControllerStyleAlert) actionsBlock:nil cancelBlock:^{
+            return;
+        } confirmBlock:^{
+            [RCDGroupManager clearGroupNoticeList:^(BOOL success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (success) {
+                        [self.conversationListDataSource removeObjectAtIndex:indexPath.row];
+                        [self.conversationListTableView reloadData];
+                        [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_PRIVATE
+                                                               targetId:RCDGroupNoticeTargetId];
+                        
+                        [self updateBadgeValueForTabBarItem];
+                    } else {
+                    }
+                });
+            }];
+        } inViewController:self];
+    }else {
+        //可以从数据库删除数据
+        [[RCIMClient sharedRCIMClient] removeConversation:model.conversationType targetId:model.targetId];
+        [self.conversationListDataSource removeObjectAtIndex:indexPath.row];
+        [self.conversationListTableView reloadData];
+    }
 }
 
 //高度
@@ -498,6 +519,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didClearMessage)
                                                  name:RCDGroupClearMessageKey
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateBadgeForTabBarItem)
+                                                 name:RCDGroupNoticeUpdateKey
                                                object:nil];
 }
 

@@ -524,3 +524,4 @@
 "Messages"="消息";
 "ChatroomIdIsEmpty"="聊天室 ID 为空,请稍后重试";
 "Registration_Agreement"="agreement_zh";
+"DeleteGroupNoticeList" ="确定删除群通知信息吗？";

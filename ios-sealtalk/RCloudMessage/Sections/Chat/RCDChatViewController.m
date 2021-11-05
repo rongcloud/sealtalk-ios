@@ -242,11 +242,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 #pragma mark - over methods
 - (void)didTapMessageCell:(RCMessageModel *)model {
     [super didTapMessageCell:model];
-    //点击实时位置共享消息 cell 处理
-    if ([model.content isKindOfClass:[RCRealTimeLocationStartMessage class]]) {
-        [self showRealTimeLocationViewController];
-    }
-
     if ([model.content isKindOfClass:[RCContactCardMessage class]]) {
         RCContactCardMessage *cardMSg = (RCContactCardMessage *)model.content;
         RCDUserInfo *user =
@@ -302,11 +297,11 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
 }
 
-- (void)resendMessage:(RCMessageContent *)messageContent {
-    if ([messageContent isKindOfClass:[RCRealTimeLocationStartMessage class]]) {
+- (void)resendMessageWithModel:(RCMessageModel *)model {
+    if ([model.content isKindOfClass:[RCRealTimeLocationStartMessage class]]) {
         [self showRealTimeLocationViewController];
     } else {
-        [super resendMessage:messageContent];
+        [super resendMessageWithModel:model];
     }
 }
 

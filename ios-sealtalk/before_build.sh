@@ -111,7 +111,7 @@ if [ -d "$CONTACT_PATH" ]; then
         mkdir -p $SEALTALK_CONTACT_FRAMEWORKER_PATH
     fi
     cp -af ${CONTACT_PATH}/* $SEALTALK_CONTACT_FRAMEWORKER_PATH
-    rm -rf $SEALTALK_CONTACT_FRAMEWORKER_PATH/*.xcframework
+    rm -rf $SEALTALK_CONTACT_FRAMEWORKER_PATH/*.framework
 fi
 
 #copy sight

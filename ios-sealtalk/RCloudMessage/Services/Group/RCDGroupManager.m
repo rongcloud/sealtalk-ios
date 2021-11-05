@@ -216,9 +216,15 @@
 
 + (void)getGroupNoticeListFromServer:(void (^)(BOOL success,NSArray<RCDGroupNotice *> *))complete {
     [RCDGroupAPI getGroupNoticeList:^(BOOL success, NSArray<RCDGroupNotice *> *_Nonnull noticeList) {
-        if (noticeList) {
+        if (noticeList && noticeList.count > 0) {
             [RCDDBManager clearGroupNoticeList];
             [RCDDBManager saveGroupNoticeList:noticeList];
+            RCConversation *conversation = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_PRIVATE targetId:RCDGroupNoticeTargetId];
+            if (!conversation) {
+                RCDGroupNoticeUpdateMessage *msg = [[RCDGroupNoticeUpdateMessage alloc] init];
+                msg.operation = RCDGroupMemberInvite;
+                [[RCIMClient sharedRCIMClient] insertIncomingMessage:ConversationType_PRIVATE targetId:RCDGroupNoticeTargetId senderUserId:RCDGroupNoticeTargetId receivedStatus:ReceivedStatus_READ content:msg];
+            }
         }
         if (complete) {
             complete(success,noticeList);

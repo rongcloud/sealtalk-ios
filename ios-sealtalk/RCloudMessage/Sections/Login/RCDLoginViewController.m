@@ -118,15 +118,11 @@
 
 /*发送验证码*/
 - (void)sendCodeEvent {
-    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.color = [UIColor colorWithHexString:@"343637" alpha:0.8];
-    [hud show:YES];
     self.errorMsgLb.text = @"";
     NSString *phoneNumber = self.phoneTextField.textField.text;
     if (phoneNumber.length > 0) {
         [self getVerifyCode:self.currentRegion.phoneCode phoneNumber:phoneNumber];
     } else {
-        [hud hide:YES];
         self.errorMsgLb.text = RCDLocalizedString(@"phone_number_type_error");
     }
 }
@@ -260,6 +256,14 @@
 }
 
 - (void)getVerifyCode:(NSString *)phoneCode phoneNumber:(NSString *)phoneNumber {
+    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    if (RC_NotReachable == status) {
+        self.errorMsgLb.text = RCDLocalizedString(@"network_can_not_use_please_check");
+        return;
+    }
+    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.color = [UIColor colorWithHexString:@"343637" alpha:0.8];
+    [hud show:YES];
     __weak typeof(self) ws = self;
     [RCDLoginManager getVerificationCode:self.currentRegion.phoneCode
         phoneNumber:phoneNumber

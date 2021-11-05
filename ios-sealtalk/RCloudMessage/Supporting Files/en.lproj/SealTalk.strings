@@ -522,3 +522,4 @@
 "Messages"="Messages";
 "ChatroomIdIsEmpty"="Chat room ID is empty, please try later";
 "Registration_Agreement"="agreement_zh";
+"DeleteGroupNoticeList" ="Confirm deletion?";
