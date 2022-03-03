@@ -35,6 +35,7 @@
 #import "RCDClearMessage.h"
 #import "RCDLanguageManager.h"
 #import <UMCommon/UMCommon.h>
+#import <UMAPM/UMAPMConfig.h>
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
 #endif
@@ -57,12 +58,12 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+    [self configUMCommon];
     [self configRongIM];
     [self configSealTalkWithApp:application andOptions:launchOptions];
     [self configWeChatShare];
     [self loginAndEnterMainPage];
     [self configDoraemon];
-    [self configUMCommon];
     [self configCurrentLanguage];
     return YES;
 }
@@ -134,6 +135,7 @@
 }
 
 - (void)configUMCommon {
+    [UMAPMConfig defaultConfig].crashAndBlockMonitorEnable = NO;
     [UMConfigure initWithAppkey:UMENG_APPKEY channel:nil];
 }
 
@@ -147,7 +149,6 @@
 #ifndef DEBUG
     [self redirectNSlogToDocumentFolder];
 #endif
-    [NSThread sleepForTimeInterval:1.0];
     application.statusBarHidden = NO;
     if (BUGLY_APPID.length > 0) {
         [RCDBuglyManager startWithAppId:BUGLY_APPID];

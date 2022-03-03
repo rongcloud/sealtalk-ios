@@ -68,13 +68,15 @@
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         [manager POST:url
             parameters:params
-            constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+            headers:nil
+            constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
                 [formData appendPartWithFileData:imageData
                                             name:@"file"
                                         fileName:key
                                         mimeType:@"application/octet-stream"];
             }
-            success:^(NSURLSessionDataTask *task, id response) {
+            progress:nil
+            success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable response) {
                 NSString *imageUrl = nil;
                 if ([response[@"key"] length] > 0) {
                     NSString *key = response[@"key"];
@@ -102,7 +104,7 @@
                     completeBlock(imageUrl);
                 }
             }
-            failure:^(NSURLSessionDataTask *task, NSError *error) {
+            failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"uploadImage 请求失败");
                 if (completeBlock) {
                     completeBlock(nil);

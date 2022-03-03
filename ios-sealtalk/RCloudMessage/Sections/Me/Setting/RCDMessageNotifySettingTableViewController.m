@@ -31,9 +31,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spansMin) {
+    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (spansMin >= 1439) {
+            if (spanMins >= 1439) {
                 self.isReceiveNotification = NO;
             } else {
                 self.isReceiveNotification = YES;

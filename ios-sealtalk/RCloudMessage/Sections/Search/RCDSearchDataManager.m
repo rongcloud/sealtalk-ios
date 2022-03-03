@@ -174,8 +174,7 @@
                 RCFileMessage *file = (RCFileMessage *)result.conversation.lastestMessage;
                 string = file.name;
             } else {
-                string = [self formatMessage:result.conversation.lastestMessage
-                               withMessageId:result.conversation.lastestMessageId];
+                string = [self formatMessage:result.conversation];
             }
             model.otherInformation = [self relaceEnterBySpace:string];
         }
@@ -202,11 +201,11 @@
     return string;
 }
 
-- (NSString *)formatMessage:(RCMessageContent *)messageContent withMessageId:(long)messageId {
-    if (RCKitConfigCenter.message.showUnkownMessage && messageId > 0 && !messageContent) {
+- (NSString *)formatMessage:(RCConversation *)conversation{
+    if (RCKitConfigCenter.message.showUnkownMessage && conversation.lastestMessageId > 0 && !conversation.lastestMessage) {
         return RCLocalizedString(@"unknown_message_cell_tip");
     } else {
-        return [RCKitUtility formatMessage:messageContent];
+        return [RCKitUtility formatMessage:conversation.lastestMessage targetId:conversation.targetId conversationType:conversation.conversationType isAllMessage:YES];
     }
 }
 

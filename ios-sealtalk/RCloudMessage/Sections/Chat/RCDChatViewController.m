@@ -70,9 +70,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 #pragma mark - life cycle
 - (instancetype)init {
     self = [super init];
-    int defalutHistoryMessageCount = (int)[DEFAULTS integerForKey:RCDChatroomDefalutHistoryMessageCountKey];
-    if (defalutHistoryMessageCount >= -1 && defalutHistoryMessageCount <= 50) {
-        self.defaultHistoryMessageCountOfChatRoom = defalutHistoryMessageCount;
+    if (self) {
+        int defalutHistoryMessageCount = (int)[DEFAULTS integerForKey:RCDChatroomDefalutHistoryMessageCountKey];
+        if (defalutHistoryMessageCount >= -1 && defalutHistoryMessageCount <= 50) {
+            self.defaultHistoryMessageCountOfChatRoom = defalutHistoryMessageCount;
+        }
+        self.loadMessageType = [[NSUserDefaults standardUserDefaults] integerForKey:@"RCDChatLoadMessageType"];
     }
     return self;
 }
@@ -188,7 +191,16 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 #pragma mark - RCMessageBlockDelegate
 - (void)messageDidBlock:(RCBlockedMessageInfo *)blockedMessageInfo {
-    [RCAlertView showAlertController:nil message:[NSString stringWithFormat:@"发送的消息（Id:%@, 会话类型: %lu, targetId: %@, 拦截原因:%lu）遇到敏感词被拦截", blockedMessageInfo.blockedMsgUId, (unsigned long)blockedMessageInfo.type, blockedMessageInfo.targetId, (unsigned long)blockedMessageInfo.blockType] cancelTitle:RCDLocalizedString(@"confirm")];
+    rcd_dispatch_main_async_safe((^{
+        [self.chatSessionInputBarControl.inputTextView resignFirstResponder];
+        NSString *msg = [NSString stringWithFormat:@"发送的消息（Id:%@, 会话类型: %lu, targetId: %@, 拦截原因:%lu）遇到敏感词被拦截", blockedMessageInfo.blockedMsgUId, (unsigned long)blockedMessageInfo.type, blockedMessageInfo.targetId, (unsigned long)blockedMessageInfo.blockType];
+        [NormalAlertView showAlertWithTitle:nil
+                                    message:msg
+                              describeTitle:nil
+                               confirmTitle:RCDLocalizedString(@"confirm")
+                                    confirm:^{
+        }];
+    }));
 }
 
 #pragma mark - RCChatRoomMemberDelegate
@@ -200,7 +212,15 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         text = [text stringByAppendingFormat:@"%@", [NSString stringWithFormat:@"成员 %@ %@了聊天室：%@\n", member.memberId, (member.action == RC_ChatRoom_Member_Join) ? @"加入": @"退出", roomId]];
     }
     
-    [RCAlertView showAlertController:nil message:text cancelTitle:RCDLocalizedString(@"confirm")];
+    rcd_dispatch_main_async_safe((^{
+        [self.chatSessionInputBarControl.inputTextView resignFirstResponder];
+        [NormalAlertView showAlertWithTitle:nil
+                                    message:text
+                              describeTitle:nil
+                               confirmTitle:RCDLocalizedString(@"confirm")
+                                    confirm:^{
+        }];
+    }));
 }
 
 #pragma mark - RCMessageCellDelegate

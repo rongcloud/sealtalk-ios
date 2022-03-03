@@ -60,16 +60,11 @@ STATS_SERVER_URL=$PPARAM
 elif [ $PFLAG == "-csid" ]
 then
 CUSTOMER_SERVICE_ID=$PPARAM
-elif [ $PFLAG == "-app" ]
-then
-APP_NAME=$PPARAM
 fi
 done
 
-# 如果 framework 目录不存在，说明没有 copy 所以来的 SDK
-if [ ! -d "framework" ]; then
-    sh before_build.sh
-fi
+APP_NAME=${Build_App}
+
 echo "sealtalk copy sdk times: $(($(date +%s) - $TEMP_TIME))"
 TEMP_TIME=$(date +%s)
 
@@ -78,31 +73,22 @@ pod update --no-repo-update
 echo "sealtalk pod update times: $(($(date +%s) - $TEMP_TIME))"
 TEMP_TIME=$(date +%s)
 
-echo "APP_NAME"
-echo ${APP_NAME}
-if [ ${APP_NAME} = "SealChat" ]; then
-  echo "build SealChat"
+echo "build ${APP_NAME}"
+
+if [ "${APP_NAME}" = "RC IM" ];then
   sed -i '' -e 's?cn.rongcloud.im?cn.rongcloud.im.sg?g' ./RCloudMessage.xcodeproj/project.pbxproj
   sed -i '' -e 's?cn.rongcloud.im.sg.shareextension?cn.rongcloud.im.sg.ShareExtension?g' ./RCloudMessage.xcodeproj/project.pbxproj
   sed -i '' -e 's?cn.rongcloud.im.notificationservice?cn.rongcloud.im.sg.notificationservice?g' ./RCloudMessage.xcodeproj/project.pbxproj
-  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./RCloudMessage/Supporting\ Files/RCloudMessage.entitlements
-fi
+  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./RCloudMessage/Supporting\ Files/SealTalk.entitlements
+  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./SealTalkShareExtension/SealTalkShareExtension.entitlements
 
-if [ ${APP_NAME} != "SealTalk" ]; then
- sed -i '' -e 's?<string>SealTalk</string>?<string>'${APP_NAME}'</string>?g' ./RCloudMessage/Supporting\ Files/info.plist
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./SealTalkShareExtension/info.plist
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./ServiceExtension/info.plist
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./RCloudMessage/Supporting\ Files/en.lproj/InfoPlist.strings
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/InfoPlist.strings
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./RCloudMessage/Supporting\ Files/ar.lproj/InfoPlist.strings
+  sed -i '' -e 's?<string>融云 IM</string>?<string>'"${APP_NAME}"'</string>?g' ./RCloudMessage/Supporting\ Files/info.plist
+  sed -i '' -e 's?融云 IM?'"${APP_NAME}"'?g' ./SealTalkShareExtension/info.plist
+  sed -i '' -e 's?融云 IM?'"${APP_NAME}"'?g' ./SealTalkNotificationService/info.plist
+  sed -i '' -e 's?融云 IM?'\ "${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/InfoPlist.strings
  
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./RCloudMessage/Supporting\ Files/en.lproj/SealTalk.strings
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
- sed -i '' -e 's?SealTalk?'${APP_NAME}'?g' ./RCloudMessage/Supporting\ Files/ar.lproj/SealTalk.strings
- 
- if [ ${APP_NAME} = "SealChat" ]; then
-    cp -rf ./RCloudMessage/Supporting\ Files/sealchat/ ./RCloudMessage/Supporting\ Files/Images.xcassets/
- fi
+  sed -i '' -e 's?"融云 IM?'\""${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
+  sed -i '' -e 's?融云 IM?'\ "${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
 fi
 
 #appkey
@@ -176,9 +162,9 @@ Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionStr
 sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' ./SealTalkShareExtension/Info.plist
 sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' ./SealTalkShareExtension/Info.plist
 
-Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" ./ServiceExtension/Info.plist)
-sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' ./ServiceExtension/Info.plist
-sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' ./ServiceExtension/Info.plist
+Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" .//SealTalkNotificationService/info.plist)
+sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' .//SealTalkNotificationService/info.plist
+sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' .//SealTalkNotificationService/info.plist
 
 echo "sealtalk modify parameters times: $(($(date +%s) - $TEMP_TIME))"
 TEMP_TIME=$(date +%s)
@@ -208,8 +194,8 @@ echo "***开始build iphoneos文件***"
   echo "sealtalk export times: $(($(date +%s) - $TEMP_TIME))"
   TEMP_TIME=$(date +%s)
   
-    mv ./${BIN_DIR}/${targetName}.ipa ${CUR_PATH}/${BIN_DIR}/${APP_NAME}_v${VER_FLAG}_${CONFIGURATION}_${CUR_TIME}.ipa
-    cp -af ./${BUILD_DIR}/${targetName}.xcarchive/dSYMs/${targetName}.app.dSYM ${CUR_PATH}/${BIN_DIR}/${APP_NAME}_v${VER_FLAG}_${CONFIGURATION}_${CUR_TIME}.app.dSYM
+  mv ./${BIN_DIR}/*.ipa ${CUR_PATH}/${BIN_DIR}/RCIM_v${VER_FLAG}_${CONFIGURATION}_${CUR_TIME}.ipa
+  cp -af ./${BUILD_DIR}/${targetName}.xcarchive/dSYMs/${targetName}.app.dSYM ${CUR_PATH}/${BIN_DIR}/RCIM_v${VER_FLAG}_${CONFIGURATION}_${CUR_TIME}.app.dSYM
     
   echo "sealtalk output times: $(($(date +%s) - $TEMP_TIME))"
 echo "***编译结束***"

@@ -76,7 +76,7 @@
             option.recordTime = 0;
         }
         option.count = 20;
-        option.order = RCRemoteHistoryOrderDesc;
+        option.order = RCHistoryMessageOrderDesc;
         [[RCCoreClient sharedCoreClient] getMessages:weakSelf.conversationType targetId:weakSelf.targetId option:option complete:^(NSArray *messages, RCErrorCode code) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 weakSelf.isLoading = NO;
@@ -111,7 +111,7 @@
             option.recordTime = 0;
         }
         option.count = 20;
-        option.order = RCRemoteHistoryOrderAsc;
+        option.order = RCHistoryMessageOrderAsc;
         [[RCCoreClient sharedCoreClient] getMessages:weakSelf.conversationType targetId:weakSelf.targetId option:option complete:^(NSArray *messages, RCErrorCode code) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 weakSelf.isLoading = NO;
@@ -184,7 +184,7 @@
 
 - (void)didSendMessage:(NSInteger)status content:(RCMessageContent *)messageContent {
     if ([messageContent isKindOfClass:[RCReferenceMessage class]]) {
-        RCReferenceMessage *mesage = messageContent;
+        RCReferenceMessage *mesage = (RCReferenceMessage *)messageContent;
         [self showAlertController:mesage.referMsgUid];
     }
 }

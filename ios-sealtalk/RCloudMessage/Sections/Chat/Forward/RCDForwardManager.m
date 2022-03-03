@@ -62,7 +62,7 @@
             }
             self.selectConversationCompleted([selectConversations copy]);
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.viewController dismissViewControllerAnimated:YES completion:nil];
+                [self dismiss];
                 [self clear];
             });
         } else {
@@ -124,7 +124,7 @@
 
 - (void)dismiss {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.viewController dismissViewControllerAnimated:YES completion:nil];
+        [self.viewController dismissViewControllerAnimated:NO completion:nil];
         [self clear];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"RCDForwardMessageEnd" object:nil];
     });

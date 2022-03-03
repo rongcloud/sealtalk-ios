@@ -91,7 +91,7 @@ static NSString *cleanConversationCellIdentifier = @"RCDCleanConversationCellIde
 #pragma mark - Private Method
 - (void)setupData {
     NSArray *conversations =
-        [[RCIMClient sharedRCIMClient] getConversationList:@[ @(ConversationType_PRIVATE), @(ConversationType_GROUP) ]];
+        [[RCIMClient sharedRCIMClient] getConversationList:@[ @(ConversationType_PRIVATE), @(ConversationType_GROUP),@(ConversationType_APPSERVICE),@(ConversationType_PUBLICSERVICE),@(ConversationType_SYSTEM) ]];
     NSMutableArray *dealWithArray = [NSMutableArray array];
     for (RCConversation *conversation in conversations) {
         if (![conversation.targetId isEqualToString:RCDGroupNoticeTargetId]) {

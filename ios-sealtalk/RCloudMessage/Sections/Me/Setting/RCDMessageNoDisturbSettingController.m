@@ -84,13 +84,13 @@
 
 - (void)getNoDisturbStaus {
     __weak typeof(self) weakSelf = self;
-    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spansMin) {
+    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
         NSDateFormatter *formatterE = [[NSDateFormatter alloc] init];
         [formatterE setDateFormat:@"HH:mm:ss"];
         NSDate *startDate = [formatterE dateFromString:startTime];
-        NSDate *endDate = [startDate dateByAddingTimeInterval:60 * spansMin];
+        NSDate *endDate = [startDate dateByAddingTimeInterval:60 * spanMins];
         NSString *endTime = [formatterE stringFromDate:endDate];
-        if (spansMin > 0) {
+        if (spanMins > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UITableViewCell *startCell = [weakSelf.tableView cellForRowAtIndexPath:self.startIndexPath];
                 UITableViewCell *endCell = [weakSelf.tableView cellForRowAtIndexPath:self.endIndexPath];

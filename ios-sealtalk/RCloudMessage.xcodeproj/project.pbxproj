@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -138,6 +138,8 @@
 		3B4789B222BCE1DB00D33F10 /* RCDForwardSearchMoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4789B122BCE1DB00D33F10 /* RCDForwardSearchMoreController.m */; };
 		3B7D8F2822326670009E1417 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7D8F2722326670009E1417 /* Security.framework */; };
 		3B7D8F2B223266B8009E1417 /* RCDBuglyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D8F2A223266B8009E1417 /* RCDBuglyManager.m */; };
+		3B9CC5B9275485430009E7BA /* RCDDebugUltraGroupChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9CC5B8275485430009E7BA /* RCDDebugUltraGroupChatViewController.m */; };
+		3B9CC5CC2754B5E40009E7BA /* RCDDebugChatSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B9CC5CB2754B5E40009E7BA /* RCDDebugChatSettingViewController.m */; };
 		3BB6CDFD22D723460007FFFB /* RCDUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB6CDFC22D723460007FFFB /* RCDUserInfo.m */; };
 		3BB6CE1A22D743720007FFFB /* RCDContactsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB6CE0D22D743720007FFFB /* RCDContactsInfo.m */; };
 		3BB6CE1B22D743720007FFFB /* RCDAddressBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB6CE0E22D743720007FFFB /* RCDAddressBookManager.m */; };
@@ -156,6 +158,7 @@
 		3BC0C7E5229E79490079234F /* RCDContactSelectedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC0C7D8229E79480079234F /* RCDContactSelectedTableViewController.m */; };
 		3BC0C820229FC1E80079234F /* RCDPersonInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC0C81D229FC1E80079234F /* RCDPersonInfoView.m */; };
 		3BC4C627259327A200212D8C /* extract_architectures.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3BC4C626259327A200212D8C /* extract_architectures.sh */; };
+		3BD65C3A274F2BE00035F190 /* RCDDebugUltraGroupListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD65C39274F2BE00035F190 /* RCDDebugUltraGroupListController.m */; };
 		3BEB4F7322C380A7003923CC /* RCDContactNotificationMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEB4F7222C380A7003923CC /* RCDContactNotificationMessage.m */; };
 		466684361B5DF36E000B7504 /* RCDUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 466684351B5DF36E000B7504 /* RCDUtilities.m */; };
 		6E1C98201F39C90C008F96D8 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E1C981F1F39C90C008F96D8 /* libresolv.tbd */; };
@@ -181,6 +184,8 @@
 		9C226D1D229FFD1600F49FC5 /* RCDUserInfoAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C226D1C229FFD1600F49FC5 /* RCDUserInfoAPI.m */; };
 		9C27480F22A0E3E4001A4413 /* RCDDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C27480E22A0E3E4001A4413 /* RCDDBManager.m */; };
 		9C6B9630229E8A8900442B5B /* RCDDBHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6B962F229E8A8900442B5B /* RCDDBHelper.m */; };
+		9F7614A02779B81800131616 /* RCDDebugUlTraGroupDefine.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */; };
+		9FCF7DB1277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */; };
 		A20131ED22F28C1200C24160 /* RCDPokeAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A20131EC22F28C1200C24160 /* RCDPokeAlertView.m */; };
 		A20131F622F2D99400C24160 /* RCDPokeMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A20131F522F2D99400C24160 /* RCDPokeMessage.m */; };
 		A201320422F2DD1400C24160 /* RCDPokeMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A201320322F2DD1400C24160 /* RCDPokeMessageCell.m */; };
@@ -440,13 +445,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = A6447A131B1DBE6500EA2CEE;
 			remoteInfo = "融云 Demo WatchKit App";
-		};
-		DD67604B26A6A357004CF458 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2A1194AC019E1C497A170EE4AB725374;
-			remoteInfo = FBRetainCycleDetector;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -736,6 +734,10 @@
 		3B7D8F2722326670009E1417 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3B7D8F29223266B8009E1417 /* RCDBuglyManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDBuglyManager.h; sourceTree = "<group>"; };
 		3B7D8F2A223266B8009E1417 /* RCDBuglyManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDBuglyManager.m; sourceTree = "<group>"; };
+		3B9CC5B7275485430009E7BA /* RCDDebugUltraGroupChatViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupChatViewController.h; sourceTree = "<group>"; };
+		3B9CC5B8275485430009E7BA /* RCDDebugUltraGroupChatViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupChatViewController.m; sourceTree = "<group>"; };
+		3B9CC5CA2754B5E40009E7BA /* RCDDebugChatSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugChatSettingViewController.h; sourceTree = "<group>"; };
+		3B9CC5CB2754B5E40009E7BA /* RCDDebugChatSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugChatSettingViewController.m; sourceTree = "<group>"; };
 		3BACB00A2500CED50001A92C /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/SealTalk.strings; sourceTree = "<group>"; };
 		3BACB00B2500D0620001A92C /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/RongCloudKit.strings; sourceTree = "<group>"; };
 		3BB6CDFB22D723460007FFFB /* RCDUserInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserInfo.h; sourceTree = "<group>"; };
@@ -773,6 +775,8 @@
 		3BC0C81D229FC1E80079234F /* RCDPersonInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDPersonInfoView.m; sourceTree = "<group>"; };
 		3BC0C81F229FC1E80079234F /* RCDPersonInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDPersonInfoView.h; sourceTree = "<group>"; };
 		3BC4C626259327A200212D8C /* extract_architectures.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = extract_architectures.sh; sourceTree = "<group>"; };
+		3BD65C38274F2BE00035F190 /* RCDDebugUltraGroupListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupListController.h; sourceTree = "<group>"; };
+		3BD65C39274F2BE00035F190 /* RCDDebugUltraGroupListController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupListController.m; sourceTree = "<group>"; };
 		3BEB4F7122C380A7003923CC /* RCDContactNotificationMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDContactNotificationMessage.h; sourceTree = "<group>"; };
 		3BEB4F7222C380A7003923CC /* RCDContactNotificationMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDContactNotificationMessage.m; sourceTree = "<group>"; };
 		466684341B5DF36E000B7504 /* RCDUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = RCDUtilities.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -824,6 +828,10 @@
 		9C27480E22A0E3E4001A4413 /* RCDDBManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDBManager.m; sourceTree = "<group>"; };
 		9C6B962E229E8A8900442B5B /* RCDDBHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDBHelper.h; sourceTree = "<group>"; };
 		9C6B962F229E8A8900442B5B /* RCDDBHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDBHelper.m; sourceTree = "<group>"; };
+		9F76149E2779B81600131616 /* RCDDebugUltraGroupDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupDefine.h; sourceTree = "<group>"; };
+		9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUlTraGroupDefine.m; sourceTree = "<group>"; };
+		9FCF7DAF277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupSendMessage.h; sourceTree = "<group>"; };
+		9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupSendMessage.m; sourceTree = "<group>"; };
 		A20131EB22F28C1200C24160 /* RCDPokeAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDPokeAlertView.h; sourceTree = "<group>"; };
 		A20131EC22F28C1200C24160 /* RCDPokeAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDPokeAlertView.m; sourceTree = "<group>"; };
 		A20131F422F2D99400C24160 /* RCDPokeMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDPokeMessage.h; sourceTree = "<group>"; };
@@ -1265,7 +1273,6 @@
 				3BC0C810229F8F3B0079234F /* AFNetworking.framework */,
 				3BACB0072500CED50001A92C /* DoraemonKit.framework */,
 				3BACB0092500CED50001A92C /* DoraemonKit.bundle */,
-				DD67604C26A6A357004CF458 /* FBRetainCycleDetector.framework */,
 				3BC0C812229F8F3B0079234F /* FMDB.framework */,
 				9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */,
 				276599A7229E87B20074FAB2 /* Masonry.framework */,
@@ -1341,6 +1348,7 @@
 		27AD2F69229E721D003C2680 /* Debug */ = {
 			isa = PBXGroup;
 			children = (
+				3BD65C27274F2BBB0035F190 /* UlTraGroup */,
 				A27E8261263A877400A7DF26 /* MessageShortage */,
 				A2910AA025E5036D005651E2 /* GroupReadReceipt */,
 				3B3563122570B1580095A2AF /* MessagePushConfig */,
@@ -1771,6 +1779,23 @@
 				3B054E5622F43C7C009A3C72 /* RCDTextView.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		3BD65C27274F2BBB0035F190 /* UlTraGroup */ = {
+			isa = PBXGroup;
+			children = (
+				3BD65C38274F2BE00035F190 /* RCDDebugUltraGroupListController.h */,
+				3BD65C39274F2BE00035F190 /* RCDDebugUltraGroupListController.m */,
+				3B9CC5B7275485430009E7BA /* RCDDebugUltraGroupChatViewController.h */,
+				3B9CC5B8275485430009E7BA /* RCDDebugUltraGroupChatViewController.m */,
+				3B9CC5CA2754B5E40009E7BA /* RCDDebugChatSettingViewController.h */,
+				3B9CC5CB2754B5E40009E7BA /* RCDDebugChatSettingViewController.m */,
+				9F76149E2779B81600131616 /* RCDDebugUltraGroupDefine.h */,
+				9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */,
+				9FCF7DAF277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.h */,
+				9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */,
+			);
+			path = UlTraGroup;
 			sourceTree = "<group>";
 		};
 		3BEB4F6322C3805B003923CC /* Message */ = {
@@ -3102,88 +3127,92 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		276599A7229E87B20074FAB2 /* Masonry.framework */ = {
+		276599A7229E87B20074FAB2 /* Masonry */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = Masonry;
 			path = Masonry.framework;
 			remoteRef = 276599A6229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */ = {
+		276599A9229E87B20074FAB2 /* Pods-SealTalk */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = "Pods-SealTalk";
 			path = Pods_SealTalk.framework;
 			remoteRef = 276599A8229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		279C1E8D22BB724D009FD15C /* SDWebImage.framework */ = {
+		279C1E8D22BB724D009FD15C /* SDWebImage */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SDWebImage;
 			path = SDWebImage.framework;
 			remoteRef = 279C1E8C22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		279C1E8F22BB724D009FD15C /* SSZipArchive.framework */ = {
+		279C1E8F22BB724D009FD15C /* SSZipArchive */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SSZipArchive;
 			path = SSZipArchive.framework;
 			remoteRef = 279C1E8E22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3B47890322B78F1C00D33F10 /* ZXingObjC.framework */ = {
+		3B47890322B78F1C00D33F10 /* ZXingObjC */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = ZXingObjC;
 			path = ZXingObjC.framework;
 			remoteRef = 3B47890222B78F1C00D33F10 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BACB0072500CED50001A92C /* DoraemonKit.framework */ = {
+		3BACB0072500CED50001A92C /* DoraemonKit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = DoraemonKit;
 			path = DoraemonKit.framework;
 			remoteRef = 3BACB0062500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BACB0092500CED50001A92C /* DoraemonKit.bundle */ = {
+		3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
+			name = "DoraemonKit-DoraemonKit";
 			path = DoraemonKit.bundle;
 			remoteRef = 3BACB0082500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BC0C810229F8F3B0079234F /* AFNetworking.framework */ = {
+		3BC0C810229F8F3B0079234F /* AFNetworking */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = AFNetworking;
 			path = AFNetworking.framework;
 			remoteRef = 3BC0C80F229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BC0C812229F8F3B0079234F /* FMDB.framework */ = {
+		3BC0C812229F8F3B0079234F /* FMDB */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = FMDB;
 			path = FMDB.framework;
 			remoteRef = 3BC0C811229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */ = {
+		9C226D0F229FD5C800F49FC5 /* GCDWebServer */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = GCDWebServer;
 			path = GCDWebServer.framework;
 			remoteRef = 9C226D0E229FD5C800F49FC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */ = {
+		A2E705C622BA1D1E0047DF47 /* MBProgressHUD */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MBProgressHUD;
 			path = MBProgressHUD.framework;
 			remoteRef = A2E705C522BA1D1E0047DF47 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD67604C26A6A357004CF458 /* FBRetainCycleDetector.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = FBRetainCycleDetector.framework;
-			remoteRef = DD67604B26A6A357004CF458 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -3434,6 +3463,7 @@
 				3B3DED12221D62E40079DFE6 /* NSBundle+RC.m in Sources */,
 				A2A5258022B8B9D1008188A1 /* NormalAlertView.m in Sources */,
 				27AD3023229E721F003C2680 /* RCDNoFriendView.m in Sources */,
+				3B9CC5B9275485430009E7BA /* RCDDebugUltraGroupChatViewController.m in Sources */,
 				9C119469229D4A14005407ED /* RCDRCIMDataSource.m in Sources */,
 				9C226D1D229FFD1600F49FC5 /* RCDUserInfoAPI.m in Sources */,
 				3B45C89922D5E1E200DCADF5 /* RCDWeChatManager.m in Sources */,
@@ -3583,6 +3613,7 @@
 				27AD3021229E721F003C2680 /* DefaultPortraitView.m in Sources */,
 				3B16DA2622F96D8500AD2770 /* RCDPictureDetailViewController.m in Sources */,
 				27AD3032229E721F003C2680 /* RCDCountryListController.m in Sources */,
+				9FCF7DB1277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m in Sources */,
 				A2907096229E7F61006BDAC7 /* RCDCreateGroupViewController.m in Sources */,
 				3B47893622B9D31300D33F10 /* RCDSelectContactViewController.m in Sources */,
 				3B08F41022E6F90C009EB9E1 /* RCDMyQRCodeView.m in Sources */,
@@ -3591,6 +3622,7 @@
 				9C22627422B3C6840044FF3D /* RCDUploadAPI.m in Sources */,
 				A2B126FA22C1FDB300697964 /* AppDelegate.m in Sources */,
 				A2F0A97222F9512200422802 /* RCDGroupMemberDetailController.m in Sources */,
+				3BD65C3A274F2BE00035F190 /* RCDDebugUltraGroupListController.m in Sources */,
 				3B7D8F2B223266B8009E1417 /* RCDBuglyManager.m in Sources */,
 				27F0E3CB22A0E3E300C8B0B8 /* RCDAboutRongCloudTableViewController.m in Sources */,
 				A2074359253E958E003BD64D /* RCDDebugChatroomViewController.m in Sources */,
@@ -3600,9 +3632,11 @@
 				27F0E3DD22A0E3E300C8B0B8 /* RCDLogoTableViewCell.m in Sources */,
 				27AD3029229E721F003C2680 /* RCDIndicateTextField.m in Sources */,
 				A6447A3F1B1DC12500EA2CEE /* RCWKSharedUserDefault.m in Sources */,
+				3B9CC5CC2754B5E40009E7BA /* RCDDebugChatSettingViewController.m in Sources */,
 				3B0F2C6722DC684B0017979E /* RCDAddressBookFriendsViewController.m in Sources */,
 				3B208CA122F29D35004076EA /* RCDQuicklySendView.m in Sources */,
 				3B0E2A9522D48CED000E1BE6 /* RCDAddFriendListViewController.m in Sources */,
+				9F7614A02779B81800131616 /* RCDDebugUlTraGroupDefine.m in Sources */,
 				A201320422F2DD1400C24160 /* RCDPokeMessageCell.m in Sources */,
 				A2074365253E95BF003BD64D /* RCDDebubMessageUIdListView.m in Sources */,
 				27AD303B229E721F003C2680 /* RCDNavigationViewController.m in Sources */,
@@ -3738,7 +3772,11 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = SealTalkShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3761,7 +3799,11 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = SealTalkShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3784,7 +3826,11 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = SealTalkShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3807,7 +3853,11 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = SealTalkShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3851,7 +3901,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = SealTalkNotificationService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.notificationservice;
@@ -3896,7 +3950,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = SealTalkNotificationService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.notificationservice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3940,7 +3998,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = SealTalkNotificationService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.notificationservice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3984,7 +4046,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = SealTalkNotificationService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.notificationservice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4045,6 +4111,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CODE_SIGN_ENTITLEMENTS = "RCloudMessage/Supporting Files/SealTalk.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4079,7 +4146,10 @@
 				INFOPLIST_FILE = "$(SRCROOT)/RCloudMessage/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_NO_PIE = NO;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4119,7 +4189,11 @@
 				);
 				INFOPLIST_FILE = "融云 Demo WatchKit Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4208,6 +4282,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CODE_SIGN_ENTITLEMENTS = "RCloudMessage/Supporting Files/SealTalk.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4242,7 +4317,10 @@
 				INFOPLIST_FILE = "$(SRCROOT)/RCloudMessage/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_NO_PIE = NO;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4279,7 +4357,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "融云 Demo WatchKit Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4338,7 +4420,11 @@
 				);
 				INFOPLIST_FILE = "融云 Demo WatchKit Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4369,7 +4455,11 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "融云 Demo WatchKit Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4529,6 +4619,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CODE_SIGN_ENTITLEMENTS = "RCloudMessage/Supporting Files/SealTalk.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4563,7 +4654,10 @@
 				INFOPLIST_FILE = "$(SRCROOT)/RCloudMessage/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_NO_PIE = NO;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",
@@ -4589,6 +4683,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CODE_SIGN_ENTITLEMENTS = "RCloudMessage/Supporting Files/SealTalk.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -4623,7 +4718,10 @@
 				INFOPLIST_FILE = "$(SRCROOT)/RCloudMessage/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_NO_PIE = NO;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework",

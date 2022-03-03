@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 target 'SealTalk' do
   use_frameworks!
   pod 'Masonry', '1.1.0'
-  pod 'AFNetworking', '3.2.1'
+  pod 'AFNetworking', '4.0.1'
   pod 'FMDB','2.7.5'
   pod 'GCDWebServer/Core','3.5.2'
   pod 'GCDWebServer/WebDAV','3.5.2'
@@ -11,19 +11,19 @@ target 'SealTalk' do
   pod 'MBProgressHUD', '1.1.0'
   pod 'SSZipArchive', '2.2.2'
   pod 'SDWebImage', '5.0.6'
-  pod 'Bugly', '2.5.0'
+  pod 'Bugly', '2.5.91'
   pod 'WechatOpenSDK', '1.8.4'
-  pod 'UMCCommon', '7.2.9'
+  pod 'UMCCommon', '7.3.5'
   
   pod 'DoraemonKit/Core', '3.0.2', :configurations => ['Debug']
   pod 'DoraemonKit/WithGPS', '3.0.2', :configurations => ['Debug']
   pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug']
   pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug']
   
-  pod 'RongCloudIM/IMLib', '5.1.6'
-  pod 'RongCloudIM/IMKit', '5.1.6'
-  pod 'RongCloudIM/RongSticker', '5.1.6'
-  pod 'RongCloudIM/Sight', '5.1.6'
+  pod 'RongCloudIM/IMLib', '5.2.0'
+  pod 'RongCloudIM/IMKit', '5.2.0'
+  pod 'RongCloudIM/RongSticker', '5.2.0'
+  pod 'RongCloudIM/Sight', '5.2.0'
   pod 'RongCloudRTC/RongCallLib'
   pod 'RongCloudRTC/RongCallKit'
 end

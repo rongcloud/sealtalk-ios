@@ -199,7 +199,7 @@
 
         for (RCConversation *conversation in syncConversations) {
             [NSThread sleepForTimeInterval:0.2];
-            [RCKitUtility syncConversationReadStatusIfEnabled:conversation];
+            [RCKitUtility syncConversationReadStatusIfEnabled:(RCConversationModel *)conversation];
         }
     });
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;

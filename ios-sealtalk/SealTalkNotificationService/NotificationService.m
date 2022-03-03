@@ -25,7 +25,21 @@
     if (RONGCLOUD_STATS_SERVER.length > 0) {
     }
     
-    self.contentHandler(self.bestAttemptContent);
+    NSDictionary *aps = [userInfo objectForKey:@"aps"];
+    NSString *category = [aps objectForKey:@"category"];
+    if (category && [category isEqualToString:@"RC:VCHangup"]) {
+        NSString *identifier = [aps objectForKey:@"thread-id"];
+        if (identifier) {
+            [[UNUserNotificationCenter currentNotificationCenter] removeDeliveredNotificationsWithIdentifiers:@[identifier]];
+        }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.bestAttemptContent = [request.content mutableCopy];
+            self.contentHandler(self.bestAttemptContent);
+        });
+    } else {
+        self.contentHandler(self.bestAttemptContent);
+    }
 }
 
 - (void)serviceExtensionTimeWillExpire {

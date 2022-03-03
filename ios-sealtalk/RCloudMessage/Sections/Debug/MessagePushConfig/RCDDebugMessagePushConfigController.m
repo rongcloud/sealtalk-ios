@@ -53,6 +53,12 @@
 
 @property (nonatomic, strong) UITextField *hwLvel;
 
+@property (nonatomic, strong) UITextField *hwImgUrlTF;
+
+@property (nonatomic, strong) UITextField *miImgUrlTF;
+
+@property (nonatomic, strong) UITextField *fcmChannelIdTF;
+
 @property (nonatomic, strong) RCMessagePushConfig *pushConfig;
 
 @property (nonatomic, strong) RCMessageConfig *config;
@@ -97,6 +103,9 @@
     [self.contentView addSubview:self.fcmTF];
     [self.contentView addSubview:self.fcmUrlTF];
     [self.contentView addSubview:self.hwLvel];
+    [self.contentView addSubview:self.hwImgUrlTF];
+    [self.contentView addSubview:self.miImgUrlTF];
+    [self.contentView addSubview:self.fcmChannelIdTF];
 
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.bottom.equalTo(self.view);
@@ -197,8 +206,23 @@
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
-    [self.hwLvel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.hwImgUrlTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.fcmUrlTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.miImgUrlTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.hwImgUrlTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.fcmChannelIdTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.miImgUrlTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.hwLvel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.fcmChannelIdTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
         make.bottom.equalTo(self.contentView);
     }];
@@ -240,7 +264,10 @@
         self.typeVivoTF.text = self.pushConfig.androidConfig.typeVivo;
         self.fcmTF.text = self.pushConfig.androidConfig.fcmCollapseKey;
         self.fcmUrlTF.text = self.pushConfig.androidConfig.fcmImageUrl;
-        self.hwLvel.text = self.pushConfig.androidConfig.importanceHW ;
+        self.hwLvel.text = self.pushConfig.androidConfig.importanceHW;
+        self.hwImgUrlTF.text = self.pushConfig.androidConfig.hwImageUrl;
+        self.miImgUrlTF.text = self.pushConfig.androidConfig.miLargeIconUrl;
+        self.fcmChannelIdTF.text = self.pushConfig.androidConfig.fcmChannelId;
     }
     
     if (self.config) {
@@ -282,6 +309,9 @@
     pushConfig.androidConfig.fcmImageUrl = self.fcmUrlTF.text;
     pushConfig.androidConfig.importanceHW = self.hwLvel.text;
     pushConfig.forceShowDetailContent = self.forceShowDetailBtn.selected;
+    pushConfig.androidConfig.hwImageUrl = self.hwImgUrlTF.text;
+    pushConfig.androidConfig.miLargeIconUrl= self.miImgUrlTF.text;
+    pushConfig.androidConfig.fcmChannelId = self.fcmChannelIdTF.text;
     
     [self saveToUserDefaults:pushConfig];
     
@@ -316,6 +346,9 @@
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmCollapseKey forKey:@"pushConfig-android-fcm"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmImageUrl forKey:@"pushConfig-android-fcmImageUrl"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.importanceHW forKey:@"pushConfig-android-importanceHW"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.hwImageUrl forKey:@"pushConfig-android-hwImageUrl"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.miLargeIconUrl forKey:@"pushConfig-android-miLargeIconUrl"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmChannelId forKey:@"pushConfig-android-fcmChannelId"];
 }
 
 - (void)saveConfigToUserDefaults:(RCMessageConfig *)config {
@@ -343,6 +376,9 @@
     self.pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
     self.pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];
     self.pushConfig.androidConfig.fcmImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmImageUrl"];
+    self.pushConfig.androidConfig.hwImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hwImageUrl"];
+    self.pushConfig.androidConfig.miLargeIconUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-miLargeIconUrl"];
+    self.pushConfig.androidConfig.fcmChannelId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmChannelId"];
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHW"]) {
         self.pushConfig.androidConfig.importanceHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHW"];
     }else{
@@ -572,6 +608,33 @@
         _hwLvel.layer.borderWidth = 1;
     }
     return _hwLvel;
+}
+
+- (UITextField *)hwImgUrlTF {
+    if (!_hwImgUrlTF) {
+        _hwImgUrlTF = [[UITextField alloc] init];
+        _hwImgUrlTF.placeholder = @"hw 图片地址";
+        _hwImgUrlTF.layer.borderWidth = 1;
+    }
+    return _hwImgUrlTF;
+}
+
+- (UITextField *)miImgUrlTF {
+    if (!_miImgUrlTF) {
+        _miImgUrlTF = [[UITextField alloc] init];
+        _miImgUrlTF.placeholder = @"mi 图片地址";
+        _miImgUrlTF.layer.borderWidth = 1;
+    }
+    return _miImgUrlTF;
+}
+
+- (UITextField *)fcmChannelIdTF {
+    if (!_fcmChannelIdTF) {
+        _fcmChannelIdTF = [[UITextField alloc] init];
+        _fcmChannelIdTF.placeholder = @"FCM channelId";
+        _fcmChannelIdTF.layer.borderWidth = 1;
+    }
+    return _fcmChannelIdTF;
 }
 
 

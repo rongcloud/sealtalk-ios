@@ -11,7 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RCDRegistrationAgreementController : UIViewController
-
+@property (nonatomic, strong) NSURL * url;
+@property (nonatomic, copy) NSString * webViewTitle;
+@property (nonatomic, assign)  BOOL needInjectJSFontSize;
 @end
 
 NS_ASSUME_NONNULL_END

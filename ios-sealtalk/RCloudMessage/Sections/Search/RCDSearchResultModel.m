@@ -36,10 +36,18 @@
         RCFileMessage *file = (RCFileMessage *)message.content;
         string = file.name;
     } else {
-        string = [RCKitUtility formatMessage:message.content];
+        string = [RCKitUtility formatMessage:message.content targetId:message.targetId conversationType:message.conversationType isAllMessage:YES];
     }
 
-    messegeModel.otherInformation = string;
+    messegeModel.otherInformation = [self relaceEnterBySpace:string];
     return messegeModel;
 }
+
++ (NSString *)relaceEnterBySpace:(NSString *)originalString {
+    NSString *string = [originalString stringByReplacingOccurrencesOfString:@"\r\n" withString:@" "];
+    string = [string stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    string = [string stringByReplacingOccurrencesOfString:@"\r" withString:@" "];
+    return string;
+}
+
 @end

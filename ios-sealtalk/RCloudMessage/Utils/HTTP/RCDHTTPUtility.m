@@ -53,6 +53,7 @@ static AFHTTPSessionManager *manager;
     case HTTPMethodGet: {
         [manager GET:url
             parameters:parameters
+            headers:nil
             progress:nil
             success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (responseBlock) {
@@ -71,6 +72,7 @@ static AFHTTPSessionManager *manager;
     case HTTPMethodHead: {
         [manager HEAD:url
             parameters:parameters
+            headers:nil
             success:^(NSURLSessionDataTask *_Nonnull task) {
                 if (responseBlock) {
                     responseBlock([[self class] httpSuccessResult:task response:nil]);
@@ -88,6 +90,7 @@ static AFHTTPSessionManager *manager;
     case HTTPMethodPost: {
         [manager POST:url
             parameters:parameters
+            headers:nil
             progress:nil
             success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 [self saveCookieIfHave:task];
@@ -107,6 +110,7 @@ static AFHTTPSessionManager *manager;
     case HTTPMethodPut: {
         [manager PUT:url
             parameters:parameters
+            headers:nil
             success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (responseBlock) {
                     responseBlock([[self class] httpSuccessResult:task response:responseObject]);
@@ -124,6 +128,7 @@ static AFHTTPSessionManager *manager;
     case HTTPMethodDelete: {
         [manager DELETE:url
             parameters:parameters
+            headers:nil
             success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
                 if (responseBlock) {
                     responseBlock([[self class] httpSuccessResult:task response:responseObject]);

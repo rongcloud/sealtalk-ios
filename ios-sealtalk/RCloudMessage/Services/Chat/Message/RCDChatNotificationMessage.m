@@ -45,6 +45,9 @@ NSString *const RCDChatNotificationCloseRegularClearNtf = @"closeRegularClear";
 }
 
 - (NSString *)getDigest:(NSString *)groupId {
+    if(!self.operatorUserId) {
+        return RCLocalizedString(@"unknown_message_cell_tip");
+    }
     NSString *content;
     NSString *operationName = [self getDisplayNames:@[ self.operatorUserId ] groupId:groupId];
     if ([self.operation isEqualToString:RCDChatNotificationOpenScreenNtf]) {

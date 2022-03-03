@@ -67,60 +67,77 @@
 }
 
 - (void)getRecentlyAddedPhoto:(void (^)(UIImage *_Nullable image, NSDictionary *_Nullable info))resultHandler {
-    // 获取相册
-    PHFetchResult *collectionResult =
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status == PHAuthorizationStatusNotDetermined || status == PHAuthorizationStatusRestricted ) {
+        if(resultHandler) {
+            resultHandler(nil, nil);
+        }
+        return;
+    }
+    // 获取相册 fetchAssetCollectionsWithType iOS15 会阻塞线程，需要切换线程 47604
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        PHFetchResult *collectionResult =
         [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum
                                                  subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary
                                                  options:nil];
-
-    // 获取资源时的参数
-    PHFetchOptions *options = [[PHFetchOptions alloc] init];
-    options.wantsIncrementalChangeDetails = YES;
-    options.predicate =
+        // 获取资源时的参数
+        PHFetchOptions *options = [[PHFetchOptions alloc] init];
+        options.wantsIncrementalChangeDetails = YES;
+        options.predicate =
         [NSPredicate predicateWithFormat:@"creationDate > %@", [[NSDate date] dateByAddingTimeInterval:(-30)]];
-    options.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO] ];
-
-    if (collectionResult.count > 0) {
-        PHFetchResult *fetchResult =
-            [PHAsset fetchAssetsInAssetCollection:[collectionResult firstObject] options:options];
-        if (fetchResult.count > 0) {
-            PHImageRequestOptions *requestOptions = [[PHImageRequestOptions alloc] init];
-            requestOptions.synchronous = YES;
-            // 获取原图
-            [[PHImageManager defaultManager]
-                requestImageForAsset:[fetchResult firstObject]
-                          targetSize:PHImageManagerMaximumSize
-                         contentMode:PHImageContentModeAspectFit
-                             options:requestOptions
-                       resultHandler:^(UIImage *_Nullable result, NSDictionary *_Nullable info) {
-                           if (result) {
-                               PHAsset *asset = [fetchResult firstObject];
-                               if (![[asset valueForKey:@"uniformTypeIdentifier"]
-                                       isEqualToString:(__bridge NSString *)kUTTypeQuickTimeMovie] &&
-                                   ![[asset valueForKey:@"uniformTypeIdentifier"]
-                                       isEqualToString:(__bridge NSString *)kUTTypeGIF]) {
-                                   NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
-                                   [dateformatter setDateFormat:@"yyyyMMddHHmmss"];
-                                   NSString *formattedDate = [dateformatter stringFromDate:asset.creationDate];
-                                   if (formattedDate && ![formattedDate isEqualToString:self.currentImageURL]) {
-                                       self.currentImageURL = formattedDate;
-                                       self.currentImage = result;
-                                       resultHandler(result, info);
-                                   } else {
-                                       resultHandler(nil, nil);
-                                   }
-                               } else {
-                                   resultHandler(nil, nil);
-                               }
-
-                           } else {
-                           }
-                       }];
+        options.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO] ];
+        if (collectionResult.count <=0 ) {
+            if(resultHandler) {
+                resultHandler(nil, nil);
+            }
+            return;
         }
-        resultHandler(nil, nil);
-    } else {
-        resultHandler(nil, nil);
-    }
+        
+        PHFetchResult *fetchResult =
+        [PHAsset fetchAssetsInAssetCollection:[collectionResult firstObject] options:options];
+        
+        if (fetchResult.count <= 0) {
+            if(resultHandler) {
+                resultHandler(nil, nil);
+            }
+            return;
+        }
+        PHImageRequestOptions *requestOptions = [[PHImageRequestOptions alloc] init];
+        requestOptions.synchronous = YES;
+        // 获取原图
+        [[PHImageManager defaultManager]
+         requestImageForAsset:[fetchResult firstObject]
+         targetSize:PHImageManagerMaximumSize
+         contentMode:PHImageContentModeAspectFit
+         options:requestOptions
+         resultHandler:^(UIImage *_Nullable result, NSDictionary *_Nullable info) {
+            if (!result) {
+                if(resultHandler) {
+                    resultHandler(nil, nil);
+                }
+                return;
+            }
+            PHAsset *asset = [fetchResult firstObject];
+            if (![[asset valueForKey:@"uniformTypeIdentifier"]
+                  isEqualToString:(__bridge NSString *)kUTTypeQuickTimeMovie] &&
+                ![[asset valueForKey:@"uniformTypeIdentifier"]
+                  isEqualToString:(__bridge NSString *)kUTTypeGIF]) {
+                NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
+                [dateformatter setDateFormat:@"yyyyMMddHHmmss"];
+                NSString *formattedDate = [dateformatter stringFromDate:asset.creationDate];
+                if (formattedDate && ![formattedDate isEqualToString:self.currentImageURL]) {
+                    self.currentImageURL = formattedDate;
+                    self.currentImage = result;
+                    resultHandler(result, info);
+                } else {
+                    resultHandler(nil, nil);
+                }
+            } else {
+                resultHandler(nil, nil);
+            }
+        }];
+    });
+
 }
 
 - (void)startHideTimer {

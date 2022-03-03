@@ -12,7 +12,7 @@
 - (void)reloadRecalledMessage:(long)recalledMsgId;
 @end
 
-@interface RCDDebugChatViewController ()
+@interface RCDDebugChatViewController ()<RCMessageInterceptor>
 
 @end
 
@@ -21,28 +21,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [RCCoreClient sharedCoreClient].messageInterceptor = self;
+    [self addTestPlugin];
 }
 
-- (void)sendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
-    
+- (void)addTestPlugin {
+    [self.chatSessionInputBarControl.pluginBoardView insertItem:RCResourceImage(@"plugin_item_file") highlightedImage:RCResourceImage(@"plugin_item_file_highlighted") title:@"系统消息" tag:9900];
+}
+
+- (void)pluginBoardView:(RCPluginBoardView *)pluginBoardView clickedItemWithTag:(NSInteger)tag {
+    if (tag == 9900) {
+        NSString *str = [NSString stringWithFormat:@"系统消息%@",[NSDate date]];
+        RCTextMessage *content = [RCTextMessage messageWithContent:str];
+        [[RCCoreClient sharedCoreClient] sendMessage:ConversationType_SYSTEM targetId:self.targetId content:content pushContent:nil pushData:nil success:nil error:nil];
+    }else {
+        [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
+    }
+}
+
+- (RCMessage *)messageWillSendAfterDB:(RCMessage *)message {
     RCMessagePushConfig *pushConfig = [self getPushConfig];
     RCMessageConfig *config = [self getConfig];
-    if (self.targetId == nil) {
-        return;
-    }
-    messageContent = [self willSendMessage:messageContent];
-    if (messageContent == nil) {
-        return;
-    }
-    RCMessage *message = [[RCMessage alloc] initWithType:self.conversationType targetId:self.targetId direction:MessageDirection_SEND messageId:0 content:messageContent];
     message.messagePushConfig = pushConfig;
     message.messageConfig = config;
-    
-    if ([messageContent isKindOfClass:[RCMediaMessageContent class]]) {
-        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:pushContent pushData:nil progress:nil successBlock:nil errorBlock:nil cancel:nil];
-    } else {
-        [[RCIM sharedRCIM] sendMessage:message pushContent:pushContent pushData:nil successBlock:nil errorBlock:nil];
-    }
+    return message;
 }
 
 - (void)recallMessage:(long)messageId {
@@ -92,6 +94,9 @@
     pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];
     pushConfig.androidConfig.fcmImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmImageUrl"];
     pushConfig.androidConfig.importanceHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHW"];
+    pushConfig.androidConfig.hwImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hwImageUrl"];
+    pushConfig.androidConfig.miLargeIconUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-miLargeIconUrl"];
+    pushConfig.androidConfig.fcmChannelId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmChannelId"];
     return pushConfig;
 }
 

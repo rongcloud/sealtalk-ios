@@ -24,6 +24,7 @@
 #import "RCDDebugGroupChatListViewController.h"
 #import "RCDDebugMsgShortageChatListController.h"
 #import <UMCommon/UMCommon.h>
+#import "RCDDebugUltraGroupListController.h"
 
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
@@ -161,9 +162,11 @@
     }else if ([title isEqualToString:@"新的群已读回执"]) {
         [self pushGroupChatListVC];
     }else if ([title isEqualToString:@"消息断档"]) {
-        [self pushChatListVC];
+        [self selectChatLoadMessageType];
     }else if ([title isEqualToString:@"友盟设备识别信息"]) {
         [self  showUMengDeviceInfoAlertController];
+    }else if ([title isEqualToString:@"超级群"]) {
+        [self pushUltraGroupChatListVC];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -194,7 +197,7 @@
     ]
             forKey:RCDLocalizedString(@"time_setting")];
 
-    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息"] forKey:@"功能"];
+    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群"] forKey:@"功能"];
     self.functions = [dic copy];
 }
 
@@ -349,9 +352,13 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-- (void)pushChatListVC{
-    RCDDebugMsgShortageChatListController *vc = [[RCDDebugMsgShortageChatListController alloc] init];
-    [self.navigationController pushViewController:vc animated:YES];
+- (void)selectChatLoadMessageType{
+    [RCActionSheetView showActionSheetView:nil cellArray:@[@"总是加载", @"询问加载", @"只有成功时加载"] cancelTitle:RCDLocalizedString(@"Cancel") selectedBlock:^(NSInteger index) {
+        [[NSUserDefaults standardUserDefaults] setObject:@(index) forKey:@"RCDChatLoadMessageType"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } cancelBlock:^{
+        
+    }];
 }
 
 - (void)startHttpServer {
@@ -406,6 +413,11 @@
         tempTextField.text = deviceID;
     }];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)pushUltraGroupChatListVC {
+    RCDDebugUltraGroupListController *vc = [[RCDDebugUltraGroupListController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)pushToChatroomStatusVC {

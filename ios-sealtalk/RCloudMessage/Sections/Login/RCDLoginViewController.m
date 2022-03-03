@@ -177,6 +177,21 @@
     if ([[URL scheme] isEqualToString:@"registrationterms"]) {
         //《注册条款》点击事件
         RCDRegistrationAgreementController *vc = [[RCDRegistrationAgreementController alloc] init];
+        // 创建URL
+        NSURL * url = [NSURL URLWithString:@"https://cdn.ronghub.com/agreement_zh.html"];
+        vc.url = url;
+        vc.webViewTitle = RCDLocalizedString(@"Registration_Terms");
+        vc.needInjectJSFontSize = YES;
+        [self.navigationController pushViewController:vc animated:YES];
+        return NO;
+    }
+    else if ([[URL scheme] isEqualToString:@"privacypolicy"]) {
+        //《隐私政策》点击事件
+        RCDRegistrationAgreementController *vc = [[RCDRegistrationAgreementController alloc] init];
+        // 创建URL
+        NSURL * url = [NSURL URLWithString:@"https://www.rongcloud.cn/rc-im-privacy"];
+        vc.url = url;
+        vc.webViewTitle = RCDLocalizedString(@"Privacy_Policy");
         [self.navigationController pushViewController:vc animated:YES];
         return NO;
     }
@@ -565,8 +580,10 @@
 }
 
 - (UITextView *)getFooterLabel {
-    NSString *content = [NSString stringWithFormat:@"新登录用户即注册开通融云开发者账号 \n 且表示同意《注册条款》\n SealTalk V%@",[RCIMClient getVersion]];
-    UITextView *contentTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-[RCKitUtility getWindowSafeAreaInsets].bottom-70, self.view.frame.size.width, 70)];
+    NSString *registrationTerms = [NSString stringWithFormat:RCDLocalizedString(@"Registration_Terms_Format"), RCDLocalizedString(@"Registration_Terms")];
+    NSString *privacyPolicy = [NSString stringWithFormat:RCDLocalizedString(@"Privacy_Policy_Format"), RCDLocalizedString(@"Privacy_Policy")];
+    NSString *content = [NSString stringWithFormat:RCDLocalizedString(@"Registration_Bottom_Text"), registrationTerms,  privacyPolicy, [RCIMClient getVersion]];
+    UITextView *contentTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-[RCKitUtility getWindowSafeAreaInsets].bottom-100, self.view.frame.size.width, 100)];
     contentTextView.backgroundColor = self.view.backgroundColor;
     contentTextView.attributedText = [self getContentLabelAttributedText:content];
     contentTextView.textAlignment = NSTextAlignmentCenter;
@@ -575,15 +592,23 @@
     return contentTextView;
 }
 
-- (NSAttributedString *)getContentLabelAttributedText:(NSString *)text{
+- (NSAttributedString *)getContentLabelAttributedText:(NSString *)text {
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:11],NSForegroundColorAttributeName:HEXCOLOR(0x585858)}];
-    NSRange range =[attrStr.string rangeOfString:@"《注册条款》"];
-    [attrStr addAttribute:NSForegroundColorAttributeName value:HEXCOLOR(0x0099ff) range:range];
-    [attrStr addAttribute:NSLinkAttributeName value:@"registrationterms://" range:range];
-    range = NSMakeRange(0, text.length);
+    NSRange range = NSMakeRange(0, text.length);
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = 5; // 调整行间距
     [attrStr addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:range];
+    
+    NSString *registrationTerms = [NSString stringWithFormat:RCDLocalizedString(@"Registration_Terms_Format"), RCDLocalizedString(@"Registration_Terms")];
+    NSString *privacyPolicy = [NSString stringWithFormat:RCDLocalizedString(@"Privacy_Policy_Format"), RCDLocalizedString(@"Privacy_Policy")];
+    NSRange rangeLink = [attrStr.string rangeOfString:registrationTerms];
+    [attrStr addAttribute:NSForegroundColorAttributeName value:HEXCOLOR(0x0099ff) range:rangeLink];
+    [attrStr addAttribute:NSLinkAttributeName value:@"registrationterms://" range:rangeLink];
+    
+    rangeLink = [attrStr.string rangeOfString:privacyPolicy];
+    [attrStr addAttribute:NSForegroundColorAttributeName value:HEXCOLOR(0x0099ff) range:rangeLink];
+    [attrStr addAttribute:NSLinkAttributeName value:@"privacypolicy://" range:rangeLink];
+    
     return attrStr;
 }
 @end
