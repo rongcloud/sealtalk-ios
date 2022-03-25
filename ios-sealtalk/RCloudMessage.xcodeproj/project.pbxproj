@@ -10,8 +10,6 @@
 		00057A1127C60B110011D694 /* RCDTranslationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 000579FF27C60B110011D694 /* RCDTranslationManager.m */; };
 		00277C2B27D0BDD200D8653D /* RCDTranslationLanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00277C2927D0BDD200D8653D /* RCDTranslationLanguageViewController.m */; };
 		00277C2E27D0BDDE00D8653D /* RCDTranslationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00277C2D27D0BDDE00D8653D /* RCDTranslationViewController.m */; };
-		00277C4A27D0D94B00D8653D /* RongTranslation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00277C3827D0D94600D8653D /* RongTranslation.framework */; platformFilter = ios; };
-		00277C4B27D0D94B00D8653D /* RongTranslation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00277C3827D0D94600D8653D /* RongTranslation.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0030FF3C27D066D700F5DC30 /* RCTransationPersistModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0030FF3627D066D700F5DC30 /* RCTransationPersistModel.m */; };
 		178998221F6244FA00FC44D3 /* sms-received.caf in Resources */ = {isa = PBXBuildFile; fileRef = 178998211F6244FA00FC44D3 /* sms-received.caf */; };
 		17B181851D587A1C0061E02B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A6EFABA01BB0EDAC007E9D67 /* libxml2.tbd */; };
@@ -294,6 +292,7 @@
 		A2F0A99222FAA4C600422802 /* RCDGroupLeftMember.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F0A99122FAA4C600422802 /* RCDGroupLeftMember.m */; };
 		A2F0A99622FACE9300422802 /* RCDGroupMemberDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F0A99522FACE9300422802 /* RCDGroupMemberDetailInfo.m */; };
 		A2FF706D22B0EE2900962AB3 /* RCDGroupAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FF706C22B0EE2900962AB3 /* RCDGroupAPI.m */; };
+		A63F510627EDE19D0095B3A3 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C497201A24849E00098C8A /* CoreLocation.framework */; };
 		A6447A3E1B1DC12500EA2CEE /* RCWKRequestHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = A6447A3B1B1DC12500EA2CEE /* RCWKRequestHandler.m */; };
 		A6447A3F1B1DC12500EA2CEE /* RCWKSharedUserDefault.m in Sources */ = {isa = PBXBuildFile; fileRef = A6447A3D1B1DC12500EA2CEE /* RCWKSharedUserDefault.m */; };
 		A6B1D8EB1B1FFCB700AD32EC /* RCWKNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B1D8EA1B1FFCB700AD32EC /* RCWKNotifier.m */; };
@@ -413,17 +412,6 @@
 				17D7D1E31D534F56000AEC54 /* SealTalkShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3B118042256CFF10001E5105 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				00277C4B27D0D94B00D8653D /* RongTranslation.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1153,6 +1141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A63F510627EDE19D0095B3A3 /* CoreLocation.framework in Frameworks */,
 				A2A7EDEC2612CBDB00EAA2D5 /* WebKit.framework in Frameworks */,
 				3B0F2C6422DC308B0017979E /* MessageUI.framework in Frameworks */,
 				3B7D8F2822326670009E1417 /* Security.framework in Frameworks */,
@@ -1171,7 +1160,6 @@
 				F8AD4A551CAE56A4006C1CBB /* PushKit.framework in Frameworks */,
 				EE8995AF660D3951CC53C83F /* Pods_SealTalk.framework in Frameworks */,
 				3B1180DE256E0BB6001E5105 /* Photos.framework in Frameworks */,
-				00277C4A27D0D94B00D8653D /* RongTranslation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2973,14 +2961,12 @@
 			buildConfigurationList = E4D40F4E1A031F460045097C /* Build configuration list for PBXNativeTarget "SealTalk" */;
 			buildPhases = (
 				A9A81101CCA7835E3636010D /* [CP] Check Pods Manifest.lock */,
-				2E29FF1D1DC1BBAA00AF2DF0 /* ShellScript */,
 				E4D40F241A031F460045097C /* Sources */,
 				E4D40F251A031F460045097C /* Frameworks */,
 				E4D40F261A031F460045097C /* Resources */,
 				17D7D1E91D534F56000AEC54 /* Embed App Extensions */,
 				C5058288BDE887CC6D4836AD /* [CP] Embed Pods Frameworks */,
-				3B118042256CFF10001E5105 /* Embed Frameworks */,
-				3B446BB1257E297D00E8B0C3 /* ShellScript */,
+				0135D4FA5A1D21EBF8529157 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3006,6 +2992,7 @@
 				TargetAttributes = {
 					17D7D1D71D534F56000AEC54 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9CVMN4UZK4;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3015,10 +3002,12 @@
 					};
 					A27AD728265C96C0008D35F7 = {
 						CreatedOnToolsVersion = 12.4;
+						DevelopmentTeam = 9CVMN4UZK4;
 						ProvisioningStyle = Automatic;
 					};
 					E4D40F271A031F460045097C = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 9CVMN4UZK4;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3193,6 +3182,43 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0135D4FA5A1D21EBF8529157 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongCallKit.bundle",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/en.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/ar.lproj",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCallKit.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A9A81101CCA7835E3636010D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3232,6 +3258,20 @@
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
 				"${BUILT_PRODUCTS_DIR}/ZXingObjC/ZXingObjC.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/ChatRoom/RongChatRoom.framework/RongChatRoom",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/ContactCard/RongContactCard.framework/RongContactCard",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/CustomerService/RongCustomerService.framework/RongCustomerService",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Discussion/RongDiscussion.framework/RongDiscussion",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMKit/RongIMKit.framework/RongIMKit",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMLib/RongIMLib.framework/RongIMLib",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMLibCore/RongIMLibCore.framework/RongIMLibCore",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Location/RongLocation.framework/RongLocation",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/PublicService/RongPublicService.framework/RongPublicService",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/RongSticker/RongSticker.framework/RongSticker",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Sight/RongSight.framework/RongSight",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongCallKit/RongCallKit.framework/RongCallKit",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongCallLib/RongCallLib.framework/RongCallLib",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongRTCLib/RongRTCLib.framework/RongRTCLib",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -3245,6 +3285,20 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SSZipArchive.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZXingObjC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongChatRoom.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongContactCard.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCustomerService.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongDiscussion.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMLib.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMLibCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongLocation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongPublicService.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongSticker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongSight.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCallKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCallLib.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongRTCLib.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

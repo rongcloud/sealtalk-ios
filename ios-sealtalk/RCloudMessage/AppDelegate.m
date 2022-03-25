@@ -47,10 +47,9 @@
 #define UMENG_APPKEY @""
 
 #import "RCDTranslationManager.h"
-#import <RongTranslation/Rongtranslation.h>
 #import "RCTransationPersistModel.h"
 
-@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate>
+@interface AppDelegate () <RCWKAppInfoProvider>
 @property (nonatomic, assign) BOOL allowAutorotate;
 @end
 
@@ -193,7 +192,7 @@
     NSString *userPortraitUri = [DEFAULTS objectForKey:RCDUserPortraitUriKey];
     RCDCountry *currentCountry = [[RCDCountry alloc] initWithDict:[DEFAULTS objectForKey:RCDCurrentCountryKey]];
     NSString *regionCode = @"86";
-    [[RCTranslationClient sharedInstance] addTranlationgDelegate:self];
+
     if (currentCountry.phoneCode.length > 0) {
         regionCode = currentCountry.phoneCode;
     }
@@ -231,13 +230,7 @@
 /// 请求翻译 sdk token
 /// @param userID 用户ID
 - (void)requestTranslationTokenBy:(NSString *)userID {
-    [RCDTranslationManager requestTranslationTokenUserID:userID
-                                                 success:^(NSString * _Nonnull token) {
-        [[RCTranslationClient sharedInstance] updateAuthToken:token];
-        }
-                                                 failure:^(NSInteger code) {
-            
-        }];
+   
 }
 
 - (void)configCurrentLanguage {
@@ -754,17 +747,4 @@
     }
 }
 
-#pragma mark -- RCTranslationClientDelegate
-
-/// 翻译结束
-/// @param translation model
-/// @param code 返回码
-- (void)onTranslation:(RCTranslation *)translation
-         finishedWith:(RCTranslationCode)code {
-    if (code == RCTranslationCodeAuthFailed
-        || code == RCTranslationCodeServerAuthFailed
-        || code == RCTranslationCodeInvalidAuthToken) {
-        [self requestTranslationTokenBy:[RCIM sharedRCIM].currentUserInfo.userId];
-    }
-}
 @end
