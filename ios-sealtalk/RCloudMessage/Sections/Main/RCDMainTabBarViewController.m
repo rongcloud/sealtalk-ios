@@ -14,6 +14,10 @@
 #import "UITabBar+badge.h"
 #import "RCDUtilities.h"
 #import "RCDCommonDefine.h"
+#import "RCTransationPersistModel.h"
+
+static NSInteger RCD_MAIN_TAB_INDEX = 0;
+
 @interface RCDMainTabBarViewController ()
 
 @property NSUInteger previousIndex;
@@ -29,13 +33,16 @@
 
 @implementation RCDMainTabBarViewController
 
-+ (RCDMainTabBarViewController *)sharedInstance {
-    static RCDMainTabBarViewController *instance = nil;
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
-        instance = [[[self class] alloc] init];
-    });
-    return instance;
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        RCD_MAIN_TAB_INDEX = 0;
+    }
+    return self;
+}
+
++ (NSInteger)currentTabBarItemIndex {
+    return RCD_MAIN_TAB_INDEX;;
 }
 
 - (void)viewDidLoad {
@@ -49,6 +56,17 @@
                                              selector:@selector(changeSelectedIndex:)
                                                  name:@"ChangeTabBarIndex"
                                                object:nil];
+    [self configureTranslationLanguange];
+}
+
+- (void)configureTranslationLanguange {
+    RCTransationPersistModel *model = [RCTransationPersistModel loadTranslationConfig];
+    if ([model.srcLanguage isKindOfClass:[NSString class]]
+            && [model.targetLanguage isKindOfClass:[NSString class]]) {
+            RCKitTranslationConfig *translationConfig = [[RCKitTranslationConfig alloc] initWithSrcLanguage:model.srcLanguage
+                                                                                             targetLanguage:model.targetLanguage];
+            [RCKitConfig defaultConfig].message.translationConfig = translationConfig;
+        }
 }
 
 - (BOOL)shouldAutorotate{
@@ -103,7 +121,7 @@
 - (void)tabBarController:(UITabBarController *)tabBarController
  didSelectViewController:(UIViewController *)viewController {
     NSUInteger index = tabBarController.selectedIndex;
-    [RCDMainTabBarViewController sharedInstance].selectedTabBarIndex = index;
+    RCD_MAIN_TAB_INDEX = index;
     if (self.previousIndex != index) {
         [self tabBarImageAnimation:index];
     }

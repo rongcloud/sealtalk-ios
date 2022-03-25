@@ -249,6 +249,10 @@
     action:@selector(getBatchRemoteUltraGroupMessages)];
     [list addObject:item5];
     
+    UIMenuItem *item6 = [[UIMenuItem alloc] initWithTitle:@"查看修改状态"
+    action:@selector(checkMessageChangedStatus)];
+    [list addObject:item6];
+    
     [list addObjectsFromArray:menuList];
     
     return list.copy;
@@ -459,6 +463,11 @@
             [self showAlertTitle:nil message:[NSString stringWithFormat:@"获取批量服务消息失败%zd",status]];
         }];
     }];
+}
+
+- (void)checkMessageChangedStatus{
+    RCMessage *message = [[RCIMClient sharedRCIMClient] getMessage:self.menuSelectModel.messageId];
+    [self showToastMsg:message.hasChanged?@"消息已被修改":@"消息未被修改"];
 }
 
 #pragma mark- NSNotification

@@ -109,15 +109,14 @@ if [ -d "$IMKIT_PATH" ]; then
 fi
 
 #copy contact
-CONTACT_PATH="../ios-imsdk/contactcard/bin"
+CONTACT_PATH="../ios-imsdk/contactcard"
 if [ -d "$CONTACT_PATH" ]; then
     echo "sealtalk build: copy contact"
     SEALTALK_CONTACT_FRAMEWORKER_PATH="${SEALTALK_FRAMEWORKER_PATH}/RongContactCard/"
     if [ ! -d $SEALTALK_CONTACT_FRAMEWORKER_PATH ]; then
         mkdir -p $SEALTALK_CONTACT_FRAMEWORKER_PATH
     fi
-    cp -af ${CONTACT_PATH}/* $SEALTALK_CONTACT_FRAMEWORKER_PATH
-    rm -rf $SEALTALK_CONTACT_FRAMEWORKER_PATH/*.framework
+    copy_sdk ${CONTACT_PATH} $SEALTALK_CONTACT_FRAMEWORKER_PATH RongContactCard
 fi
 
 #copy sight
@@ -202,3 +201,14 @@ if [ -d "$RTCLIB_PATH" ]; then
     fi
 fi
 
+
+#copy RongTranslation
+TRANSLATION_PATH="../ios-imsdk/translation"
+if [ -d "$TRANSLATION_PATH" ]; then
+    echo "sealtalk build: copy translation"
+    SEALTALK_TRANSLATION_FRAMEWORKER_PATH="${SEALTALK_FRAMEWORKER_PATH}/RongTranslation/"
+    if [ ! -d $SEALTALK_TRANSLATION_FRAMEWORKER_PATH ]; then
+        mkdir -p $SEALTALK_TRANSLATION_FRAMEWORKER_PATH
+    fi
+    copy_sdk ${TRANSLATION_PATH} $SEALTALK_TRANSLATION_FRAMEWORKER_PATH RongTranslation
+fi

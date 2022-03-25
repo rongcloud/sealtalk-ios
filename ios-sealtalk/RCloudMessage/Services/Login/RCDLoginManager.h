@@ -24,8 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BOOL)openDB:(NSString *)currentUserId;
 
-// 获取 App 版本信息
-+ (void)getVersionInfo:(void (^)(BOOL needUpdate, NSString *finalURL))completeBlock;
 
 // 向手机发送验证码(云片服务)
 + (void)getVerificationCode:(NSString *)phoneCode

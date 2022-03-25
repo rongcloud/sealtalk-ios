@@ -81,6 +81,7 @@ if [ "${APP_NAME}" = "RC IM" ];then
   sed -i '' -e 's?cn.rongcloud.im.notificationservice?cn.rongcloud.im.sg.notificationservice?g' ./RCloudMessage.xcodeproj/project.pbxproj
   sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./RCloudMessage/Supporting\ Files/SealTalk.entitlements
   sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./SealTalkShareExtension/SealTalkShareExtension.entitlements
+  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./RCloudMessage/Supporting\ Files/SealTalkRelease.entitlements
 
   sed -i '' -e 's?<string>融云 IM</string>?<string>'"${APP_NAME}"'</string>?g' ./RCloudMessage/Supporting\ Files/info.plist
   sed -i '' -e 's?融云 IM?'"${APP_NAME}"'?g' ./SealTalkShareExtension/info.plist

@@ -178,7 +178,7 @@
     self.view.window.rootViewController = navi;
     [[RCIM sharedRCIM] logout];
 
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.cn.rongcloud.im.share"];
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
     [userDefaults removeObjectForKey:RCDCookieKey];
     [userDefaults synchronize];
 }

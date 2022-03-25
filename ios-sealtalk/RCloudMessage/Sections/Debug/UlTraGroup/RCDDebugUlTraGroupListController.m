@@ -77,12 +77,14 @@
 
 
 - (void)toChatVCWithUserId:(NSString *)userId {
+    [[RCIMClient sharedRCIMClient] clearMessages:ConversationType_GROUP targetId:userId];
     RCDDebugUltraGroupChatViewController *chatVC = [[RCDDebugUltraGroupChatViewController alloc] initWithConversationType:ConversationType_ULTRAGROUP targetId:userId];
     chatVC.title = userId;
     [self.navigationController pushViewController:chatVC animated:YES];
 }
 
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType conversationModel:(RCConversationModel *)model atIndexPath:(NSIndexPath *)indexPath{
+    [[RCChannelClient sharedChannelManager] clearMessages:ConversationType_GROUP targetId:model.targetId channelId:model.channelId];
     RCDDebugUltraGroupChatViewController *chatVC = [[RCDDebugUltraGroupChatViewController alloc] init];
     chatVC.conversationType = model.conversationType;
     chatVC.targetId = model.targetId;

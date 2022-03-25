@@ -270,6 +270,9 @@
 "country"="Countries/Regions";
 "select_country"="Select the Country & Region";
 "language"="Language";
+"translationSetting"="Translation Setting";
+"SrcLanguage"="Source Language";
+"TargetLanguage"="Target Language";
 "China"="China";
 "IdentifyQRCode"="Identify the Qrcode from the image";
 "GroupQR"="Group QR code";

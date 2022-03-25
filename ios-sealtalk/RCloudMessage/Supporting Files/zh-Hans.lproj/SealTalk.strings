@@ -272,6 +272,9 @@
 "country"="国家/地区";
 "select_country"="选择国家和地区";
 "language"="多语言";
+"translationSetting"="翻译设置";
+"SrcLanguage"="源语言";
+"TargetLanguage"="目标语言";
 "China"="中国";
 "IdentifyQRCode"="识别图中二维码";
 "GroupQR"="群二维码";

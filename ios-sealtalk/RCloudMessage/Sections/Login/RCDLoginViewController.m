@@ -25,6 +25,9 @@
 #import <Masonry/Masonry.h>
 #import "RCDRegistrationAgreementController.h"
 #import "RCDIMService.h"
+#import "RCDTranslationManager.h"
+#import <RongTranslation/Rongtranslation.h>
+
 #define UserTextFieldTag 1000
 
 @interface RCDLoginViewController () <UITextFieldDelegate, RCDCountryListControllerDelegate, UITextViewDelegate>
@@ -218,6 +221,19 @@
 }
 
 #pragma mark - private method
+
+/// 请求翻译 sdk token
+/// @param userID 用户ID
+- (void)requestTranslationTokenBy:(NSString *)userID {
+    [RCDTranslationManager requestTranslationTokenUserID:userID
+                                                 success:^(NSString * _Nonnull token) {
+        [[RCTranslationClient sharedInstance] updateAuthToken:token];
+        }
+                                                 failure:^(NSInteger code) {
+            
+        }];
+}
+
 - (void)loginRongCloud:(NSString *)phone
               userName:(NSString *)userName
                 userId:(NSString *)userId
@@ -228,6 +244,7 @@
     } success:^(NSString *userId) {
         NSLog([NSString stringWithFormat:@"token is %@  userId is %@", token, userId], nil);
         [weakSelf saveLoginData:phone userId:userId userName:userName token:token];
+        [weakSelf requestTranslationTokenBy:userId];
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hide:YES];
             RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];

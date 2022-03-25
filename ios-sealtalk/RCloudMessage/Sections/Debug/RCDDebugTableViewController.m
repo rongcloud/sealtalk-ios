@@ -25,7 +25,8 @@
 #import "RCDDebugMsgShortageChatListController.h"
 #import <UMCommon/UMCommon.h>
 #import "RCDDebugUltraGroupListController.h"
-
+#import <RongChatRoom/RongChatRoom.h>
+#import "UIView+MBProgressHUD.h"
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
 #define JOIN_CHATROOM_TAG 102
@@ -145,7 +146,10 @@
         [self pushToNoDisturbVC];
     } else if ([title isEqualToString:@"进入聊天室存储测试"]) {
         [self pushToChatroomStatusVC];
-    } else if ([title isEqualToString:RCDLocalizedString(@"Set_chatroom_default_history_message")]) {
+    } else if([title isEqualToString:@"聊天室绑定RTCRoom"]) {
+        [self showChatroomBindAlert];
+    }
+    else if ([title isEqualToString:RCDLocalizedString(@"Set_chatroom_default_history_message")]) {
         [self showAlertController];
     } else if ([title isEqualToString:@"讨论组"]) {
         [self pushToDiscussionVC];
@@ -189,7 +193,7 @@
         @"消息扩展"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
-    [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message") ]
+    [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
             forKey:@"聊天室测试"];
     [dic setObject:@[
         RCDLocalizedString(@"Set_offline_message_compensation_time"),
@@ -398,6 +402,52 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+- (void)showChatroomBindAlert {
+    __block UITextField *txtChatroomID;
+    __block UITextField *txtRtcRoomID;
+    UIAlertController *alertController =
+        [UIAlertController alertControllerWithTitle:@"聊天室绑定RTCRoom"
+                                            message:nil
+                                     preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction =
+        [UIAlertAction actionWithTitle:RCDLocalizedString(@"cancel") style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction *okAction =
+        [UIAlertAction actionWithTitle:RCDLocalizedString(@"OK")
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction *_Nonnull action) {
+                                    NSString *chatroomID = txtChatroomID.text;
+            NSString *rtcroomID = txtRtcRoomID.text;
+            [self bindChatroom:chatroomID rtcRoom:rtcroomID];
+                               }];
+    [alertController addAction:cancelAction];
+    [alertController addAction:okAction];
+
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *_Nonnull textField) {
+        textField.placeholder = @"Chatroom ID";
+        txtChatroomID = textField;
+    }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *_Nonnull textField) {
+        textField.placeholder = @"RTC room ID";
+        txtRtcRoomID = textField;
+    }];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)bindChatroom:(NSString *)chatroomID rtcRoom:(NSString *)rtcroomID {
+    __weak __typeof(self)weakSelf = self;
+    [[RCChatRoomClient sharedChatRoomClient] bindChatRoom:chatroomID withRTCRoom:rtcroomID success:^{
+        [weakSelf showTipsBy:@"绑定成功"];
+    } error:^(RCErrorCode nErrorCode) {
+        NSString *text =[NSString stringWithFormat:@"绑定失败: %ld", (long)nErrorCode];
+        [weakSelf showTipsBy:text];
+    }];
+}
+
+- (void)showTipsBy:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:msg];
+    });
+}
 -(void)showUMengDeviceInfoAlertController {
     __block NSString * deviceID =[UMConfigure deviceIDForIntegration];
     __block UITextField *tempTextField;

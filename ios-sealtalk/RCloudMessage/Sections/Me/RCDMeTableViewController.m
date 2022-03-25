@@ -20,6 +20,9 @@
 #import "RCDCommonString.h"
 #import "RCDQRCodeController.h"
 #import <RongCustomerService/RongCustomerService.h>
+
+#import "RCDTranslationViewController.h"
+
 //#define SERVICE_ID @"KEFU146001495753714"
 
 @interface RCDMeTableViewController ()
@@ -53,7 +56,7 @@
     } else if (1 == section) {
         rows = 1;
     } else if (2 == section) {
-        rows = 2;
+        rows = 3;
     } else if (3 == section) {
         rows = 2;
     }
@@ -95,6 +98,10 @@
             [cell setCellWithImageName:@"icon_ multilingual"
                              labelName:RCDLocalizedString(@"language")
                         rightLabelName:rightString];
+        } else if (2 == indexPath.row) {
+            [cell setCellWithImageName:@"icon_ multilingual"
+                             labelName:RCDLocalizedString(@"translationSetting")
+                        rightLabelName:@""];
         }
     } else if (3 == indexPath.section) {
         if (0 == indexPath.row) {
@@ -136,6 +143,8 @@
         } else if (1 == indexPath.row) {
             RCDLanguageSettingViewController *vc = [[RCDLanguageSettingViewController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
+        } else if (2 == indexPath.row) {
+            [self showTranslationSetting];
         }
     } else if (3 == indexPath.section) {
         if (0 == indexPath.row) {
@@ -217,4 +226,8 @@
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 48, 0, 0);
 }
 
+- (void)showTranslationSetting {
+    RCDTranslationViewController *vc = [[RCDTranslationViewController alloc] initWithStyle:UITableViewStylePlain];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 @end

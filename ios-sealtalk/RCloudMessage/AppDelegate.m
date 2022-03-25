@@ -27,7 +27,6 @@
 #import "RCDGroupNoticeUpdateMessage.h"
 #import "RCDContactNotificationMessage.h"
 #import "RCDChatNotificationMessage.h"
-#import "RCDWeChatManager.h"
 #import "RCDChatManager.h"
 #import "RCDIMService.h"
 #import "RCDPokeMessage.h"
@@ -47,7 +46,11 @@
 #define WECHAT_APPID @"wxe3d4d4ec21b00104"
 #define UMENG_APPKEY @""
 
-@interface AppDelegate () <RCWKAppInfoProvider>
+#import "RCDTranslationManager.h"
+#import <RongTranslation/Rongtranslation.h>
+#import "RCTransationPersistModel.h"
+
+@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate>
 @property (nonatomic, assign) BOOL allowAutorotate;
 @end
 
@@ -61,7 +64,6 @@
     [self configUMCommon];
     [self configRongIM];
     [self configSealTalkWithApp:application andOptions:launchOptions];
-    [self configWeChatShare];
     [self loginAndEnterMainPage];
     [self configDoraemon];
     [self configCurrentLanguage];
@@ -124,10 +126,6 @@
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
 }
 
-- (void)configWeChatShare {
-    [RCDWeChatManager registerApp:WECHAT_APPID];
-}
-
 - (void)configDoraemon {
     #ifdef DEBUG
     [[DoraemonManager shareInstance] installWithPid:DORAEMON_APPID];
@@ -137,11 +135,6 @@
 - (void)configUMCommon {
     [UMAPMConfig defaultConfig].crashAndBlockMonitorEnable = NO;
     [UMConfigure initWithAppkey:UMENG_APPKEY channel:nil];
-}
-
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-
-    return [[RCDWeChatManager sharedManager] handleOpenURL:url];
 }
 
 - (void)configSealTalkWithApp:(UIApplication *)application andOptions:(NSDictionary *)launchOptions {
@@ -200,6 +193,7 @@
     NSString *userPortraitUri = [DEFAULTS objectForKey:RCDUserPortraitUriKey];
     RCDCountry *currentCountry = [[RCDCountry alloc] initWithDict:[DEFAULTS objectForKey:RCDCurrentCountryKey]];
     NSString *regionCode = @"86";
+    [[RCTranslationClient sharedInstance] addTranlationgDelegate:self];
     if (currentCountry.phoneCode.length > 0) {
         regionCode = currentCountry.phoneCode;
     }
@@ -213,6 +207,9 @@
         RCUserInfo *_currentUserInfo =
             [[RCUserInfo alloc] initWithUserId:userId name:userNickName portrait:userPortraitUri];
         [RCIM sharedRCIM].currentUserInfo = _currentUserInfo;
+        // 请求翻译token
+        [self requestTranslationTokenBy:userId];
+        
         [self insertSharedMessageIfNeed];
         [[RCDIMService sharedService] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
             NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
@@ -229,6 +226,18 @@
         RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:vc];
         self.window.rootViewController = _navi;
     }
+}
+    
+/// 请求翻译 sdk token
+/// @param userID 用户ID
+- (void)requestTranslationTokenBy:(NSString *)userID {
+    [RCDTranslationManager requestTranslationTokenUserID:userID
+                                                 success:^(NSString * _Nonnull token) {
+        [[RCTranslationClient sharedInstance] updateAuthToken:token];
+        }
+                                                 failure:^(NSInteger code) {
+            
+        }];
 }
 
 - (void)configCurrentLanguage {
@@ -442,10 +451,6 @@
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options {
-    if ([url.absoluteString containsString:@"wechat"] || [url.absoluteString containsString:@"weixin"]) {
-        return [[RCDWeChatManager sharedManager] handleOpenURL:url];
-    }
-
     if ([[RCIM sharedRCIM] openExtensionModuleUrl:url]) {
         return YES;
     } else if ([url.absoluteString containsString:@"sealtalk:"]) {
@@ -458,10 +463,6 @@
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation {
-    if ([url.absoluteString containsString:@"wechat"] || [url.absoluteString containsString:@"weixin"]) {
-        return [[RCDWeChatManager sharedManager] handleOpenURL:url];
-    }
-
     if ([[RCIM sharedRCIM] openExtensionModuleUrl:url]) {
         return YES;
     }
@@ -495,7 +496,7 @@
 #pragma mark - ShareExtension
 //插入分享消息
 - (void)insertSharedMessageIfNeed {
-    NSUserDefaults *shareUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.cn.rongcloud.im.share"];
+    NSUserDefaults *shareUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
 
     NSArray *sharedMessages = [shareUserDefaults valueForKey:@"sharedMessages"];
     if (sharedMessages.count > 0) {
@@ -542,11 +543,11 @@
         }
     }
     NSURL *sharedURL = [[NSFileManager defaultManager]
-        containerURLForSecurityApplicationGroupIdentifier:@"group.cn.rongcloud.im.share"];
+        containerURLForSecurityApplicationGroupIdentifier:MCShareExtensionKey];
     NSURL *fileURL = [sharedURL URLByAppendingPathComponent:@"rongcloudShare.plist"];
     [conversationInfoList writeToURL:fileURL atomically:YES];
 
-    NSUserDefaults *shareUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.cn.rongcloud.im.share"];
+    NSUserDefaults *shareUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
     [shareUserDefaults setValue:[RCIM sharedRCIM].currentUserInfo.userId forKey:@"currentUserId"];
     [shareUserDefaults setValue:[DEFAULTS objectForKey:RCDUserCookiesKey] forKey:RCDCookieKey];
     [shareUserDefaults synchronize];
@@ -750,6 +751,20 @@
         return UIInterfaceOrientationMaskAllButUpsideDown;
     }else{
         return UIInterfaceOrientationMaskPortrait;
+    }
+}
+
+#pragma mark -- RCTranslationClientDelegate
+
+/// 翻译结束
+/// @param translation model
+/// @param code 返回码
+- (void)onTranslation:(RCTranslation *)translation
+         finishedWith:(RCTranslationCode)code {
+    if (code == RCTranslationCodeAuthFailed
+        || code == RCTranslationCodeServerAuthFailed
+        || code == RCTranslationCodeInvalidAuthToken) {
+        [self requestTranslationTokenBy:[RCIM sharedRCIM].currentUserInfo.userId];
     }
 }
 @end

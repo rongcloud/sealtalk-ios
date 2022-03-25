@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>app-store</string>
+	<key>compileBitcode</key>
+	<false/>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>cn.rongcloud.rcim</key>
+		<string>SealTalkRCIM_Dis</string>
+		<key>cn.rongcloud.rcim.shareextension</key>
+		<string>SealTalkRCIMShareExten_Dis</string>
+		<key>cn.rongcloud.rcim.notificationservice</key>
+		<string>SealTalkRCIMNotiExtension_Dis</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)</string>
+</dict>
+</plist>

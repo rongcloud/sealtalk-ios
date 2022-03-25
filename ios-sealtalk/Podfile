@@ -15,15 +15,16 @@ target 'SealTalk' do
   pod 'WechatOpenSDK', '1.8.4'
   pod 'UMCCommon', '7.3.5'
   
-  pod 'DoraemonKit/Core', '3.0.2', :configurations => ['Debug']
-  pod 'DoraemonKit/WithGPS', '3.0.2', :configurations => ['Debug']
-  pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug']
-  pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug']
+  pod 'DoraemonKit/Core', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
+  pod 'DoraemonKit/WithGPS', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
+  pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
+  pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   
-  pod 'RongCloudIM/IMLib', '5.2.0'
-  pod 'RongCloudIM/IMKit', '5.2.0'
-  pod 'RongCloudIM/RongSticker', '5.2.0'
-  pod 'RongCloudIM/Sight', '5.2.0'
+  pod 'RongCloudIM/IMLib', '5.2.1'
+  pod 'RongCloudIM/IMKit', '5.2.1'
+  pod 'RongCloudIM/RongSticker', '5.2.1'
+  pod 'RongCloudIM/Sight', '5.2.1'
+  pod 'RongCloudIM/ContactCard', '5.2.1'
   pod 'RongCloudRTC/RongCallLib'
   pod 'RongCloudRTC/RongCallKit'
 end

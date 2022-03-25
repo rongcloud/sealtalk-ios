@@ -58,28 +58,6 @@ static NSString *const DBName = @"SealTalkDB";
     return [RCDDBManager openDB:dbPath];
 }
 
-+ (void)getVersionInfo:(void (^)(BOOL, NSString *))completeBlock {
-    [RCDLoginAPI getVersionInfo:^(NSDictionary *versionInfo) {
-        if (versionInfo) {
-            BOOL isNeedUpdate = [[versionInfo objectForKey:@"isNeedUpdate"] boolValue];
-            NSString *finalURL = nil;
-            if (isNeedUpdate) {
-                //获取系统当前的时间戳
-                NSDate *dat = [NSDate dateWithTimeIntervalSinceNow:0];
-                NSTimeInterval now = [dat timeIntervalSince1970] * 1000;
-                NSString *timeString = [NSString stringWithFormat:@"%f", now];
-                //为html增加随机数，避免缓存。
-                NSString *applist = [versionInfo objectForKey:@"applist"];
-                applist = [NSString stringWithFormat:@"%@?%@", applist, timeString];
-                finalURL = [NSString stringWithFormat:@"itms-services://?action=download-manifest&url=%@", applist];
-            }
-            if (completeBlock) {
-                completeBlock(isNeedUpdate, finalURL);
-            }
-        }
-    }];
-}
-
 + (void)getVerificationCode:(NSString *)phoneCode
                 phoneNumber:(NSString *)phoneNumber
                     success:(void (^)(BOOL))successBlock

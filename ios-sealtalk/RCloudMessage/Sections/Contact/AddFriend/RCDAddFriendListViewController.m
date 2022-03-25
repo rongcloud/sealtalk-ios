@@ -12,7 +12,6 @@
 #import "UIColor+RCColor.h"
 #import "RCDQRCodeController.h"
 #import <RongIMKit/RongIMKit.h>
-#import "RCDWeChatManager.h"
 #import "RCDSearchBar.h"
 #import "RCDSearchFriendController.h"
 #import "RCDScanQRCodeController.h"
@@ -24,8 +23,7 @@
 #import "RCDTableView.h"
 #define RCDAddFriendListCellIdentifier @"RCDAddFriendListCell"
 
-@interface RCDAddFriendListViewController () <UITableViewDelegate, UITableViewDataSource, RCDWeChatManagerDelegate,
-                                              UISearchBarDelegate, RCDMyQRCodeViewDelegate>
+@interface RCDAddFriendListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, RCDMyQRCodeViewDelegate>
 
 @property (nonatomic, strong) RCDSearchBar *searchBar;
 
@@ -55,7 +53,7 @@
 
 #pragma mark - UITableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return self.imageArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -89,12 +87,6 @@
         [self.navigationController pushViewController:qrcodeVC animated:YES];
     } break;
     case 2: {
-        [self showAlert:RCDLocalizedString(@"InviteWeChatFriend")
-                   message:RCDLocalizedString(@"ToInviteWeChatFriend")
-            cancelBtnTitle:RCDLocalizedString(@"cancel")
-             otherBtnTitle:RCDLocalizedString(@"ConfirmBtnTitle")];
-    } break;
-    case 3: {
         RCDSelectAddressBookViewController *vc = [[RCDSelectAddressBookViewController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
     } break;
@@ -108,15 +100,6 @@
     RCDSearchFriendController *searchFirendVC = [[RCDSearchFriendController alloc] init];
     [self.navigationController pushViewController:searchFirendVC animated:YES];
     return NO;
-}
-
-#pragma mark - RCDWeChatManagerDelegate
-- (void)wxSharedSucceed {
-    [self.view showHUDMessage:RCDLocalizedString(@"ShareSuccess")];
-}
-
-- (void)wxSharedFailure {
-    [self.view showHUDMessage:RCDLocalizedString(@"ShareFailure")];
 }
 
 #pragma mark - RCDMyQRCodeViewDelegate
@@ -169,35 +152,9 @@
 }
 
 - (void)setupData {
-    self.imageArray = @[ @"add_phonebook", @"add_scan", @"add_wechat", @"add_invite_phonebook" ];
-    self.titleArray = @[ @"Phonebook_Title", @"Scan_Title", @"Wx_Title", @"Invite_Phonebook_Title" ];
-    self.detailArray = @[ @"Phonebook_Detail", @"Scan_Detail", @"Wx_Detail", @"Invite_Phonebook_Detail" ];
-    [RCDWeChatManager sharedManager].delegate = self;
-}
-
-- (void)showAlert:(NSString *)title
-          message:(NSString *)message
-   cancelBtnTitle:(NSString *)cBtnTitle
-    otherBtnTitle:(NSString *)oBtnTitle {
-    [RCAlertView showAlertController:title message:message actionTitles:nil cancelTitle:cBtnTitle confirmTitle:oBtnTitle preferredStyle:(UIAlertControllerStyleAlert) actionsBlock:nil cancelBlock:nil confirmBlock:^{
-        [self shareUrlToWeChat];
-    } inViewController:self];
-}
-
-- (void)shareUrlToWeChat {
-    UIImage *logoImage = [UIImage imageNamed:@"57x57_logo"];
-    if ([RCDWeChatManager weChatCanShared]) {
-        [[RCDWeChatManager sharedManager] sendLinkContent:RCDQRCodeContentInfoUrl
-                                                    title:RCDLocalizedString(@"WXShare_RC_Title")
-                                              description:RCDLocalizedString(@"WXShare_RC_Detail")
-                                               thumbImage:logoImage
-                                                  atScene:WXSceneSession];
-    } else {
-        [self showAlert:nil
-                   message:RCDLocalizedString(@"NotInstalledWeChat")
-            cancelBtnTitle:RCDLocalizedString(@"ConfirmBtnTitle")
-             otherBtnTitle:nil];
-    }
+    self.imageArray = @[ @"add_phonebook", @"add_scan", @"add_invite_phonebook" ];
+    self.titleArray = @[ @"Phonebook_Title", @"Scan_Title", @"Invite_Phonebook_Title" ];
+    self.detailArray = @[ @"Phonebook_Detail", @"Scan_Detail", @"Invite_Phonebook_Detail" ];
 }
 
 #pragma mark - Target Action

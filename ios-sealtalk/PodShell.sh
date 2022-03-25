@@ -76,6 +76,7 @@ sed -i '' -e "/RongSticker.bundle in Resources/d"  ${Project}
 sed -i '' -e "/RongSticker.strings in Resources/d"  ${Project}
 
 sed -i '' -e "/RongSight.framework/d"  ${Project}
+sed -i '' -e "/RongContactCard.framework/d"  ${Project}
 
 # app extention 不支持手动引入 XCFramework；pod 1.11.2 不支持 app 与 extension 导入同一 SDK start
 sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationService.m
@@ -92,6 +93,13 @@ rm -rf ./framework/RongCallLib
 rm -rf ./framework/RongCallKit
 rm -rf ./framework/RongRTCLib
 rm -rf ./framework/RongiFlyKit
+rm -rf ./framework/RongContactCard
+rm -rf ./framework/RongCustomerService
+rm -rf ./framework/RongChatRoom
+rm -rf ./framework/RongDiscussion
+rm -rf ./framework/RongIMLibCore
+rm -rf ./framework/RongLocation
+rm -rf ./framework/RongPublicService
 
 # 变量和=间不能有空格
 pwd

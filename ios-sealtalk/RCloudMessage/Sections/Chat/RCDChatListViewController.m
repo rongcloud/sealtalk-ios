@@ -63,7 +63,6 @@
     [self initSubviews];
     [self setTabBarStyle];
     [self registerNotification];
-    [self checkVersion];
     [self getFriendRequesteds];
 }
 
@@ -194,15 +193,17 @@
             RCGroupNotificationMessage *groupNotification = (RCGroupNotificationMessage *)model.lastestMessage;
             if ([groupNotification.operation isEqualToString:@"Quit"]) {
                 NSData *jsonData = [groupNotification.data dataUsingEncoding:NSUTF8StringEncoding];
-                NSDictionary *dictionary =
+                if (jsonData.length > 0) {
+                    NSDictionary *dictionary =
                     [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-                NSDictionary *data =
+                    NSDictionary *data =
                     [dictionary[@"data"] isKindOfClass:[NSDictionary class]] ? dictionary[@"data"] : nil;
-                NSString *nickName =
+                    NSString *nickName =
                     [data[@"operatorNickname"] isKindOfClass:[NSString class]] ? data[@"operatorNickname"] : nil;
-                if ([nickName isEqualToString:[RCIM sharedRCIM].currentUserInfo.name]) {
-                    [[RCIMClient sharedRCIMClient] removeConversation:model.conversationType targetId:model.targetId];
-                    [self refreshConversationTableViewIfNeeded];
+                    if ([nickName isEqualToString:[RCIM sharedRCIM].currentUserInfo.name]) {
+                        [[RCIMClient sharedRCIMClient] removeConversation:model.conversationType targetId:model.targetId];
+                        [self refreshConversationTableViewIfNeeded];
+                    }
                 }
             }
         }
@@ -623,20 +624,6 @@
 - (void)pushToQRScan {
     RCDScanQRCodeController *qrcodeVC = [[RCDScanQRCodeController alloc] init];
     [self.navigationController pushViewController:qrcodeVC animated:YES];
-}
-
-- (void)checkVersion {
-    __weak typeof(self) __weakSelf = self;
-    [RCDLoginManager getVersionInfo:^(BOOL needUpdate, NSString *_Nonnull finalURL) {
-        rcd_dispatch_main_async_safe(^{
-            if (needUpdate) {
-                [DEFAULTS setObject:finalURL forKey:RCDApplistURLKey];
-                [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:3];
-            }
-            [DEFAULTS setObject:@(needUpdate) forKey:RCDNeedUpdateKey];
-            [DEFAULTS synchronize];
-        });
-    }];
 }
 
 - (void)getFriendRequesteds {

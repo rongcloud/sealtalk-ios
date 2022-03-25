@@ -1,0 +1,14 @@
+//
+//  AutoRelease.xcconfig
+//  RCloudMessage
+//
+//  Created by chinaspx on 2022/2/24.
+//  Copyright © 2022 RongCloud. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+MCShareExtensionKey = @"group.cn.rongcloud.im.share"
+
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) MCShareExtensionKey='$(MCShareExtensionKey)'
