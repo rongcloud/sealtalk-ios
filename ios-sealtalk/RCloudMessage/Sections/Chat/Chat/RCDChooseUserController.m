@@ -209,7 +209,9 @@
         if (friend.displayName.length > 0) {
             user.alias = friend.displayName;
         }
-        [list addObject:user];
+        if (user) { // 查询不到用户, 会引起crash
+            [list addObject:user];
+        }
     }
     self.allMembers = list.copy;
     [self sortAndRefreshWithList:list.copy];

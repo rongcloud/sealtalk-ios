@@ -42,6 +42,7 @@
 #import "UIView+MBProgressHUD.h"
 #import "RCDSettingViewController.h"
 #import <RongPublicService/RongPublicService.h>
+#import "RCDChatTitleAlertView.h"
 
 /*******************实时位置共享***************/
 #import <objc/runtime.h>
@@ -117,6 +118,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self addEmoticonTabDemo];
     [self addQuicklySendImage];
     [self setupChatBackground];
+    [self setupFraudPreventionTipsView];
     
     [RCCoreClient sharedCoreClient].messageBlockDelegate = self;
     
@@ -919,6 +921,29 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         self.view.layer.contents = (id)image.CGImage;
     }
 }
+
+// 创建防欺诈提示条
+- (void)setupFraudPreventionTipsView {
+    RCDChatTitleAlertView *alertView = [[RCDChatTitleAlertView alloc] initWithTitleAlertMessage:RCDLocalizedString(@"Fraud_Prevention_Tips")];
+    [self.view addSubview:alertView];
+    
+    CGFloat topHeight = CGRectGetMaxY([UIApplication sharedApplication].statusBarFrame) +
+                                      CGRectGetMaxY(self.navigationController.navigationBar.bounds);
+    
+    [alertView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.view).offset(topHeight);
+        make.left.right.equalTo(self.view);
+    }];
+    if (!self.chatSessionInputBarControl) {
+        return;
+    }
+    [self.conversationMessageCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(alertView.mas_bottom);
+        make.left.right.equalTo(self.view);
+        make.bottom.equalTo(self.chatSessionInputBarControl.mas_top) ;
+    }];
+}
+
 
 - (void)resetQucilySendView {
     [[RCDQuicklySendManager sharedManager] hideQuicklySendView];

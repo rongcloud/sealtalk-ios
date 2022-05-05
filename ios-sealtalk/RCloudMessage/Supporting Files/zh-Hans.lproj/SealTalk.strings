@@ -270,6 +270,7 @@
 "send_success"="发送成功";
 "send_fail"="发送失败";
 "country"="国家/地区";
+"DataCenter"="数据中心";
 "select_country"="选择国家和地区";
 "language"="多语言";
 "translationSetting"="翻译设置";
@@ -534,3 +535,7 @@
 "Registration_Terms" ="注册条款";
 "Privacy_Policy_Format" ="《%@》";
 "Privacy_Policy" ="隐私政策";
+"RegionNameSigapore"="新加坡";
+"RegionNameNorthAmerican"="北美";
+"RegionNameDefault"="默认";
+"Fraud_Prevention_Tips"="融云提醒您谨防诈骗，不要轻信涉钱信息，不要进行任何线下转账行为。";

@@ -47,9 +47,11 @@
 #define UMENG_APPKEY @""
 
 #import "RCDTranslationManager.h"
+#import <RongTranslation/Rongtranslation.h>
 #import "RCTransationPersistModel.h"
+#import "RCDEnvironmentContext.h"
 
-@interface AppDelegate () <RCWKAppInfoProvider>
+@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate>
 @property (nonatomic, assign) BOOL allowAutorotate;
 @end
 
@@ -70,15 +72,24 @@
 }
 
 - (void)configRongIM {
-    if (RONGCLOUD_NAVI_SERVER.length > 0 || RONGCLOUD_FILE_SERVER.length > 0) {
-        [[RCIMClient sharedRCIMClient] setServerInfo:RONGCLOUD_NAVI_SERVER fileServer:RONGCLOUD_FILE_SERVER];
+    NSString *navServer = [RCDEnvironmentContext navServer];
+    NSString *fileServer = [RCDEnvironmentContext fileServer];
+    if (navServer.length > 0 || fileServer.length > 0) {
+        [[RCIMClient sharedRCIMClient] setServerInfo:navServer fileServer:fileServer];
     }
 
-    [[RCIM sharedRCIM] initWithAppKey:RONGCLOUD_IM_APPKEY];
-    if (RONGCLOUD_STATS_SERVER.length > 0) {
-        [[RCIMClient sharedRCIMClient] setStatisticServer:RONGCLOUD_STATS_SERVER];
+    NSString *appKey = [RCDEnvironmentContext appKey];
+    NSString *statsServer = [RCDEnvironmentContext statsServer];
+    [[RCIM sharedRCIM] initWithAppKey:appKey];
+    // 设置appVersion
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    [[RCIMClient sharedRCIMClient] setAppVer:app_Version];
+
+    if (statsServer.length > 0) {
+        [[RCIMClient sharedRCIMClient] setStatisticServer:statsServer];
     }
-    [DEFAULTS setObject:RONGCLOUD_IM_APPKEY forKey:RCDAppKeyKey];
+    [DEFAULTS setObject:appKey forKey:RCDAppKeyKey];
 
     // 注册自定义测试消息
     [[RCIM sharedRCIM] registerMessageType:[RCDTestMessage class]];
@@ -192,7 +203,7 @@
     NSString *userPortraitUri = [DEFAULTS objectForKey:RCDUserPortraitUriKey];
     RCDCountry *currentCountry = [[RCDCountry alloc] initWithDict:[DEFAULTS objectForKey:RCDCurrentCountryKey]];
     NSString *regionCode = @"86";
-
+    [[RCTranslationClient sharedInstance] addTranslationDelegate:self];
     if (currentCountry.phoneCode.length > 0) {
         regionCode = currentCountry.phoneCode;
     }
@@ -230,7 +241,13 @@
 /// 请求翻译 sdk token
 /// @param userID 用户ID
 - (void)requestTranslationTokenBy:(NSString *)userID {
-   
+    [RCDTranslationManager requestTranslationTokenUserID:userID
+                                                 success:^(NSString * _Nonnull token) {
+        [[RCTranslationClient sharedInstance] updateAuthToken:token];
+        }
+                                                 failure:^(NSInteger code) {
+            
+        }];
 }
 
 - (void)configCurrentLanguage {
@@ -747,4 +764,17 @@
     }
 }
 
+#pragma mark -- RCTranslationClientDelegate
+
+/// 翻译结束
+/// @param translation model
+/// @param code 返回码
+- (void)onTranslation:(RCTranslation *)translation
+         finishedWith:(RCTranslationCode)code {
+    if (code == RCTranslationCodeAuthFailed
+        || code == RCTranslationCodeServerAuthFailed
+        || code == RCTranslationCodeInvalidAuthToken) {
+        [self requestTranslationTokenBy:[RCIM sharedRCIM].currentUserInfo.userId];
+    }
+}
 @end

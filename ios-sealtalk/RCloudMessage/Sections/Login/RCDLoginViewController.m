@@ -26,11 +26,15 @@
 #import "RCDRegistrationAgreementController.h"
 #import "RCDIMService.h"
 #import "RCDTranslationManager.h"
-
+#import <RongTranslation/Rongtranslation.h>
+#import "RCDEnvironmentTableViewController.h"
+#import "RCDEnvironmentContext.h"
 #define UserTextFieldTag 1000
 
 @interface RCDLoginViewController () <UITextFieldDelegate, RCDCountryListControllerDelegate, UITextViewDelegate>
 @property (nonatomic, strong) RCDCountry *currentRegion;
+
+@property (nonatomic, strong) RCDIndicateTextField *environmentTextField;
 
 @property (nonatomic, strong) RCDIndicateTextField *countryTextField;
 @property (nonatomic, strong) RCDIndicateTextField *phoneTextField;
@@ -61,7 +65,7 @@
     [self initSubviews];
 
     [self setLayout];
-
+    [self layoutForOverseaIfNeed];
     [self addNotifications];
 }
 
@@ -69,6 +73,8 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    NSString *nameKey = [RCDEnvironmentContext currentEnvironmentNameKey];
+    self.environmentTextField.textField.text = RCDLocalizedString(nameKey);
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -133,6 +139,11 @@
     RCDCountryListController *countryListVC = [[RCDCountryListController alloc] init];
     countryListVC.delegate = self;
     [self.navigationController pushViewController:countryListVC animated:YES];
+}
+
+- (void)didTapEnvironmentTextField {
+    RCDEnvironmentTableViewController *vc = [[RCDEnvironmentTableViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)didTapSwitchLanguage:(UIButton *)button {
@@ -221,6 +232,18 @@
 
 #pragma mark - private method
 
+/// 请求翻译 sdk token
+/// @param userID 用户ID
+- (void)requestTranslationTokenBy:(NSString *)userID {
+    [RCDTranslationManager requestTranslationTokenUserID:userID
+                                                 success:^(NSString * _Nonnull token) {
+        [[RCTranslationClient sharedInstance] updateAuthToken:token];
+        }
+                                                 failure:^(NSInteger code) {
+            
+        }];
+}
+
 - (void)loginRongCloud:(NSString *)phone
               userName:(NSString *)userName
                 userId:(NSString *)userId
@@ -231,6 +254,7 @@
     } success:^(NSString *userId) {
         NSLog([NSString stringWithFormat:@"token is %@  userId is %@", token, userId], nil);
         [weakSelf saveLoginData:phone userId:userId userName:userName token:token];
+        [weakSelf requestTranslationTokenBy:userId];
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hide:YES];
             RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
@@ -384,6 +408,29 @@
     [self.inputBackground addSubview:self.vCodeTimerLb];
     [self.inputBackground addSubview:self.loginButton];
 }
+//布局海外UI
+- (void)layoutForOverseaIfNeed {
+    if ([RCDEnvironmentContext isOversea]) {
+        [self.inputBackground addSubview:self.environmentTextField];
+        [self.inputBackground mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.view).offset(41);
+            make.right.equalTo(self.view).offset(-41);
+            make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
+            make.centerX.equalTo(self.view);
+            make.height.offset(310);
+        }];
+        [self.environmentTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.top.equalTo(self.inputBackground);
+            make.height.offset(60);
+        }];
+        
+        [self.countryTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(self.inputBackground);
+            make.top.equalTo(self.environmentTextField.mas_bottom);
+            make.height.offset(60);
+        }];
+    }
+}
 
 - (void)setLayout {
     [self.rongLogo mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -443,6 +490,22 @@
 }
 
 #pragma mark - Getters and setters
+
+- (RCDIndicateTextField *)environmentTextField {
+    if (!_environmentTextField) {
+        _environmentTextField = [[RCDIndicateTextField alloc] init];
+        _environmentTextField.indicateInfoLabel.text = RCDLocalizedString(@"DataCenter");
+        _environmentTextField.textField.text = self.currentRegion.countryName;
+        _environmentTextField.textField.userInteractionEnabled = NO;
+        [_environmentTextField indicateIconShow:YES];
+        UITapGestureRecognizer *tap =
+            [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapEnvironmentTextField)];
+        [_environmentTextField addGestureRecognizer:tap];
+        _environmentTextField.userInteractionEnabled = YES;
+    }
+    return _environmentTextField;
+}
+
 - (RCDIndicateTextField *)countryTextField {
     if (!_countryTextField) {
         _countryTextField = [[RCDIndicateTextField alloc] init];

@@ -74,6 +74,10 @@ sed -i "" -e '/CFBundleVersion/{n;s/'"${Bundle_Version}"'/'"$CUR_TIME"'/; }' ./R
 Bundle_Demo_Version=$(/usr/libexec/PlistBuddy -c "Print SealTalk\ Version" ./RCloudMessage/Supporting\ Files/Info.plist)
 sed -i "" -e '/SealTalk\ Version/{n;s/'"${Bundle_Demo_Version}"'/'"$DEMO_VER_FLAG"'/; }' ./RCloudMessage/Supporting\ Files/Info.plist
 
+
+#上架AppStore 需要删除voip能力
+sed -i '' -e 's?<string>voip</string>?''?g' ./RCloudMessage/Supporting\ Files/info.plist
+
 Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" ./融云\ Demo\ WatchKit\ App/Info.plist)
 Bundle_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ./融云\ Demo\ WatchKit\ App/Info.plist)
 sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' ./融云\ Demo\ WatchKit\ App/Info.plist

@@ -8,6 +8,8 @@
 
 #import "NotificationService.h"
 #import "RCDCommonDefine.h"
+#import "RCDEnvironmentContext.h"
+
 @interface NotificationService ()
 
 @property (nonatomic, strong) void (^contentHandler)(UNNotificationContent *contentToDeliver);
@@ -22,7 +24,10 @@
     self.bestAttemptContent = [request.content mutableCopy];
     
     NSDictionary *userInfo = self.bestAttemptContent.userInfo;
-    if (RONGCLOUD_STATS_SERVER.length > 0) {
+    
+    NSString *appKey = [RCDEnvironmentContext appKey];
+    NSString *statsServer = [RCDEnvironmentContext statsServer];
+    if (statsServer.length > 0) {
     }
     
     NSDictionary *aps = [userInfo objectForKey:@"aps"];

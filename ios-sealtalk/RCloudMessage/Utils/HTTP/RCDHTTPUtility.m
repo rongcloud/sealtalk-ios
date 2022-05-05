@@ -10,9 +10,10 @@
 #import "RCDCommonString.h"
 #import <AFNetworking/AFNetworking.h>
 #import "RCDCommonDefine.h"
+#import "RCDEnvironmentContext.h"
 #define HTTP_SUCCESS 200
 
-NSString *const BASE_URL = DEMO_SERVER;
+//NSString *const BASE_URL = DEMO_SERVER;
 
 static AFHTTPSessionManager *manager;
 
@@ -44,7 +45,8 @@ static AFHTTPSessionManager *manager;
     
     AFHTTPSessionManager *manager = [RCDHTTPUtility sharedHTTPManager];
     URLString = [URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *url = [BASE_URL stringByAppendingPathComponent:URLString];
+    NSString *baseURL = [RCDEnvironmentContext serverURL];
+    NSString *url = [baseURL stringByAppendingPathComponent:URLString];
     NSString *cookie = [DEFAULTS valueForKey:RCDUserCookiesKey];
     if (cookie && cookie.length > 0) {
         [manager.requestSerializer setValue:cookie forHTTPHeaderField:@"Cookie"];

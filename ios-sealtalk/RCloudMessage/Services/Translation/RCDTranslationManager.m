@@ -9,7 +9,7 @@
 #import "RCDTranslationManager.h"
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
-
+#import "RCDEnvironmentContext.h"
 static NSString * const RCDTranslationKeyCode = @"code";
 static NSString * const RCDTranslationKeyToken = @"token";
 NSInteger const RCDTranslationKeySuccess = 200;
@@ -25,8 +25,8 @@ NSInteger const RCDTranslationKeySuccess = 200;
         }
         return;
     }
-    
-    NSString *urlString = [NSString stringWithFormat:@"%@user/getJwtToken?userId=%@", DEMO_SERVER, userID];
+    NSString *baseURL = [RCDEnvironmentContext serverURL];
+    NSString *urlString = [NSString stringWithFormat:@"%@user/getJwtToken?userId=%@", baseURL, userID];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     request.HTTPMethod = @"GET";
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];

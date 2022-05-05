@@ -7,12 +7,18 @@
 //
 
 #import "RCDDebugChatSettingViewController.h"
+
 #import <Masonry/Masonry.h>
-#import "RCDBaseSettingTableViewCell.h"
-#import <RongIMKit/RongIMKit.h>
 #import <GCDWebServer/GCDWebUploader.h>
+#import <RongIMLibCore/RongIMLibCore.h>
+#import <RongIMKit/RongIMKit.h>
+
+#import "RCDBaseSettingTableViewCell.h"
 #import "RCDUIBarButtonItem.h"
 #import "RCDDebugUltraGroupDefine.h"
+#import "RCDDebugNotificationQuietHoursSettingViewController.h"
+#import "RCDDebugConversationChannelNotificationLevelViewController.h"
+#import "RCDDebugUltraGroupUnreadMessageViewController.h"
 
 @interface RCDDebugChatSettingViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -27,8 +33,32 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.titles = @[RCDLocalizedString(@"mute_notifications"), RCDLocalizedString(@"stick_on_top"), @"清空本地历史消息", @"清空本地和远端历史消息", @"删除本地「所有频道」当前时间之前的消息",@"删除本地「当前频道」当前时间之前的消息",@"删除「服务端」当前时间之前的消息", @"发一条携带{tKey:当前时间}文本消息", @"获取「当前超级群」所有频道的lastMsgUid"];
+    self.titles = @[RCDLocalizedString(@"mute_notifications"), //0
+                    RCDLocalizedString(@"stick_on_top"), // 1
+                    @"清空本地历史消息", //2
+                    @"清空本地和远端历史消息",// 3
+                    @"删除本地「所有频道」当前时间之前的消息", // 4
+                    @"删除本地「当前频道」当前时间之前的消息",// 5
+                    @"删除「服务端」当前时间之前的消息", // 6
+                    @"发一条携带{tKey:当前时间}文本消息", //7
+                    @"获取「当前超级群」所有频道的lastMsgUid", // 8
+                    @"2.3 查询 -> 全局免打扰设置查询",// 9
+                    @"2.1 设置 -> 全局免打扰设置",// 10
+                    @"2.2 移除 -> 全局免打扰设置移除",// 11
+                    @"3.3 查询 -> 频道免打扰设置查询",// 12
+                    @"3.1 设置 -> 频道免打扰设置",// 13
+                    @"3.2 移除 -> 频道免打扰设置移除",// 14
+                    @"4.3 查询 -> 会话免打扰设置查询",// 15
+                    @"4.1 设置 -> 会话免打扰设置",// 16
+                    @"4.2 移除 -> 会话免打扰设置移除",// 17
+                    @"5.3 查询 -> 会话类型免打扰设置查询",// 18
+                    @"5.1 设置 -> 会话类型免打扰设置",// 19
+                    @"5.2 移除 -> 会话类型免打扰设置移除",// 20
+                    @"6.1.1 设置指定超级群默认通知配置",//21
+                    @"6.1.2 查询指定超级群默认通知配置",// 22
+                    @"6.2.1 设置指定超级群特定频道默认通知配置",//23
+                    @"6.2.2 查询指定超级群特定频道默认通知配置",// 24
+                    @"(其他)获取超级群未读数"];//25
     [self setupSubviews];
     [self setNavi];
 }
@@ -50,8 +80,60 @@
 }
 
 - (void)setNavi {
-    RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initWithbuttonTitle:@"沙盒" titleColor:UIColor.blueColor buttonFrame:CGRectMake(0, 0, 50, 30) target:self action:@selector(startHttpServer)];
+    RCDUIBarButtonItem *rightBtn = 
+        [[RCDUIBarButtonItem alloc] initWithbuttonTitle:@"沙盒" 
+                                             titleColor:UIColor.blueColor 
+                                            buttonFrame:CGRectMake(0, 0, 50, 30) 
+                                                 target:self 
+                                                 action:@selector(startHttpServer)];
     self.navigationItem.rightBarButtonItem = rightBtn;
+}
+
+- (NSString *)getNotificationQuietHoursLevelString:(RCPushNotificationQuietHoursLevel)level {
+    NSString* levelstr = @"";
+    switch (level) {
+    case RCPushNotificationQuietHoursLevelMention:
+        levelstr = @"群聊超级群仅@消息通知，单聊代表消息不通知";
+        break;
+    case RCPushNotificationQuietHoursLevelDefault:
+        levelstr = @"未设置（向上查询群或者APP级别设置）";
+        break;
+    case RCPushNotificationQuietHoursLevelBlocked:
+        levelstr = @"消息通知被屏蔽，即不接收消息通知";
+        break;
+    default:
+        break;
+    }
+
+    return levelstr;
+}
+
+- (NSString *)getPushNotificationLevelString:(RCPushNotificationLevel)level {
+    NSString* levelstr = @"";
+    switch (level) {
+    case RCPushNotificationLevelAllMessage:
+        levelstr = @"全部消息通知";
+        break;
+    case RCPushNotificationLevelDefault:
+        levelstr = @"未设置（向上查询群或者APP级别设置）";
+        break;
+    case RCPushNotificationLevelMention:
+        levelstr = @"群聊超级群仅@消息通知（现在通知）单聊代表全部消息通知";
+        break;
+    case RCPushNotificationLevelMentionUsers:
+        levelstr = @"指定用户通知";
+        break;
+    case RCPushNotificationLevelMentionAll:
+        levelstr = @"群全员通知";
+        break;
+    case RCPushNotificationLevelBlocked:
+        levelstr = @"消息通知被屏蔽，即不接收消息通知";
+        break;
+    default:
+        break;
+    }
+
+    return levelstr;
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDataSource
@@ -151,14 +233,68 @@
             [self getConversationListForAllChannel:ConversationType_ULTRAGROUP targetId:self.targetId];
             break;
         case 9:
+            [self showNotificationQuietHoursLevel];
             break;
         case 10:
+            [self pushToNotificationSettingVC];
+            break;
+        case 11:
+            [self showDeleteNotificationQuietHoursLevel];
+            break;
+        case 12:
+            [self showConversationChannelNotificationLevel];
+            break;
+        case 13:
+            [self pushToChannelNotificationSettingVC];
+            break;
+        case 14:
+            [self showDeleteChannelNotificationLevel];
+            break;
+        case 15:
+            [self showConversationNotificationLevel];
+            break;
+        case 16:
+            [self pushToConversationNotificationSettingVC];
+            break;
+        case 17:
+            [self showDeleteConversationNotificationLevel];
+            break;
+        case 18:
+            [self showConversationTypeNotificationLevel];
+            break;
+        case 19:
+            [self pushToConversationTypeNotificationSettingVC];
+            break;
+        case 20:
+            [self showDeleteConversationTypeNotificationLevel];
+            break;
+        case 21:
+            [self configureUltraGroupConversationDefaultNotificationLevel];
+            break;
+        case 22:
+            [self showUltraGroupConversationDefaultNotificationLevel];
+            break;
+        case 23:
+            [self configureUltraGroupConversationChannelDefaultNotificationLevel];
+            break;
+        case 24:
+            [self showUltraGroupConversationChannelDefaultNotificationLevel];
+            break;
+        case 25:
+            [self unreadMessageVerify];
             break;
         default:
             break;
     }
 }
 
+- (void)unreadMessageVerify {
+    RCDDebugUltraGroupUnreadMessageViewController *vc = [RCDDebugUltraGroupUnreadMessageViewController new];
+    NSString *title = [NSString stringWithFormat:@"未读消息数测试(TargetID): %@", self.targetId];
+    vc.title = title;
+    vc.targetID = self.targetId;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 - (void)setCurrentNotificationStatus:(UISwitch *)switchButton {
     
     [[RCChannelClient sharedChannelManager] getConversationNotificationStatus:ConversationType_ULTRAGROUP targetId:self.targetId channelId:self.channelId success:^(RCConversationNotificationStatus nStatus) {
@@ -178,13 +314,13 @@
         [RCAlertView showAlertController:nil message:RCDLocalizedString(@"Set failed") cancelTitle:RCDLocalizedString(@"confirm")];
         return;
     }
-    [[RCChannelClient sharedChannelManager]
-     setConversationNotificationStatus:ConversationType_ULTRAGROUP
-     targetId:self.targetId
-     channelId:self.channelId
-     isBlocked:swch.on
-     success:^(RCConversationNotificationStatus nStatus) {
-        NSLog(@"");
+
+    [[RCChannelClient sharedChannelManager] setConversationNotificationStatus:ConversationType_ULTRAGROUP
+                                                                     targetId:self.targetId
+                                                                    channelId:self.channelId
+                                                                    isBlocked:swch.isOn
+                                                                      success:^(RCConversationNotificationStatus nStatus) {
+        
     } error:^(RCErrorCode status) {
         dispatch_async(dispatch_get_main_queue(), ^{
             swch.on = !swch.on;
@@ -295,6 +431,217 @@
         }];
 }
 
+#pragma mark - 免打扰
+- (void)showNotificationQuietHoursLevel {
+    [[RCChannelClient sharedChannelManager] getNotificationQuietHoursLevel:^(NSString *startTime, int spanMins, RCPushNotificationQuietHoursLevel level) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:nil 
+                                       msg:[NSString stringWithFormat:@"开始时间：%@，间隔时间：%d分钟，级别:%@", startTime, spanMins, [self getNotificationQuietHoursLevelString:level]]];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:[NSString stringWithFormat:@"查询失败，错误码：%zd", status]
+                                       msg:nil];
+                });
+        }];
+}
+
+- (void)pushToNotificationSettingVC {
+    RCDDebugNotificationQuietHoursSettingViewController *vc = 
+        [[RCDDebugNotificationQuietHoursSettingViewController alloc] init];
+    vc.title = @"设置全局免打扰";
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)showDeleteNotificationQuietHoursLevel {
+    [[RCCoreClient sharedCoreClient] removeNotificationQuietHours:^() {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置成功" msg:nil];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置失败" msg:[NSString stringWithFormat:@"错误码为%zd", status]];
+                });
+        }];
+}
+
+- (void)showConversationChannelNotificationLevel {
+    [[RCChannelClient sharedChannelManager] getConversationChannelNotificationLevel:self.type
+                                                                           targetId:self.targetId
+                                                                          channelId:self.channelId
+                                                                            success:^(RCPushNotificationLevel level) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:nil 
+                                       msg:[NSString stringWithFormat:@"频道免打扰级别:%@", [self getPushNotificationLevelString:level]]];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:[NSString stringWithFormat:@"查询失败，错误码：%zd", status]
+                                       msg:nil];
+                });
+        }];
+}
+
+- (void)pushToChannelNotificationSettingVC {
+    RCDDebugConversationChannelNotificationLevelViewController *vc = 
+        [[RCDDebugConversationChannelNotificationLevelViewController alloc] init];
+    vc.title = @"设置频道免打扰";
+    vc.targetId = self.targetId;
+    vc.channelId = self.channelId;
+    vc.type = self.type;
+    vc.settingType = RCDUltraGroupSettingTypeConversationChannel;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)showDeleteChannelNotificationLevel {
+    [[RCChannelClient sharedChannelManager] setConversationChannelNotificationLevel:self.type
+                                                                           targetId:self.targetId
+                                                                          channelId:self.channelId
+                                            level:RCPushNotificationLevelDefault
+                                          success:^() {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置成功" msg:nil];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置失败" msg:[NSString stringWithFormat:@"错误码为%zd", status]];
+                });
+        }];
+}
+
+- (void)showConversationNotificationLevel {
+    [[RCChannelClient sharedChannelManager] getConversationNotificationLevel:self.type
+                                                             targetId:self.targetId
+                                                              success:^(RCPushNotificationLevel level) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:nil 
+                                       msg:[NSString stringWithFormat:@"会话免打扰级别:%@", [self getPushNotificationLevelString:level]]];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:[NSString stringWithFormat:@"查询失败，错误码：%zd", status]
+                                       msg:nil];
+                });
+        }];
+}
+
+- (void)pushToConversationNotificationSettingVC {
+    RCDDebugConversationChannelNotificationLevelViewController *vc = 
+        [[RCDDebugConversationChannelNotificationLevelViewController alloc] init];
+    vc.title = @"设置会话免打扰";
+    vc.targetId = self.targetId;
+    vc.type = self.type;
+    vc.settingType = RCDUltraGroupSettingTypeConversation;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)showDeleteConversationNotificationLevel {
+    [[RCChannelClient sharedChannelManager] setConversationNotificationLevel:self.type
+                                                                    targetId:self.targetId
+                                                                       level:RCPushNotificationLevelDefault
+                                                                     success:^() {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置成功" msg:nil];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置失败" msg:[NSString stringWithFormat:@"错误码为%zd", status]];
+                });
+        }];
+}
+
+- (void)showConversationTypeNotificationLevel {
+    [[RCChannelClient sharedChannelManager] getConversationTypeNotificationLevel:self.type
+                                                              success:^(RCPushNotificationLevel level) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:nil 
+                                       msg:[NSString stringWithFormat:@"会话类型免打扰级别:%@", [self getPushNotificationLevelString:level]]];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:[NSString stringWithFormat:@"查询失败，错误码：%zd", status]
+                                       msg:nil];
+                });
+        }];
+}
+
+- (void)pushToConversationTypeNotificationSettingVC {
+    RCDDebugConversationChannelNotificationLevelViewController *vc = 
+        [[RCDDebugConversationChannelNotificationLevelViewController alloc] init];
+    vc.title = @"设置会话类型免打扰";
+    vc.type = self.type;
+    vc.settingType = RCDUltraGroupSettingTypeConversationType;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)showDeleteConversationTypeNotificationLevel {
+    [[RCChannelClient sharedChannelManager] setConversationTypeNotificationLevel:self.type
+                                                                    level:RCPushNotificationLevelDefault
+                                          success:^() {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置成功" msg:nil];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:@"删除设置失败" msg:[NSString stringWithFormat:@"错误码为%zd", status]];
+                });
+        }];
+}
+
+- (void)configureUltraGroupConversationDefaultNotificationLevel {
+    RCDDebugConversationChannelNotificationLevelViewController *vc =
+        [[RCDDebugConversationChannelNotificationLevelViewController alloc] init];
+    vc.title = @"6.1.1 设置指定超级群默认通知配置";
+    vc.type = self.type;
+    vc.targetId = self.targetId;
+    vc.channelId = self.channelId;
+    vc.settingType = RCDUltraGroupSettingTypeConversationDefault;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)configureUltraGroupConversationChannelDefaultNotificationLevel {
+    RCDDebugConversationChannelNotificationLevelViewController *vc =
+        [[RCDDebugConversationChannelNotificationLevelViewController alloc] init];
+    vc.title = @"6.2.1 设置指定超级群特定频道默认通知配置";
+    vc.type = self.type;
+    vc.targetId = self.targetId;
+    vc.channelId = self.channelId;
+    vc.settingType = RCDUltraGroupSettingTypeConversationChannelDefault;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+
+- (void)showUltraGroupConversationDefaultNotificationLevel {
+    [[RCChannelClient sharedChannelManager] getUltraGroupConversationDefaultNotificationLevel:self.targetId
+                                                                               success:^(RCPushNotificationLevel level) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:nil 
+                                       msg:[NSString stringWithFormat:@"超级群默认通知级别:%@", [self getPushNotificationLevelString:level]]];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:[NSString stringWithFormat:@"查询失败，错误码：%zd", status]
+                                       msg:nil];
+                });
+        }];
+}
+
+- (void)showUltraGroupConversationChannelDefaultNotificationLevel {
+    [[RCChannelClient sharedChannelManager] getUltraGroupConversationChannelDefaultNotificationLevel:self.targetId
+                                                                                           channelId:self.channelId
+                                                                                             success:^(RCPushNotificationLevel level) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:nil 
+                                       msg:[NSString stringWithFormat:@"超级群频道默认通知级别:%@", [self getPushNotificationLevelString:level]]];
+                });
+        } error:^(RCErrorCode status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showAlertMessage:[NSString stringWithFormat:@"查询失败，错误码：%zd", status]
+                                       msg:nil];
+                });
+        }];
+}
+
 #pragma mark- 沙盒
 - (void)startHttpServer {
     NSString *homePath = NSHomeDirectory();
@@ -312,7 +659,7 @@
         _tableView = [[UITableView alloc] init];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.scrollEnabled = NO;
+        _tableView.scrollEnabled = YES;
         _tableView.tableFooterView = [UIView new];
         _tableView.backgroundColor = RCDDYCOLOR(0xf0f0f6, 0x000000);
         _tableView.tableFooterView = [UIView new];

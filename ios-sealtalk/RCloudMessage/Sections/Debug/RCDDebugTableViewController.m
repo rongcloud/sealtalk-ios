@@ -27,6 +27,8 @@
 #import "RCDDebugUltraGroupListController.h"
 #import <RongChatRoom/RongChatRoom.h>
 #import "UIView+MBProgressHUD.h"
+#import "RCDDebugComChatListController.h"
+
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
 #define JOIN_CHATROOM_TAG 102
@@ -171,6 +173,8 @@
         [self  showUMengDeviceInfoAlertController];
     }else if ([title isEqualToString:@"超级群"]) {
         [self pushUltraGroupChatListVC];
+    } else if ([title isEqualToString:@"普通群"]) {
+        [self showCommonChatRoom];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -201,7 +205,7 @@
     ]
             forKey:RCDLocalizedString(@"time_setting")];
 
-    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群"] forKey:@"功能"];
+    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群"] forKey:@"功能"];
     self.functions = [dic copy];
 }
 
@@ -467,6 +471,11 @@
 
 - (void)pushUltraGroupChatListVC {
     RCDDebugUltraGroupListController *vc = [[RCDDebugUltraGroupListController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)showCommonChatRoom {
+    RCDDebugComChatListController *vc = [[RCDDebugComChatListController alloc] init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

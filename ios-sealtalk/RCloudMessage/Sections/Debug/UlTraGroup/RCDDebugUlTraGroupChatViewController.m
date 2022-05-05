@@ -141,8 +141,9 @@
 
 #pragma mark - 单条消息推送属性设置
 - (void)sendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
-    
-    [[RCChannelClient sharedChannelManager] sendUltraGroupTypingStatus:self.targetId channleId:self.channelId typingStatus:RCUltraGroupTypingStatusText success:^() {
+    [[RCChannelClient sharedChannelManager] sendUltraGroupTypingStatus:self.targetId
+                                                             channelId:self.channelId
+                                                          typingStatus:RCUltraGroupTypingStatusText success:^() {
         [self showToastMsg:@"发送正在输入的状态成功"];
     } error:^(RCErrorCode status) {
         [self showToastMsg:[NSString stringWithFormat:@"发送正在输入的状态失败：%@",@(status)]];
@@ -252,7 +253,7 @@
     UIMenuItem *item6 = [[UIMenuItem alloc] initWithTitle:@"查看修改状态"
     action:@selector(checkMessageChangedStatus)];
     [list addObject:item6];
-    
+
     [list addObjectsFromArray:menuList];
     
     return list.copy;

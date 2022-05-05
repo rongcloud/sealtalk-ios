@@ -10,8 +10,9 @@
 #import "RCDDebugUltraGroupChatViewController.h"
 #import "RCDUIBarButtonItem.h"
 #import "RCDDebugUltraGroupSendMessage.h"
+#import "UIView+MBProgressHUD.h"
 
-@interface RCDDebugUltraGroupListController ()
+@interface RCDDebugUltraGroupListController ()<RCUltraGroupConversationDelegate>
 
 @property (nonatomic, strong) UITextField *targetIdTextField;
 
@@ -34,6 +35,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setNavi];
+    
+    // https://rongcloud.yuque.com/zqdxze/ynvhen/yoqngd
+    // SDK 拉取超级群列表后回调功能
+    [[RCChannelClient sharedChannelManager] setUltraGroupConversationDelegate:self];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:@"代理已设置 -> 2.2.1 拉取超级群列表后回调 "];
+    });
 }
 
 - (void)setNavi {
@@ -84,6 +92,7 @@
 }
 
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType conversationModel:(RCConversationModel *)model atIndexPath:(NSIndexPath *)indexPath{
+
     [[RCChannelClient sharedChannelManager] clearMessages:ConversationType_GROUP targetId:model.targetId channelId:model.channelId];
     RCDDebugUltraGroupChatViewController *chatVC = [[RCDDebugUltraGroupChatViewController alloc] init];
     chatVC.conversationType = model.conversationType;
@@ -157,6 +166,14 @@
         }
     }
     return dataSources;
+}
+
+#pragma mark - RCUltraGroupConversationDelegate
+- (void)ultraGroupConversationListDidSync {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:@" (2s前)收到 -> 2.2.1 拉取超级群列表后回调"];
+    });
+   
 }
 
 @end

@@ -22,7 +22,7 @@
 #import <RongCustomerService/RongCustomerService.h>
 
 #import "RCDTranslationViewController.h"
-
+#import "RCDEnvironmentContext.h"
 //#define SERVICE_ID @"KEFU146001495753714"
 
 @interface RCDMeTableViewController ()
@@ -148,7 +148,8 @@
         }
     } else if (3 == indexPath.section) {
         if (0 == indexPath.row) {
-            [self chatWithCustomerService:SERVICE_ID];
+            NSString *serviceID = [RCDEnvironmentContext serviceID];
+            [self chatWithCustomerService:serviceID];
         } else if (1 == indexPath.row) {
             RCDAboutRongCloudTableViewController *vc = [[RCDAboutRongCloudTableViewController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
