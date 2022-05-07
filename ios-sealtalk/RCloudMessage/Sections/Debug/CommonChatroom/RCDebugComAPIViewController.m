@@ -152,7 +152,8 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
         }
             break;
         case RCDComChatroomOptionCategory5_3: {
-            [[RCChannelClient sharedChannelManager] getConversationTypeNotificationLevel:self.type
+         /*
+          [[RCChannelClient sharedChannelManager] getConversationTypeNotificationLevel:self.type
                                                                                  success:^(RCPushNotificationLevel level) {
                 [self showAlertMessage:nil
                                    msg:[NSString stringWithFormat:@"会话类型免打扰级别:%@", [self getPushNotificationLevelString:level]]];
@@ -161,6 +162,7 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
                                    msg:nil];
                 
             }];
+          */
         }
             break;
         default:
@@ -202,6 +204,7 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
         }
             break;
         case RCDComChatroomOptionCategory5_2: {
+            /*
             [[RCChannelClient sharedChannelManager] setConversationTypeNotificationLevel:self.type
                                                                                    level:RCPushNotificationLevelDefault
                                                                                  success:^() {
@@ -209,7 +212,7 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
             } error:^(RCErrorCode status) {
                 [self showAlertMessage:@"删除设置失败"
                                    msg:[NSString stringWithFormat:@"错误码为%zd", status]];
-            }];
+            }];*/
         }
             break;
         default:

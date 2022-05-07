@@ -58,6 +58,7 @@
             [ws showFailedWith:nErrorCode];
         }];
     } else if (self.settingType == RCDUltraGroupSettingTypeConversationType) {
+        /*
         [[RCChannelClient sharedChannelManager] setConversationTypeNotificationLevel:self.type
                                                                                level:level
                                                                              success:^() {
@@ -65,6 +66,7 @@
         } error:^(RCErrorCode nErrorCode) {
             [ws showFailedWith:nErrorCode];
         }];
+         */
     } else if(self.settingType == RCDUltraGroupSettingTypeConversationDefault) {
         [[RCChannelClient sharedChannelManager] setUltraGroupConversationDefaultNotificationLevel:self.targetId
                                                                                             level:level

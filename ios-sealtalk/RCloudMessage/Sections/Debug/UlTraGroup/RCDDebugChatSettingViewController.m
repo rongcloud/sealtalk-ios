@@ -551,6 +551,7 @@
 }
 
 - (void)showConversationTypeNotificationLevel {
+    /*
     [[RCChannelClient sharedChannelManager] getConversationTypeNotificationLevel:self.type
                                                               success:^(RCPushNotificationLevel level) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -563,6 +564,7 @@
                                        msg:nil];
                 });
         }];
+     */
 }
 
 - (void)pushToConversationTypeNotificationSettingVC {
@@ -575,6 +577,7 @@
 }
 
 - (void)showDeleteConversationTypeNotificationLevel {
+    /*
     [[RCChannelClient sharedChannelManager] setConversationTypeNotificationLevel:self.type
                                                                     level:RCPushNotificationLevelDefault
                                           success:^() {
@@ -586,6 +589,7 @@
                     [self showAlertMessage:@"删除设置失败" msg:[NSString stringWithFormat:@"错误码为%zd", status]];
                 });
         }];
+     */
 }
 
 - (void)configureUltraGroupConversationDefaultNotificationLevel {
