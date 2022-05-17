@@ -26,7 +26,7 @@
 #import "RCDRegistrationAgreementController.h"
 #import "RCDIMService.h"
 #import "RCDTranslationManager.h"
-#import <RongTranslation/Rongtranslation.h>
+//#import <RongTranslation/Rongtranslation.h>
 #import "RCDEnvironmentTableViewController.h"
 #import "RCDEnvironmentContext.h"
 #define UserTextFieldTag 1000
@@ -235,13 +235,7 @@
 /// 请求翻译 sdk token
 /// @param userID 用户ID
 - (void)requestTranslationTokenBy:(NSString *)userID {
-    [RCDTranslationManager requestTranslationTokenUserID:userID
-                                                 success:^(NSString * _Nonnull token) {
-        [[RCTranslationClient sharedInstance] updateAuthToken:token];
-        }
-                                                 failure:^(NSInteger code) {
-            
-        }];
+   
 }
 
 - (void)loginRongCloud:(NSString *)phone

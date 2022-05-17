@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-    objectVersion = 46;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,8 +15,6 @@
 		001599DA27F1A2B4007BFA3E /* RCDEnvironmentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 001599C427F162D5007BFA3E /* RCDEnvironmentModel.m */; };
 		00277C2B27D0BDD200D8653D /* RCDTranslationLanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00277C2927D0BDD200D8653D /* RCDTranslationLanguageViewController.m */; };
 		00277C2E27D0BDDE00D8653D /* RCDTranslationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00277C2D27D0BDDE00D8653D /* RCDTranslationViewController.m */; };
-		00277C4A27D0D94B00D8653D /* RongTranslation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00277C3827D0D94600D8653D /* RongTranslation.framework */; platformFilter = ios; };
-		00277C4B27D0D94B00D8653D /* RongTranslation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00277C3827D0D94600D8653D /* RongTranslation.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0030FF3C27D066D700F5DC30 /* RCTransationPersistModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0030FF3627D066D700F5DC30 /* RCTransationPersistModel.m */; };
 		00C94E1F27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C94E1E27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.m */; };
 		00CEE55828043BF40079C6AE /* RCDDebugComChatListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE55728043BF40079C6AE /* RCDDebugComChatListController.m */; };
@@ -428,17 +426,6 @@
 				17D7D1E31D534F56000AEC54 /* SealTalkShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3B118042256CFF10001E5105 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				00277C4B27D0D94B00D8653D /* RongTranslation.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1212,7 +1199,6 @@
 				F8AD4A551CAE56A4006C1CBB /* PushKit.framework in Frameworks */,
 				EE8995AF660D3951CC53C83F /* Pods_SealTalk.framework in Frameworks */,
 				3B1180DE256E0BB6001E5105 /* Photos.framework in Frameworks */,
-				00277C4A27D0D94B00D8653D /* RongTranslation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1329,17 +1315,17 @@
 		276599A2229E87B20074FAB2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3BC0C810229F8F3B0079234F /* AFNetworking */,
-				3BACB0072500CED50001A92C /* DoraemonKit */,
-				3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */,
-				3BC0C812229F8F3B0079234F /* FMDB */,
-				9C226D0F229FD5C800F49FC5 /* GCDWebServer */,
-				276599A7229E87B20074FAB2 /* Masonry */,
-				A2E705C622BA1D1E0047DF47 /* MBProgressHUD */,
-				276599A9229E87B20074FAB2 /* Pods-SealTalk */,
-				279C1E8D22BB724D009FD15C /* SDWebImage */,
-				279C1E8F22BB724D009FD15C /* SSZipArchive */,
-				3B47890322B78F1C00D33F10 /* ZXingObjC */,
+				3BC0C810229F8F3B0079234F /* AFNetworking.framework */,
+				3BACB0072500CED50001A92C /* DoraemonKit.framework */,
+				3BACB0092500CED50001A92C /* DoraemonKit.bundle */,
+				3BC0C812229F8F3B0079234F /* FMDB.framework */,
+				9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */,
+				276599A7229E87B20074FAB2 /* Masonry.framework */,
+				A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */,
+				276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */,
+				279C1E8D22BB724D009FD15C /* SDWebImage.framework */,
+				279C1E8F22BB724D009FD15C /* SSZipArchive.framework */,
+				3B47890322B78F1C00D33F10 /* ZXingObjC.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3057,14 +3043,11 @@
 			buildConfigurationList = E4D40F4E1A031F460045097C /* Build configuration list for PBXNativeTarget "SealTalk" */;
 			buildPhases = (
 				A9A81101CCA7835E3636010D /* [CP] Check Pods Manifest.lock */,
-				2E29FF1D1DC1BBAA00AF2DF0 /* ShellScript */,
 				E4D40F241A031F460045097C /* Sources */,
 				E4D40F251A031F460045097C /* Frameworks */,
 				E4D40F261A031F460045097C /* Resources */,
 				17D7D1E91D534F56000AEC54 /* Embed App Extensions */,
 				C5058288BDE887CC6D4836AD /* [CP] Embed Pods Frameworks */,
-				3B118042256CFF10001E5105 /* Embed Frameworks */,
-				3B446BB1257E297D00E8B0C3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3090,6 +3073,7 @@
 				TargetAttributes = {
 					17D7D1D71D534F56000AEC54 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9CVMN4UZK4;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3099,10 +3083,12 @@
 					};
 					A27AD728265C96C0008D35F7 = {
 						CreatedOnToolsVersion = 12.4;
+						DevelopmentTeam = 9CVMN4UZK4;
 						ProvisioningStyle = Automatic;
 					};
 					E4D40F271A031F460045097C = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 9CVMN4UZK4;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3150,6 +3136,7 @@
 		276599A7229E87B20074FAB2 /* Masonry.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = Masonry;
 			path = Masonry.framework;
 			remoteRef = 276599A6229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3157,6 +3144,7 @@
 		276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = "Pods-SealTalk";
 			path = Pods_SealTalk.framework;
 			remoteRef = 276599A8229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3164,6 +3152,7 @@
 		279C1E8D22BB724D009FD15C /* SDWebImage.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SDWebImage;
 			path = SDWebImage.framework;
 			remoteRef = 279C1E8C22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3171,6 +3160,7 @@
 		279C1E8F22BB724D009FD15C /* SSZipArchive.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SSZipArchive;
 			path = SSZipArchive.framework;
 			remoteRef = 279C1E8E22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3178,6 +3168,7 @@
 		3B47890322B78F1C00D33F10 /* ZXingObjC.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = ZXingObjC;
 			path = ZXingObjC.framework;
 			remoteRef = 3B47890222B78F1C00D33F10 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3185,6 +3176,7 @@
 		3BACB0072500CED50001A92C /* DoraemonKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = DoraemonKit;
 			path = DoraemonKit.framework;
 			remoteRef = 3BACB0062500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3192,6 +3184,7 @@
 		3BACB0092500CED50001A92C /* DoraemonKit.bundle */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
+			name = "DoraemonKit-DoraemonKit";
 			path = DoraemonKit.bundle;
 			remoteRef = 3BACB0082500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3199,6 +3192,7 @@
 		3BC0C810229F8F3B0079234F /* AFNetworking.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = AFNetworking;
 			path = AFNetworking.framework;
 			remoteRef = 3BC0C80F229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3206,6 +3200,7 @@
 		3BC0C812229F8F3B0079234F /* FMDB.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = FMDB;
 			path = FMDB.framework;
 			remoteRef = 3BC0C811229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3213,6 +3208,7 @@
 		9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = GCDWebServer;
 			path = GCDWebServer.framework;
 			remoteRef = 9C226D0E229FD5C800F49FC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3220,6 +3216,7 @@
 		A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MBProgressHUD;
 			path = MBProgressHUD.framework;
 			remoteRef = A2E705C522BA1D1E0047DF47 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
