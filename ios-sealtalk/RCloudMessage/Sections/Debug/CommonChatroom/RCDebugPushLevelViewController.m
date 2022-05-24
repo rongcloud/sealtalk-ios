@@ -146,14 +146,13 @@
             break;
         }
         case RCDComChatroomOptionCategory5_1: {
-            /*
             [[RCChannelClient sharedChannelManager] setConversationTypeNotificationLevel:self.type
                                                                                    level:self.currentLevel.level
                                                                                  success:^() {
                 [ws showSuccess];
             } error:^(RCErrorCode nErrorCode) {
                 [ws showFailedWith:nErrorCode];
-            }];*/
+            }];
             break;
         }
         default:
