@@ -47,10 +47,23 @@
 #define UMENG_APPKEY @""
 
 #import "RCDTranslationManager.h"
+
+#if RCDTranslationEnable
+#import <RongTranslation/Rongtranslation.h>
+#endif
+
 #import "RCTransationPersistModel.h"
 #import "RCDEnvironmentContext.h"
 
-@interface AppDelegate () <RCWKAppInfoProvider>
+#import "RCDFraudPreventionManager.h"
+#import "RCDAlertBuilder.h"
+
+#if RCDTranslationEnable
+@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
+#else
+@interface AppDelegate () <RCWKAppInfoProvider, RCUltraGroupConversationDelegate>
+#endif
+
 @property (nonatomic, assign) BOOL allowAutorotate;
 @end
 
@@ -102,7 +115,8 @@
     [RCIMClient sharedRCIMClient].voiceMsgType = RCVoiceMessageTypeHighQuality;
     
     [RCIMClient sharedRCIMClient].logLevel = RC_Log_Level_Info;
-    
+    // 超级群会话同步状态监听代理 要在初始化之后, 连接之前设置
+    [[RCChannelClient sharedChannelManager] setUltraGroupConversationDelegate:self];
     //设置会话列表头像和会话页面头像
     [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
     [RCIM sharedRCIM].receiveMessageDelegate = self;
@@ -135,6 +149,26 @@
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
 }
 
+#pragma mark - RCUltraGroupConversationDelegate
+
+- (BOOL)isUltraGroupObserved {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *val = [userDefaults valueForKey:@"RCDDebugUtralGroupSyncKey"];
+    return [val boolValue];
+}
+
+- (void)ultraGroupConversationListDidSync {
+    if (![self isUltraGroupObserved]) {
+        return;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+       NSLog(@"%@", @" (2s前)收到 -> 2.2.1 拉取超级群列表后回调");
+        [self showAlert:RCDLocalizedString(@"alert")
+                   message:@"UltraGroup ConversationList Did Sync"
+            cancelBtnTitle:RCDLocalizedString(@"i_know")];
+    });
+   
+}
 - (void)configDoraemon {
     #ifdef DEBUG
     [[DoraemonManager shareInstance] installWithPid:DORAEMON_APPID];
@@ -200,8 +234,14 @@
     NSString *userId = [DEFAULTS objectForKey:RCDUserIdKey];
     NSString *userNickName = [DEFAULTS objectForKey:RCDUserNickNameKey];
     NSString *userPortraitUri = [DEFAULTS objectForKey:RCDUserPortraitUriKey];
+    NSString *phone = [DEFAULTS objectForKey:RCDPhoneKey] ;
     RCDCountry *currentCountry = [[RCDCountry alloc] initWithDict:[DEFAULTS objectForKey:RCDCurrentCountryKey]];
     NSString *regionCode = @"86";
+    
+#if RCDTranslationEnable
+    [[RCTranslationClient sharedInstance] addTranslationDelegate:self];
+#endif
+    
     if (currentCountry.phoneCode.length > 0) {
         regionCode = currentCountry.phoneCode;
     }
@@ -222,11 +262,13 @@
         [[RCDIMService sharedService] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
             NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
         }success:^(NSString *userId) {
-            [RCDDataSource syncAllData];
+            [self requestFraudPreventionRejectWithPhone:phone withRegion:regionCode] ;
         }error:^(RCConnectErrorCode status) {
             if (status == RC_CONN_TOKEN_INCORRECT) {
                 [self gotoLoginViewAndDisplayReasonInfo:@"无法连接到服务器"];
                 NSLog(@"Token无效");
+            } else if (status == RC_CONN_USER_BLOCKED) {
+                [self fraudPreventionByUserBlocked] ;
             }
         }];
     } else {
@@ -235,10 +277,69 @@
         self.window.rootViewController = _navi;
     }
 }
+
+/* 验证账号在当前设备上登录的风险等级 */
+- (void)requestFraudPreventionRejectWithPhone:(NSString *)phone withRegion:(NSString *)region {
+    __weak typeof(self) weakSelf = self;
+    [[RCDFraudPreventionManager sharedInstance] reqestFrandPreventionRiskLevelREJECTWithPhone:phone withRegion:region complate:^(BOOL reject) {
+        if (reject) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf logoutWithFraudPrevention] ;
+                [RCDAlertBuilder showFraudPreventionRejectAlert];
+            }) ;
+        } else {
+            [RCDDataSource syncAllData];
+        }
+    }];
+}
+
+// 用户被封禁时处理
+- (void)fraudPreventionByUserBlocked {
+    [[RCIM sharedRCIM] logout];
+    [DEFAULTS removeObjectForKey:RCDIMTokenKey];
+    [DEFAULTS synchronize];
+    __weak typeof(self) weakSelf = self;
+    rcd_dispatch_main_async_safe(^{
+        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+        weakSelf.window.rootViewController = _navi;
+        [RCDAlertBuilder showFraudPreventionRejectAlert];
+    });
+}
+
+//退出登录
+- (void)logoutWithFraudPrevention{
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [DEFAULTS removeObjectForKey:RCDIMTokenKey];
+    [DEFAULTS synchronize];
+
+    [RCDLoginManager logout:^(BOOL success){
+    }];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        self.window.rootViewController = navi;
+    });
+    [[RCIM sharedRCIM] logout];
+
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
+    [userDefaults removeObjectForKey:RCDCookieKey];
+    [userDefaults synchronize];
+}
     
 /// 请求翻译 sdk token
 /// @param userID 用户ID
 - (void)requestTranslationTokenBy:(NSString *)userID {
+#if RCDTranslationEnable
+    [RCDTranslationManager requestTranslationTokenUserID:userID
+                                                 success:^(NSString * _Nonnull token) {
+        [[RCTranslationClient sharedInstance] updateAuthToken:token];
+        }
+                                                 failure:^(NSInteger code) {
+            
+        }];
+#endif
 }
 
 - (void)configCurrentLanguage {
@@ -416,13 +517,20 @@
             }
         }];
     } else if (status == ConnectionStatus_DISCONN_EXCEPTION) {
+        /* 原本处理
         [self showAlert:RCDLocalizedString(@"alert")
                    message:RCDLocalizedString(@"Your_account_has_been_banned")
             cancelBtnTitle:RCDLocalizedString(@"i_know")];
+        */
+        
         [[RCIMClient sharedRCIMClient] disconnect];
         RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
         RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
         self.window.rootViewController = _navi;
+        // 添加逻辑，退出登录
+        [self fraudPreventionByUserBlocked] ;
+        // 修改后提示框提示
+        [RCDAlertBuilder showFraudPreventionRejectAlert] ;
     }
 }
 
@@ -756,6 +864,17 @@
 }
 
 #pragma mark -- RCTranslationClientDelegate
-
-
+#if RCDTranslationEnable
+/// 翻译结束
+/// @param translation model
+/// @param code 返回码
+- (void)onTranslation:(RCTranslation *)translation
+         finishedWith:(RCTranslationCode)code {
+    if (code == RCTranslationCodeAuthFailed
+        || code == RCTranslationCodeServerAuthFailed
+        || code == RCTranslationCodeInvalidAuthToken) {
+        [self requestTranslationTokenBy:[RCIM sharedRCIM].currentUserInfo.userId];
+    }
+}
+#endif
 @end

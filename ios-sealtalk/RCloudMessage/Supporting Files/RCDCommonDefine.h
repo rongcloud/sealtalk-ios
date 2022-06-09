@@ -27,6 +27,9 @@
 
 #define RCDMetionAllUsetId @"All"
 
+// 是否启用翻译功能
+#define RCDTranslationEnable 0
+
 #define DEFAULTS [NSUserDefaults standardUserDefaults]
 #define ShareApplicationDelegate [[UIApplication sharedApplication] delegate]
 #define HEXCOLOR(rgbValue)                                                                                             \

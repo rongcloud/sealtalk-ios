@@ -35,7 +35,7 @@
 #define DATA_STATISTICS_TAG 103
 #define BURN_MESSAGE_TAG 104
 #define SEND_COMBINE_MESSAGE_TAG 105
-
+#define DISABLE_SYSTEM_EMOJI_TAG 106
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCDDebugTableViewController ()
@@ -124,6 +124,10 @@
     if ([title isEqualToString:@"合并转发"]) {
         [self setSwitchButtonCell:cell tag:SEND_COMBINE_MESSAGE_TAG];
     }
+    if ([title isEqualToString:@"禁用系统表情"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_SYSTEM_EMOJI_TAG];
+    }
+    
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -175,6 +179,8 @@
         [self pushUltraGroupChatListVC];
     } else if ([title isEqualToString:@"普通群"]) {
         [self showCommonChatRoom];
+    } else if ([title isEqualToString:@"选择聚合头像方式"]) {
+        [self selectConversationCollectionInfoModifyType];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -194,7 +200,8 @@
         @"打开性能数据统计",
         @"阅后即焚",
         @"合并转发",
-        @"消息扩展"
+        @"消息扩展",
+        @"禁用系统表情"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -205,7 +212,7 @@
     ]
             forKey:RCDLocalizedString(@"time_setting")];
 
-    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群"] forKey:@"功能"];
+    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群", @"选择聚合头像方式"] forKey:@"功能"];
     self.functions = [dic copy];
 }
 
@@ -253,6 +260,10 @@
     case SEND_COMBINE_MESSAGE_TAG: {
         isButtonOn = [DEFAULTS boolForKey:RCDDebugSendCombineMessageKey];
     } break;
+        case DISABLE_SYSTEM_EMOJI_TAG:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableSystemEmoji];
+            break;
+        }
     default:
         break;
     }
@@ -309,6 +320,11 @@
         [DEFAULTS synchronize];
         [RCIM sharedRCIM].enableSendCombineMessage = isButtonOn;
     } break;
+        case DISABLE_SYSTEM_EMOJI_TAG:{
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableSystemEmoji];
+            [DEFAULTS synchronize];
+            break;
+        }
     default:
         break;
     }
@@ -369,6 +385,15 @@
     }];
 }
 
+// 设置聚合头像的改变方式
+- (void)selectConversationCollectionInfoModifyType {
+    [RCActionSheetView showActionSheetView:nil cellArray:@[@"恢复默认", @"显示前修改聚合", @"全局配置修改聚合"] cancelTitle:RCDLocalizedString(@"Cancel") selectedBlock:^(NSInteger index) {
+        [[NSUserDefaults standardUserDefaults] setObject:@(index) forKey:@"selectConversationCollectionInfoModifyType"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } cancelBlock:^{
+        
+    }];
+}
 - (void)startHttpServer {
     NSString *homePath = NSHomeDirectory();
     self.webUploader = [[GCDWebUploader alloc] initWithUploadDirectory:homePath];

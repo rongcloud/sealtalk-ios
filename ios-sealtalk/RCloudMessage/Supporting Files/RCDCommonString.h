@@ -46,4 +46,6 @@
 #define RCDChatroomDefalutHistoryMessageCountKey @"ChatroomDefaultHistoryMessageCount"
 #define RCDGroupClearMessageKey @"RCDGroupClearMessageKey"
 #define RCDCurrentPushLauguageCodeKey @"RCDCurrentPushLauguageCodeKey"
+#define RCDDebugDisableSystemEmoji @"RCDDebugDisableSystemEmoji"
+
 #endif /* RCDCommonString_h */

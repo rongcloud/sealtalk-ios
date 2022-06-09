@@ -29,6 +29,7 @@
  @return 表情tab的页数
  */
 @property (nonatomic, assign) int pageCount;
+
 /*!
  表情tab的index页的表情View
 
@@ -37,4 +38,5 @@
  186）
  */
 - (UIView *)loadEmoticonView:(NSString *)identify index:(int)index;
+- (instancetype)initWith:(RCEmojiBoardView *)emojiBoardView;
 @end

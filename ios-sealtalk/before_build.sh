@@ -119,6 +119,17 @@ if [ -d "$CONTACT_PATH" ]; then
     copy_sdk ${CONTACT_PATH} $SEALTALK_CONTACT_FRAMEWORKER_PATH RongContactCard
 fi
 
+#copy locationkit
+LOCATIONKIT_PATH="../ios-imsdk/locationkit"
+if [ -d "$LOCATIONKIT_PATH" ]; then
+    echo "sealtalk build: copy locationkit"
+    SEALTALK_LOCATIONKIT_FRAMEWORKER_PATH="${SEALTALK_FRAMEWORKER_PATH}/RongLocationKit/"
+    if [ ! -d $SEALTALK_LOCATIONKIT_FRAMEWORKER_PATH ]; then
+        mkdir -p $SEALTALK_LOCATIONKIT_FRAMEWORKER_PATH
+    fi
+    copy_sdk ${LOCATIONKIT_PATH} $SEALTALK_LOCATIONKIT_FRAMEWORKER_PATH RongLocationKit
+fi
+
 #copy sight
 SIGHT_PATH="../ios-imsdk/sight"
 if [ -d "$SIGHT_PATH" ]; then

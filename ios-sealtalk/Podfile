@@ -12,7 +12,6 @@ target 'SealTalk' do
   pod 'SSZipArchive', '2.2.2'
   pod 'SDWebImage', '5.0.6'
   pod 'Bugly', '2.5.91'
-  pod 'WechatOpenSDK', '1.8.4'
   pod 'UMCCommon', '7.3.5'
   
   pod 'DoraemonKit/Core', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
@@ -20,11 +19,12 @@ target 'SealTalk' do
   pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   
-  pod 'RongCloudIM/IMLib', '5.2.2.1'
-  pod 'RongCloudIM/IMKit', '5.2.2.1'
-  pod 'RongCloudIM/RongSticker', '5.2.2.1'
-  pod 'RongCloudIM/Sight', '5.2.2.1'
-  pod 'RongCloudIM/ContactCard', '5.2.2.1'
+  pod 'RongCloudIM/IMLib', '5.2.3'
+  pod 'RongCloudIM/IMKit', '5.2.3'
+  pod 'RongCloudIM/RongSticker', '5.2.3'
+  pod 'RongCloudIM/Sight', '5.2.3'
+  pod 'RongCloudIM/ContactCard', '5.2.3'
+  pod 'RongCloudIM/LocationKit', '5.2.3'
   pod 'RongCloudRTC/RongCallLib'
   pod 'RongCloudRTC/RongCallKit'
 end

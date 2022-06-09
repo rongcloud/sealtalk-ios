@@ -17,11 +17,13 @@ sed -i '' -e '/path = RongCloudTests;/d' ${Project}
 # 删除脚本 sh xcodebuild.sh
 sed -i '' -e "/\/\* ShellScript \*\/ = {/,/};/d" ${Project}
 
-# 2. 删除敏感信息
+# 2.1 删除敏感信息
 sed -i "" -e 's?^#define DORAEMON_APPID.*$?#define DORAEMON_APPID @\"\"?' RCloudMessage/AppDelegate.m
 sed -i "" -e 's?^#define BUGLY_APPID.*$?#define BUGLY_APPID @\"\"?' RCloudMessage/AppDelegate.m
 sed -i "" -e 's?^#define UMENG_APPKEY.*$?#define UMENG_APPKEY @\"\"?' RCloudMessage/AppDelegate.m
 sed -i "" -e 's?^#define RONGCLOUD_STATUS_SERVER.*$?#define RONGCLOUD_STATUS_SERVER @\"\"?' RCloudMessage/AppDelegate.m
+# 2.2 修改<翻译 SDK>条件编译宏为0
+sed -i "" -e 's?^#define RCDTranslationEnable.*$?#define RCDTranslationEnable 0?' RCloudMessage/Supporting\ Files/RCDCommonDefine.h
 
 # 3. 处理所有本地库
 
@@ -77,6 +79,8 @@ sed -i '' -e "/RongSticker.strings in Resources/d"  ${Project}
 
 sed -i '' -e "/RongSight.framework/d"  ${Project}
 sed -i '' -e "/RongContactCard.framework/d"  ${Project}
+sed -i '' -e "/RongTranslation.framework/d"  ${Project}
+sed -i '' -e "/RongLocationKit.framework/d"  ${Project}
 
 # app extention 不支持手动引入 XCFramework；pod 1.11.2 不支持 app 与 extension 导入同一 SDK start
 sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationService.m
@@ -84,26 +88,28 @@ sed -i '' -e "/RCCoreClient/d" ./SealTalkNotificationService/NotificationService
 # app extention 不支持手动引入 XCFramework，pod 1.11.2 不支持 app 与 extension 导入同一 SDK end
 
 
-# 移除本地使用的库
-rm -rf ./framework/RongIMLib
-rm -rf ./framework/RongIMKit
-rm -rf ./framework/RongSticker
-rm -rf ./framework/RongSight
-rm -rf ./framework/RongCallLib
-rm -rf ./framework/RongCallKit
-rm -rf ./framework/RongRTCLib
-rm -rf ./framework/RongiFlyKit
-rm -rf ./framework/RongContactCard
-rm -rf ./framework/RongCustomerService
-rm -rf ./framework/RongChatRoom
-rm -rf ./framework/RongDiscussion
-rm -rf ./framework/RongIMLibCore
-rm -rf ./framework/RongLocation
-rm -rf ./framework/RongPublicService
+# 移除本地使用的库 framework 文件夹被忽略 以下注释掉了
+# rm -rf ./framework/RongIMLib
+# rm -rf ./framework/RongIMKit
+# rm -rf ./framework/RongSticker
+# rm -rf ./framework/RongSight
+# rm -rf ./framework/RongCallLib
+# rm -rf ./framework/RongCallKit
+# rm -rf ./framework/RongRTCLib
+# rm -rf ./framework/RongiFlyKit
+# rm -rf ./framework/RongContactCard
+# rm -rf ./framework/RongCustomerService
+# rm -rf ./framework/RongChatRoom
+# rm -rf ./framework/RongDiscussion
+# rm -rf ./framework/RongIMLibCore
+# rm -rf ./framework/RongLocation
+# rm -rf ./framework/RongPublicService
+# 移除本地使用的库 framework 文件夹被忽略 以上注释掉了
+
 
 # 变量和=间不能有空格
 pwd
 sed -i '' -e 's/#/''/g'  Podfile
-sed -i '' -e '/RongCloud/s/2.10.1/'${Version}'/g' Podfile
+sed -i '' -e '/RongCloud/s/5.2.3/'${Version}'/g' Podfile
 #pod update
 

@@ -539,3 +539,6 @@
 "RegionNameNorthAmerican"="北美";
 "RegionNameDefault"="默认";
 "Fraud_Prevention_Tips"="融云提醒您谨防诈骗，不要轻信涉钱信息，不要进行任何线下转账行为。";
+"Fraud_Prevention_Alert_Tips"="您好，您的账号因异常操作已被封禁，无法进行登录，如有疑问请拨打官方电话：";
+"Fraud_Prevention_Alert_Phone"="400-919-9066";
+"Fraud_Prevention_Alert_Time"="工作时间：每天 9:30 ~ 18:30";

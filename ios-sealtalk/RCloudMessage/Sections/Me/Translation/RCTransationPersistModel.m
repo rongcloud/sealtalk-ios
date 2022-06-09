@@ -6,6 +6,11 @@
 //
 
 #import "RCTransationPersistModel.h"
+
+#if RCDTranslationEnable
+#import <RongTranslation/RongTranslation.h>
+#endif
+
 static NSString * const RCKitTranslationConfigSourceKey = @"RCKitTranslationConfigSourceKey";
 static NSString * const RCKitTranslationConfigTargetKey = @"RCKitTranslationConfigTargetKey";
 
@@ -15,11 +20,19 @@ static NSString * const RCKitTranslationConfigTargetKey = @"RCKitTranslationConf
 + (instancetype)loadTranslationConfig
 {
     RCTransationPersistModel *config = [RCTransationPersistModel new];
-    NSString *src = [self fetchLanguageBy:RCKitTranslationConfigSourceKey];;
+    NSString *src = [self fetchLanguageBy:RCKitTranslationConfigSourceKey];
+#if RCDTranslationEnable
+    src = src ?: RCTranslationLanguageZH_CN;
+#else
     src = src ?: @"zh_CN";
+#endif
     
     NSString *target = [self fetchLanguageBy:RCKitTranslationConfigTargetKey];
+#if RCDTranslationEnable
+    target = target ?: RCTranslationLanguageEN;
+#else
     target = target ?: @"en";
+#endif
     
     config.srcLanguage = src;
     config.targetLanguage = target;

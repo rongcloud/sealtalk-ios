@@ -26,8 +26,17 @@
 #import "RCDRegistrationAgreementController.h"
 #import "RCDIMService.h"
 #import "RCDTranslationManager.h"
+
+#if RCDTranslationEnable
+#import <RongTranslation/RongTranslation.h>
+#endif
+
 #import "RCDEnvironmentTableViewController.h"
 #import "RCDEnvironmentContext.h"
+
+#import "RCDFraudPreventionManager.h"
+#import "RCDAlertBuilder.h"
+
 #define UserTextFieldTag 1000
 
 @interface RCDLoginViewController () <UITextFieldDelegate, RCDCountryListControllerDelegate, UITextViewDelegate>
@@ -234,7 +243,15 @@
 /// 请求翻译 sdk token
 /// @param userID 用户ID
 - (void)requestTranslationTokenBy:(NSString *)userID {
- 
+#if RCDTranslationEnable
+    [RCDTranslationManager requestTranslationTokenUserID:userID
+                                                 success:^(NSString * _Nonnull token) {
+        [[RCTranslationClient sharedInstance] updateAuthToken:token];
+        }
+                                                 failure:^(NSInteger code) {
+            
+        }];
+#endif
 }
 
 - (void)loginRongCloud:(NSString *)phone
@@ -248,20 +265,55 @@
         NSLog([NSString stringWithFormat:@"token is %@  userId is %@", token, userId], nil);
         [weakSelf saveLoginData:phone userId:userId userName:userName token:token];
         [weakSelf requestTranslationTokenBy:userId];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [hud hide:YES];
-            RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
-            RCDNavigationViewController *rootNavi =
-            [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
-            [UIApplication sharedApplication].delegate.window.rootViewController = rootNavi;
-        });
+        
+        [weakSelf requestFraudPreventionRejectWithPhone:phone withRegion:self.currentRegion.phoneCode complate:^(BOOL reject) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [hud hide:YES];
+                if (reject) {
+                    [weakSelf logoutWithFraudPrevention] ;
+                    [RCDAlertBuilder showFraudPreventionRejectAlert] ;
+                } else {
+                    RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
+                    RCDNavigationViewController *rootNavi =
+                    [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
+                    [UIApplication sharedApplication].delegate.window.rootViewController = rootNavi;
+                }
+            });
+        }];
     } error:^(RCConnectErrorCode status) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hide:YES];
             NSLog(@"RCConnectErrorCode is %ld", (long)status);
-            _errorMsgLb.text = [NSString stringWithFormat:@"%@ Status: %zd", RCDLocalizedString(@"Login_fail"), status];
+            if (status == RC_CONN_USER_BLOCKED) {
+                [RCDAlertBuilder showFraudPreventionRejectAlert] ;
+            } else {
+                _errorMsgLb.text = [NSString stringWithFormat:@"%@ Status: %zd", RCDLocalizedString(@"Login_fail"), status];
+            }
+            
         });
     }];
+}
+
+//数美提供的设备有问题退出登录
+- (void)logoutWithFraudPrevention{
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [DEFAULTS removeObjectForKey:RCDIMTokenKey];
+    [DEFAULTS synchronize];
+
+    [RCDLoginManager logout:^(BOOL success){
+    }];
+    
+    [[RCIM sharedRCIM] logout];
+
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
+    [userDefaults removeObjectForKey:RCDCookieKey];
+    [userDefaults synchronize];
+}
+
+/* 验证账号在当前设备上登录的风险等级 */
+- (void)requestFraudPreventionRejectWithPhone:(NSString *)phone withRegion:(NSString *)region complate:(void (^)(BOOL reject))complate {
+    [[RCDFraudPreventionManager sharedInstance] reqestFrandPreventionRiskLevelREJECTWithPhone:phone withRegion:region complate:complate];
 }
 
 - (void)saveLoginData:(NSString *)phone

@@ -58,7 +58,7 @@
 - (void)rightBarButtonItemClicked:(RCConversationModel *)model;
 @end
 @interface RCDDebugComChatViewController ()
-
+@property (nonatomic, strong) RCMessageModel *currMessageModel;
 @end
 
 @implementation RCDDebugComChatViewController
@@ -71,7 +71,56 @@
     self.placeholderLabel.textColor = [UIColor grayColor];
 }
 
+- (NSArray<UIMenuItem *> *)getLongTouchMessageCellMenuList:(RCMessageModel *)model {
+    NSArray<UIMenuItem *> *menuList = [[super getLongTouchMessageCellMenuList:model] mutableCopy];
+    
+    // 测试删除消息
+    /*!
+     删除消息并更新UI
+
+     @param model 消息Cell的数据模型
+     @discussion
+     v5.2.3 之前 会话页面只删除本地消息，如果需要删除远端历史消息，需要
+        1.重写该方法，并调用 super 删除本地消息
+        2.调用删除远端消息接口，删除远端消息
+     
+     v5.2.3及以后，会话页面会根据 needDeleteRemoteMessage 设置进行处理
+        如未设置默认值为NO， 只删除本地消息
+        设置为 YES 时， 会同时删除远端消息
+     
+     - (void)deleteMessage:(RCMessageModel *)model;
+     */
+
+    int idx = 0;
+    int i = 0;
+    NSMutableArray *list = menuList.mutableCopy;
+    for (UIMenuItem *item in menuList) {
+        i++;
+        if ([item.title isEqualToString:RCLocalizedString(@"Delete")]) {
+            idx = i;
+            break;
+        }
+    }
+
+    UIMenuItem *delItem = [[UIMenuItem alloc] initWithTitle:@"删除远端" action:@selector(onDeleteRemoteMessage:)];
+    [list insertObject:delItem atIndex:idx];
+    self.currMessageModel = model;
+    return list.copy;
+}
+
 #pragma mark - target action
+
+//删除远端消息内容
+- (void)onDeleteRemoteMessage:(id)sender {
+    BOOL isSourceValue = self.needDeleteRemoteMessage;
+    // 标记删除远端
+    self.needDeleteRemoteMessage = YES;
+    [self deleteMessage:self.currMessageModel];
+    // 恢复原值
+    self.needDeleteRemoteMessage = isSourceValue;
+}
+
+
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
  *  不添加rightBarButtonItemClicked事件，则使用默认实现。

@@ -590,6 +590,10 @@
             chatVC.displayUserNameInCell = NO;
         }
     }
+    
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+    chatVC.disableSystemEmoji = enable;
     [self.navigationController pushViewController:chatVC animated:YES];
 }
 

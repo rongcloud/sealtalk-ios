@@ -12,7 +12,7 @@
 #import "RCDDebugUltraGroupSendMessage.h"
 #import "UIView+MBProgressHUD.h"
 
-@interface RCDDebugUltraGroupListController ()<RCUltraGroupConversationDelegate>
+@interface RCDDebugUltraGroupListController ()
 
 @property (nonatomic, strong) UITextField *targetIdTextField;
 
@@ -35,13 +35,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setNavi];
-    
-    // https://rongcloud.yuque.com/zqdxze/ynvhen/yoqngd
-    // SDK 拉取超级群列表后回调功能
-    [[RCChannelClient sharedChannelManager] setUltraGroupConversationDelegate:self];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.view showHUDMessage:@"代理已设置 -> 2.2.1 拉取超级群列表后回调 "];
-    });
 }
 
 - (void)setNavi {
@@ -166,14 +159,6 @@
         }
     }
     return dataSources;
-}
-
-#pragma mark - RCUltraGroupConversationDelegate
-- (void)ultraGroupConversationListDidSync {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.view showHUDMessage:@" (2s前)收到 -> 2.2.1 拉取超级群列表后回调"];
-    });
-   
 }
 
 @end

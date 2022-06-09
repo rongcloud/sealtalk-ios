@@ -20,6 +20,7 @@
 #import "RCDDebugConversationChannelNotificationLevelViewController.h"
 #import "RCDDebugUltraGroupUnreadMessageViewController.h"
 
+NSString *const RCDDebugUtralGroupSyncKey = @"RCDDebugUtralGroupSyncKey";
 @interface RCDDebugChatSettingViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSString *groupId;
@@ -58,7 +59,8 @@
                     @"6.1.2 查询指定超级群默认通知配置",// 22
                     @"6.2.1 设置指定超级群特定频道默认通知配置",//23
                     @"6.2.2 查询指定超级群特定频道默认通知配置",// 24
-                    @"(其他)获取超级群未读数"];//25
+                    @"(其他)获取超级群未读数", //25
+                    @"超级群消息同步监听"];//26
     [self setupSubviews];
     [self setNavi];
 }
@@ -187,6 +189,15 @@
             cell.switchButton.on = isTop;
             [cell.switchButton addTarget:self
                                   action:@selector(clickIsTopBtn:)
+                        forControlEvents:UIControlEventValueChanged];
+        }
+            break;
+        case 26: {
+            [cell setCellStyle:SwitchStyle];
+            cell.switchButton.hidden = NO;
+            cell.switchButton.on = [self isUltraGroupObserved];
+            [cell.switchButton addTarget:self
+                                  action:@selector(clickIsObservedBtn:)
                         forControlEvents:UIControlEventValueChanged];
         }
             break;
@@ -331,6 +342,18 @@
 - (void)clickIsTopBtn:(id)sender {
     UISwitch *swch = sender;
     [[RCIMClient sharedRCIMClient] setConversationToTop:ConversationType_ULTRAGROUP targetId:self.targetId isTop:swch.on];
+}
+
+- (void)clickIsObservedBtn:(id)sender {
+    UISwitch *swch = (UISwitch *)sender;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setValue:@(swch.isOn) forKey:RCDDebugUtralGroupSyncKey];
+}
+
+- (BOOL)isUltraGroupObserved {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *val = [userDefaults valueForKey:RCDDebugUtralGroupSyncKey];
+    return [val boolValue];
 }
 
 - (void)clearHistoryMessage:(BOOL)clearRemote {

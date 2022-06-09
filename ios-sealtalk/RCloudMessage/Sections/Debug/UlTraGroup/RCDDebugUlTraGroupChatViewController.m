@@ -238,6 +238,10 @@
     action:@selector(recallUltraGroupMessage)];
     [list addObject:item2];
     
+    item2 = [[UIMenuItem alloc] initWithTitle:@"撤回并删除"
+    action:@selector(recallUltraGroupMessageAndRemoveRemote)];
+    [list addObject:item2];
+    
     UIMenuItem *item3 = [[UIMenuItem alloc] initWithTitle:@"更新KV"
     action:@selector(updateUltraGroupMessageExpansion)];
     [list addObject:item3];
@@ -305,6 +309,33 @@
             [self updateEditingMessage];
         } error:^(RCErrorCode status) {
             [self showToastMsg:[NSString stringWithFormat:@"消息撤回失败%zd",status]];
+        }];
+    } else {
+        [self showAlertTitle:nil message:@"请测试自己发的消息"];
+    }
+}
+
+/*!
+ 撤回消息, 移除远端
+ */
+- (void)recallUltraGroupMessageAndRemoveRemote {
+    
+    RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.menuSelectModel.messageUId];
+    message.channelId = self.channelId;
+    message.targetId = self.targetId;
+    message.conversationType = ConversationType_ULTRAGROUP;
+    
+    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *senderUserId = self.menuSelectModel.senderUserId;
+    
+    if ([currentUserId isEqualToString:senderUserId]) {
+        [[RCChannelClient sharedChannelManager] recallUltraGroupMessage:message
+                                                               isDelete:YES
+                                                                success:^(long messageId) {
+            [self showToastMsg:@"撤回消息, 移除远端成功"];
+            [self removeRecalledMessage];
+        } error:^(RCErrorCode status) {
+            [self showToastMsg:[NSString stringWithFormat:@"撤回消息, 移除远端失败%zd",status]];
         }];
     } else {
         [self showAlertTitle:nil message:@"请测试自己发的消息"];
@@ -528,6 +559,14 @@
 
         //更新UI
         [self.conversationMessageCollectionView reloadItemsAtIndexPaths:@[ indexPath ]];
+    });
+}
+
+- (void)removeRecalledMessage {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.conversationDataRepository removeObject:self.menuSelectModel];
+        //更新UI
+        [self.conversationMessageCollectionView reloadData];
     });
 }
 

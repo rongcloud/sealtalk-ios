@@ -106,6 +106,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self refreshUserInfoOrGroupInfo];
     [self addNotifications];
     //    [self addToolbarItems];
+    
+    // 防欺诈层级要比共享位置低
+    [self setupFraudPreventionTipsView];
+    
     /*******************实时位置共享***************/
     [self registerRealTimeLocationCell];
     [self getRealTimeLocationProxy];
@@ -118,7 +122,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self addEmoticonTabDemo];
     [self addQuicklySendImage];
     [self setupChatBackground];
-    [self setupFraudPreventionTipsView];
     
     [RCCoreClient sharedCoreClient].messageBlockDelegate = self;
     
@@ -686,20 +689,26 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 - (void)addEmoticonTabDemo {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+    if (!enable) {
+        return;
+    }
+    
 //      //表情面板添加自定义表情包
-//      UIImage *icon = [RCKitUtility imageNamed:@"emoji_btn_normal"
-//                                      ofBundle:@"RongCloud.bundle"];
-//      RCDCustomerEmoticonTab *emoticonTab1 = [RCDCustomerEmoticonTab new];
-//      emoticonTab1.identify = @"1";
-//      emoticonTab1.image = icon;
-//      emoticonTab1.pageCount = 2;
-//      [self.chatSessionInputBarControl.emojiBoardView addEmojiTab:emoticonTab1];
-//    
-//      RCDCustomerEmoticonTab *emoticonTab2 = [RCDCustomerEmoticonTab new];
-//      emoticonTab2.identify = @"2";
-//      emoticonTab2.image = icon;
-//      emoticonTab2.pageCount = 4;
-//      [self.chatSessionInputBarControl.emojiBoardView addEmojiTab:emoticonTab2];
+      UIImage *icon = [RCKitUtility imageNamed:@"emoji_btn_normal"
+                                      ofBundle:@"RongCloud.bundle"];
+      RCDCustomerEmoticonTab *emoticonTab1 = [[RCDCustomerEmoticonTab alloc] initWith:self.chatSessionInputBarControl.emojiBoardView];
+      emoticonTab1.identify = @"1";
+      emoticonTab1.image = icon;
+      emoticonTab1.pageCount = 2;
+      [self.chatSessionInputBarControl.emojiBoardView addEmojiTab:emoticonTab1];
+    
+    RCDCustomerEmoticonTab *emoticonTab2 = [[RCDCustomerEmoticonTab alloc] initWith:self.chatSessionInputBarControl.emojiBoardView];
+      emoticonTab2.identify = @"2";
+      emoticonTab2.image = icon;
+      emoticonTab2.pageCount = 4;
+      [self.chatSessionInputBarControl.emojiBoardView addEmojiTab:emoticonTab2];
 }
 
 #pragma mark - helper
@@ -926,22 +935,15 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (void)setupFraudPreventionTipsView {
     RCDChatTitleAlertView *alertView = [[RCDChatTitleAlertView alloc] initWithTitleAlertMessage:RCDLocalizedString(@"Fraud_Prevention_Tips")];
     [self.view addSubview:alertView];
-    
+
     CGFloat topHeight = CGRectGetMaxY([UIApplication sharedApplication].statusBarFrame) +
                                       CGRectGetMaxY(self.navigationController.navigationBar.bounds);
-    
-    [alertView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.view).offset(topHeight);
-        make.left.right.equalTo(self.view);
-    }];
-    if (!self.chatSessionInputBarControl) {
-        return;
-    }
-    [self.conversationMessageCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(alertView.mas_bottom);
-        make.left.right.equalTo(self.view);
-        make.bottom.equalTo(self.chatSessionInputBarControl.mas_top) ;
-    }];
+
+    alertView.frame = CGRectMake(0, topHeight, self.view.frame.size.width, 63);
+
+    CGRect collectionFrame = self.conversationMessageCollectionView.frame;
+    collectionFrame.origin.y = alertView.frame.size.height + alertView.frame.origin.y;
+    self.conversationMessageCollectionView.frame = collectionFrame;
 }
 
 
