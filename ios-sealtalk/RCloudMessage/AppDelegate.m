@@ -55,9 +55,6 @@
 #import "RCTransationPersistModel.h"
 #import "RCDEnvironmentContext.h"
 
-#import "RCDFraudPreventionManager.h"
-#import "RCDAlertBuilder.h"
-
 #if RCDTranslationEnable
 @interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
 #else
@@ -234,7 +231,6 @@
     NSString *userId = [DEFAULTS objectForKey:RCDUserIdKey];
     NSString *userNickName = [DEFAULTS objectForKey:RCDUserNickNameKey];
     NSString *userPortraitUri = [DEFAULTS objectForKey:RCDUserPortraitUriKey];
-    NSString *phone = [DEFAULTS objectForKey:RCDPhoneKey] ;
     RCDCountry *currentCountry = [[RCDCountry alloc] initWithDict:[DEFAULTS objectForKey:RCDCurrentCountryKey]];
     NSString *regionCode = @"86";
     
@@ -262,13 +258,11 @@
         [[RCDIMService sharedService] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
             NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
         }success:^(NSString *userId) {
-            [self requestFraudPreventionRejectWithPhone:phone withRegion:regionCode] ;
+            [RCDDataSource syncAllData];
         }error:^(RCConnectErrorCode status) {
             if (status == RC_CONN_TOKEN_INCORRECT) {
                 [self gotoLoginViewAndDisplayReasonInfo:@"无法连接到服务器"];
                 NSLog(@"Token无效");
-            } else if (status == RC_CONN_USER_BLOCKED) {
-                [self fraudPreventionByUserBlocked] ;
             }
         }];
     } else {
@@ -278,56 +272,6 @@
     }
 }
 
-/* 验证账号在当前设备上登录的风险等级 */
-- (void)requestFraudPreventionRejectWithPhone:(NSString *)phone withRegion:(NSString *)region {
-    __weak typeof(self) weakSelf = self;
-    [[RCDFraudPreventionManager sharedInstance] reqestFrandPreventionRiskLevelREJECTWithPhone:phone withRegion:region complate:^(BOOL reject) {
-        if (reject) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf logoutWithFraudPrevention] ;
-                [RCDAlertBuilder showFraudPreventionRejectAlert];
-            }) ;
-        } else {
-            [RCDDataSource syncAllData];
-        }
-    }];
-}
-
-// 用户被封禁时处理
-- (void)fraudPreventionByUserBlocked {
-    [[RCIM sharedRCIM] logout];
-    [DEFAULTS removeObjectForKey:RCDIMTokenKey];
-    [DEFAULTS synchronize];
-    __weak typeof(self) weakSelf = self;
-    rcd_dispatch_main_async_safe(^{
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        weakSelf.window.rootViewController = _navi;
-        [RCDAlertBuilder showFraudPreventionRejectAlert];
-    });
-}
-
-//退出登录
-- (void)logoutWithFraudPrevention{
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    [DEFAULTS removeObjectForKey:RCDIMTokenKey];
-    [DEFAULTS synchronize];
-
-    [RCDLoginManager logout:^(BOOL success){
-    }];
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = navi;
-    });
-    [[RCIM sharedRCIM] logout];
-
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
-    [userDefaults removeObjectForKey:RCDCookieKey];
-    [userDefaults synchronize];
-}
-    
 /// 请求翻译 sdk token
 /// @param userID 用户ID
 - (void)requestTranslationTokenBy:(NSString *)userID {
@@ -517,20 +461,15 @@
             }
         }];
     } else if (status == ConnectionStatus_DISCONN_EXCEPTION) {
-        /* 原本处理
         [self showAlert:RCDLocalizedString(@"alert")
                    message:RCDLocalizedString(@"Your_account_has_been_banned")
             cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        */
         
         [[RCIMClient sharedRCIMClient] disconnect];
         RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
         RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
         self.window.rootViewController = _navi;
-        // 添加逻辑，退出登录
-        [self fraudPreventionByUserBlocked] ;
-        // 修改后提示框提示
-        [RCDAlertBuilder showFraudPreventionRejectAlert] ;
+        
     }
 }
 

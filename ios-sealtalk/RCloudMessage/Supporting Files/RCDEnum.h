@@ -32,13 +32,4 @@ typedef NS_ENUM(NSInteger, RCDGroupErrorCode) {
     RCDGroupErrorCodeUnknown
 };
 
-/* 防欺诈风险级别*/
-typedef NS_ENUM(NSInteger, RCDFraudPreventionRiskLevelCode) {
-    RCDFraudPreventionRiskLevelCodeUnknown ,
-    RCDFraudPreventionRiskLevelCodePASS ,
-    RCDFraudPreventionRiskLevelCodeREVIEW ,
-    RCDFraudPreventionRiskLevelCodeREJECT ,
-    RCDFraudPreventionRiskLevelCodeVERIFY
-};
-
 #endif /* RCDEnum_h */
