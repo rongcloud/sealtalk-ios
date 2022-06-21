@@ -212,7 +212,7 @@
                 //当imageUrl是本地路径时，由于沙盒路径经常会变动，直接使用会无法找到文件，生成一个image
                 // message对象，设置路径然后再取出，就能取出当前正确的路径。
                 RCImageMessage *imageMsg = [[RCImageMessage alloc] init];
-                imageMsg.imageUrl = imageUrl;
+                imageMsg.localPath = imageUrl;
                 NSString *toPath = @"loadedImage.tmp";
                 if ([self copyForShare:imageMsg.imageUrl to:toPath maxWidth:140]) {
                     [self replyWKApp:toPath];
