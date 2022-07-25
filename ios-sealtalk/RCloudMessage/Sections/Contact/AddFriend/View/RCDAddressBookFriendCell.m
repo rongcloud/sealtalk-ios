@@ -12,6 +12,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DefaultPortraitView.h"
 #import "RCDUtilities.h"
+#import <RongIMKit/RongIMKit.h>
+
 @interface RCDAddressBookFriendCell ()
 
 @property (nonatomic, strong) UIImageView *headerImgView;
@@ -44,7 +46,7 @@
         self.headerImgView.image = portrait;
     } else {
         [self.headerImgView sd_setImageWithURL:[NSURL URLWithString:model.portraitUri]
-                              placeholderImage:[UIImage imageNamed:@"default_portrait_msg"]];
+                              placeholderImage:RCResourceImage(@"default_portrait_msg")];
     }
 
     self.addLabel.hidden = !model.isRelationship;

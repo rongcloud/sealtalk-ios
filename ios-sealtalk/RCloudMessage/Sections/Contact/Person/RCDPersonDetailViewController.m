@@ -88,10 +88,22 @@ typedef NS_ENUM(NSInteger, RCDFriendDescriptionType) {
     [super viewDidLoad];
 
     [self setupSubviews];
+    [self configureNavigationBar];
     [self getUserInfoData];
 }
 
-#pragma mark - Private Method
+#pragma mark - Private Methods
+
+- (void)configureNavigationBar {
+    self.navigationItem.leftBarButtonItems = [RCKitUtility getLeftNavigationItems:RCResourceImage(@"navigator_btn_back") title:nil target:self action:@selector(leftBarButtonItemPressed:)];
+}
+
+- (void)leftBarButtonItemPressed:(id)sender {
+    if (self.navigationController && [self.navigationController.viewControllers.lastObject isEqual:self]) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
 - (void)setupSubviews {
     [self.view addSubview:self.scrollView];
     [self.scrollView addSubview:self.contentView];

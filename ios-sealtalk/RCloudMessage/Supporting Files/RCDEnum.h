@@ -32,4 +32,20 @@ typedef NS_ENUM(NSInteger, RCDGroupErrorCode) {
     RCDGroupErrorCodeUnknown
 };
 
+/* 防欺诈风险级别*/
+typedef NS_ENUM(NSInteger, RCDFraudPreventionRiskLevelCode) {
+    RCDFraudPreventionRiskLevelCodeUnknown ,
+    RCDFraudPreventionRiskLevelCodePASS ,
+    RCDFraudPreventionRiskLevelCodeREVIEW ,
+    RCDFraudPreventionRiskLevelCodeREJECT ,
+    RCDFraudPreventionRiskLevelCodeVERIFY
+};
+
+typedef NS_ENUM(NSInteger, RCDUltraGroupCode) {
+    RCDUltraGroupCodeSuccess = 200,
+    RCDUltraGroupCodeGroupsOverLimit = 1000,//用户创建和加入的超级群组个数超限
+    RCDUltraGroupCodeChannelsOverLimit = 1001,//创建的频道个数超限
+    RCDUltraGroupCodeParameterError
+};
+
 #endif /* RCDEnum_h */

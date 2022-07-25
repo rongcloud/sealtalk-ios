@@ -77,6 +77,8 @@ sed -i "" -e '/SealTalk\ Version/{n;s/'"${Bundle_Demo_Version}"'/'"$DEMO_VER_FLA
 
 #上架AppStore 需要删除voip能力
 sed -i '' -e 's?<string>voip</string>?''?g' ./RCloudMessage/Supporting\ Files/info.plist
+#上架AppStore 需要打开 数美SDK能力
+sed -i "" -e 's?^#define RCDDebugFraundPreventionDisable.*$?#define RCDDebugFraundPreventionDisable 0?' RCloudMessage/Supporting\ Files/RCDCommonDefine.h
 
 Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" ./融云\ Demo\ WatchKit\ App/Info.plist)
 Bundle_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ./融云\ Demo\ WatchKit\ App/Info.plist)

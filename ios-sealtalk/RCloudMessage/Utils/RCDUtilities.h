@@ -9,18 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <RongIMLib/RongIMLib.h>
 #import <UIKit/UIKit.h>
-
+#import "RCDChannel.h"
 @interface RCDUtilities : NSObject
 + (UIImage *)imageNamed:(NSString *)name ofBundle:(NSString *)bundleName;
 + (NSString *)defaultGroupPortrait:(RCGroup *)groupInfo;
 + (NSString *)defaultUserPortrait:(RCUserInfo *)userInfo;
++ (NSString *)defaultUltraChannelPortrait:(RCDChannel *)channel groupId:(NSString *)groupId;
 + (NSString *)getIconCachePath:(NSString *)fileName;
 + (NSString *)hanZiToPinYinWithString:(NSString *)hanZi;
 + (NSString *)getFirstUpperLetter:(NSString *)hanzi;
 + (NSMutableDictionary *)sortedArrayWithPinYinDic:(NSArray *)userList;
 + (BOOL)isContains:(NSString *)firstString withString:(NSString *)secondString;
 + (UIImage *)getImageWithColor:(UIColor *)color andHeight:(CGFloat)height;
-+ (NSString *)getDataString:(long long)time;
++ (NSString *)getDateString:(long long)time;
 + (CGFloat)getStringHeight:(NSString *)text font:(UIFont *)font viewWidth:(CGFloat)width;
 + (BOOL)isLowerLetter:(NSString *)string;
 + (BOOL)judgeSealTalkAccount:(NSString *)string;
@@ -41,4 +42,11 @@
 
 /// 判断字符串中是否包含汉字
 + (BOOL)includeChinese:(NSString *)string;
+
+/// 转换会话类型为文字描述
++ (NSString *)getConversationTypeName:(RCConversationType)type;
+
+/// 转换拦截类型为文字描述
++ (NSString *)getBlockTypeName:(RCMessageBlockType)type;
+
 @end

@@ -224,7 +224,7 @@
                                          }
                                          weakSelf.updateTime.text = [NSString
                                              stringWithFormat:RCDLocalizedString(@"AnnouncementTime"),
-                                                              [RCDUtilities getDataString:announce.publishTime]];
+                                                              [RCDUtilities getDateString:announce.publishTime]];
                                      });
                                  }];
 }

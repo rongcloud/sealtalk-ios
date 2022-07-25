@@ -45,7 +45,7 @@
 
 - (void)rightBarButtonItemClicked:(id)sender {
     
-//    [RCDDebugUltraGroupSendMessage sendMessage:@"dda" conversationType:ConversationType_ULTRAROUP targetId:@"1228" channelId:@"lsq2"];
+//    [RCDDebugUltraGroupSendMessage sendMessage:@"dda" conversationType:ConversationType_ULTRAGROUP targetId:@"1228" channelId:@"lsq2"];
 //    return;
     
     NSString *title = @"发起超级群会话";
@@ -80,6 +80,7 @@
 - (void)toChatVCWithUserId:(NSString *)userId {
     [[RCIMClient sharedRCIMClient] clearMessages:ConversationType_GROUP targetId:userId];
     RCDDebugUltraGroupChatViewController *chatVC = [[RCDDebugUltraGroupChatViewController alloc] initWithConversationType:ConversationType_ULTRAGROUP targetId:userId];
+
     chatVC.title = userId;
     [self.navigationController pushViewController:chatVC animated:YES];
 }
@@ -88,6 +89,7 @@
 
     [[RCChannelClient sharedChannelManager] clearMessages:ConversationType_GROUP targetId:model.targetId channelId:model.channelId];
     RCDDebugUltraGroupChatViewController *chatVC = [[RCDDebugUltraGroupChatViewController alloc] init];
+    chatVC.isDebugEnter = YES;
     chatVC.conversationType = model.conversationType;
     chatVC.targetId = model.targetId;
     chatVC.channelId = model.channelId;
@@ -112,7 +114,6 @@
         int totalMentionCount = [[RCChannelClient sharedChannelManager] getUltraGroupUnreadMentionedCount:model.targetId];
         
         int conversationMentionCount = 0;
-        
         //超级群未读
         if (model.channelId.length == 0) {
             RCConversation *conversation = 

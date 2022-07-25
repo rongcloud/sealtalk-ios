@@ -13,6 +13,7 @@ typedef NS_ENUM(NSUInteger, RCDContactSelectedGroupOptionType) {
     RCDContactSelectedGroupOptionTypeCreate = 0,
     RCDContactSelectedGroupOptionTypeAdd,
     RCDContactSelectedGroupOptionTypeDelete,
+    RCDContactSelectedGroupOptionTypeAddUltraMember,
 };
 @class RCDFriendInfo;
 @interface RCDContactSelectedTableViewController : RCDViewController

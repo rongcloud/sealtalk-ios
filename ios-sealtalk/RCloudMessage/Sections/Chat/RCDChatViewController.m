@@ -56,6 +56,11 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 #define PLUGIN_BOARD_ITEM_POKE_TAG 20000
 
+@interface RCConversationViewController ()
+// 小视频录制失败回调
+- (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
+@end
+
 @interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate>
 @property (nonatomic, strong) RCDGroupInfo *groupInfo;
 @property (nonatomic, assign) BOOL isShow;
@@ -72,10 +77,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (instancetype)init {
     self = [super init];
     if (self) {
-        int defalutHistoryMessageCount = (int)[DEFAULTS integerForKey:RCDChatroomDefalutHistoryMessageCountKey];
-        if (defalutHistoryMessageCount >= -1 && defalutHistoryMessageCount <= 50) {
-            self.defaultHistoryMessageCountOfChatRoom = defalutHistoryMessageCount;
-        }
+        [self initData];
         self.loadMessageType = [[NSUserDefaults standardUserDefaults] integerForKey:@"RCDChatLoadMessageType"];
     }
     return self;
@@ -83,22 +85,24 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (id)initWithConversationType:(RCConversationType)conversationType targetId:(NSString *)targetId {
     self = [super initWithConversationType:conversationType targetId:targetId];
+    [self initData];
+    return self;
+}
+
+- (void)initData {
     int defalutHistoryMessageCount = (int)[DEFAULTS integerForKey:RCDChatroomDefalutHistoryMessageCountKey];
     if (defalutHistoryMessageCount >= -1 && defalutHistoryMessageCount <= 50) {
         self.defaultHistoryMessageCountOfChatRoom = defalutHistoryMessageCount;
     }
-    return self;
+
+    // 初始化时需要读取焚毁状态
+    BOOL isBurnMessageOn = [DEFAULTS boolForKey:RCDDebugBurnMessageKey];
+    RCKitConfigCenter.message.enableDestructMessage = isBurnMessageOn;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.loading = NO;
-
-    ///注册自定义测试消息Cell
-    [self registerClass:[RCDTestMessageCell class] forMessageClass:[RCDTestMessage class]];
-    [self registerClass:RCDTipMessageCell.class forMessageClass:RCDGroupNotificationMessage.class];
-    [self registerClass:RCDTipMessageCell.class forMessageClass:RCDChatNotificationMessage.class];
-    [self registerClass:RCDPokeMessageCell.class forMessageClass:RCDPokeMessage.class];
     self.enableSaveNewPhotoToLocalSystem = YES;
     [self notifyUpdateUnreadMessageCount];
     [self addOtherPluginBoard];
@@ -133,7 +137,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    // 持久化中读取焚毁状态
     self.defaultInputType = [[RCDIMService sharedService] getInputStatus:self.conversationType targetId:self.targetId];
+    
     [self refreshTitle];
     self.isShow = YES;
     RCConversation *conver = [[RCConversation alloc] init];
@@ -155,12 +162,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         [self.realTimeLocation removeRealTimeLocationObserver:self];
         self.realTimeLocation = nil;
     }
-
-    KBottomBarStatus inputType = self.chatSessionInputBarControl.currentBottomBarStatus;
-    if (self.chatSessionInputBarControl.destructMessageMode) {
-        inputType = KBottomBarDestructStatus;
-    }
-    [[RCDIMService sharedService] saveInputStatus:self.conversationType targetId:self.targetId inputType:inputType];
+    
+    // 退出页面时， 保存当前状态
+    [self saveInputDestructStatus];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size
@@ -194,11 +198,27 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - 小视频录制失败回调
+- (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status {
+    [super sightDidRecordFailedWith:error status:status];
+    NSString *msg = [NSString stringWithFormat:@"录制失败（code:%lu, AVAssetWriter status: %lu)", error.code, status];
+    [NormalAlertView showAlertWithTitle:nil
+                                message:msg
+                          describeTitle:nil
+                           confirmTitle:RCDLocalizedString(@"confirm")
+                                confirm:^{
+    }];
+}
+
 #pragma mark - RCMessageBlockDelegate
 - (void)messageDidBlock:(RCBlockedMessageInfo *)blockedMessageInfo {
     rcd_dispatch_main_async_safe((^{
         [self.chatSessionInputBarControl.inputTextView resignFirstResponder];
-        NSString *msg = [NSString stringWithFormat:@"发送的消息（Id:%@, 会话类型: %lu, targetId: %@, 拦截原因:%lu）遇到敏感词被拦截", blockedMessageInfo.blockedMsgUId, (unsigned long)blockedMessageInfo.type, blockedMessageInfo.targetId, (unsigned long)blockedMessageInfo.blockType];
+        NSString *blockTypeName = [RCDUtilities getBlockTypeName:blockedMessageInfo.blockType];
+        NSString *ctypeName = [RCDUtilities getConversationTypeName:blockedMessageInfo.type];
+        NSString *sentTimeFormat = [RCDUtilities getDateString:blockedMessageInfo.sentTime];
+        NSString *msg = [NSString stringWithFormat:@"会话类型: %@,\n会话ID: %@,\n消息ID:%@,\n消息时间戳:%@,\n频道ID: %@,\n附加信息: %@,\n拦截原因:%@(%@)", ctypeName, blockedMessageInfo.targetId, blockedMessageInfo.blockedMsgUId, sentTimeFormat, blockedMessageInfo.channelId, blockedMessageInfo.extra, @(blockedMessageInfo.blockType), blockTypeName];
+        
         [NormalAlertView showAlertWithTitle:nil
                                     message:msg
                               describeTitle:nil
@@ -265,6 +285,16 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 #pragma mark - over methods
+// 注册自定义消息和cell
+- (void)registerCustomCellsAndMessages {
+    [super registerCustomCellsAndMessages];
+    ///注册自定义测试消息Cell
+    [self registerClass:[RCDTestMessageCell class] forMessageClass:[RCDTestMessage class]];
+    [self registerClass:RCDTipMessageCell.class forMessageClass:RCDGroupNotificationMessage.class];
+    [self registerClass:RCDTipMessageCell.class forMessageClass:RCDChatNotificationMessage.class];
+    [self registerClass:RCDPokeMessageCell.class forMessageClass:RCDPokeMessage.class];
+}
+
 - (void)didTapMessageCell:(RCMessageModel *)model {
     [super didTapMessageCell:model];
     if ([model.content isKindOfClass:[RCContactCardMessage class]]) {
@@ -466,6 +496,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         } else if (self.conversationType == ConversationType_PRIVATE) {
             [RCDPokeAlertView showPokeAlertView:self.conversationType targetId:self.targetId inViewController:self];
         }
+    } break;
+    case PLUGIN_BOARD_ITEM_DESTRUCT_TAG: {
+        [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
+        [self saveInputDestructStatus];
     } break;
     default:
         [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
@@ -904,6 +938,11 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
                                              selector:@selector(userDidTakeScreenshot:)
                                                  name:UIApplicationUserDidTakeScreenshotNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appWillTerminate)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:nil];
+
     [self.conversationMessageCollectionView addObserver:self
                                              forKeyPath:@"frame"
                                                 options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
@@ -949,6 +988,14 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (void)resetQucilySendView {
     [[RCDQuicklySendManager sharedManager] hideQuicklySendView];
+}
+
+- (void)saveInputDestructStatus {
+    KBottomBarStatus inputType = self.chatSessionInputBarControl.currentBottomBarStatus;
+    if (self.chatSessionInputBarControl.destructMessageMode) {
+        inputType = KBottomBarDestructStatus;
+    }
+    [[RCDIMService sharedService] saveInputStatus:self.conversationType targetId:self.targetId inputType:inputType];
 }
 
 #pragma mark - *************消息多选功能:转发、删除*************
@@ -1226,6 +1273,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (RealTimeLocationStatusView *)realTimeLocationStatusView {
     return objc_getAssociatedObject(self, kRealTimeLocationStatusViewKey);
+}
+
+#pragma mark - 通知处理
+- (void)appWillTerminate {
+    // 杀进程时，保存一下输入框状态
+    [self saveInputDestructStatus];
 }
 
 #pragma mark - 加载远端聊天室消息开始

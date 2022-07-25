@@ -12,9 +12,14 @@
 #import "NormalAlertView.h"
 #import "RCDDebugUltraGroupDefine.h"
 #import "UIView+MBProgressHUD.h"
+#import "RCDUltraGroupManager.h"
+#import "RCDUltraGroupNotificationMessage.h"
+#import "RCDChooseUserController.h"
+#import "RCDUGChannelSettingViewController.h"
 
-@interface RCConversationViewController ()
+@interface RCConversationViewController ()<RCDUGChannelTypeDelegate>
 - (void)reloadRecalledMessage:(long)recalledMsgId;
+- (void)didReceiveMessageNotification:(NSNotification *)notification;
 @end
 
 @interface RCDDebugUltraGroupChatViewController () <RCUltraGroupReadTimeDelegate, RCMessageBlockDelegate,RCUltraGroupTypingStatusDelegate, RCUltraGroupMessageChangeDelegate>
@@ -29,7 +34,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self addToolbarItems];
     [[RCChannelClient sharedChannelManager] setRCUltraGroupReadTimeDelegate:self];
     [[RCChannelClient sharedChannelManager] setRCUltraGroupTypingStatusDelegate:self];
     [[RCChannelClient sharedChannelManager] setRCUltraGroupMessageChangeDelegate:self];
@@ -42,6 +47,21 @@
     [self syncReadStatus];
     
     [[RCChannelClient sharedChannelManager] clearMessagesUnreadStatus:ConversationType_ULTRAGROUP targetId:self.targetId channelId:self.channelId];
+}
+
+- (void)didReceiveMessageNotification:(NSNotification *)notification{
+    [super didReceiveMessageNotification:notification];
+    RCMessage *message = notification.object;
+    if (message.conversationType == self.conversationType && [message.targetId isEqual:self.targetId] && [message.content isKindOfClass:[RCDUltraGroupNotificationMessage class]]) {
+        RCDUltraGroupNotificationMessage *noti = (RCDUltraGroupNotificationMessage *)message.content;
+        if ([noti.operation isEqualToString:RCDUltraGroupDismiss]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.view showHUDMessage:@"此超级群已解散"];
+                [NSThread sleepForTimeInterval:2];
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        }
+    }
 }
 
 - (void)addOtherPluginBoard {
@@ -83,7 +103,12 @@
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100003) {
         RCTextMessage *textMessage = [RCTextMessage messageWithContent:@"这是一条插入的消息"];
-        RCMessage *message = [[RCCoreClient sharedCoreClient] insertOutgoingMessage:self.conversationType targetId:self.targetId sentStatus:SentStatus_READ content:textMessage];
+        RCMessage *message = [[RCChannelClient sharedChannelManager] insertOutgoingMessage:self.conversationType
+                                                                                  targetId:self.targetId
+                                                                                 channelId:self.channelId
+                                                                                sentStatus:SentStatus_READ
+                                                                                   content:textMessage
+                                                                                  sentTime:0];
         [self appendAndDisplayMessage:message];
     } else {
         [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
@@ -91,9 +116,32 @@
 }
 
 - (void)setNavi {
-    RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"Setting"] target:self action:@selector(rightBarButtonItemClicked:)];
+    if (self.isDebugEnter) {
+        RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"Setting"] target:self action:@selector(rightBarButtonItemClicked:)];
+        self.navigationItem.rightBarButtonItem = rightBtn;
+        self.title = [NSString stringWithFormat:@"%@【%@】",self.targetId,self.channelId];
+    }else{
+        [RCDUltraGroupManager getChannelName:self.targetId channelId:self.channelId complete:^(NSString *channelName) {
+            self.title = [NSString stringWithFormat:@"%@",channelName];
+        }];
+        [self configureSetting];
+    }
+}
+
+- (void)configureSetting {
+    RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"Setting"] target:self action:@selector(rightSettingBarButtonItemClicked:)];
     self.navigationItem.rightBarButtonItem = rightBtn;
-    self.title = [NSString stringWithFormat:@"%@【%@】",self.targetId,self.channelId];
+}
+
+- (void)rightSettingBarButtonItemClicked:(id)sender {
+    RCDUGChannelSettingViewModel *viewModel = [[RCDUGChannelSettingViewModel alloc]
+                                               initWithGroupID:self.ultraGroup.groupId
+                                               channelID:self.channelId
+                                               isPrivate:self.isPrivate
+                                               ownnerID:self.ultraGroup.creatorId];
+    viewModel.typeDelegate = self;
+    RCDUGChannelSettingViewController *settingVC = [[RCDUGChannelSettingViewController alloc] initWithViewModel:viewModel];;
+    [self.navigationController pushViewController:settingVC animated:YES];
 }
 
 - (void)rightBarButtonItemClicked:(id)sender {
@@ -128,6 +176,12 @@
     return dateString;
 }
 
+#pragma mark - RCDUGChannelTypeDelegate
+
+- (void)channelTypeDidChangedTo:(BOOL)isPrivate {
+    self.isPrivate = isPrivate;
+}
+
 #pragma mark - RCUltraGroupReadTimeDelegate
 - (void)onUltraGroupReadTimeReceived:(NSString *)targetId channelId:(NSString *)channelId readTime:(long long)readTime {
     [self showAlertTitle:nil message:[NSString stringWithFormat:@"超级群已读时间同步, targetId%@ channelId%@ readTime:%lld", targetId, channelId, readTime]];
@@ -135,7 +189,12 @@
 
 #pragma mark - RCMessageBlockDelegate
 - (void)messageDidBlock:(RCBlockedMessageInfo *)blockedMessageInfo {
-    [self showAlertTitle:nil message:[NSString stringWithFormat:@"发送的消息（Id:%@, 会话类型: %lu, targetId: %@, 拦截原因:%lu）遇到敏感词被拦截", blockedMessageInfo.blockedMsgUId, (unsigned long)blockedMessageInfo.type, blockedMessageInfo.targetId, (unsigned long)blockedMessageInfo.blockType]];
+    NSString *blockTypeName = [RCDUtilities getBlockTypeName:blockedMessageInfo.blockType];
+    NSString *ctypeName = [RCDUtilities getConversationTypeName:blockedMessageInfo.type];
+    NSString *sentTimeFormat = [RCDUtilities getDateString:blockedMessageInfo.sentTime];
+    NSString *msg = [NSString stringWithFormat:@"会话类型: %@,\n会话ID: %@,\n消息ID:%@,\n消息时间戳:%@,\n频道ID: %@,\n附加信息: %@,\n拦截原因:%@(%@)", ctypeName, blockedMessageInfo.targetId, blockedMessageInfo.blockedMsgUId,sentTimeFormat, blockedMessageInfo.channelId, blockedMessageInfo.extra, @(blockedMessageInfo.blockType), blockTypeName];
+
+    [self showAlertTitle:nil message:msg];
 }
 
 
@@ -164,13 +223,18 @@
     message.channelId = self.channelId;
     
     if ([messageContent isKindOfClass:[RCMediaMessageContent class]]) {
-        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:pushContent pushData:nil progress:nil successBlock:nil errorBlock:nil cancel:nil];
+        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:pushContent pushData:nil progress:nil successBlock:nil errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+            NSString *log = [NSString stringWithFormat:@"发送失败: %ld, sentStatus(失败为20): %lu", nErrorCode, (unsigned long)errorMessage.sentStatus];
+            [self showToastMsg:log];
+        } cancel:nil];
     } else {
         [[RCIM sharedRCIM] sendMessage:message pushContent:pushContent pushData:nil successBlock:^(RCMessage *successMessage) {
             if (message.sentTime != successMessage.sentTime) {
                 [self appendAndDisplayMessage:successMessage];
             }
         } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+            NSString *log = [NSString stringWithFormat:@"发送失败: %ld", nErrorCode];
+            [self showToastMsg:log];
         }];
     }
 }
@@ -221,7 +285,9 @@
 
 - (void)showToastMsg:(NSString *)msg {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.view showHUDMessage:msg];
+//        if (self.isDebugEnter) {
+            [self.view showHUDMessage:msg];
+//        }
     });
 }
 
@@ -461,13 +527,16 @@
  消息撤回
  */
 - (void)onUltraGroupMessageRecalled:(NSArray<RCMessage*>*)messages {
-    NSMutableArray * userids = [NSMutableArray new];
+//    NSMutableArray * messageUids = [NSMutableArray new];
     for (RCMessage* msg in messages) {
-        [userids addObject:msg.messageUId];
+//        [messageUids addObject:msg.messageUId];
+        [[NSNotificationCenter defaultCenter] postNotificationName:RCKitDispatchRecallMessageNotification
+                                                            object:@(msg.messageId)
+                                                          userInfo:nil];
     }
+//    NSString *msgUIdStr = [messageUids componentsJoinedByString:@","];
+//    [self showAlertTitle:@"消息撤回的MsgUId" message:msgUIdStr];
     
-    NSString *msgUIdStr = [userids componentsJoinedByString:@","];
-    [self showAlertTitle:@"消息撤回的MsgUId" message:msgUIdStr];
 }
 
 /*!
@@ -592,6 +661,41 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.conversationMessageCollectionView reloadItemsAtIndexPaths:indexPaths];
     });
+}
+
+#pragma mark - super
+- (void)showChooseUserViewController:(void (^)(RCUserInfo *selectedUserInfo))selectedBlock
+                              cancel:(void (^)(void))cancelBlock {
+    RCDChooseUserController *userListVC = [[RCDChooseUserController alloc] initWithGroupId:self.targetId isUltraGroup:YES];
+    userListVC.selectedBlock = selectedBlock;
+    userListVC.cancelBlock = cancelBlock;
+    UINavigationController *rootVC = [[UINavigationController alloc] initWithRootViewController:userListVC];
+    rootVC.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self.navigationController presentViewController:rootVC animated:YES completion:nil];
+}
+
+#pragma mark - helper
+- (void)addToolbarItems {
+    //删除按钮
+    UIButton *deleteBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
+    [deleteBtn setImage:RCResourceImage(@"delete_message")
+               forState:UIControlStateNormal];
+    [deleteBtn addTarget:self action:@selector(deleteMessages) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *deleteBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
+    //按钮间 space
+    UIBarButtonItem *spaceItem =
+        [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self.messageSelectionToolbar
+        setItems:@[ spaceItem, deleteBarButtonItem, spaceItem ]
+        animated:YES];
+}
+
+- (void)deleteMessages {
+    NSArray *tempArray = [self.selectedMessages mutableCopy];
+    for (int i = 0; i < tempArray.count; i++) {
+        [self deleteMessage:tempArray[i]];
+    }
+    self.allowsMessageCellSelection = NO;
 }
 
 @end

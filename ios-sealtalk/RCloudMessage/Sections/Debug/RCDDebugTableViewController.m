@@ -36,6 +36,9 @@
 #define BURN_MESSAGE_TAG 104
 #define SEND_COMBINE_MESSAGE_TAG 105
 #define DISABLE_SYSTEM_EMOJI_TAG 106
+#define DISABLE_UTRAL_GORUP_SYNC_TAG 107
+#define DISABLE_KEYBOARD_TAG 108
+#define DISABLE_ULTRA_GROUP_TAG 109
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCDDebugTableViewController ()
@@ -127,6 +130,15 @@
     if ([title isEqualToString:@"禁用系统表情"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_SYSTEM_EMOJI_TAG];
     }
+    if ([title isEqualToString:@"超级群消息同步监听"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_UTRAL_GORUP_SYNC_TAG];
+    }
+    if ([title isEqualToString:@"输入时弹框"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_KEYBOARD_TAG];
+    }
+    if ([title isEqualToString:@"超级群功能"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_ULTRA_GROUP_TAG];
+    }
     
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -201,7 +213,10 @@
         @"阅后即焚",
         @"合并转发",
         @"消息扩展",
-        @"禁用系统表情"
+        @"禁用系统表情",
+        @"超级群消息同步监听",
+        @"输入时弹框",
+        @"超级群功能"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -240,32 +255,49 @@
     switchView.tag = cell.tag;
     BOOL isButtonOn = NO;
     switch (cell.tag) {
-    case DISPLAY_ID_TAG: {
-        isButtonOn = [DEFAULTS boolForKey:RCDDisplayIDKey];
-    } break;
-
-    case DISPLAY_ONLINE_STATUS_TAG: {
-        isButtonOn = [DEFAULTS boolForKey:RCDDisplayOnlineStatusKey];
-    } break;
-
-    case JOIN_CHATROOM_TAG: {
-        isButtonOn = [DEFAULTS boolForKey:RCDStayAfterJoinChatRoomFailedKey];
-    } break;
-    case DATA_STATISTICS_TAG: {
-        isButtonOn = [DEFAULTS boolForKey:RCDDebugDataStatisticsKey];
-    } break;
-    case BURN_MESSAGE_TAG: {
-        isButtonOn = [DEFAULTS boolForKey:RCDDebugBurnMessageKey];
-    } break;
-    case SEND_COMBINE_MESSAGE_TAG: {
-        isButtonOn = [DEFAULTS boolForKey:RCDDebugSendCombineMessageKey];
-    } break;
+        case DISPLAY_ID_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDisplayIDKey];
+        } break;
+            
+        case DISPLAY_ONLINE_STATUS_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDisplayOnlineStatusKey];
+        }
+            break;
+        case JOIN_CHATROOM_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDStayAfterJoinChatRoomFailedKey];
+        }
+            break;
+        case DATA_STATISTICS_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDataStatisticsKey];
+        }
+            break;
+        case BURN_MESSAGE_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugBurnMessageKey];
+        }
+            break;
+        case SEND_COMBINE_MESSAGE_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugSendCombineMessageKey];
+        }
+            break;
         case DISABLE_SYSTEM_EMOJI_TAG:{
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableSystemEmoji];
             break;
         }
-    default:
-        break;
+        case DISABLE_UTRAL_GORUP_SYNC_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugUtralGroupSyncKey];
+        }
+            break;
+        case DISABLE_KEYBOARD_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugInputKeyboardUIKey];
+        }
+            break;
+            
+        case DISABLE_ULTRA_GROUP_TAG:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugUltraGroupEnable];
+        }
+            break;
+        default:
+            break;
     }
     switchView.on = isButtonOn;
     [cell.contentView addSubview:switchView];
@@ -325,6 +357,21 @@
             [DEFAULTS synchronize];
             break;
         }
+        case DISABLE_UTRAL_GORUP_SYNC_TAG: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugUtralGroupSyncKey];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_KEYBOARD_TAG: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugInputKeyboardUIKey];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_ULTRA_GROUP_TAG: {
+            [self showUltraGroupAlert:switchButton];
+            break;
+        }
+            
     default:
         break;
     }
@@ -336,6 +383,26 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
+-(void)showUltraGroupAlert:(UISwitch *)btnSwitch {
+    UIAlertController *alertController =
+        [UIAlertController alertControllerWithTitle:@"超级群功能变更"
+                                            message:@"为了变更生效,需要重启App"
+                                     preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction =
+    [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [DEFAULTS setBool:btnSwitch.isOn forKey:RCDDebugUltraGroupEnable];
+        [DEFAULTS synchronize];
+        exit(0);
+    }];
+    [alertController addAction:okAction];
+
+    UIAlertAction *cancelAction =
+    [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        btnSwitch.on = !btnSwitch.isOn;
+    }];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
 /**
  强制Crash
  */

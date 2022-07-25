@@ -7,7 +7,13 @@
 //
 
 #import "RCDViewController.h"
-
+typedef NS_ENUM(NSInteger, RCDCreateType) {
+    RCDCreateTypeNormalGroup = 0,
+    RCDCreateTypeUltraGroup = 1,
+    RCDCreateTypeUltraGroupChannel = 2,
+};
 @interface RCDCreateGroupViewController : RCDViewController
 @property (nonatomic, strong) NSMutableArray *groupMemberIdList;
+@property (nonatomic, assign) RCDCreateType groupType;
+@property (nonatomic, copy) NSString *groupId;
 @end

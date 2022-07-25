@@ -17,6 +17,8 @@
 #import "RCDFriendDescription.h"
 #import "RCDGroupLeftMember.h"
 #import "RCDGroupMemberDetailInfo.h"
+#import "RCDUltraGroup.h"
+#import "RCDChannel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RCDDBManager : NSObject
@@ -127,6 +129,15 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)saveFriendDescription:(RCDFriendDescription *)description;
 
 + (RCDFriendDescription *)getFriendDescription:(NSString *)userId;
+
+#pragma mark - ultra group
++ (void)saveMyUltraGroups:(NSArray <RCDUltraGroup *> *)ultraGroups;
+
++ (NSArray <RCDUltraGroup *> *)getMyUltraGroups;
+
++ (void)saveUltraGroupChannels:(NSString *)groupId channels:(NSArray <RCDChannel *> *)channels;
+
++ (NSString *)getChannelName:(NSString *)groupId channelId:(NSString *)channelId;
 @end
 
 NS_ASSUME_NONNULL_END

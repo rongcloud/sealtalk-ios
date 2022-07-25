@@ -34,7 +34,7 @@
         return [self hexStringToColor:@"#e97ffb"];
     }
     //设置背景色
-    text = [text uppercaseString]; //设置为大写
+//    text = [text uppercaseString]; //设置为大写
     int asciiCode = [text characterAtIndex:0];
     int colorIndex = asciiCode % 5;
     NSArray *colorList =

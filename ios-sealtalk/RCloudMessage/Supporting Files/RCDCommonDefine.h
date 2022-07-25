@@ -59,3 +59,7 @@
         dispatch_async(dispatch_get_main_queue(), block);                                                              \
     }
 #endif
+
+// 是否禁用反黑产功能
+#define RCDDebugFraundPreventionDisable 1
+

@@ -551,9 +551,9 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         int allRequesteds = [RCDUserInfoManager getFriendRequesteds];
         if (allRequesteds > 0) {
-            [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:1];
+            [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:2];
         } else {
-            [__weakSelf.tabBarController.tabBar hideBadgeOnItemIndex:1];
+            [__weakSelf.tabBarController.tabBar hideBadgeOnItemIndex:2];
         }
     });
 }
@@ -570,7 +570,7 @@
  */
 - (void)pushChat:(id)sender {
     RCDContactSelectedTableViewController *contactSelectedVC =
-        [[RCDContactSelectedTableViewController alloc] initWithTitle:RCDLocalizedString(@"start_chatting")
+        [[RCDContactSelectedTableViewController alloc] initWithTitle:RCDLocalizedString(@"select_contact")
                                            isAllowsMultipleSelection:NO];
     [self.navigationController pushViewController:contactSelectedVC animated:YES];
 }
@@ -633,7 +633,7 @@
 - (void)getFriendRequesteds {
     int allRequesteds = [RCDUserInfoManager getFriendRequesteds];
     if (allRequesteds > 0) {
-        [self.tabBarController.tabBar showBadgeOnItemIndex:1];
+        [self.tabBarController.tabBar showBadgeOnItemIndex:2];
     }
 }
 

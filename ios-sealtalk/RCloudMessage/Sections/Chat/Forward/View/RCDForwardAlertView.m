@@ -250,7 +250,7 @@
     }
     if (imageUrl.length > 0) {
         [imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl]
-                     placeholderImage:[UIImage imageNamed:@"default_portrait_msg"]];
+                     placeholderImage:RCResourceImage(@"default_portrait_msg")];
     } else {
         imageView.image = [DefaultPortraitView portraitView:model.targetId name:name];
     }

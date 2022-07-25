@@ -63,7 +63,7 @@
         RCDGroupInfo *group = [RCDGroupManager getGroupInfo:model.targetId];
         if (group) {
             [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:group.portraitUri]
-                                    placeholderImage:[UIImage imageNamed:@"default_group_portrait"]];
+                                    placeholderImage:RCResourceImage(@"default_group_portrait")];
             self.conversationTitleLabel.text = group.groupName;
         } else {
             [RCDGroupManager
@@ -72,7 +72,7 @@
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       [self.headerImageView
                                           sd_setImageWithURL:[NSURL URLWithString:groupInfo.portraitUri]
-                                            placeholderImage:[UIImage imageNamed:@"default_group_portrait"]];
+                                            placeholderImage:RCResourceImage(@"default_group_portrait")];
                                       self.conversationTitleLabel.text = groupInfo.groupName;
                                   });
                               }];
@@ -86,7 +86,7 @@
                         [DefaultPortraitView portraitView:currentUserInfo.userId name:currentUserInfo.name];
                 } else {
                     [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:currentUserInfo.portraitUri]
-                                            placeholderImage:[UIImage imageNamed:@"default_portrait_msg"]];
+                                            placeholderImage:RCResourceImage(@"default_portrait_msg")];
                 }
                 self.conversationTitleLabel.text = currentUserInfo.name;
             }
@@ -112,7 +112,7 @@
             self.headerImageView.image = [DefaultPortraitView portraitView:friendInfo.userId name:friendInfo.name];
         } else {
             [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:friendInfo.portraitUri]
-                                    placeholderImage:[UIImage imageNamed:@"default_portrait_msg"]];
+                                    placeholderImage:RCResourceImage(@"default_portrait_msg")];
         }
         self.conversationTitleLabel.text = [RCKitUtility getDisplayName:friendInfo];
     }
@@ -124,7 +124,7 @@
             self.headerImageView.image = [DefaultPortraitView portraitView:groupInfo.groupId name:groupInfo.groupName];
         } else {
             [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:groupInfo.portraitUri]
-                                    placeholderImage:[UIImage imageNamed:@"default_group_portrait"]];
+                                    placeholderImage:RCResourceImage(@"default_group_portrait")];
         }
         self.conversationTitleLabel.text = [NSString stringWithFormat:@"%@(%@)", groupInfo.groupName, groupInfo.number];
     }

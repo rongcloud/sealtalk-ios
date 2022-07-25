@@ -21,6 +21,8 @@ static NSString *const USER_SETTING_TABLE = @"t_user_setting";
 static NSString *const FRIEND_DESCRIPTION_TABLE = @"t_friend_description";
 static NSString *const GROUP_LEFT_MEMBER_TABLE = @"t_group_left_member";
 static NSString *const GROUP_MEMBER_DETAIL_TABLE = @"t_group_member_detail";
+static NSString *const MY_ULTRAGROUP_TABLE = @"t_my_ultragroup";
+static NSString *const ULTRAGROUP_CHANNEL_TABLE = @"t_ultragroup_channel";
 static int USER_TABLE_VERSION = 2;
 static int GROUP_TABLE_VERSION = 3;
 static int MY_GROUP_TABLE_VERSION = 1;
@@ -33,6 +35,8 @@ static int USER_SETTING_TABLE_VERSION = 1;
 static int FRIEND_DESCRIPTION_TABLE_VERSION = 1;
 static int GROUP_LEFT_MEMBER_TABLE_VERSION = 1;
 static int GROUP_MEMBER_DETAIL_TABLE_VERSION = 1;
+static int MY_ULTRAGROUP_TABLE_VERSION = 1;
+static int ULTRAGROUP_CHANNEL_TABLE_VERSION = 1;
 @interface RCDGroupMemberDetailInfo ()
 @property (nonatomic, strong) NSString *describeStr;
 @end
@@ -842,6 +846,113 @@ static int GROUP_MEMBER_DETAIL_TABLE_VERSION = 1;
     return friendDescription;
 }
 
+#pragma mark - ultra
++ (void)saveMyUltraGroups:(NSArray <RCDUltraGroup *> *)ultraGroups{
+    if (![RCDDBHelper isDBOpened]) {
+        NSLog(@"saveUltraGroups, db is not open");
+        return;
+    }
+    if (ultraGroups.count == 0) {
+        NSLog(@"saveUltraGroups, ultraGroups count is zero");
+        return;
+    }
+    [self deleteMyUltraGroups];
+    NSString *sql = [NSString stringWithFormat: @"REPLACE INTO %@ (group_id, group_name, portrait_uri, creator_id, summary) VALUES (?, ?, ?, ?, ?)",MY_ULTRAGROUP_TABLE];
+    [RCDDBHelper executeTransaction:^(FMDatabase *_Nonnull db, BOOL *_Nonnull rollback) {
+        for (RCDUltraGroup *groupInfo in ultraGroups) {
+            [db executeUpdate:sql
+                withArgumentsInArray:@[
+                    groupInfo.groupId ?: @"",
+                    groupInfo.groupName ?: @"",
+                    groupInfo.portraitUri ?: @"",
+                    groupInfo.creatorId ?: @"",
+                    groupInfo.summary ?: @"",
+                ]];
+        }
+    }];
+}
+
++ (NSArray <RCDUltraGroup *> *)getMyUltraGroups{
+    if (![RCDDBHelper isDBOpened]) {
+        NSLog(@"getMyUltraGroups, db is not open");
+        return nil;
+    }
+    NSMutableArray *groups = [[NSMutableArray alloc] init];
+    NSString *sql = [NSString stringWithFormat: @"SELECT * FROM %@",MY_ULTRAGROUP_TABLE];
+    [RCDDBHelper executeQuery:sql
+         withArgumentsInArray:nil
+                   syncResult:^(FMResultSet *_Nonnull resultSet) {
+                       while ([resultSet next]) {
+                           RCDUltraGroup *group = [[RCDUltraGroup alloc] init];
+                           group.groupId = [resultSet stringForColumn:@"group_id"];
+                           group.groupName = [resultSet stringForColumn:@"group_name"];
+                           group.portraitUri = [resultSet stringForColumn:@"portrait_uri"];
+                           group.creatorId = [resultSet stringForColumn:@"creator_id"];
+                           group.summary = [resultSet stringForColumn:@"summary"];
+                           [groups addObject:group];
+                       }
+                   }];
+    return groups;
+}
+
++ (void)deleteMyUltraGroups{
+    NSString *sql = [NSString stringWithFormat: @"DELETE FROM %@",MY_ULTRAGROUP_TABLE];
+    [RCDDBHelper executeUpdate:sql withArgumentsInArray:nil];
+}
+
++ (void)saveUltraGroupChannels:(NSString *)groupId channels:(NSArray <RCDChannel *> *)channels{
+    if (![RCDDBHelper isDBOpened]) {
+        NSLog(@"saveUltraGroupChannels, db is not open");
+        return;
+    }
+    if (groupId.length == 0 || channels.count == 0) {
+        NSLog(@"saveUltraGroupChannels, groupId is nil or channels count is zero");
+        return;
+    }
+
+    NSString *sql = [NSString stringWithFormat: @"REPLACE INTO %@ (group_id, channel_id, channel_name) VALUES (?, ?, ?)",ULTRAGROUP_CHANNEL_TABLE];
+    [RCDDBHelper executeTransaction:^(FMDatabase *_Nonnull db, BOOL *_Nonnull rollback) {
+        for (RCDChannel *channdel in channels) {
+            [db executeUpdate:sql
+                withArgumentsInArray:@[
+                    groupId ?: @"",
+                    channdel.channelId ?: @"",
+                    channdel.channelName ?: @""
+                ]];
+        }
+    }];
+}
+
++ (NSString *)getChannelName:(NSString *)groupId channelId:(NSString *)channelId{
+    if (![RCDDBHelper isDBOpened]) {
+        NSLog(@"getChannelName, db is not open");
+        return nil;
+    }
+    if (groupId.length == 0 || channelId.length == 0) {
+        return nil;
+    }
+    NSString *sql = [NSString stringWithFormat: @"SELECT * FROM %@ WHERE group_id = ? AND channel_id = ? ",ULTRAGROUP_CHANNEL_TABLE];
+    __block NSString *name = @"";
+    [RCDDBHelper executeQuery:sql
+         withArgumentsInArray:@[groupId, channelId]
+                   syncResult:^(FMResultSet *_Nonnull resultSet) {
+                       while ([resultSet next]) {
+                           name = [resultSet stringForColumn:@"channel_name"];
+                       }
+                   }];
+    return name;
+}
+
++ (void)deleteUltraGroupChannels:(NSString *)groupId{
+    if (groupId.length == 0) {
+        return;
+    }
+    NSString *sql = [NSString stringWithFormat: @"DELETE FROM %@ WHERE group_id = ?",ULTRAGROUP_CHANNEL_TABLE];
+    [RCDDBHelper executeUpdate:sql withArgumentsInArray:@[groupId]];
+}
+
+#pragma mark - privite
+
 + (RCDFriendDescription *)generateFriendDescriptionFromFMResultSet:(FMResultSet *)resultSet {
     RCDFriendDescription *friendDescription = [[RCDFriendDescription alloc] init];
     friendDescription.userId = [resultSet stringForColumn:@"user_id"];
@@ -1169,22 +1280,36 @@ static int GROUP_MEMBER_DETAIL_TABLE_VERSION = 1;
                      }
                      return result;
                  }];
-    [RCDDBHelper updateTable:GROUP_MEMBER_DETAIL_TABLE
-                     version:GROUP_MEMBER_DETAIL_TABLE_VERSION
+    [RCDDBHelper updateTable:MY_ULTRAGROUP_TABLE
+                     version:MY_ULTRAGROUP_TABLE_VERSION
                  transaction:^BOOL(FMDatabase *_Nonnull db) {
-                     NSString *sql = @"CREATE TABLE IF NOT EXISTS t_group_member_detail ("
+                     NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ ("
                                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                                      "user_id TEXT NOT NULL,"
-                                      "group_id TEXT NOT NULL,"
-                                      "region TEXT,"
-                                      "phone TEXT,"
-                                      "wechat_account TEXT,"
-                                      "alipay_account TEXT,"
-                                      "description  TEXT)";
+                                      "group_id TEXT NOT NULL UNIQUE,"
+                                      "group_name TEXT,"
+                                      "portrait_uri TEXT,"
+                                      "creator_id TEXT,"
+                                      "summary TEXT"
+                                      ")",MY_ULTRAGROUP_TABLE];
                      BOOL result = [db executeUpdate:sql];
                      if (result) {
-                         result = [db executeUpdate:@"CREATE UNIQUE INDEX IF NOT EXISTS idx_group_member_detail ON "
-                                                    @"t_group_member_detail (group_id, user_id)"];
+                         result = [db executeUpdate:[NSString stringWithFormat:@"CREATE INDEX IF NOT EXISTS idx_group_id ON %@ (group_id)",MY_ULTRAGROUP_TABLE]];
+                     }
+                     return result;
+                 }];
+    [RCDDBHelper updateTable:ULTRAGROUP_CHANNEL_TABLE
+                     version:ULTRAGROUP_CHANNEL_TABLE_VERSION
+                 transaction:^BOOL(FMDatabase *_Nonnull db) {
+        NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ ("
+                                      "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                      "group_id TEXT NOT NULL,"
+                                      "channel_id TEXT NOT NULL,"
+                                      "channel_name TEXT"
+                                      ")",ULTRAGROUP_CHANNEL_TABLE];
+                     BOOL result = [db executeUpdate:sql];
+                     if (result) {
+                         result = [db executeUpdate:[NSString stringWithFormat:@"CREATE UNIQUE INDEX IF NOT EXISTS idx_group_channel ON "
+                                                     @"%@ (group_id, channel_id)",ULTRAGROUP_CHANNEL_TABLE]];
                      }
                      return result;
                  }];

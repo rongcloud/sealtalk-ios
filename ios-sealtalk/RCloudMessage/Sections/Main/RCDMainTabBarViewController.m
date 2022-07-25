@@ -7,6 +7,7 @@
 //
 
 #import "RCDMainTabBarViewController.h"
+#import "RCDUltraGroupController.h"
 #import "RCDChatListViewController.h"
 #import "RCDContactViewController.h"
 #import "RCDMeTableViewController.h"
@@ -29,6 +30,8 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 @property (nonatomic, strong) NSArray *selectImageArr;
 
 @property (nonatomic, strong) NSArray *animationImages;
+
+@property (nonatomic, assign) BOOL ultraGroupEnable;
 @end
 
 @implementation RCDMainTabBarViewController
@@ -47,6 +50,7 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self checkUltraGroup];
     self.view.backgroundColor = RCDDYCOLOR(0xffffff, 0x1c1c1c);
     [self rcdinitTabImages];
     [self setControllers];
@@ -57,6 +61,12 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
                                                  name:@"ChangeTabBarIndex"
                                                object:nil];
     [self configureTranslationLanguange];
+}
+
+- (void)checkUltraGroup {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSNumber *value = [userDefault valueForKey:@"RCDDebugUltraGroupEnable"];
+    self.ultraGroupEnable = [value boolValue];
 }
 
 - (void)configureTranslationLanguange {
@@ -87,7 +97,12 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     RCDContactViewController *contactVC = [[RCDContactViewController alloc] init];
     RCDSquareTableViewController *discoveryVC = [[RCDSquareTableViewController alloc] init];
     RCDMeTableViewController *meVC = [[RCDMeTableViewController alloc] init];
-    self.viewControllers = @[ chatVC, contactVC, discoveryVC, meVC ];
+    if (self.ultraGroupEnable) {
+        RCDUltraGroupController *ultraGroupVC = [[RCDUltraGroupController alloc] init];
+        self.viewControllers = @[chatVC, ultraGroupVC, contactVC, discoveryVC, meVC ];
+    } else {
+        self.viewControllers = @[chatVC, contactVC, discoveryVC, meVC ];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -105,7 +120,7 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     [self.viewControllers
         enumerateObjectsUsingBlock:^(__kindof UIViewController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
 
-            if ([obj isKindOfClass:[RCDChatListViewController class]] || [obj isKindOfClass:[RCDContactViewController class]] || [obj isKindOfClass:[RCDSquareTableViewController class]] || [obj isKindOfClass:[RCDMeTableViewController class]]) {
+            if ([obj isKindOfClass:[RCDChatListViewController class]] || [obj isKindOfClass:[RCDContactViewController class]] || [obj isKindOfClass:[RCDSquareTableViewController class]] || [obj isKindOfClass:[RCDMeTableViewController class]] || [obj isKindOfClass:[RCDUltraGroupController class]]) {
                 obj.tabBarItem.title = self.tabTitleArr[idx];
                 obj.tabBarItem.image =
                     [[UIImage imageNamed:self.imageArr[idx]]  imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -153,6 +168,9 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     default:
         break;
     }
+    if(self.ultraGroupEnable) {
+        self.navigationController.navigationBarHidden = (index == 1);
+    }
 }
 
 - (void)changeSelectedIndex:(NSNotification *)notify {
@@ -174,6 +192,9 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     }
     
     //快速切换时会出现前一个动画还在播放的情况，所以需要先停止前一个动画
+    if (self.previousIndex >= arry.count) {
+        return;
+    }
     UIImageView *preImageView = arry[self.previousIndex];
     [preImageView stopAnimating];
     preImageView.animationImages = nil;
@@ -186,19 +207,47 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 }
 
 - (void)rcdinitTabImages{
-    self.tabTitleArr = @[RCDLocalizedString(@"Messages"), RCDLocalizedString(@"contacts"), RCDLocalizedString(@"chatroom"), RCDLocalizedString(@"me")];
-    self.imageArr = @[@"chat_0",@"contact_0",@"square_0",@"me_0"];
-    self.selectImageArr = @[@"chat_29",@"contact_29",@"square_29",@"me_29"];
+    if(self.ultraGroupEnable) {
+        self.tabTitleArr = @[RCDLocalizedString(@"Messages"),RCDLocalizedString(@"UltraGroup"), RCDLocalizedString(@"contacts"), RCDLocalizedString(@"chatroom"), RCDLocalizedString(@"me")];
+        self.imageArr = @[@"chat_0",@"ultragroup_0",@"contact_0",@"square_0",@"me_0"];
+        self.selectImageArr = @[@"chat_29",@"ultragroup_29",@"contact_29",@"square_29",@"me_29"];
+    } else {
+        self.tabTitleArr = @[RCDLocalizedString(@"Messages"), RCDLocalizedString(@"contacts"), RCDLocalizedString(@"chatroom"), RCDLocalizedString(@"me")];
+        self.imageArr = @[@"chat_0",@"contact_0",@"square_0",@"me_0"];
+        self.selectImageArr = @[@"chat_29",@"contact_29",@"square_29",@"me_29"];
+    }
+    NSMutableArray *ulTraGroupAnimationImages = @[].mutableCopy;
     NSMutableArray *chatAnimationImages = @[].mutableCopy;
     NSMutableArray *contactAnimationImages = @[].mutableCopy;
     NSMutableArray *squareAnimationImages = @[].mutableCopy;
     NSMutableArray *meAnimationImages = @[].mutableCopy;
     for (int i = 0; i < 30; i++) {
-        [chatAnimationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"chat_%d",i]]];
-        [contactAnimationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"contact_%d",i]]];
-        [squareAnimationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"square_%d",i]]];
-        [meAnimationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"me_%d",i]]];
+        UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"ultragroup_%d",i]];
+        if (img) {
+            [ulTraGroupAnimationImages addObject:img];
+        }
+        img = [UIImage imageNamed:[NSString stringWithFormat:@"chat_%d",i]];
+        if (img) {
+            [chatAnimationImages addObject:img];
+        }
+        img = [UIImage imageNamed:[NSString stringWithFormat:@"contact_%d",i]];
+        if (img) {
+            [contactAnimationImages addObject:img];
+        }
+        img = [UIImage imageNamed:[NSString stringWithFormat:@"square_%d",i]];
+        if (img) {
+            [squareAnimationImages addObject:img];
+        }
+        img = [UIImage imageNamed:[NSString stringWithFormat:@"me_%d",i]];
+        if (img) {
+            [meAnimationImages addObject:img];
+        }
+        
     }
-    self.animationImages = @[chatAnimationImages.copy,contactAnimationImages,squareAnimationImages,meAnimationImages];
+    if(self.ultraGroupEnable) {
+        self.animationImages = @[chatAnimationImages.copy,ulTraGroupAnimationImages,contactAnimationImages,squareAnimationImages,meAnimationImages];
+    } else {
+        self.animationImages = @[chatAnimationImages.copy,contactAnimationImages,squareAnimationImages,meAnimationImages];
+    }
 }
 @end

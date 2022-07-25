@@ -65,6 +65,23 @@
     }
 }
 
++ (NSString *)defaultUltraChannelPortrait:(RCDChannel *)channel groupId:(NSString *)groupId{
+    NSString *filePath = [[self class] getIconCachePath:[NSString stringWithFormat:@"ultragroup%@%@.png", groupId,channel.channelId]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        NSURL *portraitPath = [NSURL fileURLWithPath:filePath];
+        return [portraitPath absoluteString];
+    } else {
+        UIImage *portrait = [DefaultPortraitView portraitView:channel.channelId name:channel.channelName];
+        BOOL result = [UIImagePNGRepresentation(portrait) writeToFile:filePath atomically:YES];
+        if (result) {
+            NSURL *portraitPath = [NSURL fileURLWithPath:filePath];
+            return [portraitPath absoluteString];
+        } else {
+            return nil;
+        }
+    }
+}
+
 + (NSString *)getIconCachePath:(NSString *)fileName {
     NSString *cachPath =
         [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -246,7 +263,7 @@
     return img;
 }
 
-+ (NSString *)getDataString:(long long)time {
++ (NSString *)getDateString:(long long)time {
     if (time <= 0) {
         return @"0000-00-00 00:00:00";
     }
@@ -444,4 +461,66 @@
     return NO;
 }
 
++ (NSString *)getConversationTypeName:(RCConversationType)type {
+    NSString *typeName;
+    switch (type) {
+        case ConversationType_PRIVATE:
+            typeName = @"private";
+            break;
+        case ConversationType_DISCUSSION:
+            typeName = @"discussion";
+            break;
+        case ConversationType_GROUP:
+            typeName = @"group";
+            break;
+        case ConversationType_CHATROOM:
+            typeName = @"chatroom";
+            break;
+        case ConversationType_CUSTOMERSERVICE:
+            typeName = @"customer_service";
+            break;
+        case ConversationType_SYSTEM:
+            typeName = @"system";
+            break;
+        case ConversationType_APPSERVICE:
+            typeName = @"app_public_service";
+            break;
+        case ConversationType_PUBLICSERVICE:
+            typeName = @"public_servcie";
+            break;
+        case ConversationType_PUSHSERVICE:
+            typeName = @"push_service";
+            break;
+        case ConversationType_ULTRAGROUP:
+            typeName = @"ultragroup";
+            break;
+        case ConversationType_Encrypted:
+            typeName = @"encrypted";
+            break;
+        case ConversationType_RTC:
+            typeName = @"rtc_room";
+            break;
+        default:
+            typeName = @"none";
+    }
+    return typeName;
+}
+
++ (NSString *)getBlockTypeName:(RCMessageBlockType)type {
+    NSString *typeName;
+    switch (type) {
+        case RCMessageBlockTypeGlobal:
+            typeName = @"全局敏感词";
+            break;
+        case RCMessageBlockTypeCustom:
+            typeName = @"自定义敏感词拦截";
+            break;
+        case RCMessageBlockTypeThirdParty:
+            typeName = @"第三方审核拦截";
+            break;
+        default:
+            typeName = @"unknown";
+    }
+    return typeName;
+}
 @end

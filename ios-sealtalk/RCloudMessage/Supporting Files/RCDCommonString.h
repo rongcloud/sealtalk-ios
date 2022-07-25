@@ -47,5 +47,8 @@
 #define RCDGroupClearMessageKey @"RCDGroupClearMessageKey"
 #define RCDCurrentPushLauguageCodeKey @"RCDCurrentPushLauguageCodeKey"
 #define RCDDebugDisableSystemEmoji @"RCDDebugDisableSystemEmoji"
+#define RCDDebugUtralGroupSyncKey  @"RCDDebugUtralGroupSyncKey"
+#define RCDDebugInputKeyboardUIKey  @"RCDDebugInputKeyboardUIKey"
+#define RCDDebugUltraGroupEnable @"RCDDebugUltraGroupEnable"
 
 #endif /* RCDCommonString_h */

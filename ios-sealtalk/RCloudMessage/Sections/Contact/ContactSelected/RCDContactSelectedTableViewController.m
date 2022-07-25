@@ -23,6 +23,7 @@
 #import "UIView+MBProgressHUD.h"
 #import "RCDSearchBar.h"
 #import "RCDTableView.h"
+#import "RCDUltraGroupManager.h"
 @interface RCDContactSelectedTableViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource,
                                                      UICollectionViewDelegate, UITableViewDelegate,
                                                      UITableViewDataSource, UISearchBarDelegate, UITextFieldDelegate>
@@ -365,28 +366,44 @@
             [seletedUsersId addObject:user.userId];
         }
 
-        if (seletedUsersId.count > 0 && self.groupOptionType == RCDContactSelectedGroupOptionTypeAdd) {
-            [RCDGroupManager
-                addUsers:seletedUsersId
-                 groupId:self.groupId
-                complete:^(BOOL success, RCDGroupAddMemberStatus status){
-                    rcd_dispatch_main_async_safe(^{
-                        [self.hud hide:YES];
-                        if (success == YES) {
-                            [self.navigationController popViewControllerAnimated:YES];
-                        } else {
-                            [self showAlertViewWithMessage:RCDLocalizedString(@"add_member_fail")];
-                            [self.rightBtn buttonIsCanClick:YES
-                                                buttonColor:RCDDYCOLOR(0x0099ff, 0xA8A8A8)
-                                              barButtonItem:self.rightBtn];
-                        }
-                        if (status == RCDGroupAddMemberStatusInviteeApproving) {
-                            [self.view showHUDMessage:RCDLocalizedString(@"MemberInviteNeedConfirm")];
-                        } else if (status == RCDGroupAddMemberStatusOnlyManagerApproving) {
-                            [self.view showHUDMessage:RCDLocalizedString(@"MemberInviteNeedManagerConfirm")];
-                        }
-                    })}];
-            return;
+        if (seletedUsersId.count > 0) {
+            if (self.groupOptionType == RCDContactSelectedGroupOptionTypeAdd) {
+                [RCDGroupManager
+                    addUsers:seletedUsersId
+                     groupId:self.groupId
+                    complete:^(BOOL success, RCDGroupAddMemberStatus status){
+                        rcd_dispatch_main_async_safe(^{
+                            [self.hud hide:YES];
+                            if (success == YES) {
+                                [self.navigationController popViewControllerAnimated:YES];
+                            } else {
+                                [self showAlertViewWithMessage:RCDLocalizedString(@"add_member_fail")];
+                                [self.rightBtn buttonIsCanClick:YES
+                                                    buttonColor:RCDDYCOLOR(0x0099ff, 0xA8A8A8)
+                                                  barButtonItem:self.rightBtn];
+                            }
+                            if (status == RCDGroupAddMemberStatusInviteeApproving) {
+                                [self.view showHUDMessage:RCDLocalizedString(@"MemberInviteNeedConfirm")];
+                            } else if (status == RCDGroupAddMemberStatusOnlyManagerApproving) {
+                                [self.view showHUDMessage:RCDLocalizedString(@"MemberInviteNeedManagerConfirm")];
+                            }
+                        })}];
+                return;
+            }else if(self.groupOptionType == RCDContactSelectedGroupOptionTypeAddUltraMember){
+                __weak typeof(self) weakSelf = self;
+                [RCDUltraGroupManager addUsers:seletedUsersId groupId:self.groupId complete:^(BOOL success) {
+                    [weakSelf.hud hide:YES];
+                    if (success) {
+                        [weakSelf.navigationController popViewControllerAnimated:YES];
+                    } else {
+                        [weakSelf showAlertViewWithMessage:RCDLocalizedString(@"add_member_fail")];
+                        [self.rightBtn buttonIsCanClick:YES
+                                            buttonColor:RCDDYCOLOR(0x0099ff, 0xA8A8A8)
+                                          barButtonItem:self.rightBtn];
+                    }
+                }];
+                return;
+            }
         }
         if (seletedUsersId.count > 0 && self.groupOptionType == RCDContactSelectedGroupOptionTypeDelete) {
             [RCDGroupManager kickUsers:seletedUsersId

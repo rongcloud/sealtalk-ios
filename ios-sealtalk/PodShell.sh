@@ -24,6 +24,11 @@ sed -i "" -e 's?^#define UMENG_APPKEY.*$?#define UMENG_APPKEY @\"\"?' RCloudMess
 sed -i "" -e 's?^#define RONGCLOUD_STATUS_SERVER.*$?#define RONGCLOUD_STATUS_SERVER @\"\"?' RCloudMessage/AppDelegate.m
 # 2.2 修改<翻译 SDK>条件编译宏为0
 sed -i "" -e 's?^#define RCDTranslationEnable.*$?#define RCDTranslationEnable 0?' RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+# 2.3 删除 SmAntiFraud 敏感信息
+sed -i "" -e 's?^static NSString \*const ORGANIZATION = .*$?static NSString \*const ORGANIZATION = @\"\";?' RCloudMessage/Utils/SMHelper/RCDSMSDKHelper.m
+sed -i "" -e 's?^static NSString \*const APP_ID = .*$?static NSString \*const APP_ID = @\"\";?' RCloudMessage/Utils/SMHelper/RCDSMSDKHelper.m
+sed -i "" -e 's?^static NSString \*const PUBLICK_KEY = .*$?static NSString \*const PUBLICK_KEY = @\"\";?' RCloudMessage/Utils/SMHelper/RCDSMSDKHelper.m
+sed -i "" -e 's?^#define RCDDebugFraundPreventionDisable.*$?#define RCDDebugFraundPreventionDisable 1?' RCloudMessage/Supporting\ Files/RCDCommonDefine.h
 
 # 3. 处理所有本地库
 
@@ -87,6 +92,9 @@ sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationServic
 sed -i '' -e "/RCCoreClient/d" ./SealTalkNotificationService/NotificationService.m
 # app extention 不支持手动引入 XCFramework，pod 1.11.2 不支持 app 与 extension 导入同一 SDK end
 
+# SmAntiFraud
+sed -i '' -e "/libSmAntiFraud.a/d"  ${Project}
+rm -rf ./RCloudMessage/sdk/smsdk
 
 # 移除本地使用的库 framework 文件夹被忽略 以下注释掉了
 # rm -rf ./framework/RongIMLib

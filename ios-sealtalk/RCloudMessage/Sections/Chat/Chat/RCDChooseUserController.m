@@ -17,7 +17,8 @@
 #import "UIColor+RCColor.h"
 #import "UIView+MBProgressHUD.h"
 #import "RCDSearchController.h"
-
+#import "RCDUltraGroupManager.h"
+#import "NormalAlertView.h"
 @interface RCDChooseUserController () <UISearchControllerDelegate, UISearchResultsUpdating>
 @property (nonatomic, strong) NSArray *allMembers;
 @property (nonatomic, strong) NSString *groupId;
@@ -26,13 +27,19 @@
 @property (nonatomic, strong) NSMutableArray *searchKeys;
 @property (nonatomic, strong) NSMutableDictionary *searchResultDic;
 @property (nonatomic, retain) RCDSearchController *searchController;
+@property (nonatomic, assign) BOOL isUltraGroup;
 @end
 
 @implementation RCDChooseUserController
 #pragma mark - life cycle
 - (instancetype)initWithGroupId:(NSString *)groupId {
+    return [self initWithGroupId:groupId isUltraGroup:NO];
+}
+
+- (instancetype)initWithGroupId:(NSString *)groupId isUltraGroup:(BOOL)isUltraGroup{
     if (self = [super init]) {
         self.groupId = groupId;
+        self.isUltraGroup = isUltraGroup;
     }
     return self;
 }
@@ -175,20 +182,34 @@
 
 #pragma mark - helper
 - (void)getData {
-    NSMutableArray *array = [RCDGroupManager getGroupMembers:self.groupId].mutableCopy;
-    if (array.count == 0) {
+    if (self.isUltraGroup) {
         __weak typeof(self) weakSelf = self;
-        [RCDGroupManager getGroupMembersFromServer:self.groupId
-                                          complete:^(NSArray<NSString *> *memberIdList) {
-                                              if (memberIdList) {
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      [weakSelf handleData:memberIdList.mutableCopy];
-                                                  });
-                                              }
-                                          }];
-    } else {
-        [self handleData:array];
+        [RCDUltraGroupManager getUltraGroupMemberList:self.groupId count:50 complete:^(NSArray<NSString *> *memberIdList) {
+            if (memberIdList) {
+                [weakSelf handleData:memberIdList.mutableCopy];
+            }else{
+                [NormalAlertView showAlertWithTitle:nil message:RCDLocalizedString(@"获取成员列表失败") describeTitle:nil confirmTitle:RCDLocalizedString(@"confirm") confirm:^{
+                    [weakSelf.navigationController dismissViewControllerAnimated:YES completion:nil];
+                }];
+            }
+        }];
+    }else{
+        NSMutableArray *array = [RCDGroupManager getGroupMembers:self.groupId].mutableCopy;
+        if (array.count == 0) {
+            __weak typeof(self) weakSelf = self;
+            [RCDGroupManager getGroupMembersFromServer:self.groupId
+                                              complete:^(NSArray<NSString *> *memberIdList) {
+                                                  if (memberIdList) {
+                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                          [weakSelf handleData:memberIdList.mutableCopy];
+                                                      });
+                                                  }
+                                              }];
+        } else {
+            [self handleData:array];
+        }
     }
+    
 }
 
 - (void)dismissVC {

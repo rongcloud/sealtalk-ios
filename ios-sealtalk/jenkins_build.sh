@@ -60,6 +60,9 @@ STATS_SERVER_URL=$PPARAM
 elif [ $PFLAG == "-csid" ]
 then
 CUSTOMER_SERVICE_ID=$PPARAM
+elif [ $PFLAG == "-fraudmode" ]
+then
+ENABLE_FRAUD_PREVENTION=$PPARAM
 fi
 done
 
@@ -135,6 +138,11 @@ else
 sed -i '' -e '/redirectNSlogToDocumentFolder/s/\/\///g' ./RCloudMessage/AppDelegate.m
 sed -i "" -e '/UIFileSharingEnabled/{n;s/false/true/; }' ./RCloudMessage/Supporting\ Files/Info.plist
 sed -i '' -e 's/RCDDebugTestFunction 1/\RCDDebugTestFunction 0/g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+fi
+
+if [ ${ENABLE_FRAUD_PREVENTION} = "1" ]
+then
+sed -i "" -e 's?^#define RCDDebugFraundPreventionDisable.*$?#define RCDDebugFraundPreventionDisable 0?' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
 fi
 
 BUILD_APP_PROFILE=""

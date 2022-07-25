@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RCDChooseUserController : RCDTableViewController
 - (instancetype)initWithGroupId:(NSString *)groupId;
+- (instancetype)initWithGroupId:(NSString *)groupId isUltraGroup:(BOOL)isUltraGroup;
 @property (nonatomic, copy) void (^selectedBlock)(RCUserInfo *selectedUserInfo);
 @property (nonatomic, copy) void (^cancelBlock)(void);
 @end

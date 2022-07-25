@@ -16,6 +16,7 @@
 #import "RCDUploadManager.h"
 #import "RCDForwardManager.h"
 #import "NormalAlertView.h"
+#import "RCDUltraGroupManager.h"
 @interface RCDCreateGroupViewController () <UITextFieldDelegate, UIImagePickerControllerDelegate,
                                             UINavigationControllerDelegate>
 @property (nonatomic, strong) UIView *headBgView;
@@ -25,6 +26,7 @@
 @property (nonatomic, strong) UILabel *infoLabel;
 @property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, strong) NSData *imageData;
+@property (nonatomic, assign) BOOL privateChannel;
 @end
 
 @implementation RCDCreateGroupViewController
@@ -116,30 +118,33 @@
     UITapGestureRecognizer *resetBottomTapGesture =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
     [self.view addGestureRecognizer:resetBottomTapGesture];
-
-    [self.view addSubview:self.headBgView];
-
-    [self.headBgView addSubview:self.portraitImageView];
-    [self.headBgView addSubview:self.editPortraitImageButton];
     [self.view addSubview:self.infoLabel];
     [self.view addSubview:self.groupName];
     [self.view addSubview:self.createButton];
-
-    [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.right.left.equalTo(self.view);
-        make.height.offset(102);
-    }];
-    
-    [self.portraitImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.headBgView);
-        make.top.equalTo(self.headBgView).offset(6);
-        make.width.height.offset(70);
-    }];
-    
-    [self.editPortraitImageButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.right.equalTo(self.portraitImageView);
-        make.width.height.offset(20);
-    }];
+    [self.view addSubview:self.headBgView];
+    if (self.groupType != RCDCreateTypeUltraGroupChannel) {
+        [self.headBgView addSubview:self.portraitImageView];
+        [self.headBgView addSubview:self.editPortraitImageButton];
+        [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.right.left.equalTo(self.view);
+            make.height.offset(102);
+        }];
+        [self.portraitImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.headBgView);
+            make.top.equalTo(self.headBgView).offset(6);
+            make.width.height.offset(70);
+        }];
+        
+        [self.editPortraitImageButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.bottom.right.equalTo(self.portraitImageView);
+            make.width.height.offset(20);
+        }];
+    }else{
+        [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.right.left.equalTo(self.view);
+            make.height.offset(10);
+        }];
+    }
     
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
@@ -153,7 +158,28 @@
         make.left.equalTo(self.infoLabel.mas_left).offset(80);
         make.height.equalTo(self.infoLabel);
     }];
-
+    if (self.groupType == RCDCreateTypeUltraGroupChannel) {
+        UILabel *titleLab = [UILabel new];
+        titleLab.textColor = [RCKitUtility generateDynamicColor:HEXCOLOR(0x111f2c) darkColor:[HEXCOLOR(0xffffff) colorWithAlphaComponent:0.9]];
+        titleLab.font = [UIFont systemFontOfSize:17];
+        titleLab.backgroundColor = RCDDYCOLOR(0xffffff, 0x191919);
+        titleLab.text = RCDLocalizedString(@"channel_private");
+        [self.view addSubview:titleLab];
+        [titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.height.mas_equalTo(self.infoLabel);
+            make.top.mas_equalTo(self.infoLabel.mas_bottom).mas_offset(20);
+        }];
+        
+        UISwitch *switchBtn = [UISwitch new];
+        [self.view addSubview:switchBtn];
+        [switchBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.mas_equalTo(titleLab);
+            make.right.mas_equalTo(self.view).mas_offset(-20);
+        }];
+        [switchBtn addTarget:self
+                      action:@selector(switchBtnClick:)
+            forControlEvents:UIControlEventValueChanged];
+    }
     [self.createButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).offset(25);
         make.right.equalTo(self.view).offset(-25);
@@ -166,6 +192,9 @@
     }];
 }
 
+- (void)switchBtnClick:(UISwitch *)sender {
+    self.privateChannel = sender.isOn;
+}
 - (CGFloat)getNaviAndStatusHeight {
     CGFloat navHeight = 44.0f;
     CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
@@ -291,42 +320,99 @@
 
 - (void)createGroupWithPortraitUri:(NSString *)portraitUri {
     NSString *nameStr = [self.groupName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    [RCDGroupManager
-        createGroup:nameStr
-        portraitUri:portraitUri
-          memberIds:self.groupMemberIdList
-           complete:^(NSString *groupId, RCDGroupAddMemberStatus status) {
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   if (groupId) {
-                       if (status == RCDGroupAddMemberStatusInviteeApproving) {
-                           [self.view showHUDMessage:RCDLocalizedString(@"MemberInviteNeedConfirm")];
-                       }
+    if ([self containsSpecialWords:nameStr]) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        return;
+    }
+    switch (self.groupType) {
+        case RCDCreateTypeNormalGroup:{
+            [self createNormalGroup:nameStr portraitUri:portraitUri];
+        }break;
+        case RCDCreateTypeUltraGroup:{
+            [self createUltraGroup:nameStr portraitUri:portraitUri];
+        }break;
+        case RCDCreateTypeUltraGroupChannel:{
+            [self createUltraGroupChannel:nameStr];
+        }break;
+        default:
+            break;
+    }
+}
 
-                       if ([RCDForwardManager sharedInstance].isForward) {
-                           if ([RCDForwardManager sharedInstance].selectConversationCompleted) {
-                               RCConversation *conversation = [[RCConversation alloc] init];
-                               conversation.targetId = groupId;
-                               conversation.conversationType = ConversationType_GROUP;
-                               [RCDForwardManager sharedInstance].selectConversationCompleted([@[ conversation ] copy]);
-                               [[RCDForwardManager sharedInstance] forwardEnd];
-                           } else {
-                               [self sendForwardMessage:groupId];
-                           }
-                       } else {
-                           [self gotoChatView:groupId groupName:nameStr];
-                       }
-                       //关闭HUD
-                       [MBProgressHUD hideHUDForView:self.view animated:YES];
-                   } else {
-                       dispatch_async(dispatch_get_main_queue(), ^{
-                           [self enableCreateButton:YES];
-                           //关闭HUD
-                           [MBProgressHUD hideHUDForView:self.view animated:YES];
-                           [self showAlert:RCDLocalizedString(@"create_group_fail")];
-                       });
-                   }
-               });
-           }];
+- (void)createUltraGroupChannel:(NSString *)nameStr{
+    __weak typeof(self) weakSelf = self;
+    [RCDUltraGroupManager createUltraGroupChannel:self.groupId
+                                      channelName:nameStr
+                                         isPrivate:self.privateChannel
+                                         complete:^(NSString *channelId, RCDUltraGroupCode code) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        if (channelId) {
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        }else{
+            [weakSelf enableCreateButton:YES];
+            if (code == RCDUltraGroupCodeChannelsOverLimit) {
+                [weakSelf showAlert:@"创建频道超出最大限制"];
+            }else{
+                [weakSelf showAlert:RCDLocalizedString(@"create_group_fail")];
+            }
+        }
+    }];
+}
+
+- (void)createUltraGroup:(NSString *)nameStr portraitUri:(NSString *)portraitUri{
+    __weak typeof(self) weakSelf = self;
+    [RCDUltraGroupManager createUltraGroup:nameStr portraitUri:portraitUri summary:@"" complete:^(NSString *groupId, RCDUltraGroupCode code) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        if (groupId) {
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        }else{
+            [weakSelf enableCreateButton:YES];
+            if (code == RCDUltraGroupCodeGroupsOverLimit) {
+                [weakSelf showAlert:RCDLocalizedString(@"用户创建和加入的超级群组个数超限")];
+            }else{
+                [weakSelf showAlert:RCDLocalizedString(@"create_group_fail")];
+            }
+        }
+    }];
+}
+
+- (void)createNormalGroup:(NSString *)nameStr portraitUri:(NSString *)portraitUri{
+    [RCDGroupManager
+     createGroup:nameStr
+     portraitUri:portraitUri
+     memberIds:self.groupMemberIdList
+     complete:^(NSString *groupId, RCDGroupAddMemberStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (groupId) {
+                if (status == RCDGroupAddMemberStatusInviteeApproving) {
+                    [self.view showHUDMessage:RCDLocalizedString(@"MemberInviteNeedConfirm")];
+                }
+                
+                if ([RCDForwardManager sharedInstance].isForward) {
+                    if ([RCDForwardManager sharedInstance].selectConversationCompleted) {
+                        RCConversation *conversation = [[RCConversation alloc] init];
+                        conversation.targetId = groupId;
+                        conversation.conversationType = ConversationType_GROUP;
+                        [RCDForwardManager sharedInstance].selectConversationCompleted([@[ conversation ] copy]);
+                        [[RCDForwardManager sharedInstance] forwardEnd];
+                    } else {
+                        [self sendForwardMessage:groupId];
+                    }
+                } else {
+                    [self gotoChatView:groupId groupName:nameStr];
+                }
+                //关闭HUD
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self enableCreateButton:YES];
+                    //关闭HUD
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    [self showAlert:RCDLocalizedString(@"create_group_fail")];
+                });
+            }
+        });
+    }];
 }
 
 - (void)enableCreateButton:(BOOL)enable{
@@ -337,6 +423,22 @@
         self.createButton.alpha = 0.5;
     }
 }
+
+- (BOOL)containsSpecialWords:(NSString *)str{
+    NSString * string = @"~,￥,#,&,*,<,>,《,》,(,),[,],{,},【,】,^,@,/,￡,¤,,|,§,¨,「,」,『,』,￠,￢,￣,（,）,——,+,|,$,_,€,¥,“,”,;";
+    NSArray *specialStringArray = [string componentsSeparatedByString:@","];
+    for (NSInteger i = 0; i < specialStringArray.count; i ++) {
+        //判断字符串中是否含有特殊符号
+        if ([str rangeOfString:specialStringArray[i]].location != NSNotFound) {
+            [self showAlert:RCDLocalizedString(@"请不要输入特殊符号")];
+            [self enableCreateButton:YES];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 
 #pragma mark - geter & setter
 - (UIView *)headBgView {
@@ -368,7 +470,19 @@
     if (!_groupName) {
         _groupName = [[UITextField alloc] init];
         _groupName.font = [UIFont systemFontOfSize:17];
-        _groupName.placeholder = RCDLocalizedString(@"type_group_name_hint");
+        switch (self.groupType) {
+            case RCDCreateTypeNormalGroup:{
+                _groupName.placeholder = RCDLocalizedString(@"type_group_name_hint");
+            }break;
+            case RCDCreateTypeUltraGroup:{
+                _groupName.placeholder = RCDLocalizedString(@"type_group_name_hint");
+            }break;
+            case RCDCreateTypeUltraGroupChannel:{
+                _groupName.placeholder = RCDLocalizedString(@"填写频道名称（2-10个字符)");
+            }break;
+            default:
+                break;
+        }
         _groupName.delegate = self;
         _groupName.returnKeyType = UIReturnKeyDone;
         _groupName.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
@@ -391,6 +505,19 @@
         _infoLabel.font = [UIFont systemFontOfSize:17];
         _infoLabel.backgroundColor = RCDDYCOLOR(0xffffff, 0x191919);
         _infoLabel.text = [NSString stringWithFormat:@"  %@",RCDLocalizedString(@"Group_Name")];
+        switch (self.groupType) {
+            case RCDCreateTypeNormalGroup:{
+                _infoLabel.text = [NSString stringWithFormat:@"  %@",RCDLocalizedString(@"Group_Name")];
+            }break;
+            case RCDCreateTypeUltraGroup:{
+                _infoLabel.text = [NSString stringWithFormat:@"  %@",RCDLocalizedString(@"UltraGroup")];
+            }break;
+            case RCDCreateTypeUltraGroupChannel:{
+                _infoLabel.text = [NSString stringWithFormat:@"  %@",RCDLocalizedString(@"channel")];
+            }break;
+            default:
+                break;
+        }
         _infoLabel.userInteractionEnabled = YES;
     }
     return _infoLabel;
@@ -404,7 +531,19 @@
         _createButton.backgroundColor = HEXCOLOR(0x0099ff);
         [_createButton setTitleColor:HEXCOLOR(0xffffff) forState:(UIControlStateNormal)];
         _createButton.titleLabel.font = [UIFont systemFontOfSize:17];
-        [_createButton setTitle:RCDLocalizedString(@"CreateGroup") forState:(UIControlStateNormal)];
+        switch (self.groupType) {
+            case RCDCreateTypeNormalGroup:{
+                [_createButton setTitle:RCDLocalizedString(@"CreateGroup") forState:(UIControlStateNormal)];
+            }break;
+            case RCDCreateTypeUltraGroup:{
+                [_createButton setTitle:RCDLocalizedString(@"UltraGroup") forState:(UIControlStateNormal)];
+            }break;
+            case RCDCreateTypeUltraGroupChannel:{
+                [_createButton setTitle:RCDLocalizedString(@"channel") forState:(UIControlStateNormal)];
+            }break;
+            default:
+                break;
+        }
         [_createButton addTarget:self
                         action:@selector(clickDoneBtn)
               forControlEvents:(UIControlEventTouchUpInside)];

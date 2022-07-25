@@ -379,7 +379,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
                                              describeTitle:[NSString
                                                                stringWithFormat:RCDLocalizedString(@"AnnouncementTime"),
                                                                                 [RCDUtilities
-                                                                                    getDataString:announce.publishTime]]
+                                                                                    getDateString:announce.publishTime]]
                                               confirmTitle:RCDLocalizedString(@"confirm")
                                                    confirm:^{
 
