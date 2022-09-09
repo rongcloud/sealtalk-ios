@@ -10,7 +10,8 @@
 
 typedef NS_ENUM(NSInteger, RCDDebugNotificationType) {
     RCDDebugNotificationTypeDelete = 0,
-    RCDDebugNotificationTypeSendMsgKV
+    RCDDebugNotificationTypeSendMsgKV,
+    RCDDebugNotificationTypeSendMsgBlockKV //敏感词kv
 };
 
 extern NSString *kRCDDebugChatSettingNotification;

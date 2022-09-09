@@ -37,7 +37,9 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
             @(RCDComChatroomOptionCategory4_3) : @"4.3 查询->指定会话免打扰设置",
             @(RCDComChatroomOptionCategory5_1) : @"5.1 设置->指定会话类型免打扰设置",
             @(RCDComChatroomOptionCategory5_2) : @"5.2 移除->指定会话类型免打扰设置",
-            @(RCDComChatroomOptionCategory5_3) : @"5.3 查询->指定会话类型免打扰设置"
+            @(RCDComChatroomOptionCategory5_3) : @"5.3 查询->指定会话类型免打扰设置",
+            @(RCDComChatroomOptionCategory6_1) : @"6.1 发一条携带{tKey:当前时间}文本消息",
+            @(RCDComChatroomOptionCategory6_2) : @"6.2 发一条携带敏感词{key(123):毛泽东}文本消息"
         };
         _dataInfo = dic;
     }
@@ -244,6 +246,13 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
             [self showSettingDetailBy:category];
         }
             break;
+            
+            // 发送 KV 消息，并回调 block
+        case RCDComChatroomOptionCategory6_1:
+        case RCDComChatroomOptionCategory6_2: {
+            [self sendKVMessage:category];
+        }
+            break;
         default:
             break;
     }
@@ -264,6 +273,13 @@ NSString *const RCDBaseSettingTableViewCellIdentifier = @"RCDBaseSettingTableVie
     vc.channelId = self.channelId;
     vc.title = title;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)sendKVMessage:(RCDComChatroomOptionCategory)category {
+    if (self.selectedBlock) {
+        self.selectedBlock(category);
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

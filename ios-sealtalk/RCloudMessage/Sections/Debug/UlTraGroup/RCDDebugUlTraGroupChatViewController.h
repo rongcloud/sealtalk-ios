@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 是否为私有频道
 @property (nonatomic, assign) BOOL isPrivate;
+@property (nonatomic, assign) long long firstUnreadMsgSendTime;
 @end
 
 NS_ASSUME_NONNULL_END

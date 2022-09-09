@@ -51,6 +51,8 @@
 #import "RealTimeLocationStatusView.h"
 #import "RealTimeLocationViewController.h"
 #import "RealTimeLocationDefine.h"
+#import <RongLocation/RongLocation.h>
+
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
 static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusViewKey";
 
@@ -69,6 +71,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 /*******************实时位置共享***************/
 @property (nonatomic, weak) id<RCRealTimeLocationProxy> realTimeLocation;
 @property (nonatomic, strong) RealTimeLocationStatusView *realTimeLocationStatusView;
+@property (nonatomic, assign) BOOL drawAsyncEnable;
 @end
 
 @implementation RCDChatViewController
@@ -156,12 +159,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self resetQucilySendView];
     self.isShow = NO;
     [RCDPokeManager sharedInstance].currentConversation = nil;
-    NSArray *viewControllers = self.navigationController.viewControllers; //获取当前的视图控制其
-    if ([viewControllers indexOfObject:self] == NSNotFound) {
-        //当前视图控制器不在栈中，故为pop操作
-        [self.realTimeLocation removeRealTimeLocationObserver:self];
-        self.realTimeLocation = nil;
-    }
     
     // 退出页面时， 保存当前状态
     [self saveInputDestructStatus];
@@ -185,8 +182,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     self.realTimeLocationStatusView.frame = frame;
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    [super willMoveToParentViewController:parent];
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    [super didMoveToParentViewController:parent];
     if (!parent) {
         [self.realTimeLocation quitRealTimeLocation];
     }
@@ -217,8 +214,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         NSString *blockTypeName = [RCDUtilities getBlockTypeName:blockedMessageInfo.blockType];
         NSString *ctypeName = [RCDUtilities getConversationTypeName:blockedMessageInfo.type];
         NSString *sentTimeFormat = [RCDUtilities getDateString:blockedMessageInfo.sentTime];
-        NSString *msg = [NSString stringWithFormat:@"会话类型: %@,\n会话ID: %@,\n消息ID:%@,\n消息时间戳:%@,\n频道ID: %@,\n附加信息: %@,\n拦截原因:%@(%@)", ctypeName, blockedMessageInfo.targetId, blockedMessageInfo.blockedMsgUId, sentTimeFormat, blockedMessageInfo.channelId, blockedMessageInfo.extra, @(blockedMessageInfo.blockType), blockTypeName];
-        
+        NSString *sourceTypeName = [RCDUtilities getSourceTypeName:blockedMessageInfo.sourceType];
+        NSString *msg = [NSString stringWithFormat:@"会话类型: %@,\n会话ID: %@,\n消息ID:%@,\n消息时间戳:%@,\n频道ID: %@,\n附加信息: %@,\n拦截原因:%@(%@),\n消息源类型:%@(%@),\n消息源内容:%@", ctypeName, blockedMessageInfo.targetId, blockedMessageInfo.blockedMsgUId, sentTimeFormat, blockedMessageInfo.channelId, blockedMessageInfo.extra, @(blockedMessageInfo.blockType), blockTypeName, @(blockedMessageInfo.sourceType), sourceTypeName, blockedMessageInfo.sourceContent];
+
         [NormalAlertView showAlertWithTitle:nil
                                     message:msg
                               describeTitle:nil
@@ -285,24 +283,50 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 #pragma mark - over methods
+
+- (void)sendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
+    if (!self.drawAsyncEnable || ![messageContent isKindOfClass:[RCTextMessage class]]) {
+        [super sendMessage:messageContent pushContent:pushContent];
+        return;
+    } else {
+        RCTextMessage *msg = (RCTextMessage *)messageContent;
+        if ([msg.content isEqualToString:@"a"]) {
+            msg.content = [self longString];
+        } else if ([msg.content isEqualToString:@"b"]) {
+            msg.content = [self complexText];
+        }
+        [super sendMessage:msg pushContent:pushContent];
+    }
+   
+}
+
+
 // 注册自定义消息和cell
 - (void)registerCustomCellsAndMessages {
     [super registerCustomCellsAndMessages];
+
     ///注册自定义测试消息Cell
     [self registerClass:[RCDTestMessageCell class] forMessageClass:[RCDTestMessage class]];
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDGroupNotificationMessage.class];
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDChatNotificationMessage.class];
     [self registerClass:RCDPokeMessageCell.class forMessageClass:RCDPokeMessage.class];
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSNumber *value = [userDefault valueForKey:RCDDebugTextAsyncDrawEnable];
+    self.drawAsyncEnable = [value boolValue];
+    if ([value boolValue]) { //异步绘制
+        [self registerClass:[RCComplexTextMessageCell class] forMessageClass:[RCTextMessage class]];
+    }
 }
 
 - (void)didTapMessageCell:(RCMessageModel *)model {
-    [super didTapMessageCell:model];
     if ([model.content isKindOfClass:[RCContactCardMessage class]]) {
         RCContactCardMessage *cardMSg = (RCContactCardMessage *)model.content;
         RCDUserInfo *user =
             [[RCDUserInfo alloc] initWithUserId:cardMSg.userId name:cardMSg.name portrait:cardMSg.portraitUri];
         [self pushPersonDetailVC:user];
+        return;
     }
+    [super didTapMessageCell:model];
 }
 
 - (NSArray<UIMenuItem *> *)getLongTouchMessageCellMenuList:(RCMessageModel *)model {
@@ -522,9 +546,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 - (void)saveNewPhotoToLocalSystemAfterSendingSuccess:(UIImage *)newImage {
-    //保存图片
-    UIImage *image = newImage;
-    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    //保存图片, 调用者保障了相册权限已开启
+    [RCDUtilities savePhotosAlbumWithImage:newImage authorizationStatusBlock:nil resultBlock:nil];
 }
 
 - (void)showChooseUserViewController:(void (^)(RCUserInfo *selectedUserInfo))selectedBlock
@@ -818,9 +841,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     } else {
         [super leftBarButtonItemPressed:nil];
     }
-}
-
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
 }
 
 - (void)refreshUserInfoOrGroupInfo {
@@ -1382,4 +1402,64 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 //    }
 //}
 #pragma mark 加载远端聊天室消息结束
+
+#pragma mark - Test
+
+- (NSString *)longString {
+    NSString *text = @"1.微型小说（要符合“小说要求”，一千字以下） [1] \
+    比短篇更短的小说完全符合瞬息万变的现代社会中忙碌的人们的阅读习惯，几乎每天都可以看到人们为这类的小说赋予一个新名词和新定义。例如极短篇、精短小说、超短篇小说、微信息小说、一分钟小说、一袋烟小说、袖珍小说、焦点小说、瞳孔小说、拇指小说、迷你小说等，族繁不及备载，连专门的文学研究者也很难如数家珍分叙其定义，一般人更容易混淆，故总论之。一般认为小小说的篇幅应在一千字以下。因为题材常是生活经验的片段，因此可以是有头无尾、有尾无头、甚至无头无尾。高潮放在结尾，高潮一出马上完结，营造余音绕梁的意境。由于比短篇更短，字句也需要更加精练，题材能见微知著者为佳。一个意外的结局虽然能吸引眼球，但文章短还是要有伏笔呼应，甚至比起给予读者意外、应该更重视能否带给读者感动。\
+    2.短篇小说［一千（含）至三万字（不含）］ www.baidu.com \
+    一般认为，篇幅在一千（含）到两万多字的小说会被划归短篇小说。在它的特色中有所谓三一律：一人一地一时，也就是减少角色、缩小舞台、短化故事中流动的时间。另外，虽然它们时常惜墨如金，但一般认为短篇小说仍应符合小说的原始定义、也就是对细节有足够的刻划，绝非长篇故事的节略或纲要。所有小说基础，其发展初期并无长短之分，随时代而区分。今短篇小说多要求文笔洗练，且受西洋三一定律一时一地一物观念影响，使其更生动详实但也限制其发展。\
+    3.中篇小说（三万至六万字）13488619755\
+    一般认为，篇幅在三万字至六万字之间的小说。也有少数十几万字也被算作中篇而不归于长篇，这取决于文章内容的丰富度。其容量大小、篇幅长短、人物多寡、情节繁简等均介于长篇小说和短篇小说之间，通常只是截取主人公一个时期或某一段生活的典型事件塑造形象。反映社会生活的某个方面，故事情节完整。线索比较单一，矛盾斗争不如长篇小说复杂，人物较少。所以，相比于长篇，中篇小说比较容易把握，也更容易成功。因为对于初涉创作领域的人而言，写作长篇易陷入多数的情节造成凌乱难收的困境，而写作短篇不是转折太少而单调、就是转折太多却显得拥挤。这时考虑将原本的构想修改中篇是一个广受推荐的建议。\
+    4.长篇小说（六万字或十万字以上）\
+    一般认为，字数在六万或十万以上的为长篇小说，还可细分为小长篇（一般六万到十万字），中长篇（一般十几万到三五十万字），超长篇（一般超过百万字）。如果作者打算表现人生中常见的错综复杂关系，则必须使用这么大的篇幅。通常就算是笔调轻松的长篇小说，也会有一个内里的严肃主题，否则很容易陷入无组织或是零乱。初涉者在写作长篇时最需注意全局对主题的呼应、结构的严密性，以及避免重复矛盾或缺漏。\
+    注：篇幅长短并非明文规定，但按照情节内容丰富度可能会把部分字数多的划入字数少的类别，例如某些十几万二三十万字的小说会因为内容太过不紧凑而被归入中篇小说，而某些仅有六万多字让人觉得篇幅过短的小说会因为内容情节十分紧凑而归为小长篇。\
+    创作年代\
+    1.古典小说\
+    古典小说萌芽于先秦，发展于两汉，雏形于魏晋南北朝，形成于唐代，繁荣于宋元，鼎盛于明清。大致可分以下几个时期：\
+    （1）先秦两汉时期：当时社会出现的神话传说、寓言故事、史传文学成为古典小说叙事的源头。神话传说已经具备人物和情节两个基本因素，散见于诸子百家书中的寓言典故提供了借鉴经验，历史著作有比较完整的结构、人物形象和历史背景。\
+    （2）魏晋南北朝时期：出现了志怪、志人小说。严格意义上说这仍然算不上是小说，只能算是小说的雏形。《世说新语》也是这个时期的优秀作品，里面收集了许多短小精悍的小故事。\
+    （3）唐朝时期：古代小说的发展趋于成熟，形成了独立的文学形式—传奇体小说，由此我国的小说脱离历史领域而成为文学创作。唐代三大爱情传奇是此时期的标志性作品。\
+    （4）宋元时期：商品经济的发展和市井文化的兴起，给小说创作带来深厚的土壤。话本经过文人加工形成许多话本小说和演义小说。\
+    （5）明清时期：小说开始走上了文人独立创作之路，这一时期，小说作家主体意识增强。《红楼梦》的出现，把中国古代小说发展推向了高峰，达到前所未有的成就。在明清这一段时间内涌现了无数的经典之作流传于世。如明代四大奇书（《西游记》《水浒传》《三国演义》《金瓶梅》）三言二拍（《醒世恒言》《警世通言》《喻世明言》《初刻拍案惊奇》《二刻拍案惊奇》）清代的《红楼梦》《儒林外史》《老残游记》《聊斋志异》等。明董其昌《袁伯应（袁可立子）诗集序》：“二十年来，破觚为圆，浸淫广肆，子史空玄，旁逮稗官小说，无一不为帖括用者”。\
+    2.现代小说\
+    现当代小说的兴起的标志性事件为新文化运动，新文化运动乃是五四运动的先导（时间从1915年-1919年），大致可分为四个时期：\
+    （1）第一时期为民国时期，即1949年以前，是小说的多元文艺复兴阶段。\
+    民国时期，尤其是五四以来，中国遭受列强侵略，社会各种思潮流行，舶来文化冲击传统文化，中国小说的发展出现多元化，各类小说题材涌现，其中现代言情小说的发端鸳鸯蝴蝶派就出在此时。小说的代表性人物有“鲁郭茅巴老曹”六大家。晚清民国报纸兴起为小说创作提供了一个上佳的舞台，报纸通过了连载小说招揽人气，小说家通过报纸赚取稿费。近现代几乎所有著名的小说家最初都是从报纸上连载小说开始，从鸳鸯蝴蝶派的张恨水到当代金庸。\
+    （2）第二时期为建国后到文革结束，即1976年以前，是小说的阶级斗争阶段。\
+    这一时期的大陆小说的带有明显的政治倾向，同时，这一时期的大陆文艺青年经历了重大的人生转变，命运的沉浮、多视角的阅历以及对价值的思考，为下一个时期的辉煌埋下了伏笔（中国第一位诺贝尔文学奖得主莫言的人生转变就在这一时期）。而在港台，这一时期的言情小说和武侠小说发展到了巅峰，分别产生了琼瑶时代和金庸时代。\
+    （3）第三时期为改革开放后二十多年的时期，即2003年以前，是小说的反思和蜕变阶段。\
+    这一时期的大陆小说展现了强劲的生命力，文革结束，对外开放，知识分子思想解放，对过去的反思，对未来的向往，传统和新时代的撞击，使得小说界出现欣欣向荣的勃勃生机。以莫言、贾平凹、陈忠实等为代表文革后作家，在此期间创作了许多经典作品，莫言更是凭借在此期间创作的文学作品和影响力，在2012年获得中国第一个诺贝尔文学奖。\
+    （4）第四时期为二十一世纪初，是小说的“表性”网络文学阶段。\
+    随着网络普及，网络文学的出现颠覆了传统的书写和传播模式，使小说的发展更加多元，80后90后的生力军开始步入文坛并展现了惊人的创作能力，标志着网络小说已经成为主流文学之外的又一创作主体。\
+    内容题材\
+    1.神话小说\
+    借助神话的表现形式或以神话为题材内容的小说，它起源于远古时代原始先民的口头创作，当时出现大量的“用想象或借助想象力以征服自然、支配自然，把自然力加以形象化”的远古神话，实际上这就是人类创的神话小说。\
+    2.武侠小说\
+    也可称为武打小说，可看做男性言情和励志小说。\
+    3.仙侠小说\
+    仙侠的雏形与诞生，可以说起于武侠，却更盛武侠。在仙侠的初步探索期，比较遗憾未能融合仙与侠，到《灵仙》的创作开始融合形成这条道路。 [5]\
+    4.侦探小说\
+    侦探推理小说是指在故事的描述过程中带有足够的线索让读者可以推理出结局，也可以不加推理由小说中的“侦探”来推导出结局的小说。发展早期是受西方影响，而出现《霍桑探案》，当代摆脱西方影响的作品是《游戏侦探集》的出现，而刑侦严格上不算入，因为刑侦无法批判现实，只是为了当权者服务。\
+    5.探险小说\
+    它是以各种不寻常的冒险事件为描写的中心线索，主人公往往有不平凡的经历、遭遇和挫折，情节紧张、冲突尖锐、场面惊险、内容离奇。西方比较盛行，国内《游险记》与《寻龙诀》的出现，也带来了一点热度。\
+    6.历史小说\
+    历史小说通常与军事小说不分家，严格说历史小说主要是以史实记录为蓝本，重新记述刻画历史人物和事件。网络上出现的历史小说大多是使用中国古代历史为背景的穿越类小说。\
+    7.言情小说\
+    包括很多，如后宫文，穿越文，都市文，青春校园文等，以描述恋爱感情为主题。例如《唐伯虎不点秋香》《史上第一搞笑初恋》等。\
+    8.科幻小说\
+    是根据现有的科学理论进行幻想的小说，并非凭空捏造。\
+    9.恐怖小说\
+    以情节或者语言以达到让读者恐慌的目的。\
+    10.玄幻小说\
+    玄幻小说和科幻小说有很大区别，很多都是天马行空的想象，大多更具东方特征。";
+    return text;
+}
+
+- (NSString *)complexText {
+    NSString *text = @"A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n vA\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n A\n v";
+    return text;
+}
+
 @end

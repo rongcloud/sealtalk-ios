@@ -57,7 +57,7 @@
 @interface RCDChatViewController()
 - (void)rightBarButtonItemClicked:(RCConversationModel *)model;
 @end
-@interface RCDDebugComChatViewController ()
+@interface RCDDebugComChatViewController ()<RCMessageBlockDelegate>
 @property (nonatomic, strong) RCMessageModel *currMessageModel;
 @end
 
@@ -69,6 +69,8 @@
     self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 180, 20)];
     self.placeholderLabel.text = @"测试 Placeholder";
     self.placeholderLabel.textColor = [UIColor grayColor];
+    
+    [RCCoreClient sharedCoreClient].messageBlockDelegate = self;
 }
 
 - (NSArray<UIMenuItem *> *)getLongTouchMessageCellMenuList:(RCMessageModel *)model {
@@ -104,6 +106,10 @@
 
     UIMenuItem *delItem = [[UIMenuItem alloc] initWithTitle:@"删除远端" action:@selector(onDeleteRemoteMessage:)];
     [list insertObject:delItem atIndex:idx];
+    
+    UIMenuItem *updateBlockKVItem = [[UIMenuItem alloc] initWithTitle:@"更新敏感KV" action:@selector(updateBlockKV)];
+    [list addObject:updateBlockKVItem];
+
     self.currMessageModel = model;
     return list.copy;
 }
@@ -120,6 +126,122 @@
     self.needDeleteRemoteMessage = isSourceValue;
 }
 
+//更新携带敏感词KV
+- (void)updateBlockKV {
+    
+    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *senderUserId = self.currMessageModel.senderUserId;
+    
+    RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.currMessageModel.messageUId];
+
+    if ([currentUserId isEqualToString:senderUserId] && message.canIncludeExpansion) {
+        NSMutableDictionary *dic = [NSMutableDictionary new];
+        dic[@"123"] = @"毛泽东";
+        [[RCCoreClient sharedCoreClient] updateMessageExpansion:dic messageUId:message.messageUId success:^{
+            RCMessage *msg = [[RCIMClient sharedRCIMClient] getMessageByUId:message.messageUId];
+            NSLog(@"Expansion %@", msg.expansionDic);
+            NSString *text = [NSString stringWithFormat:@"KV已改为%@", msg.expansionDic];
+            [self showAlertTitle:msg.messageUId message:text];
+        } error:^(RCErrorCode status) {
+            [self showToastMsg:[NSString stringWithFormat:@"msgUid:%@的KV更新失败%zd",message.messageUId,status]];
+        }];
+    } else {
+        [self showAlertTitle:nil message:@"请确定是否是自己发的可扩展消息"];
+    }
+}
+
+- (void)sendKVTextMessage {
+    
+    RCTextMessage *messageContent = [RCTextMessage messageWithContent:@"携带KV的文本消息"];
+    RCMessage *message = [[RCMessage alloc] initWithType:self.conversationType targetId:self.targetId direction:MessageDirection_SEND messageId:-1 content:messageContent];
+    message.messagePushConfig = [self getPushConfig];
+    message.messageConfig = [self getConfig];
+    message.channelId = self.channelId;
+    message.canIncludeExpansion = YES;
+    message.expansionDic = @{@"tKey":[self getTimeString]};
+    
+    __weak typeof(self) weakSelf = self;
+    [[RCIMClient sharedRCIMClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
+        [weakSelf appendAndDisplayMessage:successMessage];
+        [self showToastMsg:@"发送携带KV的文本消息成功"];
+    } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+        [self showAlertTitle:nil message:[NSString stringWithFormat:@"send message failed:%ld",(long)nErrorCode]];
+    }];
+}
+
+// 发送携带敏感词KV的消息
+- (void)sendBlockKVTextMessage {
+    
+    RCTextMessage *messageContent = [RCTextMessage messageWithContent:@"携带敏感词KV的文本消息"];
+    RCMessage *message = [[RCMessage alloc] initWithType:self.conversationType targetId:self.targetId direction:MessageDirection_SEND messageId:-1 content:messageContent];
+    message.messagePushConfig = [self getPushConfig];
+    message.messageConfig = [self getConfig];
+    message.channelId = self.channelId;
+    message.canIncludeExpansion = YES;
+    message.expansionDic = @{@"123":@"毛泽东"};
+    
+    __weak typeof(self) weakSelf = self;
+    [[RCIMClient sharedRCIMClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
+        [weakSelf appendAndDisplayMessage:successMessage];
+        [self showToastMsg:@"发送携带敏感词KV的文本消息成功"];
+    } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+        [self showAlertTitle:nil message:[NSString stringWithFormat:@"send message failed:%ld",(long)nErrorCode]];
+    }];
+}
+
+- (RCMessagePushConfig *)getPushConfig {
+    RCMessagePushConfig *pushConfig = [[RCMessagePushConfig alloc] init];
+    pushConfig.disablePushTitle = [[[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-disablePushTitle"] boolValue];
+    pushConfig.pushTitle = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-title"];
+    pushConfig.pushContent = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-content"];
+    pushConfig.pushData = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-data"];
+    pushConfig.forceShowDetailContent = [[[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-forceShowDetailContent"] boolValue];
+    pushConfig.templateId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-templateId"];
+    
+    pushConfig.iOSConfig.threadId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-threadId"];
+    pushConfig.iOSConfig.apnsCollapseId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-apnsCollapseId"];
+    pushConfig.iOSConfig.richMediaUri = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-richMediaUri"];
+    pushConfig.iOSConfig.category = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-category"];
+    
+    pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
+    pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
+    pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
+    pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
+    pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
+    pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];
+    pushConfig.androidConfig.fcmImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmImageUrl"];
+    pushConfig.androidConfig.importanceHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHW"];
+    pushConfig.androidConfig.hwImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hwImageUrl"];
+    pushConfig.androidConfig.miLargeIconUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-miLargeIconUrl"];
+    pushConfig.androidConfig.fcmChannelId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmChannelId"];
+    return pushConfig;
+}
+
+- (RCMessageConfig *)getConfig {
+    RCMessageConfig *config = [[RCMessageConfig alloc] init];
+    config.disableNotification = [[[NSUserDefaults standardUserDefaults] objectForKey:@"config-disableNotification"] boolValue];
+    return config;
+}
+
+- (NSString *)getTimeString {
+    NSDateFormatter *dateFormart = [[NSDateFormatter alloc]init];
+    [dateFormart setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    dateFormart.timeZone = [NSTimeZone systemTimeZone];
+    NSString *dateString = [dateFormart stringFromDate:[NSDate date]];
+    return dateString;
+}
+
+- (void)showToastMsg:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:msg];
+    });
+}
+
+- (void)showAlertTitle:(NSString *)title message:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [RCAlertView showAlertController:title message:msg cancelTitle:RCDLocalizedString(@"confirm")];
+    });
+}
 
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
@@ -130,6 +252,20 @@
     vc.targetId = self.targetId;
     vc.type = self.conversationType;
     vc.channelId = self.channelId;
+    __weak typeof(self) weakSelf = self;
+    vc.selectedBlock = ^(RCDComChatroomOptionCategory category) {
+        switch (category) {
+            case RCDComChatroomOptionCategory6_1:
+                [weakSelf sendKVTextMessage];
+                break;
+            case RCDComChatroomOptionCategory6_2:
+                [weakSelf sendBlockKVTextMessage];
+                break;
+
+            default:
+                break;
+        }
+    };
     [self.navigationController pushViewController:vc animated:YES];
 
     /*
@@ -189,6 +325,19 @@
         [self.navigationController pushViewController:infoVC animated:YES];
     }
      */
+}
+
+
+#pragma mark - RCMessageBlockDelegate
+- (void)messageDidBlock:(RCBlockedMessageInfo *)blockedMessageInfo {
+    NSString *blockTypeName = [RCDUtilities getBlockTypeName:blockedMessageInfo.blockType];
+    NSString *ctypeName = [RCDUtilities getConversationTypeName:blockedMessageInfo.type];
+    NSString *sentTimeFormat = [RCDUtilities getDateString:blockedMessageInfo.sentTime];
+    NSString *sourceTypeName = [RCDUtilities getSourceTypeName:blockedMessageInfo.sourceType];
+    NSString *msg = [NSString stringWithFormat:@"会话类型: %@,\n会话ID: %@,\n消息ID:%@,\n消息时间戳:%@,\n频道ID: %@,\n附加信息: %@,\n拦截原因:%@(%@),\n消息源类型:%@(%@),\n消息源内容:%@", ctypeName, blockedMessageInfo.targetId, blockedMessageInfo.blockedMsgUId, sentTimeFormat, blockedMessageInfo.channelId, blockedMessageInfo.extra, @(blockedMessageInfo.blockType), blockTypeName, @(blockedMessageInfo.sourceType), sourceTypeName, blockedMessageInfo.sourceContent];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self showAlertTitle:nil message:msg];
+    });
 }
 
 @end

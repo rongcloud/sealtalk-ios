@@ -14,6 +14,8 @@
 #import "RCDCreateGroupViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "RCDUltraGroupNotificationMessage.h"
+#import "RCDUGSettingsController.h"
+
 #define kIs_iphone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 #define kIs_iPhoneX RCDScreenWidth >=375.0f && RCDScreenHeight >=812.0f&& kIs_iphone
 #define kTabBarHeight (CGFloat)(kIs_iPhoneX?(49.0 + 34.0):(49.0))
@@ -57,6 +59,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.navigationController setNavigationBarHidden:YES];
+    [self.chatlistVC viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -172,13 +175,28 @@
     return isExit;
 }
 
+- (void)showSettings {
+    RCDUGSettingsController *vc = [RCDUGSettingsController new];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (UIView *)footerView {
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *img = [UIImage imageNamed:@"rc_main_ug_setting"];
+    [btn setImage:img forState:UIControlStateNormal];
+    [btn addTarget:self
+            action:@selector(showSettings)
+  forControlEvents:UIControlEventTouchUpInside];
+    [btn sizeToFit];
+    return btn;
+}
 #pragma mark - getter
 - (RCDTableView *)tableView {
     if (!_tableView) {
         _tableView = [[RCDTableView alloc] init];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.tableFooterView = [UIView new];
+        _tableView.tableFooterView = [self footerView];
         _tableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, RCDLeftSpace, 15)];
         _tableView.backgroundColor = [RCDUtilities generateDynamicColor:HEXCOLOR(0xecebf0) darkColor:HEXCOLOR(0x1c1c1c)];
     }

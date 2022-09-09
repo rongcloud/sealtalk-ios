@@ -16,7 +16,6 @@
 #define RONGCLOUD_FILE_SERVER @""
 #define RONGCLOUD_STATS_SERVER @""
 
-
 #define RCDGroupNoticeTargetId @"__group_apply__"
 #define RCDOpenQRCodeUrlNotification @"RCDOpenQRCodeUrlNotification"
 #define RCDQRCodeContentInfoUrl @"http://sealtalk.rongcloud.cn/download"

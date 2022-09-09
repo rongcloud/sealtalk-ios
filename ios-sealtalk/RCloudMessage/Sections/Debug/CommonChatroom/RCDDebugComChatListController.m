@@ -60,8 +60,8 @@
 
 - (void)willDisplayConversationTableCell:(RCConversationBaseCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     RCDebugCollectionModifyMode modifyMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectConversationCollectionInfoModifyType"];
+    RCConversationModel *model = self.conversationListDataSource[indexPath.row];
     if (RCDebugCollectionModifyModeWillDisplayCell == modifyMode) {
-        RCConversationModel *model = self.conversationListDataSource[indexPath.row];
         if (RC_CONVERSATION_MODEL_TYPE_COLLECTION == model.conversationModelType &&
             ConversationType_PRIVATE == model.conversationType) {
             RCConversationCell *conversationCell = (RCConversationCell *)cell;
@@ -69,6 +69,9 @@
             [conversationCell.headerImageView setPlaceholderImage:[UIImage imageNamed:@"icon_person"]];
         }
     }
+    
+    NSString *text = [NSString stringWithFormat:@" Lev %ld ",model.notificationLevel];
+    [self configureTagViewFor:cell text:text];
 }
 
 - (void)onSelectedTableRow:(RCConversationModelType)conversationModelType
@@ -116,4 +119,27 @@
     [self.navigationController pushViewController:chatVC animated:YES];
 }
 
+- (void)configureTagViewFor:(RCConversationBaseCell *)cell
+                      text:(NSString *)text {
+    if ([cell isKindOfClass:[RCConversationCell class]]) {
+        RCConversationCell *cCell = (RCConversationCell *)cell;
+        UIView *tagView = [self channelTypeViewByLevel:text];
+        for (UIView *view in cCell.conversationTagView.subviews) {
+            [view removeFromSuperview];
+        }
+        [cCell.conversationTagView addSubview:tagView];
+    }
+}
+
+- (UIView *)channelTypeViewByLevel:(NSString *)text{
+    UILabel *lab = [UILabel new];
+    lab.textColor = [UIColor whiteColor];
+    lab.text = text;
+    lab.backgroundColor = HEXCOLOR(0x0099fff);
+    lab.font = [UIFont boldSystemFontOfSize:12];
+    lab.layer.cornerRadius = 2;
+    lab.layer.masksToBounds = YES;
+    [lab sizeToFit];
+    return lab;
+}
 @end

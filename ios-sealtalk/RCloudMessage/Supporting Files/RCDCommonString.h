@@ -50,5 +50,6 @@
 #define RCDDebugUtralGroupSyncKey  @"RCDDebugUtralGroupSyncKey"
 #define RCDDebugInputKeyboardUIKey  @"RCDDebugInputKeyboardUIKey"
 #define RCDDebugUltraGroupEnable @"RCDDebugUltraGroupEnable"
+#define RCDDebugTextAsyncDrawEnable @"RCDDebugTextAsyncDrawEnable"
 
 #endif /* RCDCommonString_h */

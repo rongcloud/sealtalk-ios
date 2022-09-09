@@ -14,6 +14,8 @@
 #import "RCDGroupManager.h"
 #import "RCDUserInfoManager.h"
 #import <RongIMKit/RongIMKit.h>
+#import <Photos/Photos.h>
+
 @implementation RCDUtilities
 + (UIImage *)imageNamed:(NSString *)name ofBundle:(NSString *)bundleName {
     UIImage *image = nil;
@@ -523,4 +525,43 @@
     }
     return typeName;
 }
+
++ (NSString *)getSourceTypeName:(NSInteger)type {
+    NSString *typeName;
+    switch (type) {
+        case 0:
+            typeName = @"原始消息";
+            break;
+        case 1:
+            typeName = @"扩展消息";
+            break;
+        case 2:
+            typeName = @"修改消息";
+            break;
+        default:
+            typeName = @"unknown";
+    }
+    return typeName;
+}
+
++ (void)savePhotosAlbumWithImage:(UIImage *)image authorizationStatusBlock:(nullable dispatch_block_t)authorizationStatusBlock resultBlock:(nullable void (^)(BOOL success))resultBlock {
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (PHAuthorizationStatusRestricted == status || PHAuthorizationStatusDenied == status) {
+        if (authorizationStatusBlock) {
+            authorizationStatusBlock();
+        }
+        return;
+    }
+    
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (resultBlock) {
+                resultBlock(nil == error);
+            }
+        });
+    }];
+}
+
 @end

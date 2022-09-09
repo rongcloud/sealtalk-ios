@@ -154,7 +154,8 @@ echo $VER_FLAG
 
 Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" ./RCloudMessage/Supporting\ Files/Info.plist)
 sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' ./RCloudMessage/Supporting\ Files/Info.plist
-sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' ./RCloudMessage/Supporting\ Files/Info.plist
+Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ./RCloudMessage/Supporting\ Files/Info.plist)
+sed -i ""  -e '/CFBundleVersion/{n;s/'${Bundle_Short_Version}'/'"${CUR_TIME}"'/; }' ./RCloudMessage/Supporting\ Files/Info.plist
 
 Bundle_Demo_Version=$(/usr/libexec/PlistBuddy -c "Print SealTalk\ Version" ./RCloudMessage/Supporting\ Files/Info.plist)
 sed -i "" -e '/SealTalk Version/{n;s/'"${Bundle_Demo_Version}"'/'"$DEMO_VER_FLAG"'/; }' ./RCloudMessage/Supporting\ Files/Info.plist
@@ -169,11 +170,13 @@ sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' ./融云\ Dem
 
 Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" ./SealTalkShareExtension/Info.plist)
 sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' ./SealTalkShareExtension/Info.plist
-sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' ./SealTalkShareExtension/Info.plist
+Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ./SealTalkShareExtension/Info.plist)
+sed -i ""  -e '/CFBundleVersion/{n;s/'${Bundle_Short_Version}'/'"${CUR_TIME}"'/; }' ./SealTalkShareExtension/Info.plist
 
 Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" .//SealTalkNotificationService/info.plist)
 sed -i ""  -e '/CFBundleShortVersionString/{n;s/'"${Bundle_Short_Version}"'/'"$VER_FLAG"\ "$RELEASE_FLAG"'/; }' .//SealTalkNotificationService/info.plist
-sed -i "" -e '/CFBundleVersion/{n;s/[0-9]*[0-9]/'"$CUR_TIME"'/; }' .//SealTalkNotificationService/info.plist
+Bundle_Short_Version=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ./SealTalkNotificationService/Info.plist)
+sed -i ""  -e '/CFBundleVersion/{n;s/'${Bundle_Short_Version}'/'"${CUR_TIME}"'/; }' ./SealTalkNotificationService/Info.plist
 
 echo "sealtalk modify parameters times: $(($(date +%s) - $TEMP_TIME))"
 TEMP_TIME=$(date +%s)

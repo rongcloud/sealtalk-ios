@@ -12,7 +12,6 @@
 #import "DefaultPortraitView.h"
 #import "RCDQRCodeManager.h"
 #import "RCDUIBarButtonItem.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "RCDGroupManager.h"
 #import "RCDUserInfoManager.h"
 #import "UIView+MBProgressHUD.h"
@@ -103,20 +102,7 @@
 }
 
 - (void)didClickSaveAction {
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-    if (status == ALAuthorizationStatusRestricted || status == ALAuthorizationStatusDenied) {
-        UIAlertController *alertController = [UIAlertController
-            alertControllerWithTitle:RCLocalizedString(@"AccessRightTitle")
-                             message:RCLocalizedString(@"photoAccessRight")
-                      preferredStyle:UIAlertControllerStyleAlert];
-        [alertController
-            addAction:[UIAlertAction actionWithTitle:RCLocalizedString(@"OK")
-                                               style:UIAlertActionStyleDefault
-                                             handler:nil]];
-        [self presentViewController:alertController animated:YES completion:nil];
-    } else {
-        [self saveImageToPhotos:[self captureCurrentView:self.qrBgView]];
-    }
+    [self saveImageToPhotos:[self captureCurrentView:self.qrBgView]];
 }
 
 - (void)didShareSealTalkAction {
@@ -168,11 +154,18 @@
 }
 
 - (void)saveImageToPhotos:(UIImage *)image {
-    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    [RCDUtilities savePhotosAlbumWithImage:image authorizationStatusBlock:^{
+        [RCAlertView showAlertController:RCLocalizedString(@"AccessRightTitle")
+                                 message:RCLocalizedString(@"photoAccessRight")
+                             cancelTitle:RCLocalizedString(@"OK")
+                        inViewController:self];
+    } resultBlock:^(BOOL success) {
+        [self showHUDWithSuccess:success];
+    }];
 }
 
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    if (error == nil) {
+- (void)showHUDWithSuccess:(BOOL)success {
+    if (success) {
         [self.view showHUDMessage:RCLocalizedString(@"SavePhotoSuccess")];
     } else {
         [self.view showHUDMessage:RCLocalizedString(@"SavePhotoFailed")];

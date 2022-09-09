@@ -7,9 +7,10 @@
 //
 
 #import "RCDImageSlideController.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "RCDQRInfoHandle.h"
 #import "RCDQRCodeManager.h"
+#import "RCDUtilities.h"
+
 @interface RCDImageSlideController ()
 
 @end
@@ -64,39 +65,38 @@
 
 #pragma mark - private
 - (void)saveImage {
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-    if (status == ALAuthorizationStatusRestricted || status == ALAuthorizationStatusDenied) {
+    [RCDUtilities savePhotosAlbumWithImage:[UIImage imageWithData:[self getCurrentPreviewImageData]] authorizationStatusBlock:^{
         [RCAlertView showAlertController:RCLocalizedString(@"AccessRightTitle")
                                  message:RCLocalizedString(@"photoAccessRight")
                              cancelTitle:RCLocalizedString(@"OK")
                         inViewController:self];
-        return;
+    } resultBlock:^(BOOL success) {
+        [self showAlertWithSuccess:success];
+    }];
+}
+
+- (void)showAlertWithSuccess:(BOOL)success {
+    if (success) {
+        [RCAlertView showAlertController:nil
+                                 message:RCLocalizedString(@"SavePhotoSuccess")
+                             cancelTitle:RCLocalizedString(@"OK") inViewController:self];
+    } else {
+        [RCAlertView showAlertController:nil
+                                 message:RCLocalizedString(@"SavePhotoFailed")
+                             cancelTitle:RCLocalizedString(@"OK") inViewController:self];
     }
-    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
-    [assetsLibrary
-        writeImageDataToSavedPhotosAlbum:[self getCurrentPreviewImageData]
-                                metadata:nil
-                         completionBlock:^(NSURL *assetURL, NSError *error) {
-                             if (error != NULL) {
-                                 [RCAlertView showAlertController:nil
-                                                   message:RCLocalizedString(@"SavePhotoFailed")
-                                               cancelTitle:RCLocalizedString(@"OK") inViewController:self];
-                             } else {
-                                 [RCAlertView showAlertController:nil
-                                                   message:RCLocalizedString(@"SavePhotoSuccess")
-                                               cancelTitle:RCLocalizedString(@"OK") inViewController:self];
-                             }
-                         }];
 }
 
 #pragma mark - helper
 - (NSData *)getCurrentPreviewImageData {
     NSData *imageData;
-    if (self.currentPreviewImage.localPath.length > 0 &&
-        [[NSFileManager defaultManager] fileExistsAtPath:self.currentPreviewImage.localPath]) {
+    if (self.currentPreviewImage.localPath.length > 0) {
         NSString *path = [RCUtilities getCorrectedFilePath:self.currentPreviewImage.localPath];
-        imageData = [[NSData alloc] initWithContentsOfFile:path];
-    } else {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+            imageData = [[NSData alloc] initWithContentsOfFile:path];
+        }
+    }
+    if (!imageData) {
         imageData = [RCKitUtility getImageDataForURLString:self.currentPreviewImage.imageUrl];
     }
     return imageData;

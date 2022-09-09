@@ -58,7 +58,9 @@
                     @"6.1.2 查询指定超级群默认通知配置",// 22
                     @"6.2.1 设置指定超级群特定频道默认通知配置",//23
                     @"6.2.2 查询指定超级群特定频道默认通知配置",// 24
-                    @"(其他)获取超级群未读数"];//25
+                    @"(其他)获取超级群未读数", //25
+                    @"发一条携带敏感词{key(123):毛泽东}文本消息" //26
+    ];
     [self setupSubviews];
     [self setNavi];
 }
@@ -283,6 +285,9 @@
         case 25:
             [self unreadMessageVerify];
             break;
+        case 26:
+            [self sendBlockKVTextMessage];
+            break;
         default:
             break;
     }
@@ -351,6 +356,12 @@
 
 - (void)sendKVTextMessage {
     [[NSNotificationCenter defaultCenter] postNotificationName:kRCDDebugChatSettingNotification object:@(RCDDebugNotificationTypeSendMsgKV)];
+}
+
+// 发送携带敏感词KV的消息
+- (void)sendBlockKVTextMessage {
+    [self.navigationController popViewControllerAnimated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kRCDDebugChatSettingNotification object:@(RCDDebugNotificationTypeSendMsgBlockKV)];
 }
 
 #pragma mark- 获取特定会话下所有频道的会话列表

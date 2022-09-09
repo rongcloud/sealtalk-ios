@@ -16,6 +16,15 @@
 		00277C2B27D0BDD200D8653D /* RCDTranslationLanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00277C2927D0BDD200D8653D /* RCDTranslationLanguageViewController.m */; };
 		00277C2E27D0BDDE00D8653D /* RCDTranslationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00277C2D27D0BDDE00D8653D /* RCDTranslationViewController.m */; };
 		0030FF3C27D066D700F5DC30 /* RCTransationPersistModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0030FF3627D066D700F5DC30 /* RCTransationPersistModel.m */; };
+		003A90922897F796000AC1FE /* RCDUGSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90912897F796000AC1FE /* RCDUGSettingsController.m */; };
+		003A90952897FA49000AC1FE /* RCDUGListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90942897FA49000AC1FE /* RCDUGListView.m */; };
+		003A90982898C581000AC1FE /* RCDUGSelectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90972898C581000AC1FE /* RCDUGSelectListViewController.m */; };
+		003A909B28991328000AC1FE /* RCDUnreadCountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A909A28991328000AC1FE /* RCDUnreadCountViewController.m */; };
+		003A909E289913A5000AC1FE /* RCDUnreadCountParamController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A909D289913A5000AC1FE /* RCDUnreadCountParamController.m */; };
+		003A90A128991E94000AC1FE /* RCDUnreadCountView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A028991E94000AC1FE /* RCDUnreadCountView.m */; };
+		003A90A4289A10C4000AC1FE /* RCDUGMentionedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A3289A10C4000AC1FE /* RCDUGMentionedViewController.m */; };
+		003A90A7289A10EB000AC1FE /* RCDMentionedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A6289A10EB000AC1FE /* RCDMentionedView.m */; };
+		003A90AA289A167C000AC1FE /* RCDMentionedQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A9289A167C000AC1FE /* RCDMentionedQueryView.m */; };
 		007322A82858625A00B51977 /* RCDChatViewController+Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 007322A72858625A00B51977 /* RCDChatViewController+Alert.m */; };
 		007558A8285C65CF0082F0EB /* RCDUGChannelSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558A7285C65CF0082F0EB /* RCDUGChannelSettingViewController.m */; };
 		007558AB285C66970082F0EB /* RCDChannelSetttingHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558AA285C66970082F0EB /* RCDChannelSetttingHeaderView.m */; };
@@ -32,6 +41,7 @@
 		00CEE56128044DBE0079C6AE /* RCDebugGlobalUndistributeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE56028044DBE0079C6AE /* RCDebugGlobalUndistributeViewController.m */; };
 		00CEE56428045AA90079C6AE /* RCDebugPushLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE56328045AA90079C6AE /* RCDebugPushLevelViewController.m */; };
 		00CEE567280516DC0079C6AE /* RCDebugComBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE566280516DC0079C6AE /* RCDebugComBaseViewController.m */; };
+		00D31183289A686600FCC908 /* RCDMessageDigestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D31182289A686600FCC908 /* RCDMessageDigestCell.m */; };
 		178998221F6244FA00FC44D3 /* sms-received.caf in Resources */ = {isa = PBXBuildFile; fileRef = 178998211F6244FA00FC44D3 /* sms-received.caf */; };
 		17B181851D587A1C0061E02B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A6EFABA01BB0EDAC007E9D67 /* libxml2.tbd */; };
 		17BE51CF1D5828EC0001418D /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 17BE51CE1D5828EC0001418D /* check.png */; };
@@ -484,6 +494,24 @@
 		00277C2D27D0BDDE00D8653D /* RCDTranslationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDTranslationViewController.m; sourceTree = "<group>"; };
 		0030FF3627D066D700F5DC30 /* RCTransationPersistModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTransationPersistModel.m; sourceTree = "<group>"; };
 		0030FF3827D066D700F5DC30 /* RCTransationPersistModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTransationPersistModel.h; sourceTree = "<group>"; };
+		003A90902897F796000AC1FE /* RCDUGSettingsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUGSettingsController.h; sourceTree = "<group>"; };
+		003A90912897F796000AC1FE /* RCDUGSettingsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGSettingsController.m; sourceTree = "<group>"; };
+		003A90932897FA49000AC1FE /* RCDUGListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUGListView.h; sourceTree = "<group>"; };
+		003A90942897FA49000AC1FE /* RCDUGListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGListView.m; sourceTree = "<group>"; };
+		003A90962898C581000AC1FE /* RCDUGSelectListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUGSelectListViewController.h; sourceTree = "<group>"; };
+		003A90972898C581000AC1FE /* RCDUGSelectListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGSelectListViewController.m; sourceTree = "<group>"; };
+		003A909928991328000AC1FE /* RCDUnreadCountViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUnreadCountViewController.h; sourceTree = "<group>"; };
+		003A909A28991328000AC1FE /* RCDUnreadCountViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUnreadCountViewController.m; sourceTree = "<group>"; };
+		003A909C289913A5000AC1FE /* RCDUnreadCountParamController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUnreadCountParamController.h; sourceTree = "<group>"; };
+		003A909D289913A5000AC1FE /* RCDUnreadCountParamController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUnreadCountParamController.m; sourceTree = "<group>"; };
+		003A909F28991E94000AC1FE /* RCDUnreadCountView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUnreadCountView.h; sourceTree = "<group>"; };
+		003A90A028991E94000AC1FE /* RCDUnreadCountView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUnreadCountView.m; sourceTree = "<group>"; };
+		003A90A2289A10C4000AC1FE /* RCDUGMentionedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUGMentionedViewController.h; sourceTree = "<group>"; };
+		003A90A3289A10C4000AC1FE /* RCDUGMentionedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGMentionedViewController.m; sourceTree = "<group>"; };
+		003A90A5289A10EB000AC1FE /* RCDMentionedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDMentionedView.h; sourceTree = "<group>"; };
+		003A90A6289A10EB000AC1FE /* RCDMentionedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMentionedView.m; sourceTree = "<group>"; };
+		003A90A8289A167C000AC1FE /* RCDMentionedQueryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDMentionedQueryView.h; sourceTree = "<group>"; };
+		003A90A9289A167C000AC1FE /* RCDMentionedQueryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMentionedQueryView.m; sourceTree = "<group>"; };
 		007322A62858625A00B51977 /* RCDChatViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCDChatViewController+Alert.h"; sourceTree = "<group>"; };
 		007322A72858625A00B51977 /* RCDChatViewController+Alert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCDChatViewController+Alert.m"; sourceTree = "<group>"; };
 		007558A6285C65CF0082F0EB /* RCDUGChannelSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDUGChannelSettingViewController.h; sourceTree = "<group>"; };
@@ -514,6 +542,8 @@
 		00CEE56328045AA90079C6AE /* RCDebugPushLevelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDebugPushLevelViewController.m; sourceTree = "<group>"; };
 		00CEE565280516DC0079C6AE /* RCDebugComBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDebugComBaseViewController.h; sourceTree = "<group>"; };
 		00CEE566280516DC0079C6AE /* RCDebugComBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDebugComBaseViewController.m; sourceTree = "<group>"; };
+		00D31181289A686600FCC908 /* RCDMessageDigestCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDMessageDigestCell.h; sourceTree = "<group>"; };
+		00D31182289A686600FCC908 /* RCDMessageDigestCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMessageDigestCell.m; sourceTree = "<group>"; };
 		0A1DDD9F22169D7300A9FE21 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = "RCloudMessage/Supporting Files/PrefixHeader.pch"; sourceTree = SOURCE_ROOT; };
 		178998211F6244FA00FC44D3 /* sms-received.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "sms-received.caf"; path = "RCloudMessage/Supporting Files/sms-received.caf"; sourceTree = SOURCE_ROOT; };
 		17B181861D587B0F0061E02B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1333,6 +1363,23 @@
 				0030FF3827D066D700F5DC30 /* RCTransationPersistModel.h */,
 			);
 			path = Translation;
+			sourceTree = "<group>";
+		};
+		003A90802897F776000AC1FE /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				003A90902897F796000AC1FE /* RCDUGSettingsController.h */,
+				003A90912897F796000AC1FE /* RCDUGSettingsController.m */,
+				003A90962898C581000AC1FE /* RCDUGSelectListViewController.h */,
+				003A90972898C581000AC1FE /* RCDUGSelectListViewController.m */,
+				003A909928991328000AC1FE /* RCDUnreadCountViewController.h */,
+				003A909A28991328000AC1FE /* RCDUnreadCountViewController.m */,
+				003A909C289913A5000AC1FE /* RCDUnreadCountParamController.h */,
+				003A909D289913A5000AC1FE /* RCDUnreadCountParamController.m */,
+				003A90A2289A10C4000AC1FE /* RCDUGMentionedViewController.h */,
+				003A90A3289A10C4000AC1FE /* RCDUGMentionedViewController.m */,
+			);
+			path = Setting;
 			sourceTree = "<group>";
 		};
 		007322962858623000B51977 /* Category */ = {
@@ -2521,6 +2568,7 @@
 		A25167442796AE5C00BA4BFD /* UltraGroup */ = {
 			isa = PBXGroup;
 			children = (
+				003A90802897F776000AC1FE /* Setting */,
 				A25167462796AE5C00BA4BFD /* RCDUltraGroupController.h */,
 				A25167452796AE5C00BA4BFD /* RCDUltraGroupController.m */,
 				A25167482796D0FE00BA4BFD /* RCDUltraGroupChannelListController.h */,
@@ -2923,6 +2971,16 @@
 			children = (
 				A251674B2797B3C800BA4BFD /* RCDUltraGroupCell.h */,
 				A251674C2797B3C800BA4BFD /* RCDUltraGroupCell.m */,
+				003A90932897FA49000AC1FE /* RCDUGListView.h */,
+				003A90942897FA49000AC1FE /* RCDUGListView.m */,
+				003A909F28991E94000AC1FE /* RCDUnreadCountView.h */,
+				003A90A028991E94000AC1FE /* RCDUnreadCountView.m */,
+				003A90A5289A10EB000AC1FE /* RCDMentionedView.h */,
+				003A90A6289A10EB000AC1FE /* RCDMentionedView.m */,
+				003A90A8289A167C000AC1FE /* RCDMentionedQueryView.h */,
+				003A90A9289A167C000AC1FE /* RCDMentionedQueryView.m */,
+				00D31181289A686600FCC908 /* RCDMessageDigestCell.h */,
+				00D31182289A686600FCC908 /* RCDMessageDigestCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -3694,11 +3752,13 @@
 				27AD3019229E721F003C2680 /* RCDDebugNoDisturbViewController.m in Sources */,
 				A216790222BC6FE20095873C /* RCDGroupAnnouncement.m in Sources */,
 				3BC0C7E3229E79490079234F /* RCDAddressBookViewController.m in Sources */,
+				003A90A7289A10EB000AC1FE /* RCDMentionedView.m in Sources */,
 				3B3DED12221D62E40079DFE6 /* NSBundle+RC.m in Sources */,
 				A2A5258022B8B9D1008188A1 /* NormalAlertView.m in Sources */,
 				A251674D2797B3C800BA4BFD /* RCDUltraGroupCell.m in Sources */,
 				A252715C27A1301500996A73 /* RCDChannel.m in Sources */,
 				27AD3023229E721F003C2680 /* RCDNoFriendView.m in Sources */,
+				003A909E289913A5000AC1FE /* RCDUnreadCountParamController.m in Sources */,
 				001599C227F162B8007BFA3E /* RCDEnvironmentContext.m in Sources */,
 				3B9CC5B9275485430009E7BA /* RCDDebugUltraGroupChatViewController.m in Sources */,
 				9C119469229D4A14005407ED /* RCDRCIMDataSource.m in Sources */,
@@ -3706,10 +3766,13 @@
 				00CEE55E28043D650079C6AE /* RCDebugComAPIViewController.m in Sources */,
 				A2907097229E7F61006BDAC7 /* RCDPrivateSettingsTableViewController.m in Sources */,
 				27F0E3DE22A0E3E300C8B0B8 /* RCDMeCell.m in Sources */,
+				003A90A4289A10C4000AC1FE /* RCDUGMentionedViewController.m in Sources */,
 				1C836A5C283F3329007FABD2 /* UIButton+AlertAction.m in Sources */,
+				003A90AA289A167C000AC1FE /* RCDMentionedQueryView.m in Sources */,
 				27F0E3C722A0E3E300C8B0B8 /* RCDLanguageSettingTableViewCell.m in Sources */,
 				27AD302E229E721F003C2680 /* RCDSquareTableViewController.m in Sources */,
 				1C836A62283F3329007FABD2 /* RCDSMSDKDelegate.m in Sources */,
+				00D31183289A686600FCC908 /* RCDMessageDigestCell.m in Sources */,
 				3BC0C7E2229E79490079234F /* RCDAddressBookTableViewCell.m in Sources */,
 				A29070BB229E8045006BDAC7 /* RCDTestMessage.m in Sources */,
 				3B0F2C6A22DC6D470017979E /* RCDAddressBookFriendCell.m in Sources */,
@@ -3751,6 +3814,7 @@
 				27F0E3D822A0E3E300C8B0B8 /* RCDBlackListCell.m in Sources */,
 				9C27480F22A0E3E4001A4413 /* RCDDBManager.m in Sources */,
 				3B16DA0422F7D4AA00AD2770 /* RCDDescriptionView.m in Sources */,
+				003A90982898C581000AC1FE /* RCDUGSelectListViewController.m in Sources */,
 				00CEE56428045AA90079C6AE /* RCDebugPushLevelViewController.m in Sources */,
 				A2F0A98F22FAA3FF00422802 /* RCDGroupLeftUserListCell.m in Sources */,
 				3BB6CE1B22D743720007FFFB /* RCDAddressBookManager.m in Sources */,
@@ -3771,10 +3835,12 @@
 				A252716F27A145B500996A73 /* RCDUltraGroupNotificationMessage.m in Sources */,
 				A2F0A98C22FAA3E100422802 /* RCDGroupLeftUserListController.m in Sources */,
 				3B0F2C5522DC1C470017979E /* RCDUnableGetContactsView.m in Sources */,
+				003A90A128991E94000AC1FE /* RCDUnreadCountView.m in Sources */,
 				A2F0A97B22FA7C8200422802 /* RCDCopyGroupController.m in Sources */,
 				A2D549572320FE7000AC640B /* RCDClearMessage.m in Sources */,
 				27AD3028229E721F003C2680 /* UITextViewAndPlaceholder.m in Sources */,
 				A290709B229E7F61006BDAC7 /* RCDReceiptDetailsHeaderView.m in Sources */,
+				003A90952897FA49000AC1FE /* RCDUGListView.m in Sources */,
 				A2074367253E95BF003BD64D /* RCDDebugMessageExtensionLogController.m in Sources */,
 				3B0E2AA622D48EA8000E1BE6 /* RCDAddFriendListCell.m in Sources */,
 				A25750A822B8DA6700A79749 /* RCDGroupMemberSelectCell.m in Sources */,
@@ -3819,6 +3885,7 @@
 				A2AD03BA22D46CA100F8E64D /* RCDGroupNotice.m in Sources */,
 				A257509F22B8DA0000A79749 /* RCDGroupMemberSelectController.m in Sources */,
 				276599E2229E95250074FAB2 /* UIImage+RCImage.m in Sources */,
+				003A909B28991328000AC1FE /* RCDUnreadCountViewController.m in Sources */,
 				A25750AB22B8F6DD00A79749 /* RCDGroupMember.m in Sources */,
 				00CEE55828043BF40079C6AE /* RCDDebugComChatListController.m in Sources */,
 				9C226CF2229FB17000F49FC5 /* RCDHTTPUtility.m in Sources */,
@@ -3841,6 +3908,7 @@
 				A2AD03C722D47F3200F8E64D /* RCDGroupNoticeListController.m in Sources */,
 				007558AB285C66970082F0EB /* RCDChannelSetttingHeaderView.m in Sources */,
 				3B47890622B78F3200D33F10 /* RCDBottomResultView.m in Sources */,
+				003A90922897F796000AC1FE /* RCDUGSettingsController.m in Sources */,
 				27AD302B229E721F003C2680 /* RCDGroupInfo.m in Sources */,
 				D5A18A0027C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.m in Sources */,
 				3B27F26A2577971400916241 /* RCDDebugChatListViewController.m in Sources */,

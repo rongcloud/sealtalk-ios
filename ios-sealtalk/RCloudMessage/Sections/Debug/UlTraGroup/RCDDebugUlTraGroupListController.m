@@ -12,6 +12,12 @@
 #import "RCDDebugUltraGroupSendMessage.h"
 #import "UIView+MBProgressHUD.h"
 
+@interface RCConversationListViewController ()
+
+- (void)conversationStatusChanged:(NSNotification *)notification;
+
+@end
+
 @interface RCDDebugUltraGroupListController ()
 
 @property (nonatomic, strong) UITextField *targetIdTextField;
@@ -112,7 +118,7 @@
     
     if (model.conversationType == ConversationType_ULTRAGROUP) {
         int totalMentionCount = [[RCChannelClient sharedChannelManager] getUltraGroupUnreadMentionedCount:model.targetId];
-        
+      
         int conversationMentionCount = 0;
         //超级群未读
         if (model.channelId.length == 0) {
@@ -127,15 +133,12 @@
                                                               channelId:model.channelId];
             conversationMentionCount = conversation.mentionedCount;
         }
-        
+        NSString *mentionString = @"";
         if (totalMentionCount > 0 && conversationMentionCount > 0) {
-            UILabel *label = [[UILabel alloc] init];
-            label.frame = CGRectMake(0, 0, 80, 20);
-            label.textColor = [UIColor redColor];
-            label.backgroundColor = [UIColor yellowColor];
-            [((RCConversationCell *)cell).conversationTagView addSubview:label];
-            label.text = [NSString stringWithFormat:@"%d-%d", conversationMentionCount, totalMentionCount];
+            mentionString = [NSString stringWithFormat:@"%d-%d", conversationMentionCount, totalMentionCount];
         }
+        NSString *text = [NSString stringWithFormat:@"L%ld [%d:%d] ",model.notificationLevel, conversationMentionCount, totalMentionCount];
+        [self configureTagViewFor:cell text:text];
     }
     
     ((RCConversationCell *)cell).conversationTitle.text = [NSString stringWithFormat:@"%@【%@】",model.targetId,model.channelId];
@@ -160,6 +163,52 @@
         }
     }
     return dataSources;
+}
+
+#pragma mark - NotificationLevel
+
+- (void)updateConversationModelBy:(RCConversationStatusInfo *)statusInfo {
+    for (int i = 0; i < self.conversationListDataSource.count; i++) {
+        RCConversationModel *conversationModel = self.conversationListDataSource[i];
+        BOOL isSameConversation = [conversationModel.targetId isEqualToString:statusInfo.targetId] &&
+        (conversationModel.conversationType == statusInfo.conversationType);
+        BOOL isSameChannel = [conversationModel.channelId isEqualToString:statusInfo.channelId];
+        if (isSameConversation && isSameChannel) {
+            conversationModel.notificationLevel = statusInfo.notificationLevel;
+        }
+    }
+}
+
+- (void)conversationStatusChanged:(NSNotification *)notification {
+    NSArray<RCConversationStatusInfo *> *conversationStatusInfos = notification.object;
+    for (RCConversationStatusInfo *statusInfo in conversationStatusInfos) {
+        [self updateConversationModelBy:statusInfo];
+    }
+    [super conversationStatusChanged:notification];
+}
+
+- (void)configureTagViewFor:(RCConversationBaseCell *)cell
+                      text:(NSString *)text {
+    if ([cell isKindOfClass:[RCConversationCell class]]) {
+        RCConversationCell *cCell = (RCConversationCell *)cell;
+        UIView *tagView = [self channelTypeViewByLevel:text];
+        for (UIView *view in cCell.conversationTagView.subviews) {
+            [view removeFromSuperview];
+        }
+        [cCell.conversationTagView addSubview:tagView];
+    }
+}
+
+- (UIView *)channelTypeViewByLevel:(NSString *)text{
+    UILabel *lab = [UILabel new];
+    lab.textColor = [UIColor whiteColor];
+    lab.text = text;
+    lab.backgroundColor = HEXCOLOR(0x0099fff);
+    lab.font = [UIFont boldSystemFontOfSize:12];
+    lab.layer.cornerRadius = 2;
+    lab.layer.masksToBounds = YES;
+    [lab sizeToFit];
+    return lab;
 }
 
 @end

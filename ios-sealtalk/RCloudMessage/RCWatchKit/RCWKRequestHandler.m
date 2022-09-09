@@ -9,6 +9,8 @@
 #import "RCWKAPPCommonDefine.h"
 #import "RCWKNotifier.h"
 #import <RongPublicService/RongPublicService.h>
+#import <RongLocation/RongLocation.h>
+
 @interface RCWKRequestHandler ()
 @property (strong, nonatomic) NSDictionary *userInfo;
 @property (strong, nonatomic) void (^reply)(NSDictionary *);

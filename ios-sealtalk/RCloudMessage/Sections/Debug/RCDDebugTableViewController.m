@@ -39,7 +39,15 @@
 #define DISABLE_UTRAL_GORUP_SYNC_TAG 107
 #define DISABLE_KEYBOARD_TAG 108
 #define DISABLE_ULTRA_GROUP_TAG 109
+#define DISABLE_COMPLEX_TEXT_AYNC_DRAW 110
+
 #define FILEMANAGER [NSFileManager defaultManager]
+
+@interface RCCoreClient()
+- (void)refetchNavidataSuccess:(void (^)(void))success
+                       failure:(void (^)(NSInteger errorCode, NSString *responseData, NSString *errorDescription))failure;
+
+@end
 
 @interface RCDDebugTableViewController ()
 
@@ -139,6 +147,9 @@
     if ([title isEqualToString:@"超级群功能"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_ULTRA_GROUP_TAG];
     }
+    if ([title isEqualToString:@"长文本异步绘制"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_COMPLEX_TEXT_AYNC_DRAW];
+    }
     
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -193,6 +204,8 @@
         [self showCommonChatRoom];
     } else if ([title isEqualToString:@"选择聚合头像方式"]) {
         [self selectConversationCollectionInfoModifyType];
+    } else if ([title isEqualToString:@"刷新NaviData"]) {
+        [self refreshNaviData];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -216,7 +229,9 @@
         @"禁用系统表情",
         @"超级群消息同步监听",
         @"输入时弹框",
-        @"超级群功能"
+        @"超级群功能",
+        @"长文本异步绘制",
+        @"刷新NaviData"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -296,6 +311,11 @@
             isButtonOn = [DEFAULTS boolForKey:RCDDebugUltraGroupEnable];
         }
             break;
+            
+        case DISABLE_COMPLEX_TEXT_AYNC_DRAW:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugTextAsyncDrawEnable];
+        }
+            break;
         default:
             break;
     }
@@ -364,6 +384,11 @@
         }
         case DISABLE_KEYBOARD_TAG: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugInputKeyboardUIKey];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_COMPLEX_TEXT_AYNC_DRAW: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugTextAsyncDrawEnable];
             [DEFAULTS synchronize];
             break;
         }
@@ -543,6 +568,19 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.view showHUDMessage:msg];
     });
+}
+
+- (void)refreshNaviData {
+    RCCoreClient *client = [RCCoreClient sharedCoreClient];
+    if ([client respondsToSelector:@selector(refetchNavidataSuccess:failure:)]) {
+        [client refetchNavidataSuccess:^{
+            [self showTipsBy:@"刷新成功"];
+        } failure:^(NSInteger errorCode, NSString *responseData, NSString *errorDescription) {
+            [self showTipsBy:[NSString stringWithFormat:@"失败: %ld, %@", errorCode,errorDescription ]];
+        }];
+    } else {
+        [self showTipsBy:@"不支持 navi 刷新"];
+    }
 }
 -(void)showUMengDeviceInfoAlertController {
     __block NSString * deviceID =[UMConfigure deviceIDForIntegration];
