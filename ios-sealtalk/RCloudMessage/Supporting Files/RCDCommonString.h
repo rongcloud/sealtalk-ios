@@ -51,5 +51,11 @@
 #define RCDDebugInputKeyboardUIKey  @"RCDDebugInputKeyboardUIKey"
 #define RCDDebugUltraGroupEnable @"RCDDebugUltraGroupEnable"
 #define RCDDebugTextAsyncDrawEnable @"RCDDebugTextAsyncDrawEnable"
+#define RCDDebugCommonPhrasesEnable @"RCDDebugCommonPhrasesEnable"
+#define RCDDebugHidePortraitEnable @"RCDDebugHidePortraitEnable"
+#define RCDDeviceTokenKey @"RCDDeviceTokenKey"
+#define RCDWormholeKey @"wormhole"
+#define RCDAppLaunchingIdentifierKey @"RCDAppLaunchingIdentifierKey"
+#define RCDPushExtensionIdentifierKey @"RCDPushExtensionIdentifierKey"
 
 #endif /* RCDCommonString_h */

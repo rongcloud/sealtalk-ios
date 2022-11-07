@@ -58,19 +58,19 @@
     [self.contentView addSubview:self.rightLabel];
     [self.portraitImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.left.equalTo(self.contentView).offset(12);
+        make.leading.equalTo(self.contentView).offset(12);
         make.height.width.offset(40);
     }];
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.left.equalTo(self.portraitImageView.mas_right).offset(9);
+        make.leading.equalTo(self.portraitImageView.mas_trailing).offset(9);
         make.width.offset(150);
         make.height.offset(24);
     }];
 
     [self.rightLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView.mas_right).offset(-5);
+        make.trailing.equalTo(self.contentView.mas_trailing).offset(-5);
         make.centerY.equalTo(self.contentView);
         make.width.offset(130);
         make.height.offset(23);

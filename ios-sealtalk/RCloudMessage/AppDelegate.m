@@ -11,6 +11,7 @@
 #import "RCDLoginViewController.h"
 #import "RCDMainTabBarViewController.h"
 #import "RCDNavigationViewController.h"
+#import "RCDProxySettingControllerViewController.h"
 #import "RCDRCIMDataSource.h"
 #import "RCDTestMessage.h"
 #import "RCDUtilities.h"
@@ -35,7 +36,9 @@
 #import "RCDLanguageManager.h"
 #import <UMCommon/UMCommon.h>
 #import <UMAPM/UMAPMConfig.h>
+#import "RCDHTTPUtility.h"
 #import "RCDUltraGroupNotificationMessage.h"
+#import "RCNotificationServiceAppPlugin.h"
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
 #endif
@@ -58,6 +61,8 @@
 
 #import "RCDFraudPreventionManager.h"
 #import "RCDAlertBuilder.h"
+#import "RCDSemanticContext.h"
+#import <RongRTCLib/RongRTCLib.h>
 
 #if RCDTranslationEnable
 @interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
@@ -76,32 +81,62 @@
     [self.window makeKeyAndVisible];
     
     [self configUMCommon];
-    [self configRongIM];
+   
     [self configSealTalkWithApp:application andOptions:launchOptions];
-    [self loginAndEnterMainPage];
     [self configDoraemon];
-    [self configCurrentLanguage];
+    [self configureIMAndEnterHomeIfNeed];
     return YES;
 }
 
+- (void)configureIMAndEnterHomeIfNeed {
+    NSString *userId = [DEFAULTS objectForKey:RCDUserIdKey];
+    NSString *token = [DEFAULTS objectForKey:RCDIMTokenKey];
+    
+    if (userId && token) {
+        [self configRongIM];
+        [self loginAndEnterMainPage];
+    } else {
+        [self loginAndEnterMainPage];
+    }
+}
+
 - (void)configRongIM {
+    // 每次启动都检测本地是否有代理配置缓存
+    RCIMProxy *improxy = [RCDProxySettingControllerViewController currentAPPSettingIMProxy];
+    // improxy 为nil，取消代理
+    BOOL success = [[RCCoreClient sharedCoreClient] setProxy:improxy];
+    if (success) {
+        RCRTCConfig *config = [[RCRTCConfig alloc] init];
+        RCRTCProxy *rtcproxy = [RCDProxySettingControllerViewController currentAPPSettingRTCProxy];
+        config.proxy = rtcproxy;
+        [[RCRTCEngine sharedInstance] initWithConfig:config];
+        
+        // setProxy 的地方，也要及时更新全局配置 SDWebImage， 允许使用代理模式加载图片
+        [RCDHTTPUtility configProxySDWebImage];
+    }
+
+    NSString *userId = [DEFAULTS objectForKey:RCDUserIdKey];
+    NSString *token = [DEFAULTS objectForKey:RCDIMTokenKey];
+    
+    [[RCNotificationServiceAppPlugin sharedInstance] configWithApplicationGroupIdentifier:RCDNotificationServiceGroup appkey:RONGCLOUD_IM_APPKEY userId:userId token:token];
+    
     NSString *navServer = [RCDEnvironmentContext navServer];
     NSString *fileServer = [RCDEnvironmentContext fileServer];
     if (navServer.length > 0 || fileServer.length > 0) {
         [[RCIMClient sharedRCIMClient] setServerInfo:navServer fileServer:fileServer];
     }
-
-    NSString *appKey = [RCDEnvironmentContext appKey];
+    
     NSString *statsServer = [RCDEnvironmentContext statsServer];
+    if (statsServer.length > 0) {
+        [[RCIMClient sharedRCIMClient] setStatisticServer:statsServer];
+    }
+    NSString *appKey = [RCDEnvironmentContext appKey];
     [[RCIM sharedRCIM] initWithAppKey:appKey];
     // 设置appVersion
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     [[RCIMClient sharedRCIMClient] setAppVer:app_Version];
 
-    if (statsServer.length > 0) {
-        [[RCIMClient sharedRCIMClient] setStatisticServer:statsServer];
-    }
     [DEFAULTS setObject:appKey forKey:RCDAppKeyKey];
 
     // 注册自定义测试消息
@@ -150,6 +185,7 @@
     
     //   设置优先使用WebView打开URL
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
+    [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:YES];
 }
 
 #pragma mark - RCUltraGroupConversationDelegate
@@ -267,6 +303,7 @@
         }success:^(NSString *userId) {
             [self requestFraudPreventionRejectWithPhone:phone withRegion:regionCode] ;
         }error:^(RCConnectErrorCode status) {
+            NSLog(@"connectWithToken error: %@", @(status));
             if (status == RC_CONN_TOKEN_INCORRECT) {
                 [self gotoLoginViewAndDisplayReasonInfo:@"无法连接到服务器"];
                 NSLog(@"Token无效");
@@ -377,6 +414,8 @@
      不需要开发者对 deviceToken 进行处理，可直接传入。
      */
     [[RCIMClient sharedRCIMClient] setDeviceTokenData:deviceToken];
+    [[RCNotificationServiceAppPlugin sharedInstance] updateDeviceTokenData:deviceToken];
+    [RCDNotificationServiceDefaults setValue:deviceToken forKey:RCDDeviceTokenKey];
 }
 
 // 推送处理 3（如不升级 SDK，需要按照下面代码进行处理）
@@ -534,6 +573,14 @@
         [self fraudPreventionByUserBlocked] ;
         // 修改后提示框提示
         [RCDAlertBuilder showFraudPreventionRejectAlert] ;
+    } else if (status == ConnectionStatus_USER_ABANDON) {
+        [self showAlert:RCDLocalizedString(@"alert")
+                   message:RCDLocalizedString(@"Your_account_has_been_logout")
+            cancelBtnTitle:RCDLocalizedString(@"i_know")];
+        [[RCIMClient sharedRCIMClient] disconnect];
+        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+        self.window.rootViewController = _navi;
     }
 }
 
@@ -596,6 +643,7 @@
 - (void)gotoLoginViewAndDisplayReasonInfo:(NSString *)reason {
     [[RCIM sharedRCIM] logout];
     [DEFAULTS removeObjectForKey:RCDIMTokenKey];
+    [RCDNotificationServiceDefaults removeObjectForKey:RCDIMTokenKey];
     [DEFAULTS synchronize];
     __weak typeof(self) weakSelf = self;
     rcd_dispatch_main_async_safe(^{
@@ -777,6 +825,7 @@
     [[UINavigationBar appearance] setTintColor:[RCDUtilities generateDynamicColor:HEXCOLOR(0x111f2c) darkColor:[HEXCOLOR(0xffffff) colorWithAlphaComponent:0.9]]];
     [[UINavigationBar appearance] setBarTintColor:RCDDYCOLOR(0xffffff, 0x191919)];
     UIImage *tmpImage = [UIImage imageNamed:@"navigator_btn_back"];
+    tmpImage = [RCDSemanticContext imageflippedForRTL:tmpImage];
     [[UINavigationBar appearance] setBackIndicatorImage:tmpImage];
     [[UINavigationBar appearance] setBackIndicatorTransitionMaskImage:tmpImage];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(-2, -0.5)  forBarMetrics:UIBarMetricsDefault];

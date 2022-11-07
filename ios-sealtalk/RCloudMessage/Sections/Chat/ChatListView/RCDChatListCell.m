@@ -11,6 +11,8 @@
 #import "RCDUserInfoManager.h"
 #import "RCDContactNotificationMessage.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 @interface RCDChatListCell ()
 @property (nonatomic, strong) UIImageView *ivAva;
 @property (nonatomic, strong) UILabel *lblName;
@@ -139,18 +141,22 @@
     [_lblDetail setFont:[UIFont systemFontOfSize:14.f]];
     [_lblDetail setTextColor:RCDYCOLOR(0xA0A5AB, 0x707070)];
     _lblDetail.text = [NSString stringWithFormat:RCDLocalizedString(@"from_someone_friend_request"), _userName];
+    _lblDetail.accessibilityLabel = @"_lblDetail";
 
+    
     _lblName = [UILabel new];
     [_lblName setFont:[UIFont boldSystemFontOfSize:16.f]];
     [_lblName setTextColor:RCDDYCOLOR(0x252525, 0x9f9f9f)];
     _lblName.text = RCDLocalizedString(@"friend_news");
+    _lblName.accessibilityLabel = @"_lblName";
 
     _labelTime = [[UILabel alloc] init];
     _labelTime.backgroundColor = [UIColor clearColor];
     _labelTime.font = [UIFont systemFontOfSize:14];
     _labelTime.textColor = RCDYCOLOR(0xC7CbCe, 0x707070);
-    _labelTime.textAlignment = NSTextAlignmentRight;
-
+    _labelTime.accessibilityLabel = @"_labelTime";
+    _labelTime.textAlignment = [RCDSemanticContext isRTL] ? NSTextAlignmentLeft : NSTextAlignmentRight;
+    
     [self.contentView addSubview:_ivAva];
     [self.contentView addSubview:_lblDetail];
     [self.contentView addSubview:_lblName];
@@ -204,34 +210,34 @@
                                                       constant:2.f]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.ivAva
-     attribute:NSLayoutAttributeCenterY
-     relatedBy:NSLayoutRelationEqual
-        toItem:self
-     attribute:NSLayoutAttributeCenterY
-    multiplier:1.0
-      constant:2.f]];
+                                                     attribute:NSLayoutAttributeCenterY
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeCenterY
+                                                    multiplier:1.0
+                                                      constant:2.f]];
 
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_lblName
-                                                     attribute:NSLayoutAttributeLeft
+                                                     attribute:NSLayoutAttributeLeading
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:_ivAva
-                                                     attribute:NSLayoutAttributeRight
+                                                     attribute:NSLayoutAttributeTrailing
                                                     multiplier:1.0
                                                       constant:12]];
 
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_lblDetail
-                                                     attribute:NSLayoutAttributeLeft
+                                                     attribute:NSLayoutAttributeLeading
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:_lblName
-                                                     attribute:NSLayoutAttributeLeft
+                                                     attribute:NSLayoutAttributeLeading
                                                     multiplier:1.0
                                                       constant:1]];
 
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_lblDetail
-                                                     attribute:NSLayoutAttributeRight
+                                                     attribute:NSLayoutAttributeTrailing
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:_labelTime
-                                                     attribute:NSLayoutAttributeRight
+                                                     attribute:NSLayoutAttributeTrailing
                                                     multiplier:1.0
                                                       constant:-30]];
 }

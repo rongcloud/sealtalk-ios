@@ -8,11 +8,83 @@
 
 #import "RCDDebugChatViewController.h"
 
+@class RCGroupMessageDeliverUser;
+@class RCGroupMessageDeliverInfo;
+@class RCPrivateMessageDeliverInfo;
+@interface RCGroupMessageDeliverInfo : RCMessageContent
+
+@property (nonatomic, copy)  NSString *messageUId;
+
+@property (nonatomic, assign) int deliverCount;
+@end
+
+@interface RCGroupMessageDeliverUser : NSObject
+
+@property (nonatomic, copy) NSString *userId;
+
+@property (nonatomic, assign) long long deliverTime;
+@end
+
+@interface RCPrivateMessageDeliverInfo : NSObject
+@property (nonatomic, copy) NSString *messageUId;
+@property (nonatomic, copy) NSString *targetId;
+@property (nonatomic, copy) NSString *objectName;
+@property (nonatomic, assign) long long deliverTime;
+@end
+
+#pragma mark - 消息送达（使用需开通）
+/**
+ IMLib 消息送达监听器
+ */
+@protocol RCMessageDeliverDelegate <NSObject>
+@optional
+/**
+ 单聊中消息送达的回调
+ 
+ @param deliverList 送达列表
+ */
+- (void)onPrivateMessageDelivered:(NSArray <RCPrivateMessageDeliverInfo *>*)deliverList;
+
+/**
+群聊中消息送达的回调
+@param targetId 群 Id
+@param totalCount 群内总人数
+@param deliverList 送达列表
+*/
+- (void)onGroupMessageDelivered:(NSString *)targetId
+                      channelId:(NSString *)channelId
+                     totalCount:(int)totalCount
+                    deliverList:(NSArray <RCGroupMessageDeliverInfo *>*)deliverList;
+@end
+
+
+@interface RCChannelClient ()
+
+/*!
+ 单聊消息送达代理
+ 
+ @discussion 只支持单聊
+ */
+@property (nonatomic, weak) id<RCMessageDeliverDelegate> messageDeliverDelegate;
+
+- (void)getPrivateMessageDeliverTime:(NSString *)messageUId
+                           channelId:(NSString *)channelId
+                             success:(void (^)(long long deliverTime))successBlock
+                               error:(void (^)(RCErrorCode errorCode))errorBlock;
+
+- (void)getGroupMessageDeliverList:(NSString *)messageUId
+                          targetId:(NSString *)targetId
+                         channelId:(NSString *)channelId
+                           success:(void (^)(int totalCount, NSArray <RCGroupMessageDeliverUser *> *deliverList))successBlock
+                             error:(void (^)(RCErrorCode errorCode))errorBlock;
+
+@end
+
 @interface RCConversationViewController ()
 - (void)reloadRecalledMessage:(long)recalledMsgId;
 @end
 
-@interface RCDDebugChatViewController ()<RCMessageInterceptor>
+@interface RCDDebugChatViewController ()<RCMessageInterceptor, RCMessageDeliverDelegate>
 
 @end
 
@@ -22,6 +94,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [RCCoreClient sharedCoreClient].messageInterceptor = self;
+    [RCChannelClient sharedChannelManager].messageDeliverDelegate = self;
     [self addTestPlugin];
 }
 
@@ -36,6 +109,42 @@
         [[RCCoreClient sharedCoreClient] sendMessage:ConversationType_SYSTEM targetId:self.targetId content:content pushContent:nil pushData:nil success:nil error:nil];
     }else {
         [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
+    }
+}
+
+- (void)didTapMessageCell:(RCMessageModel *)model {
+    if (self.conversationType == ConversationType_PRIVATE) {
+        // 获取单聊中对应消息的送达时间
+        [[RCChannelClient sharedChannelManager] getPrivateMessageDeliverTime:model.messageUId channelId:@"" success:^(long long deliverTime) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *message = [NSString stringWithFormat:@"送达时间：%@", [RCKitUtility convertMessageTime:deliverTime / 1000]];
+                [RCAlertView showAlertController:@"主动获取单聊消息送达" message:message cancelTitle:@"cancel"];
+            });
+        } error:^(RCErrorCode errorCode) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *message = [NSString stringWithFormat:@"errorCode：%@", @(errorCode)];
+                [RCAlertView showAlertController:@"主动获取单聊消息送达失败" message:message cancelTitle:@"cancel"];
+            });
+        }];
+    }else if (self.conversationType == ConversationType_GROUP) {
+        // 获取群组中对应消息的送达时间
+        [[RCChannelClient sharedChannelManager] getGroupMessageDeliverList:model.messageUId  targetId:self.targetId channelId:@"" success:^(int totalCount, NSArray<RCGroupMessageDeliverUser *> *deliverList) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSMutableString *message = [[NSMutableString alloc] init];
+                for (RCGroupMessageDeliverUser *info in deliverList) {
+                    NSString *tempMsg = [NSString stringWithFormat:@"userId：%@，deliverTime：%@\n", info.userId, [RCKitUtility convertMessageTime:info.deliverTime / 1000]];
+                    [message appendString:tempMsg];
+                }
+                [RCAlertView showAlertController:@"主动获取群聊消息送达" message:message cancelTitle:@"cancel"];
+            });
+        } error:^(RCErrorCode errorCode) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *message = [NSString stringWithFormat:@"errorCode：%@", @(errorCode)];
+                [RCAlertView showAlertController:@"主动获取群聊消息送达失败" message:message cancelTitle:@"cancel"];
+            });
+        }];
+    } else {
+        [super didTapMessageCell:model];
     }
 }
 
@@ -106,4 +215,25 @@
     return config;
 }
 
+#pragma mark - RCMessageDeliverDelegate
+- (void)onPrivateMessageDelivered:(NSArray <RCPrivateMessageDeliverInfo *>*)deliverList {
+    
+    NSMutableString *message = [[NSMutableString alloc] init];
+    for (RCPrivateMessageDeliverInfo *info in deliverList) {
+        NSString *tempMsg = [NSString stringWithFormat:@"targetId：%@，messageUId：%@，deliverTime：%@\n", info.targetId, info.messageUId, [RCKitUtility convertMessageTime:info.deliverTime / 1000]];
+        [message appendString:tempMsg];
+    }
+    
+    [RCAlertView showAlertController:@"单聊消息已送达" message:message cancelTitle:@"cancel"];
+}
+
+
+- (void)onGroupMessageDelivered:(NSString *)targetId channelId:(NSString *)channelId totalCount:(int)totalCount deliverList:(NSArray<RCGroupMessageDeliverInfo *> *)deliverList{
+    NSMutableString *message = [NSMutableString stringWithFormat:@"targetId：%@,channelId:%@ totalCount:%@\n",targetId,channelId,@(totalCount)];
+    for (RCGroupMessageDeliverInfo *info in deliverList) {
+        NSString *tempMsg = [NSString stringWithFormat:@"messageUId：%@，deliverCount：%@\n", info.messageUId, @(info.deliverCount)];
+        [message appendString:tempMsg];
+    }
+    [RCAlertView showAlertController:@"群聊消息送达百分比" message:message cancelTitle:@"cancel"];
+}
 @end

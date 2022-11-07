@@ -27,19 +27,19 @@
 
     [self.headerImgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.left.equalTo(self.contentView).offset(8.5);
+        make.leading.equalTo(self.contentView).offset(8.5);
         make.height.width.offset(39);
     }];
 
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.headerImgView.mas_right).offset(10);
+        make.leading.equalTo(self.headerImgView.mas_trailing).offset(10);
         make.top.equalTo(self.contentView).offset(5);
-        make.right.equalTo(self.contentView).offset(-10);
+        make.trailing.equalTo(self.contentView).offset(-10);
         make.height.offset(20);
     }];
 
     [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.titleLabel);
+        make.leading.right.equalTo(self.titleLabel);
         make.top.equalTo(self.titleLabel.mas_bottom).offset(4);
         make.height.offset(16.5);
     }];

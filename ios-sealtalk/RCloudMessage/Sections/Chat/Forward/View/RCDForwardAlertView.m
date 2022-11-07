@@ -17,6 +17,8 @@
 #import "RCDUserInfoManager.h"
 #import "DefaultPortraitView.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 #define itemHight 40
 
 @interface RCDForwardAlertView ()
@@ -93,16 +95,16 @@
     [self.contentView addSubview:self.forwardContentLabel];
 
     [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self).inset(27);
+        make.leading.trailing.equalTo(self).inset(27);
         make.center.equalTo(self);
     }];
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(20);
-        make.left.right.equalTo(self.contentView).inset(18);
+        make.leading.trailing.equalTo(self.contentView).inset(18);
         make.height.offset(25);
     }];
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.contentView).inset(12);
+        make.leading.trailing.equalTo(self.contentView).inset(12);
         make.top.equalTo(self.titleLabel.mas_bottom).offset(14);
         make.height.offset(55);
     }];
@@ -110,12 +112,12 @@
     firstLine.backgroundColor = RCDDYCOLOR(0xE5E5E5, 0x3a3a3a);
     [self.contentView addSubview:firstLine];
     [firstLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.contentView);
+        make.leading.trailing.equalTo(self.contentView);
         make.top.equalTo(self.scrollView.mas_bottom);
         make.height.offset(1);
     }];
     [self.forwardContentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.contentView).inset(18);
+        make.leading.trailing.equalTo(self.contentView).inset(18);
         make.top.equalTo(self.scrollView.mas_bottom);
         make.height.offset(44);
     }];
@@ -123,29 +125,29 @@
     secondLine.backgroundColor = RCDDYCOLOR(0xE5E5E5, 0x3a3a3a);
     [self.contentView addSubview:secondLine];
     [secondLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.contentView);
+        make.leading.trailing.equalTo(self.contentView);
         make.top.equalTo(self.forwardContentLabel.mas_bottom);
         make.height.offset(1);
     }];
     UIView *separateLine = [[UIView alloc] init];
     separateLine.backgroundColor = RCDDYCOLOR(0xE5E5E5, 0x3a3a3a);
     [self.contentView addSubview:separateLine];
-    [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView);
+    [self.confirmButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(self.contentView);
         make.top.equalTo(self.forwardContentLabel.mas_bottom);
-        make.right.equalTo(separateLine.mas_left);
+        make.leading.equalTo(separateLine.mas_trailing);
         make.height.offset(44);
         make.bottom.equalTo(self.contentView);
     }];
     [separateLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.cancelButton);
+        make.top.height.equalTo(self.confirmButton);
         make.width.offset(1);
         make.centerX.equalTo(self.contentView);
     }];
-    [self.confirmButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(separateLine.mas_right);
+    [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(separateLine.mas_leading);
         make.top.equalTo(self.forwardContentLabel.mas_bottom);
-        make.right.equalTo(self.contentView);
+        make.leading.equalTo(self.contentView);
         make.height.offset(44);
         make.bottom.equalTo(self.contentView);
     }];
@@ -160,12 +162,13 @@
     imageView.layer.cornerRadius = 2;
     imageView.layer.masksToBounds = YES;
     [self.scrollView addSubview:imageView];
+    [RCDSemanticContext subViewOfScrollViewFlippedForRTL:imageView];
     [self.scrollView addSubview:self.nameLabel];
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(imageView.mas_right).offset(10);
+        make.leading.equalTo(imageView.mas_trailing).offset(10);
         make.centerY.height.equalTo(imageView);
-        make.right.equalTo(self.scrollView).offset(-10);
+        make.trailing.equalTo(self.scrollView).offset(-10);
     }];
 
     if (model.conversationType == ConversationType_PRIVATE) {
@@ -223,7 +226,7 @@
     for (UIView *view in self.scrollView.subviews) {
         [view removeFromSuperview];
     }
-
+  
     for (int i = 0; i < self.selectedContacts.count; i++) {
         RCDForwardCellModel *model = self.selectedContacts[i];
         CGFloat originX = i * (itemHight + 5);
@@ -231,9 +234,10 @@
         [self loadImageWithModel:model forImageView:imageView];
         imageView.layer.cornerRadius = 2;
         imageView.layer.masksToBounds = YES;
+        [RCDSemanticContext subViewOfScrollViewFlippedForRTL:imageView];
         [self.scrollView addSubview:imageView];
     }
-    self.scrollView.contentSize = CGSizeMake(self.selectedContacts.count * (itemHight) + 5, itemHight + 15);
+    self.scrollView.contentSize = CGSizeMake(self.selectedContacts.count * (itemHight), itemHight + 15);
 }
 
 - (void)loadImageWithModel:(RCDForwardCellModel *)model forImageView:(UIImageView *)imageView {
@@ -306,6 +310,7 @@
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] init];
         _scrollView.showsHorizontalScrollIndicator = NO;
+        [RCDSemanticContext scrollViewFlippedForRTL:_scrollView];
     }
     return _scrollView;
 }

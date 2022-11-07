@@ -10,6 +10,8 @@
 #import "UIColor+RCColor.h"
 #import <Masonry/Masonry.h>
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 @interface RCDSetupRemarkView () <UITextFieldDelegate>
 
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -227,7 +229,9 @@
 - (UIImageView *)arrowImgView {
     if (!_arrowImgView) {
         _arrowImgView = [[UIImageView alloc] init];
-        _arrowImgView.image = [UIImage imageNamed:@"forward_arrow"];
+        UIImage *img = [UIImage imageNamed:@"forward_arrow"];
+        img = [RCDSemanticContext imageflippedForRTL:img];
+        _arrowImgView.image = img;
         _arrowImgView.userInteractionEnabled = YES;
         UITapGestureRecognizer *tap =
             [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapButtonAction)];

@@ -250,6 +250,7 @@
 "Login_is_invalid_please_login_again"="Login failed, please try again";
 "i_know"="Got it";
 "Your_account_has_been_banned"="Your account has been suspended";
+"Your_account_has_been_logout"="Your account has been logout";
 "picture"="[Picture]";
 "voice"="[Voice]";
 "location"="[Location]";
@@ -544,3 +545,8 @@
 "invite_new_member"="invite new member";
 "channel"="Channel";
 "channel_private"=" Private Channel";
+"socks_proxy_setting"="Proxy Setting";
+"socks_proxy_clear"="Clear";
+"socks_proxy_hostaddr_notice"="Please enter the correct address";
+"socks_proxy_port_notice"="Please enter the correct port number";
+"socks_proxy_testhost_notice"="Please enter the correct test host";

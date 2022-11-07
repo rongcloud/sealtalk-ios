@@ -81,21 +81,21 @@
     [self.contentView addSubview:self.deleteButton];
 
     [self.headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).offset(12);
+        make.leading.equalTo(self.contentView).offset(12);
         make.top.equalTo(self.contentView).offset(7.5);
         make.height.width.offset(40);
     }];
 
     [self.conversationTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.headerImageView.mas_right).offset(9);
+        make.leading.equalTo(self.headerImageView.mas_trailing).offset(9);
         make.centerY.equalTo(self.contentView);
-        make.right.equalTo(self.contentView).offset(-12);
+        make.trailing.equalTo(self.contentView).offset(-12);
         make.height.offset(24);
     }];
 
     [self.deleteButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.right.equalTo(self.contentView).offset(-12);
+        make.trailing.equalTo(self.contentView).offset(-12);
         make.height.width.offset(22);
     }];
 }

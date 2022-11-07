@@ -14,6 +14,8 @@
 #import <RongIMKit/RongIMKit.h>
 #import <Masonry/Masonry.h>
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 #define CellHeight 65.0f
 
 @interface RCDAddressBookTableViewCell ()
@@ -121,26 +123,26 @@
 
     [self.portraitImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.left.equalTo(self.contentView).offset(22);
+        make.leading.equalTo(self.contentView).offset(22);
         make.height.width.offset(36);
     }];
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.left.equalTo(self.portraitImageView.mas_right).offset(8);
+        make.leading.equalTo(self.portraitImageView.mas_trailing).offset(8);
         make.width.offset(150);
         make.height.offset(21);
     }];
 
     [self.arrowImgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView).offset(-8);
+        make.trailing.equalTo(self.contentView).offset(-8);
         make.centerY.equalTo(self.contentView);
         make.width.offset(15);
         make.height.offset(CellHeight - 19.5 - 19 - 8 - 8);
     }];
 
     [self.rightLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.arrowImgView.mas_left).offset(-5);
+        make.trailing.equalTo(self.arrowImgView.mas_leading).offset(-5);
         make.centerY.equalTo(self.contentView);
         make.width.offset(80);
         make.height.offset(CellHeight - 16.5 - 16);
@@ -148,13 +150,13 @@
 
     [self.ignoreButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.right.equalTo(self.acceptBtn.mas_left).offset(-10);
+        make.trailing.equalTo(self.acceptBtn.mas_leading).offset(-10);
         make.height.offset(CellHeight - 16.5 - 16 - 8);
     }];
 
     [self.acceptBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.right.equalTo(self.contentView).offset(-8);
+        make.trailing.equalTo(self.contentView).offset(-8);
         make.height.offset(CellHeight - 16.5 - 16 - 8);
     }];
 }
@@ -199,7 +201,9 @@
 - (UIImageView *)arrowImgView {
     if (!_arrowImgView) {
         _arrowImgView = [[UIImageView alloc] init];
-        _arrowImgView.image = [UIImage imageNamed:@"grayarrow"];
+        UIImage *img = [UIImage imageNamed:@"grayarrow"];
+        img = [RCDSemanticContext imageflippedForRTL:img];
+        _arrowImgView.image = img;
     }
     return _arrowImgView;
 }

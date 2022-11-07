@@ -13,19 +13,28 @@ target 'SealTalk' do
   pod 'SDWebImage', '5.0.6'
   pod 'Bugly', '2.5.91'
   pod 'UMCCommon', '7.3.5'
+
+  pod 'WechatOpenSDK', '1.8.4'
+  pod 'DQAlertView', '1.3.0'
+  pod 'MMWormhole', '~> 2.0.0'
   
   pod 'DoraemonKit/Core', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   pod 'DoraemonKit/WithGPS', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   
-  pod 'RongCloudIM/IMLib', '5.2.5'
-  pod 'RongCloudIM/IMKit', '5.2.5'
-  pod 'RongCloudIM/RongSticker', '5.2.5'
-  pod 'RongCloudIM/Sight', '5.2.5'
-  pod 'RongCloudIM/ContactCard', '5.2.5'
-  pod 'RongCloudIM/LocationKit', '5.2.5'
+  pod 'RongCloudIM/IMLib', '5.3.0'
+  pod 'RongCloudIM/IMKit', '5.3.0'
+  pod 'RongCloudIM/RongSticker', '5.3.0'
+  pod 'RongCloudIM/Sight', '5.3.0'
+  pod 'RongCloudIM/ContactCard', '5.3.0'
+  pod 'RongCloudIM/LocationKit', '5.3.0'
   pod 'RongCloudRTC/RongCallLib'
   pod 'RongCloudRTC/RongCallKit'
+end
+
+target "SealTalkNotificationService" do
+  use_frameworks!
+  pod 'MMWormhole', '~> 2.0.0'
 end
 

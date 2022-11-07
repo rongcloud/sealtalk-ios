@@ -89,44 +89,44 @@
             if (self.stAccountLabel.hidden) {
                 [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(self.infoBgView).offset(20);
-                    make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+                    make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
                     make.height.offset(16);
-                    make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+                    make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
                 }];
             } else {
                 [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(self.infoBgView).offset(14);
-                    make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+                    make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
                     make.height.offset(16);
-                    make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+                    make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
                 }];
             }
             [self.groupNicknameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.stAccountLabel.mas_bottom).offset(4);
-                make.left.equalTo(self.remarksLabel);
-                make.right.equalTo(self.infoBgView);
+                make.leading.equalTo(self.remarksLabel);
+                make.trailing.equalTo(self.infoBgView);
                 make.height.offset(16);
             }];
         } else {
             if (self.stAccountLabel.hidden) {
                 [self.remarksLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(self.infoBgView).offset(14);
-                    make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+                    make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
                     make.height.offset(18);
-                    make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+                    make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
                 }];
             } else {
                 [self.remarksLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo(self.infoBgView).offset(7);
-                    make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+                    make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
                     make.height.offset(18);
-                    make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+                    make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
                 }];
             }
             [self.groupNicknameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.nameLabel.mas_bottom).offset(4);
-                make.left.equalTo(self.remarksLabel);
-                make.right.equalTo(self.infoBgView);
+                make.leading.equalTo(self.remarksLabel);
+                make.trailing.equalTo(self.infoBgView);
                 make.height.offset(16);
             }];
         }
@@ -140,36 +140,36 @@
         self.nameLabel.textColor = [UIColor colorWithHexString:@"999999" alpha:1];
         [self.remarksLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.infoBgView).offset(14);
-            make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+            make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
             make.height.offset(18);
-            make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+            make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
         }];
         [self.genderImgView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.remarksLabel);
-            make.left.equalTo(self.remarksLabel.mas_right).offset(5);
+            make.leading.equalTo(self.remarksLabel.mas_trailing).offset(5);
             make.height.width.equalTo(@15);
-            make.right.lessThanOrEqualTo(self.infoBgView);
+            make.trailing.lessThanOrEqualTo(self.infoBgView);
         }];
 
         if (self.friendInfo.stAccount.length > 0 && ![self.friendInfo.stAccount isEqualToString:@""]) {
             [self.stAccountLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.remarksLabel.mas_bottom).offset(4);
-                make.left.equalTo(self.remarksLabel);
-                make.right.equalTo(self.infoBgView);
+                make.leading.equalTo(self.remarksLabel);
+                make.trailing.equalTo(self.infoBgView);
                 make.height.offset(16);
             }];
         } else {
             [self.stAccountLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.remarksLabel.mas_bottom).offset(4);
-                make.left.equalTo(self.remarksLabel);
-                make.right.equalTo(self.infoBgView);
+                make.leading.equalTo(self.remarksLabel);
+                make.trailing.equalTo(self.infoBgView);
                 make.height.offset(0.1);
             }];
         }
         [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.stAccountLabel.mas_bottom).offset(4);
-            make.left.equalTo(self.remarksLabel);
-            make.right.equalTo(self.infoBgView);
+            make.leading.equalTo(self.remarksLabel);
+            make.trailing.equalTo(self.infoBgView);
             make.height.offset(16);
         }];
     } else {
@@ -180,32 +180,32 @@
             self.stAccountLabel.hidden = NO;
             [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.infoBgView).offset(20);
-                make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+                make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
                 make.height.offset(18);
-                make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+                make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
             }];
 
             [self.stAccountLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.nameLabel.mas_bottom).offset(8);
-                make.left.equalTo(self.remarksLabel);
-                make.right.equalTo(self.infoBgView);
+                make.leading.equalTo(self.remarksLabel);
+                make.trailing.equalTo(self.infoBgView);
                 make.height.offset(16);
             }];
         } else {
             self.stAccountLabel.hidden = YES;
             [self.nameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.centerY.equalTo(self.infoBgView);
-                make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+                make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
                 make.height.offset(18);
-                make.right.equalTo(self.genderImgView.mas_left).offset(-5);
+                make.trailing.equalTo(self.genderImgView.mas_leading).offset(-5);
             }];
         }
 
         [self.genderImgView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.nameLabel);
-            make.left.equalTo(self.nameLabel.mas_right).offset(5);
+            make.leading.equalTo(self.nameLabel.mas_trailing).offset(5);
             make.height.width.equalTo(@15);
-            make.right.lessThanOrEqualTo(self.infoBgView);
+            make.trailing.lessThanOrEqualTo(self.infoBgView);
         }];
     }
 }
@@ -220,45 +220,45 @@
     [self.infoBgView addSubview:self.groupNicknameLabel];
 
     [self.infoBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.bottom.left.right.equalTo(self);
+        make.top.bottom.leading.trailing.equalTo(self);
     }];
 
     [self.portraitImgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self).offset(10);
+        make.leading.equalTo(self).offset(10);
         make.centerY.equalTo(self);
         make.width.height.offset(65);
     }];
 
     [self.remarksLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.infoBgView).offset(14);
-        make.left.equalTo(self.portraitImgView.mas_right).offset(10);
+        make.leading.equalTo(self.portraitImgView.mas_trailing).offset(10);
         make.height.offset(16);
     }];
 
     [self.stAccountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.remarksLabel.mas_bottom).offset(4);
-        make.left.equalTo(self.remarksLabel);
-        make.right.equalTo(self.infoBgView);
+        make.leading.equalTo(self.remarksLabel);
+        make.trailing.equalTo(self.infoBgView);
         make.height.offset(16);
     }];
 
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.stAccountLabel.mas_bottom).offset(3);
-        make.left.equalTo(self.remarksLabel);
-        make.right.equalTo(self.infoBgView);
+        make.leading.equalTo(self.remarksLabel);
+        make.trailing.equalTo(self.infoBgView);
         make.height.offset(16);
     }];
 
     [self.groupNicknameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.nameLabel.mas_bottom).offset(4);
-        make.left.equalTo(self.remarksLabel);
-        make.right.equalTo(self.infoBgView);
+        make.leading.equalTo(self.remarksLabel);
+        make.trailing.equalTo(self.infoBgView);
         make.height.offset(16);
     }];
 
     [self.genderImgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.remarksLabel);
-        make.left.equalTo(self.remarksLabel.mas_right).offset(5);
+        make.leading.equalTo(self.remarksLabel.mas_trailing).offset(5);
         make.height.width.equalTo(@15);
     }];
 }

@@ -11,6 +11,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <RongIMKit/RongIMKit.h>
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
 @interface RCDBaseSettingTableViewCell ()
 
 @property (nonatomic, strong) NSDictionary *cellSubViews;
@@ -76,7 +77,8 @@
     self.rightLabel.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.rightArrow = [[UIImageView alloc] init];
-    self.rightArrow.image = [UIImage imageNamed:@"right_arrow"];
+    UIImage *img = [UIImage imageNamed:@"right_arrow"];
+    self.rightArrow.image = [RCDSemanticContext imageflippedForRTL:img];
     self.rightArrow.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.switchButton = [[UISwitch alloc] init];

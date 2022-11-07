@@ -104,11 +104,15 @@ static NSString *forwardSelectedCellIdentifier = @"RCDForwardSelectedCellIdentif
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 1) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(12, 0, 200, 40)];
+        UILabel *label = [[UILabel alloc] init];
         label.text = RCDLocalizedString(@"RecentChat");
         label.font = [UIFont systemFontOfSize:13.5];
         label.textColor = RCDDYCOLOR(0x939393, 0x666666);
         [view addSubview:label];
+        [label mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.leading.mas_equalTo(view).mas_offset(12);
+                    make.centerY.mas_equalTo(view);
+        }];
         return view;
     }
     return nil;

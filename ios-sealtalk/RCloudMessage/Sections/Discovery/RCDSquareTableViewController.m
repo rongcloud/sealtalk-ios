@@ -13,6 +13,8 @@
 #import "RCDCommonString.h"
 #import "RCDChatRoomManager.h"
 #import "UIView+MBProgressHUD.h"
+#import <Masonry/Masonry.h>
+
 @interface RCDSquareTableViewController ()
 @property (nonatomic, strong) NSArray *chatRoomList;
 @end
@@ -104,11 +106,15 @@
     line.backgroundColor = RCDDYCOLOR(0xdfdfdf, 0x000000);
     [sectionHeaderView addSubview:line];
 
-    UILabel *Title = [[UILabel alloc] initWithFrame:CGRectMake(9, (44 - 20) / 2.0, 200, 20)];
+    UILabel *Title = [[UILabel alloc] init];
     [Title setTextColor:RCDDYCOLOR(0x000000, 0xA7a7a7)];
     [Title setFont:[UIFont systemFontOfSize:16.f]];
 
     [sectionHeaderView addSubview:Title];
+    [Title mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.leading.mas_equalTo(sectionHeaderView).mas_offset(20);
+            make.centerY.mas_equalTo(sectionHeaderView);
+    }];
     switch (section) {
     case 0:
         Title.text = RCDLocalizedString(@"chatroom");

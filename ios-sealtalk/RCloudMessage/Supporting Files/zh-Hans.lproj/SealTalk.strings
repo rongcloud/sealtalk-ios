@@ -253,6 +253,7 @@
 "Login_is_invalid_please_login_again"="登录失效，请重新登录。";
 "i_know"="知道了";
 "Your_account_has_been_banned"="您的帐号被封禁";
+"Your_account_has_been_logout"="您的帐号已销户";
 "picture"="[图片]";
 "voice"="[语音]";
 "location"="[位置]";
@@ -521,7 +522,7 @@
 "Deleting"="删除中...";
 "UnknownMessage"="未知消息";
 "GroupMemberOnlyOne"="群成员仅有一人，无法复制";
-"Set_chatroom_default_history_message_count"="进入聊天室拉取的历史消息数量，范围【-1~50条】";
+"Set_chatroom_default_history_message_count"="进入聊天室拉取的历史消息数量";
 "pullXMessage"="目前拉取 %d 条历史消息";
 "Set_chatroom_default_history_message"="设置加入聊天室时获取历史消息数量";
 "Set failed" = "设置失败";
@@ -546,3 +547,8 @@
 "invite_new_member"="邀请新居民";
 "channel"="频道";
 "channel_private"=" 私有频道";
+"socks_proxy_setting"="代理设置";
+"socks_proxy_clear"="清除";
+"socks_proxy_hostaddr_notice"="请输入正确的代理地址";
+"socks_proxy_port_notice"="请输入正确的代理端口号";
+"socks_proxy_testhost_notice"="请输入正确的测试地址";

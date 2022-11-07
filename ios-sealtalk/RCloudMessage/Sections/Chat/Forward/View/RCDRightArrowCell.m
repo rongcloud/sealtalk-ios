@@ -10,6 +10,8 @@
 #import <Masonry/Masonry.h>
 #import "UIColor+RCColor.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 @implementation RCDRightArrowCell
 
 - (instancetype)init {
@@ -27,12 +29,12 @@
 
     [self.leftLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.equalTo(self.contentView).inset(15);
-        make.left.equalTo(self.contentView).offset(15);
-        make.right.equalTo(self.rightArrow.mas_left).offset(-15);
+        make.leading.equalTo(self.contentView).offset(15);
+        make.trailing.equalTo(self.rightArrow.mas_leading).offset(-15);
     }];
 
     [self.rightArrow mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView).offset(-12);
+        make.trailing.equalTo(self.contentView).offset(-12);
         make.centerY.equalTo(self.contentView);
         make.width.height.offset(24);
     }];
@@ -55,7 +57,10 @@
 - (UIImageView *)rightArrow {
     if (!_rightArrow) {
         _rightArrow = [[UIImageView alloc] init];
-        _rightArrow.image = [UIImage imageNamed:@"forward_arrow"];
+        UIImage *img = [UIImage imageNamed:@"forward_arrow"];
+        img = [RCDSemanticContext imageflippedForRTL:img];
+        _rightArrow.image = img;
+        _rightArrow.accessibilityLabel = @"rightArrow";
     }
     return _rightArrow;
 }

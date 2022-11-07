@@ -8,6 +8,8 @@
 
 #import "RCDUIBarButtonItem.h"
 #import <RongIMKit/RongIMKit.h>
+#import "RCDSemanticContext.h"
+
 @interface RCDUIBarButtonItem ()
 
 @property (nonatomic, strong) UILabel *titleText;
@@ -16,7 +18,9 @@
 
 @implementation RCDUIBarButtonItem
 + (NSArray *)getLeftBarButton:(NSString *)title target:(id)target action:(SEL)method {
-    return [RCKitUtility getLeftNavigationItems:[UIImage imageNamed:@"navigator_btn_back"] title:nil target:target action:method];
+    UIImage *img = [UIImage imageNamed:@"navigator_btn_back"];
+    img = [RCDSemanticContext imageflippedForRTL:img];
+    return [RCKitUtility getLeftNavigationItems:img title:nil target:target action:method];
 }
 
 //初始化包含图片的UIBarButtonItem

@@ -72,7 +72,7 @@
     [self.contentView addSubview:self.noticeLabel];
 
     [self.portraitView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).offset(14);
+        make.leading.equalTo(self.contentView).offset(14);
         make.centerY.equalTo(self.contentView);
         make.width.height.offset(40);
     }];
@@ -81,25 +81,25 @@
 
     if (isDisplayID) {
         [self.nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.portraitView.mas_right).offset(9);
+            make.leading.equalTo(self.portraitView.mas_trailing).offset(9);
             make.centerY.height.equalTo(self.portraitView);
-            make.right.equalTo(self.userIdLabel.mas_left);
+            make.trailing.equalTo(self.userIdLabel.mas_leading);
         }];
 
         [self.userIdLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.height.equalTo(self.portraitView);
-            make.right.equalTo(self.contentView).offset(-20);
+            make.trailing.equalTo(self.contentView).offset(-20);
         }];
     } else {
         [self.nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.portraitView.mas_right).offset(9);
+            make.leading.equalTo(self.portraitView.mas_trailing).offset(9);
             make.centerY.height.equalTo(self.portraitView);
-            make.right.equalTo(self.contentView).offset(-20);
+            make.trailing.equalTo(self.contentView).offset(-20);
         }];
     }
 
     [self.noticeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView).offset(-27.5);
+        make.trailing.equalTo(self.contentView).offset(-27.5);
         make.centerY.equalTo(self.contentView);
         make.height.width.equalTo(@18);
     }];

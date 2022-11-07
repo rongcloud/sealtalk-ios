@@ -23,7 +23,13 @@
 
 #import "RCDTranslationViewController.h"
 #import "RCDEnvironmentContext.h"
+#import "RCDProxySettingControllerViewController.h"
+#import "RCDHTTPUtility.h"
+#import "UIView+MBProgressHUD.h"
+
 //#define SERVICE_ID @"KEFU146001495753714"
+
+//#define RCD_SHOW_PROXYSETTING
 
 @interface RCDMeTableViewController ()
 @property (nonatomic, strong) NSDictionary *languageDic;
@@ -57,6 +63,9 @@
         rows = 1;
     } else if (2 == section) {
         rows = 3;
+#ifdef RCD_SHOW_PROXYSETTING
+        rows = 4;
+#endif
     } else if (3 == section) {
         rows = 2;
     }
@@ -103,6 +112,14 @@
                              labelName:RCDLocalizedString(@"translationSetting")
                         rightLabelName:@""];
         }
+#ifdef RCD_SHOW_PROXYSETTING
+        else if (3 == indexPath.row) {
+            [cell setCellWithImageName:@"icon_ multilingual"
+                             labelName:RCDLocalizedString(@"socks_proxy_setting")
+                        rightLabelName:@""];
+        }
+#endif
+
     } else if (3 == indexPath.section) {
         if (0 == indexPath.row) {
             [cell setCellWithImageName:@"sevre_inactive" labelName:RCDLocalizedString(@"feedback") rightLabelName:@""];
@@ -146,6 +163,12 @@
         } else if (2 == indexPath.row) {
             [self showTranslationSetting];
         }
+#ifdef RCD_SHOW_PROXYSETTING
+        else if (3 == indexPath.row) {
+            [self showProxySetting];
+        }
+#endif
+
     } else if (3 == indexPath.section) {
         if (0 == indexPath.row) {
             NSString *serviceID = [RCDEnvironmentContext serviceID];
@@ -231,4 +254,43 @@
     RCDTranslationViewController *vc = [[RCDTranslationViewController alloc] initWithStyle:UITableViewStylePlain];
     [self.navigationController pushViewController:vc animated:YES];
 }
+
+#ifdef RCD_SHOW_PROXYSETTING
+
+- (void)showProxySetting {
+    RCDProxySettingControllerViewController *vc = [[RCDProxySettingControllerViewController alloc] init];
+    vc.saveCallback = ^{
+
+        // 用户设置代理或者取消代理，此处都会回调，重新设置 proxy
+        RCIMProxy *improxy = [RCDProxySettingControllerViewController currentAPPSettingIMProxy];
+        
+        // 测试先断开连接-支持中途修改
+        [[RCIMClient sharedRCIMClient] disconnect];
+        
+        // improxy 为nil，取消代理
+        // 设置成功才断开重连， 必须 SDK 初始化前设置，否则设置失败
+        BOOL success = [[RCCoreClient sharedCoreClient] setProxy:improxy];
+        if (success) {
+            
+            // setProxy 的地方，也要及时更新全局配置 SDWebImage， 允许使用代理模式加载图片
+            [RCDHTTPUtility configProxySDWebImage];
+            
+            // APP 内部重新设置代理或者取消代理，都要重连
+            NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:RCDIMTokenKey];
+            [[RCIMClient sharedRCIMClient] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
+                NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
+            } success:^(NSString * _Nonnull userId) {
+                NSLog(@"connectWithToken success: %@", userId);
+            } error:^(RCConnectErrorCode errorCode) {
+                NSLog(@"connectWithToken error: %@", @(errorCode));
+            }];
+        }else {
+            //必须 SDK 初始化前设置，否则设置失败
+            [self.view showHUDMessage:@"数据已保存但未生效，请登录之前设置"];
+        }
+    };
+    [self.navigationController pushViewController:vc animated:YES];
+}
+#endif
+
 @end

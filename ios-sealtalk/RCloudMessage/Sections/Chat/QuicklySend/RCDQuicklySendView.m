@@ -10,6 +10,8 @@
 #import <Masonry/Masonry.h>
 #import "UIColor+RCColor.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 @interface RCDQuicklySendView ()
 
 @property (nonatomic, strong) UIImageView *bgImageView;
@@ -82,7 +84,11 @@
     if (!_bgImageView) {
         _bgImageView = [[UIImageView alloc] init];
         _bgImageView.userInteractionEnabled = YES;
-        _bgImageView.image = [UIImage imageNamed:@"preview_popup"];
+        UIImage *image = [UIImage imageNamed:@"preview_popup"];
+        if ([RCDSemanticContext isRTL]) {
+            image = [image imageFlippedForRightToLeftLayoutDirection];
+        }
+        _bgImageView.image = image;
     }
     return _bgImageView;
 }

@@ -10,7 +10,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "RealTimeLocationDefine.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-
+#import <RongIMKit/RongIMKit.h>
 @implementation RTLUtilities
 MBProgressHUD *hud;
 
@@ -50,7 +50,8 @@ MBProgressHUD *hud;
 }
 
 + (BOOL)isRTL {
-    return (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_9_0 && [UIView appearance].semanticContentAttribute == UISemanticContentAttributeForceRightToLeft);
+    return [RCKitUtility isRTL];
 }
+
 
 @end

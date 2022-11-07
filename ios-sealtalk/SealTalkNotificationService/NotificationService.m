@@ -9,7 +9,7 @@
 #import "NotificationService.h"
 #import "RCDCommonDefine.h"
 #import "RCDEnvironmentContext.h"
-
+#import "RCNotificationServicePlugin.h"
 @interface NotificationService ()
 
 @property (nonatomic, strong) void (^contentHandler)(UNNotificationContent *contentToDeliver);
@@ -20,13 +20,16 @@
 @implementation NotificationService
 
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
+    NSLog(@"qxb NotificationService start");
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
-    
+
     NSDictionary *userInfo = self.bestAttemptContent.userInfo;
     
-    NSString *appKey = [RCDEnvironmentContext appKey];
     NSString *statsServer = [RCDEnvironmentContext statsServer];
+    NSString *naviServer = [RCDEnvironmentContext navServer];
+    if (naviServer.length > 0) {
+    }
     if (statsServer.length > 0) {
     }
     
@@ -56,12 +59,19 @@
     } else {
         self.contentHandler(self.bestAttemptContent);
     }
+    
+    [[RCNotificationServicePlugin sharedInstance] configApplicationGroupIdentifier:RCDNotificationServiceGroup];
+    [[RCNotificationServicePlugin sharedInstance] connectIMWithNotificationRequest:request withContentHandler:contentHandler];
+    
+    
+ 
 }
 
 - (void)serviceExtensionTimeWillExpire {
     // Called just before the extension will be terminated by the system.
     // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
-    self.contentHandler(self.bestAttemptContent);
+    [[RCNotificationServicePlugin sharedInstance] serviceExtensionTimeWillExpire];
+    NSLog(@"qxb %s",__func__);
 }
 
 

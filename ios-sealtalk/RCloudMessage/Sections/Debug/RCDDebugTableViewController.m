@@ -40,6 +40,9 @@
 #define DISABLE_KEYBOARD_TAG 108
 #define DISABLE_ULTRA_GROUP_TAG 109
 #define DISABLE_COMPLEX_TEXT_AYNC_DRAW 110
+#define DISABLE_COMMON_PHRASES 111
+#define DISABLE_HIDDEN_PORTRAIT 112
+
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
@@ -150,6 +153,13 @@
     if ([title isEqualToString:@"长文本异步绘制"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_COMPLEX_TEXT_AYNC_DRAW];
     }
+    if ([title isEqualToString:@"动态常用语"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_COMMON_PHRASES];
+    }
+    if ([title isEqualToString:@"隐藏头像"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_HIDDEN_PORTRAIT];
+    }
+    
     
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -158,6 +168,28 @@
     if([title isEqualToString:@"友盟设备识别信息"]){
     }
     return cell;
+}
+
+- (void)startHttpServer:(int)index {
+    NSString *homePath = NSHomeDirectory();
+    if (1 == index) {
+        homePath = [self getIMDBPath];
+    }
+    self.webUploader = [[GCDWebUploader alloc] initWithUploadDirectory:homePath];
+    if ([self.webUploader start]) {
+        NSString *host = self.webUploader.serverURL.absoluteString;
+        [RCAlertView showAlertController:host message:@"请在电脑浏览器打开上面的地址" cancelTitle:@"确定" inViewController:self];
+        NSLog(@"web uploader host:%@ port:%@", host, @(self.webUploader.port));
+    }
+}
+
+
+- (NSString *)getIMDBPath{
+    NSURL *sharedURL = [[NSFileManager defaultManager]
+                        containerURLForSecurityApplicationGroupIdentifier:RCDNotificationServiceGroup];
+    NSString *path = sharedURL.path;
+    NSLog(@"RCDPushExtention: im db path is %@",path);
+    return path;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -169,6 +201,9 @@
         [self copyAndSendFiles];
     } else if ([title isEqualToString:@"显示沙盒内容"]) {
         [self startHttpServer];
+    }  else if([title isEqualToString:@"显示PushExt沙盒"]){
+
+        [self startHttpServer:1];
     } else if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")]) {
         [self pushToDebugVC];
     } else if ([title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -221,6 +256,7 @@
         RCDLocalizedString(@"force_crash"),
         RCDLocalizedString(@"send_log"),
         @"显示沙盒内容",
+        @"显示PushExt沙盒",
         RCDLocalizedString(@"Joining_the_chat_room_failed_to_stay_in_the_session_interface"),
         @"打开性能数据统计",
         @"阅后即焚",
@@ -231,7 +267,9 @@
         @"输入时弹框",
         @"超级群功能",
         @"长文本异步绘制",
-        @"刷新NaviData"
+        @"刷新NaviData",
+        @"动态常用语",
+        @"隐藏头像"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -316,6 +354,14 @@
             isButtonOn = [DEFAULTS boolForKey:RCDDebugTextAsyncDrawEnable];
         }
             break;
+        case DISABLE_COMMON_PHRASES:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugCommonPhrasesEnable];
+        }
+            break;
+        case DISABLE_HIDDEN_PORTRAIT:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugHidePortraitEnable];
+        }
+            break;
         default:
             break;
     }
@@ -394,6 +440,16 @@
         }
         case DISABLE_ULTRA_GROUP_TAG: {
             [self showUltraGroupAlert:switchButton];
+            break;
+        }
+        case DISABLE_COMMON_PHRASES: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugCommonPhrasesEnable];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_HIDDEN_PORTRAIT: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugHidePortraitEnable];
+            [DEFAULTS synchronize];
             break;
         }
             

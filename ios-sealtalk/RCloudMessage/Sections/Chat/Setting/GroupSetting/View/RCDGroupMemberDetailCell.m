@@ -9,6 +9,8 @@
 #import "RCDGroupMemberDetailCell.h"
 #import <Masonry/Masonry.h>
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 
 @interface RCDGroupMemberDetailCell () <UITextViewDelegate>
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -241,7 +243,9 @@
         [_regionButton addTarget:self
                           action:@selector(didClickRegionAction)
                 forControlEvents:(UIControlEventTouchUpInside)];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"forward_arrow"]];
+        UIImage *img = [UIImage imageNamed:@"forward_arrow"];
+        img = [RCDSemanticContext imageflippedForRTL:img];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:img];
         [_regionButton addSubview:imageView];
         [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(_regionButton);

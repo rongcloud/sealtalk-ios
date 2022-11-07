@@ -118,6 +118,7 @@
     UITapGestureRecognizer *resetBottomTapGesture =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
     [self.view addGestureRecognizer:resetBottomTapGesture];
+    self.infoLabel.accessibilityLabel = @"infoLabel";
     [self.view addSubview:self.infoLabel];
     [self.view addSubview:self.groupName];
     [self.view addSubview:self.createButton];
@@ -126,7 +127,7 @@
         [self.headBgView addSubview:self.portraitImageView];
         [self.headBgView addSubview:self.editPortraitImageButton];
         [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.right.left.equalTo(self.view);
+            make.top.leading.trailing.equalTo(self.view);
             make.height.offset(102);
         }];
         [self.portraitImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -136,26 +137,26 @@
         }];
         
         [self.editPortraitImageButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.bottom.right.equalTo(self.portraitImageView);
+            make.bottom.trailing.equalTo(self.portraitImageView);
             make.width.height.offset(20);
         }];
     }else{
         [self.headBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.right.left.equalTo(self.view);
+            make.top.leading.trailing.equalTo(self.view);
             make.height.offset(10);
         }];
     }
     
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
+        make.leading.trailing.equalTo(self.view);
         make.top.equalTo(self.headBgView.mas_bottom).offset(16);
         make.height.offset(44);
     }];
 
     [self.groupName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.infoLabel.mas_right);
+        make.trailing.equalTo(self.infoLabel);
         make.top.bottom.equalTo(self.infoLabel);
-        make.left.equalTo(self.infoLabel.mas_left).offset(80);
+        make.leading.equalTo(self.infoLabel.mas_leading).offset(80);
         make.height.equalTo(self.infoLabel);
     }];
     if (self.groupType == RCDCreateTypeUltraGroupChannel) {
@@ -166,7 +167,7 @@
         titleLab.text = RCDLocalizedString(@"channel_private");
         [self.view addSubview:titleLab];
         [titleLab mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.right.height.mas_equalTo(self.infoLabel);
+            make.leading.trailing.height.mas_equalTo(self.infoLabel);
             make.top.mas_equalTo(self.infoLabel.mas_bottom).mas_offset(20);
         }];
         
@@ -174,7 +175,7 @@
         [self.view addSubview:switchBtn];
         [switchBtn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.mas_equalTo(titleLab);
-            make.right.mas_equalTo(self.view).mas_offset(-20);
+            make.trailing.mas_equalTo(self.view).mas_offset(-20);
         }];
         [switchBtn addTarget:self
                       action:@selector(switchBtnClick:)

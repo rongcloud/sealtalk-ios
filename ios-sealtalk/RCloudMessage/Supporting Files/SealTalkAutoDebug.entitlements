@@ -8,6 +8,7 @@
 	<array>
 		<string>group.cn.rongcloud.im.WKShare</string>
 		<string>group.cn.rongcloud.im.share</string>
+		<string>group.cn.rongcloud.im.notificationservice</string>
 	</array>
 </dict>
 </plist>

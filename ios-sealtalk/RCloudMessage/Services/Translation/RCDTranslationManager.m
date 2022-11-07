@@ -10,6 +10,8 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 #import "RCDEnvironmentContext.h"
+#import "RCDHTTPUtility.h"
+
 static NSString * const RCDTranslationKeyCode = @"code";
 static NSString * const RCDTranslationKeyToken = @"token";
 NSInteger const RCDTranslationKeySuccess = 200;
@@ -29,7 +31,7 @@ NSInteger const RCDTranslationKeySuccess = 200;
     NSString *urlString = [NSString stringWithFormat:@"%@user/getJwtToken?userId=%@", baseURL, userID];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     request.HTTPMethod = @"GET";
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSessionConfiguration *config = [RCDHTTPUtility rcSessionConfiguration];
     NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:config delegate:nil delegateQueue:[NSOperationQueue currentQueue]];
     
     NSURLSessionDataTask *task = [urlSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {

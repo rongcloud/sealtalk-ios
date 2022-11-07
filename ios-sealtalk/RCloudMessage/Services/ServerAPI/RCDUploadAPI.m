@@ -65,7 +65,7 @@
 
         NSData *imageData = image;
 
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:[RCDHTTPUtility rcSessionConfiguration]];
         [manager POST:url
             parameters:params
             headers:nil

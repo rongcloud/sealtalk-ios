@@ -11,6 +11,9 @@
 #import <AFNetworking/AFNetworking.h>
 #import "RCDCommonDefine.h"
 #import "RCDEnvironmentContext.h"
+#import <RongIMLibCore/RongIMLibCore.h>
+#import <SDWebImage/SDWebImage.h>
+
 #define HTTP_SUCCESS 200
 
 //NSString *const BASE_URL = DEMO_SERVER;
@@ -22,18 +25,7 @@ static AFHTTPSessionManager *manager;
 + (AFHTTPSessionManager *)sharedHTTPManager {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        manager = [AFHTTPSessionManager manager];
-        manager.completionQueue = dispatch_queue_create("cn.rongcloud.sealtalk.httpqueue", DISPATCH_QUEUE_SERIAL);
-        manager.requestSerializer = [AFJSONRequestSerializer serializer];
-        manager.requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", nil];
-        AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
-        securityPolicy.validatesDomainName = NO;
-        securityPolicy.allowInvalidCertificates = YES;
-        manager.securityPolicy = securityPolicy;
-        manager.requestSerializer.HTTPShouldHandleCookies = YES;
-        [manager.requestSerializer setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-        ((AFJSONResponseSerializer *)manager.responseSerializer).removesKeysWithNullValues = YES;
-        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+        [self resetHTTPManager];
     });
     return manager;
 }
@@ -204,6 +196,55 @@ static AFHTTPSessionManager *manager;
         [DEFAULTS synchronize];
         [[RCDHTTPUtility sharedHTTPManager].requestSerializer setValue:finalCookie forHTTPHeaderField:@"Cookie"];
     }
+}
+
++ (NSURLSessionConfiguration *)rcSessionConfiguration {
+    NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    RCIMProxy *currentProxy = [[RCCoreClient sharedCoreClient] getCurrentProxy];
+    
+    if (currentProxy && [currentProxy isValid]) {
+        NSString *proxyHost = currentProxy.host;
+        NSNumber *proxyPort = @(currentProxy.port);
+        NSString *proxyUserName = currentProxy.userName;
+        NSString *proxyPassword = currentProxy.password;
+
+        NSDictionary *proxyDict = @{
+            (NSString *)kCFStreamPropertySOCKSProxyHost: proxyHost,
+            (NSString *)kCFStreamPropertySOCKSProxyPort: proxyPort,
+            (NSString *)kCFStreamPropertySOCKSUser : proxyUserName,
+            (NSString *)kCFStreamPropertySOCKSPassword: proxyPassword
+        };
+
+        sessionConfiguration.connectionProxyDictionary = proxyDict;
+    }
+    return sessionConfiguration;
+}
+
+// 全局配置 SDWebImage， 允许使用代理模式加载图片
++ (void)configProxySDWebImage {
+    // 由于单例模式， 需要手动重置代理配置
+    [self resetHTTPManager];
+    
+    SDWebImageDownloaderConfig *config = [SDWebImageDownloaderConfig defaultDownloaderConfig];
+    config.sessionConfiguration = [self rcSessionConfiguration];
+    SDWebImageDownloader *imageDownloader = [[SDWebImageDownloader alloc] initWithConfig:config];
+    SDWebImageManager.defaultImageLoader = imageDownloader;
+}
+
+// 重试初始化 AFHTTPSessionManager
++ (void)resetHTTPManager {
+    manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:[self rcSessionConfiguration]];
+    manager.completionQueue = dispatch_queue_create("cn.rongcloud.sealtalk.httpqueue", DISPATCH_QUEUE_SERIAL);
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", nil];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
+    securityPolicy.validatesDomainName = NO;
+    securityPolicy.allowInvalidCertificates = YES;
+    manager.securityPolicy = securityPolicy;
+    manager.requestSerializer.HTTPShouldHandleCookies = YES;
+    [manager.requestSerializer setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+    ((AFJSONResponseSerializer *)manager.responseSerializer).removesKeysWithNullValues = YES;
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
 }
 
 @end

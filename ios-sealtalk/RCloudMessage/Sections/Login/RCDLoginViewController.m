@@ -26,16 +26,18 @@
 #import "RCDRegistrationAgreementController.h"
 #import "RCDIMService.h"
 #import "RCDTranslationManager.h"
-
+#import "RCNotificationServiceAppPlugin.h"
 #if RCDTranslationEnable
 #import <RongTranslation/RongTranslation.h>
 #endif
 
 #import "RCDEnvironmentTableViewController.h"
 #import "RCDEnvironmentContext.h"
-
+#import "RCDProxySettingControllerViewController.h"
+#import "RCDHTTPUtility.h"
 #import "RCDFraudPreventionManager.h"
 #import "RCDAlertBuilder.h"
+#import <RongRTCLib/RongRTCLib.h>
 
 #define UserTextFieldTag 1000
 
@@ -56,6 +58,7 @@
 @property (nonatomic, strong) UIButton *sendCodeButton;
 @property (nonatomic, strong) UILabel *vCodeTimerLb;
 @property (nonatomic, strong) UIButton *loginButton;
+@property (nonatomic, strong) UIButton *proxyButton;
 
 @property (nonatomic, strong) NSTimer *countDownTimer;
 @property (nonatomic, assign) int seconds;
@@ -130,6 +133,27 @@
             }
         });
     }];
+}
+
+- (void)didTapProxyButtonClicked:(UIButton *)sender{
+    RCDProxySettingControllerViewController *vc = [[RCDProxySettingControllerViewController alloc] init];
+    vc.saveCallback = ^{
+
+        // 用户设置代理或者取消代理，此处都会回调，重新设置 proxy
+        RCIMProxy *improxy = [RCDProxySettingControllerViewController currentAPPSettingIMProxy];
+        // improxy 为nil，取消代理
+        BOOL success = [[RCCoreClient sharedCoreClient] setProxy:improxy];
+        if (success) {
+            RCRTCConfig *config = [[RCRTCConfig alloc] init];
+            RCRTCProxy *rtcproxy = [RCDProxySettingControllerViewController currentAPPSettingRTCProxy];
+            config.proxy = rtcproxy;
+            [[RCRTCEngine sharedInstance] initWithConfig:config];
+            
+            // setProxy 的地方，也要及时更新全局配置 SDWebImage， 允许使用代理模式加载图片
+            [RCDHTTPUtility configProxySDWebImage];
+        }
+    };
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 /*发送验证码*/
@@ -258,12 +282,27 @@
               userName:(NSString *)userName
                 userId:(NSString *)userId
                  token:(NSString *)token{
+    [self saveLoginData:phone
+                 userId:userId
+               userName:userName
+                  token:token
+             completion:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            if ([appDelegate respondsToSelector:@selector(configureIMAndEnterHomeIfNeed)]) {
+                [appDelegate performSelector:@selector(configureIMAndEnterHomeIfNeed)];
+            }
+        });
+    }];
+
+ 
+    return;
     __weak typeof(self) weakSelf = self;
     [[RCDIMService sharedService] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
         NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
     } success:^(NSString *userId) {
         NSLog([NSString stringWithFormat:@"token is %@  userId is %@", token, userId], nil);
-        [weakSelf saveLoginData:phone userId:userId userName:userName token:token];
+        [weakSelf saveLoginData:phone userId:userId userName:userName token:token completion:nil];
         [weakSelf requestTranslationTokenBy:userId];
         
         [weakSelf requestFraudPreventionRejectWithPhone:phone withRegion:self.currentRegion.phoneCode complate:^(BOOL reject) {
@@ -319,13 +358,15 @@
 - (void)saveLoginData:(NSString *)phone
                userId:(NSString *)userId
              userName:(NSString *)userName
-                token:(NSString *)token {
+                token:(NSString *)token
+           completion:(void(^)(void)) completion {
     //保存默认用户
     [DEFAULTS setObject:phone forKey:RCDPhoneKey];
     [DEFAULTS setObject:token forKey:RCDIMTokenKey];
     [DEFAULTS setObject:userId forKey:RCDUserIdKey];
+    [RCDNotificationServiceDefaults setValue:token forKey:RCDIMTokenKey];
     [DEFAULTS synchronize];
-
+    
     [RCDUserInfoManager
         getUserInfoFromServer:userId
                      complete:^(RCDUserInfo *userInfo) {
@@ -337,6 +378,9 @@
                          [DEFAULTS setObject:userInfo.stAccount forKey:RCDSealTalkNumberKey];
                          [DEFAULTS setObject:userInfo.gender forKey:RCDUserGenderKey];
                          [DEFAULTS synchronize];
+        if (completion) {
+            completion();
+        }
                      }];
     //同步群组
     [RCDDataSource syncAllData];
@@ -452,25 +496,26 @@
     [self.inputBackground addSubview:self.sendCodeButton];
     [self.inputBackground addSubview:self.vCodeTimerLb];
     [self.inputBackground addSubview:self.loginButton];
+    [self.view addSubview:self.proxyButton];
 }
 //布局海外UI
 - (void)layoutForOverseaIfNeed {
     if ([RCDEnvironmentContext isOversea]) {
         [self.inputBackground addSubview:self.environmentTextField];
         [self.inputBackground mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.view).offset(41);
-            make.right.equalTo(self.view).offset(-41);
+            make.leading.equalTo(self.view).offset(41);
+            make.trailing.equalTo(self.view).offset(-41);
             make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
             make.centerX.equalTo(self.view);
             make.height.offset(310);
         }];
         [self.environmentTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.right.top.equalTo(self.inputBackground);
+            make.leading.trailing.top.equalTo(self.inputBackground);
             make.height.offset(60);
         }];
         
         [self.countryTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.right.equalTo(self.inputBackground);
+            make.leading.trailing.equalTo(self.inputBackground);
             make.top.equalTo(self.environmentTextField.mas_bottom);
             make.height.offset(60);
         }];
@@ -485,52 +530,59 @@
     }];
     
     [self.errorMsgLb mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view).offset(41);
-        make.right.equalTo(self.view).offset(-41);
+        make.leading.equalTo(self.view).offset(41);
+        make.trailing.equalTo(self.view).offset(-41);
         make.top.equalTo(self.rongLogo.mas_bottom).offset(20);
         make.centerX.equalTo(self.view);
         make.height.offset(15);
     }];
     
     [self.inputBackground mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view).offset(41);
-        make.right.equalTo(self.view).offset(-41);
+        make.leading.equalTo(self.view).offset(41);
+        make.trailing.equalTo(self.view).offset(-41);
         make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
         make.centerX.equalTo(self.view);
         make.height.offset(250);
     }];
     
     [self.countryTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.top.equalTo(self.inputBackground);
+        make.leading.trailing.top.equalTo(self.inputBackground);
         make.height.offset(60);
     }];
     
     [self.phoneTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.countryTextField);
+        make.leading.trailing.equalTo(self.countryTextField);
         make.top.equalTo(self.countryTextField.mas_bottom);
         make.height.offset(60);
     }];
     
     [self.verificationCodeField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.countryTextField);
+        make.leading.trailing.equalTo(self.countryTextField);
         make.top.equalTo(self.phoneTextField.mas_bottom);
         make.height.offset(60);
     }];
     
     [self.loginButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.bottom.equalTo(self.inputBackground);
+        make.leading.trailing.bottom.equalTo(self.inputBackground);
         make.height.offset(50);
     }];
     
+    [self.proxyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.inputBackground);
+        make.width.offset(100);
+        make.height.offset(20);
+        make.top.equalTo(self.inputBackground.mas_bottom).offset(10);
+    }];
+
     [self.sendCodeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.verificationCodeField).offset(-10);
+        make.trailing.equalTo(self.verificationCodeField).offset(-10);
         make.bottom.equalTo(self.verificationCodeField.mas_bottom).offset(-20);
         make.width.offset(80);
         make.height.offset(25);
     }];
     
     [self.vCodeTimerLb mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.top.bottom.equalTo(self.sendCodeButton);
+        make.leading.trailing.top.bottom.equalTo(self.sendCodeButton);
     }];
 }
 
@@ -688,6 +740,20 @@
         _loginButton = loginButton;
     }
     return _loginButton;
+}
+
+- (UIButton *)proxyButton {
+    if (!_proxyButton) {
+        UIButton *proxyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [proxyButton addTarget:self action:@selector(didTapProxyButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [proxyButton setTitle:RCDLocalizedString(@"socks_proxy_setting") forState:UIControlStateNormal];
+        proxyButton.backgroundColor = [UIColor clearColor];
+        [proxyButton setTitleColor:HEXCOLOR(0x0099ff) forState:UIControlStateNormal];
+        proxyButton.titleLabel.font = [UIFont systemFontOfSize:15];
+        proxyButton.hidden = YES;
+        _proxyButton = proxyButton;
+    }
+    return _proxyButton;
 }
 
 - (UITextView *)getFooterLabel {

@@ -14,6 +14,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DefaultPortraitView.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 @interface RCDForwardSelectedCell ()
 
 @property (nonatomic, strong) UIButton *selectedButton;
@@ -40,20 +42,20 @@
 
     [self.selectedButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.contentView);
-        make.left.equalTo(self.contentView).offset(12);
+        make.leading.equalTo(self.contentView).offset(-12);
         make.height.width.offset(22);
     }];
 
     [self.headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).offset(12);
-        make.top.equalTo(self.contentView).offset(7.5);
+        make.leading.equalTo(self.contentView).offset(12);
+        make.centerY.equalTo(self.contentView).offset(7.5);
         make.height.width.offset(40);
     }];
 
     [self.conversationTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.headerImageView.mas_right).offset(9);
+        make.leading.equalTo(self.headerImageView.mas_trailing).offset(9);
         make.centerY.equalTo(self.contentView);
-        make.right.equalTo(self.contentView).offset(-12);
+        make.trailing.equalTo(self.contentView).offset(-12);
         make.height.offset(24);
     }];
 }
@@ -136,7 +138,7 @@
     if (selectStatus == RCDForwardSelectedStatusSingleSelect) {
         self.selectedButton.hidden = YES;
         [self.headerImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(12);
+            make.leading.equalTo(self.contentView).offset(12);
             make.top.equalTo(self.contentView).offset(7.5);
             make.height.width.offset(40);
         }];
@@ -149,11 +151,11 @@
         }
         [self.selectedButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.contentView);
-            make.left.equalTo(self.contentView).offset(12);
+            make.leading.equalTo(self.contentView).offset(12);
             make.height.width.offset(22);
         }];
         [self.headerImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.selectedButton.mas_right).offset(12);
+            make.leading.equalTo(self.selectedButton.mas_trailing).offset(12);
             make.top.equalTo(self.contentView).offset(7.5);
             make.height.width.offset(40);
         }];
@@ -196,6 +198,7 @@
         _conversationTitleLabel = [[UILabel alloc] init];
         _conversationTitleLabel.backgroundColor = [UIColor clearColor];
         _conversationTitleLabel.font = [UIFont systemFontOfSize:16];
+        _conversationTitleLabel.textAlignment = [RCDSemanticContext isRTL] ? NSTextAlignmentRight : NSTextAlignmentLeft;
         _conversationTitleLabel.textColor = RCDDYCOLOR(0x262626, 0xffffff);
     }
     return _conversationTitleLabel;

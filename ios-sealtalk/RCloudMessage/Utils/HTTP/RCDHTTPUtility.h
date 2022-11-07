@@ -24,4 +24,13 @@ typedef NS_ENUM(NSUInteger, HTTPMethod) {
                    parameters:(NSDictionary *)parameters
                      response:(void (^)(RCDHTTPResult *result))responseBlock;
 
+/*
+ 根据 RongCoreClient 是否设置代理，统一构造 NSURLSessionConfiguration
+
+ @return 代理设置好的 NSURLSessionConfiguration 实例
+*/
++ (NSURLSessionConfiguration *)rcSessionConfiguration;
+
+// 全局配置 SDWebImage， 允许使用代理模式加载图片
++ (void)configProxySDWebImage;
 @end

@@ -465,40 +465,40 @@
     [self.headerView addSubview:self.addChannelButton];
     
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.headerView).offset(12);
+        make.leading.equalTo(self.headerView).offset(12);
         make.top.equalTo(self.headerView).offset(10+[RCKitUtility getWindowSafeAreaInsets].top);
         make.height.offset(25);
-        make.right.equalTo(self.settingButton.mas_right).offset(-10);
+        make.trailing.equalTo(self.settingButton).offset(-10);
     }];
     [self.settingButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.headerView).offset(-12);
+        make.trailing.equalTo(self.headerView).offset(-12);
         make.height.offset(25);
         make.width.offset(22);
         make.centerY.equalTo(self.nameLabel);
     }];
     [self.inviteButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.headerView).offset(18);
+        make.leading.equalTo(self.headerView).offset(18);
         make.top.equalTo(self.nameLabel.mas_bottom).offset(15);
         make.height.offset(32);
         make.centerX.equalTo(self.headerView);
     }];
     
     [self.infoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.nameLabel);
+        make.leading.equalTo(self.nameLabel);
         make.top.equalTo(self.inviteButton.mas_bottom).offset(33);
         make.height.offset(16);
         make.width.offset(30);
     }];
     
     [self.lineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.infoLabel.mas_right).offset(10);
-        make.right.equalTo(self.addChannelButton.mas_left).offset(-10);
+        make.leading.equalTo(self.infoLabel.mas_trailing).offset(10);
+        make.trailing.equalTo(self.addChannelButton.mas_leading).offset(-10);
         make.height.offset(0.5);
         make.centerY.equalTo(self.infoLabel);
     }];
     
     [self.addChannelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.headerView).offset(-16);
+        make.trailing.equalTo(self.headerView).offset(-16);
         make.width.height.offset(24);
         make.centerY.equalTo(self.infoLabel);
     }];

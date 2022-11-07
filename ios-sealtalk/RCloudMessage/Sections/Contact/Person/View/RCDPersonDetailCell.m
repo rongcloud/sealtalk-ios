@@ -35,7 +35,7 @@
         self.rightImgView.hidden = YES;
         self.detailLabel.hidden = YES;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView).offset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
         }];
@@ -44,14 +44,14 @@
         self.leftImgView.hidden = YES;
         self.rightImgView.hidden = YES;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView).offset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
         }];
 
         [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.greaterThanOrEqualTo(self.titleLabel.mas_right).offset(10);
-            make.right.equalTo(self.contentView).offset(-10);
+            make.leading.greaterThanOrEqualTo(self.titleLabel.mas_trailing).offset(10);
+            make.trailing.equalTo(self.contentView).offset(-10);
             make.centerY.equalTo(self.contentView);
         }];
     } break;
@@ -59,15 +59,15 @@
         self.leftImgView.hidden = YES;
         self.detailLabel.hidden = YES;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView).offset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
-            make.right.equalTo(self.rightImgView.mas_left).offset(-10);
+            make.trailing.equalTo(self.rightImgView.mas_leading).offset(-10);
         }];
 
         [self.rightImgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.contentView);
-            make.right.equalTo(self.contentView).offset(-10);
+            make.trailing.equalTo(self.contentView).offset(-10);
             make.height.offset(13);
             make.width.offset(8);
         }];
@@ -75,20 +75,20 @@
     case Style_Title_Detail_rightImg: {
         self.leftImgView.hidden = YES;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView).offset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
         }];
 
         [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.greaterThanOrEqualTo(self.titleLabel.mas_right).offset(10);
-            make.right.equalTo(self.contentView).offset(-20);
+            make.leading.greaterThanOrEqualTo(self.titleLabel.mas_trailing).offset(10);
+            make.trailing.equalTo(self.contentView).offset(-20);
             make.centerY.equalTo(self.contentView);
         }];
 
         [self.rightImgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.contentView);
-            make.right.equalTo(self.contentView).offset(-10);
+            make.trailing.equalTo(self.contentView).offset(-10);
             make.height.offset(13);
             make.width.offset(8);
         }];
@@ -96,45 +96,45 @@
     case Style_Title_leftImg_Detail: {
         self.rightImgView.hidden = YES;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView).offset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
         }];
 
         [self.leftImgView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.titleLabel.mas_right).offset(10);
+            make.leading.equalTo(self.titleLabel.mas_trailing).offset(10);
             make.centerY.equalTo(self.titleLabel);
             make.height.width.offset(22);
         }];
 
         [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.greaterThanOrEqualTo(self.leftImgView.mas_right).offset(10);
+            make.leading.greaterThanOrEqualTo(self.leftImgView.mas_trailing).offset(10);
             make.centerY.equalTo(self.contentView);
-            make.right.equalTo(self.contentView);
+            make.trailing.equalTo(self.contentView);
         }];
     } break;
     case Style_Title_leftImg_Detail_rightImg: {
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.contentView).offset(10);
+            make.leading.equalTo(self.contentView).offset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
         }];
 
         [self.leftImgView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.titleLabel.mas_right).offset(10);
+            make.leading.equalTo(self.titleLabel.mas_trailing).offset(10);
             make.centerY.equalTo(self.titleLabel);
             make.height.width.offset(22);
         }];
 
         [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(self.rightImgView.mas_left).offset(-10);
+            make.trailing.equalTo(self.rightImgView.mas_leading).offset(-10);
             make.centerY.equalTo(self.contentView);
-            make.left.greaterThanOrEqualTo(self.leftImgView.mas_right).offset(10);
+            make.leading.greaterThanOrEqualTo(self.leftImgView.mas_trailing).offset(10);
         }];
 
         [self.rightImgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.contentView);
-            make.right.equalTo(self.contentView).offset(-10);
+            make.trailing.equalTo(self.contentView).offset(-10);
             make.height.offset(13);
             make.width.offset(8);
         }];
@@ -144,7 +144,7 @@
         self.rightImgView.hidden = YES;
         self.detailLabel.hidden = YES;
         [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.right.equalTo(self.contentView).inset(10);
+            make.leading.trailing.equalTo(self.contentView).inset(10);
             make.centerY.equalTo(self.contentView);
             make.height.offset(24);
         }];

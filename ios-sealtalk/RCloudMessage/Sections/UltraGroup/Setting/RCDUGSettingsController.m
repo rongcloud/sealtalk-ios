@@ -13,6 +13,8 @@
 #import "RCDUGMentionedViewController.h"
 #import "RCDDebugUltraGroupListController.h"
 #import "RCDDebugComChatListController.h"
+#import "RCDDotterViewController.h"
+#import "RCDLocalMessagesViewController.h"
 
 NSString *const RCDUGSettingsControllerCellIdentifier = @"RCDUGSettingsControllerCellIdentifier";
 NSString *const RCDUGSettingsTitle = @"RCDUGSettingsTitle";
@@ -22,6 +24,7 @@ NSString *const RCDUGSettingsCategory = @"RCDUGSettingsCategory";
 typedef NS_ENUM(NSInteger, RCDUGSettingsBlockType) {
     RCDUGSettingsBlockTypeUltraGroup, // 超级群
     RCDUGSettingsBlockTypeGroup,  // 普通
+    CDUGSettingsBlockTypeLocalMessages,  // 普通
 };
 
 typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
@@ -32,13 +35,19 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
     RCGUnreadCoutTypeDegistList // 超级群获取未读 @消息列表(摘要列表)
 };
 
+typedef NS_ENUM(NSInteger, RCDUGSettingsOtherType) {
+    RCDUGSettingsOtherTypeDot // 打点测试
+};
 @interface RCDUGSettingsController()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) RCDUGListView *settingsView;
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, strong) NSArray *arrayNoDistribute;
 @property (nonatomic, strong) NSArray *arrayUnreadCount;
+@property (nonatomic, strong) NSArray *arrayOther;
+
 @property (nonatomic, strong) NSDictionary *dicNoDistribute;
 @property (nonatomic, strong) NSDictionary *dicUnreadCount;
+@property (nonatomic, strong) NSDictionary *dicOther;
 @end
 
 @implementation RCDUGSettingsController
@@ -91,11 +100,31 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
             [self showVC:vc];
         }
             break;
+        case CDUGSettingsBlockTypeLocalMessages: {
+            RCDLocalMessagesViewController *vc = [[RCDLocalMessagesViewController alloc] init];
+            [self showVC:vc];
+        }
+            break;
+            
         default:
             break;
     }
 }
 
+
+/// 其他
+/// @param category 类别
+- (void)showOtherVC:(RCDUGSettingsOtherType)category {
+    switch (category) {
+        case RCDUGSettingsOtherTypeDot: {
+            RCDDotterViewController *vc = [RCDDotterViewController new];
+            [self showVC:vc];
+        }
+            break;
+        default:
+            break;
+    }
+}
 
 /// 未读数VC
 /// @param category 类别
@@ -159,6 +188,9 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
         case 1:
             [self showUnreadVC:[array[indexPath.row] integerValue]];
             break;
+        case 2:
+            [self showOtherVC:[array[indexPath.row] integerValue]];
+            break;
         default:
             break;
     }
@@ -203,6 +235,10 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
                         @{RCDUGSettingsTitle : @"未读数",
                           RCDUGSettingsRows : self.dicUnreadCount,
                           RCDUGSettingsCategory: self.arrayUnreadCount
+                        },
+                        @{RCDUGSettingsTitle : @"其他",
+                          RCDUGSettingsRows : self.dicOther,
+                          RCDUGSettingsCategory: self.arrayOther
                         }
         ];
     }
@@ -213,7 +249,8 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
     if (!_arrayNoDistribute) {
         _arrayNoDistribute = @[
             @(RCDUGSettingsBlockTypeUltraGroup),
-            @(RCDUGSettingsBlockTypeGroup)
+            @(RCDUGSettingsBlockTypeGroup),
+            @(CDUGSettingsBlockTypeLocalMessages)
         ];
     }
     return _arrayNoDistribute;
@@ -224,7 +261,8 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
     if (!_dicNoDistribute) {
         _dicNoDistribute = @{
             @(RCDUGSettingsBlockTypeUltraGroup) : @"超级群",
-            @(RCDUGSettingsBlockTypeGroup) : @"普通群"
+            @(RCDUGSettingsBlockTypeGroup) : @"普通群",
+            @(CDUGSettingsBlockTypeLocalMessages) :@"本地消息"
         };
     }
     return _dicNoDistribute;
@@ -242,6 +280,15 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
     }
     return _arrayUnreadCount;
 }
+
+- (NSArray *)arrayOther {
+    if (!_arrayOther) {
+        _arrayOther = @[
+            @(RCDUGSettingsOtherTypeDot)
+        ];
+    }
+    return _arrayOther;
+}
 - (NSDictionary *)dicUnreadCount {
     if (!_dicUnreadCount) {
         _dicUnreadCount = @{
@@ -253,5 +300,15 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
         };
     }
     return _dicUnreadCount;
+}
+
+- (NSDictionary *)dicOther {
+    
+    if (!_dicOther) {
+        _dicOther = @{
+            @(RCDUGSettingsOtherTypeDot) : @"打点测试"
+        };
+    }
+    return _dicOther;
 }
 @end

@@ -9,6 +9,8 @@
 #import "RCDNavigationViewController.h"
 #import "RCDCommonDefine.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
+
 @interface RCDNavigationViewController ()
 
 @end
@@ -17,6 +19,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if ([RCDSemanticContext isRTL]) {
+        self.view.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
+        self.navigationBar.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
+    }
+  
 
     __weak RCDNavigationViewController *weakSelf = self;
 

@@ -7,6 +7,8 @@
 //
 
 #import "RCDIndicateTextField.h"
+#import "RCDSemanticContext.h"
+
 @interface RCDIndicateTextField ()
 @property (nonatomic, strong) UIColor *lineColor;
 @end
@@ -166,7 +168,9 @@
 - (UIImageView *)indicateIcon {
     if (_indicateIcon == nil) {
         _indicateIcon = [[UIImageView alloc] init];
-        _indicateIcon.image = [UIImage imageNamed:@"right_arrow"];
+        UIImage *img = [UIImage imageNamed:@"right_arrow"];
+        img = [RCDSemanticContext imageflippedForRTL:img];
+        _indicateIcon.image = img;
         _indicateIcon.hidden = YES;
     }
     return _indicateIcon;

@@ -34,21 +34,21 @@
     [self.contentView addSubview:self.nicknameLabel];
 
     [self.selectedImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).offset(27);
+        make.leading.equalTo(self.contentView).offset(27);
         make.centerY.equalTo(self.contentView);
         make.height.width.offset(21);
     }];
 
     [self.portraitImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.selectedImageView.mas_right).offset(8);
+        make.leading.equalTo(self.selectedImageView.mas_trailing).offset(8);
         make.centerY.equalTo(self.contentView);
         make.height.width.offset(40);
     }];
 
     [self.nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.portraitImageView.mas_right).offset(8);
+        make.leading.equalTo(self.portraitImageView.mas_trailing).offset(8);
         make.centerY.equalTo(self.contentView);
-        make.right.equalTo(self.contentView).offset(-27);
+        make.trailing.equalTo(self.contentView).offset(-27);
         make.height.offset(20);
     }];
 }

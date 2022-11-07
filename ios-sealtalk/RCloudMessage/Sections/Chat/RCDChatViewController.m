@@ -52,7 +52,7 @@
 #import "RealTimeLocationViewController.h"
 #import "RealTimeLocationDefine.h"
 #import <RongLocation/RongLocation.h>
-
+#import "RCDSemanticContext.h"
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
 static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusViewKey";
 
@@ -72,6 +72,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 @property (nonatomic, weak) id<RCRealTimeLocationProxy> realTimeLocation;
 @property (nonatomic, strong) RealTimeLocationStatusView *realTimeLocationStatusView;
 @property (nonatomic, assign) BOOL drawAsyncEnable;
+@property (nonatomic, assign) BOOL hidePortrait;
 @end
 
 @implementation RCDChatViewController
@@ -94,9 +95,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (void)initData {
     int defalutHistoryMessageCount = (int)[DEFAULTS integerForKey:RCDChatroomDefalutHistoryMessageCountKey];
-    if (defalutHistoryMessageCount >= -1 && defalutHistoryMessageCount <= 50) {
-        self.defaultHistoryMessageCountOfChatRoom = defalutHistoryMessageCount;
-    }
+    self.defaultHistoryMessageCountOfChatRoom = defalutHistoryMessageCount;
 
     // 初始化时需要读取焚毁状态
     BOOL isBurnMessageOn = [DEFAULTS boolForKey:RCDDebugBurnMessageKey];
@@ -136,6 +135,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         // 此功能需要提交工单开通才能使用
         [RCChatRoomClient sharedChatRoomClient].memberDelegate = self;
     }
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSNumber *hidePortrait = [userDefault valueForKey:RCDDebugHidePortraitEnable];
+    self.hidePortrait = [hidePortrait boolValue];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -152,8 +154,24 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [RCDPokeManager sharedInstance].currentConversation = conver;
     //    [self.chatSessionInputBarControl updateStatus:self.chatSessionInputBarControl.currentBottomBarStatus
     //    animated:NO];
+    [self showDynamicPhrasesIfNeed];
 }
 
+
+/// 动态常用语
+- (void)showDynamicPhrasesIfNeed {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL ret = [[userDefault valueForKey:RCDDebugCommonPhrasesEnable] boolValue];
+    if (ret) {
+        NSMutableArray *array = [NSMutableArray array];
+        int num = random()%10;
+        for (int i = 0; i< num; i++) {
+            NSString *phrase = [NSString stringWithFormat:@"常用语 -> %d", i];
+            [array addObject:phrase];
+        }
+        [self.chatSessionInputBarControl setCommonPhrasesList:array];
+    }
+}
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self resetQucilySendView];
@@ -573,6 +591,14 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
     return [super collectionView:collectionView layout:collectionViewLayout sizeForItemAtIndexPath:indexPath];
 }
+
+- (void)willDisplayMessageCell:(RCMessageBaseCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    if (self.hidePortrait && [cell isKindOfClass:[RCMessageCell class]]) {
+        RCMessageCell *c =  (RCMessageCell *)cell;
+        c.showPortrait = indexPath.row%2 == 0;
+    }
+    [super willDisplayMessageCell:cell atIndexPath:indexPath];
+}
 #pragma mark - target action
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
@@ -673,6 +699,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (void)quicklySendImage:(UIButton *)button {
     CGRect targetFrame =
         CGRectMake(RCDScreenWidth - 108, self.chatSessionInputBarControl.frame.origin.y - 148 - 2, 106, 148);
+    if ([RCDSemanticContext isRTL]) {
+        targetFrame =
+            CGRectMake(2, self.chatSessionInputBarControl.frame.origin.y - 148 - 2, 106, 148);
+    }
     [[RCDQuicklySendManager sharedManager] showQuicklySendViewWithframe:targetFrame];
 }
 
@@ -821,7 +851,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
             backString = [NSString stringWithFormat:@"(...)"];
         }
     }
-    [self.navigationItem setLeftBarButtonItems:[RCKitUtility getLeftNavigationItems:RCResourceImage(@"navigator_btn_back") title:backString target:self action:@selector(leftBarButtonItemPressed:)]];
+    UIImage *img = RCResourceImage(@"navigator_btn_back");
+    img = [RCDSemanticContext imageflippedForRTL:img];
+    [self.navigationItem setLeftBarButtonItems:[RCKitUtility getLeftNavigationItems:img title:backString target:self action:@selector(leftBarButtonItemPressed:)]];
 }
 
 - (void)setRightNavigationItem:(UIImage *)image{
@@ -902,6 +934,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         if (userInfo) {
             self.title = [RCKitUtility getDisplayName:userInfo];
         }
+    }
+    else if(self.conversationType == ConversationType_CHATROOM){
+     
+        self.title = [NSString stringWithFormat:@"%@ -> 默认数据（%d）条", self.title, self.defaultHistoryMessageCountOfChatRoom];
     }
 }
 
@@ -995,7 +1031,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     RCDChatTitleAlertView *alertView = [[RCDChatTitleAlertView alloc] initWithTitleAlertMessage:RCDLocalizedString(@"Fraud_Prevention_Tips")];
     [self.view addSubview:alertView];
 
-    CGFloat topHeight = CGRectGetMaxY([UIApplication sharedApplication].statusBarFrame) +
+    CGFloat topHeight = [self statusBarHeight] +
                                       CGRectGetMaxY(self.navigationController.navigationBar.bounds);
 
     alertView.frame = CGRectMake(0, topHeight, self.view.frame.size.width, 63);
@@ -1005,6 +1041,17 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     self.conversationMessageCollectionView.frame = collectionFrame;
 }
 
+- (CGFloat)statusBarHeight {
+    UIWindow *appWindow = [UIApplication sharedApplication].delegate.window;
+
+    UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+    if (@available(iOS 11.0, *)) {
+        safeAreaInsets = appWindow.safeAreaInsets;
+    }
+    
+    CGFloat statusBarHeight = (CGFloat)(safeAreaInsets.top != 0 ? safeAreaInsets.top : [UIApplication sharedApplication].statusBarFrame.size.height);
+    return statusBarHeight;
+}
 
 - (void)resetQucilySendView {
     [[RCDQuicklySendManager sharedManager] hideQuicklySendView];
