@@ -413,7 +413,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
             NSString *userId = messageContent.mentionedInfo.userIdList[i];
             if ([userId isEqualToString:RCDMetionAllUsetId]) {
                 messageContent.mentionedInfo.type = RC_Mentioned_All;
-                messageContent.mentionedInfo.userIdList = nil;
                 break;
             }
         }
@@ -596,6 +595,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if (self.hidePortrait && [cell isKindOfClass:[RCMessageCell class]]) {
         RCMessageCell *c =  (RCMessageCell *)cell;
         c.showPortrait = indexPath.row%2 == 0;
+        c.allowsSelection = indexPath.row%3 == 0;
     }
     [super willDisplayMessageCell:cell atIndexPath:indexPath];
 }
@@ -1038,6 +1038,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
     CGRect collectionFrame = self.conversationMessageCollectionView.frame;
     collectionFrame.origin.y = alertView.frame.size.height + alertView.frame.origin.y;
+    collectionFrame.size.height = collectionFrame.size.height - alertView.frame.size.height;
     self.conversationMessageCollectionView.frame = collectionFrame;
 }
 

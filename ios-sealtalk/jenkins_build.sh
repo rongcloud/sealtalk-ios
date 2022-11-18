@@ -82,15 +82,6 @@ if [ "${APP_NAME}" = "RC IM" ];then
   sed -i '' -e 's?cn.rongcloud.im?cn.rongcloud.im.sg?g' ./RCloudMessage.xcodeproj/project.pbxproj
   sed -i '' -e 's?cn.rongcloud.im.sg.shareextension?cn.rongcloud.im.sg.ShareExtension?g' ./RCloudMessage.xcodeproj/project.pbxproj
   sed -i '' -e 's?cn.rongcloud.im.notificationservice?cn.rongcloud.im.sg.notificationservice?g' ./RCloudMessage.xcodeproj/project.pbxproj
-  
-  sed -i '' -e 's?group.cn.rongcloud.im.notificationservice?group.cn.rongcloud.im.sg.notificationservice?g' ./RCloudMessage/Supporting\ Files/SealTalk.entitlements
-  sed -i '' -e 's?group.cn.rongcloud.im.notificationservice?group.cn.rongcloud.im.sg.notificationservice?g' ./SealTalkNotificationService/SealTalkNotificationService.entitlements
-  sed -i '' -e 's?group.cn.rongcloud.im.notificationservice?group.cn.rongcloud.im.sg.notificationservice?g' ./RCloudMessage/Supporting\ Files/SealTalkRelease.entitlements
-  
-  
-  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./RCloudMessage/Supporting\ Files/SealTalk.entitlements
-  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./SealTalkShareExtension/SealTalkShareExtension.entitlements
-  sed -i '' -e 's?group.cn.rongcloud.im.share?group.cn.rongcloud.im.sg.share?g' ./RCloudMessage/Supporting\ Files/SealTalkRelease.entitlements
 
   sed -i '' -e 's?<string>融云 IM</string>?<string>'"${APP_NAME}"'</string>?g' ./RCloudMessage/Supporting\ Files/info.plist
   sed -i '' -e 's?融云 IM?'"${APP_NAME}"'?g' ./SealTalkShareExtension/info.plist
@@ -99,8 +90,6 @@ if [ "${APP_NAME}" = "RC IM" ];then
  
   sed -i '' -e 's?"融云 IM?'\""${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
   sed -i '' -e 's?融云 IM?'\ "${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
-
-  sed -i "" -e 's?#define RCDNotificationServiceGroup @\"group.cn.rongcloud.im.notificationservice\"$?#define RCDNotificationServiceGroup @\"group.cn.rongcloud.im.sg.notificationservice\"?' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
   
 fi
 
