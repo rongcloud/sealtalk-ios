@@ -57,5 +57,7 @@
 #define RCDWormholeKey @"wormhole"
 #define RCDAppLaunchingIdentifierKey @"RCDAppLaunchingIdentifierKey"
 #define RCDPushExtensionIdentifierKey @"RCDPushExtensionIdentifierKey"
+#define RCDDebugEnableCustomEmoji @"RCDDebugEnableCustomEmoji"
+#define RCDDebugDisableEmojiBtn @"RCDDebugDisableEmojiBtn"
 
 #endif /* RCDCommonString_h */

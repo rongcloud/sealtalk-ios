@@ -13,6 +13,8 @@
 #import "RCDCommonDefine.h"
 #import "RCDUIBarButtonItem.h"
 #import <RongCustomerService/RongCustomerService.h>
+#import "RCDCommonString.h"
+#import "RCDCustomerEmoticonTab.h"
 @interface RCDCustomerServiceViewController () <RCDCSAnnounceViewDelegate, RCDCSEvaluateViewDelegate>
 //＊＊＊＊＊＊＊＊＊应用自定义评价界面开始1＊＊＊＊＊＊＊＊＊＊＊＊＊
 @property (nonatomic, strong) NSString *commentId;
@@ -30,9 +32,13 @@
 
 @implementation RCDCustomerServiceViewController
 - (void)viewDidLoad {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+    self.disableSystemEmoji = enable;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-
+    [self hideEmojiButtonIfNeed];
+    [self addEmoticonTabDemo];
     self.evaStarDic = [NSMutableDictionary dictionary];
     __weak typeof(self) weakSelf = self;
     [[RCCustomerServiceClient sharedCustomerServiceClient] getHumanEvaluateCustomerServiceConfig:^(NSDictionary *evaConfig) {
@@ -59,6 +65,35 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)hideEmojiButtonIfNeed {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableEmojiBtn] boolValue];
+    if (enable) {
+        self.chatSessionInputBarControl.inputContainerView.hideEmojiButton = enable;
+    }
+}
+
+- (void)addEmoticonTabDemo {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugEnableCustomEmoji] boolValue];
+    if (!enable) {
+        return;
+    }
+      //表情面板添加自定义表情包
+      UIImage *icon = [RCKitUtility imageNamed:@"emoji_btn_normal"
+                                      ofBundle:@"RongCloud.bundle"];
+      RCDCustomerEmoticonTab *emoticonTab1 = [[RCDCustomerEmoticonTab alloc] initWith:self.chatSessionInputBarControl.emojiBoardView];
+      emoticonTab1.identify = @"1";
+      emoticonTab1.image = icon;
+      emoticonTab1.pageCount = 2;
+      [self.chatSessionInputBarControl.emojiBoardView addEmojiTab:emoticonTab1];
+    
+    RCDCustomerEmoticonTab *emoticonTab2 = [[RCDCustomerEmoticonTab alloc] initWith:self.chatSessionInputBarControl.emojiBoardView];
+      emoticonTab2.identify = @"2";
+      emoticonTab2.image = icon;
+      emoticonTab2.pageCount = 4;
+      [self.chatSessionInputBarControl.emojiBoardView addEmojiTab:emoticonTab2];
+}
 //客服VC左按键注册的selector是customerServiceLeftCurrentViewController，
 //这个函数是基类的函数，他会根据当前服务时间来决定是否弹出评价，根据服务的类型来决定弹出评价类型。
 //弹出评价的函数是commentCustomerServiceAndQuit，应用可以根据这个函数内的注释来自定义评价界面。

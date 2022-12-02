@@ -42,8 +42,8 @@
 #define DISABLE_COMPLEX_TEXT_AYNC_DRAW 110
 #define DISABLE_COMMON_PHRASES 111
 #define DISABLE_HIDDEN_PORTRAIT 112
-
-
+#define ENABLE_CUSTOM_EMOJI 113
+#define DISABLE_EMOJI_BUTTON 114
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCCoreClient()
@@ -160,7 +160,13 @@
         [self setSwitchButtonCell:cell tag:DISABLE_HIDDEN_PORTRAIT];
     }
     
-    
+    if ([title isEqualToString:@"自定义表情"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_CUSTOM_EMOJI];
+    }
+    if ([title isEqualToString:@"隐藏表情按钮"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_EMOJI_BUTTON];
+    }
+  
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -269,7 +275,9 @@
         @"长文本异步绘制",
         @"刷新NaviData",
         @"动态常用语",
-        @"隐藏头像"
+        @"隐藏头像",
+        @"自定义表情",
+        @"隐藏表情按钮"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -360,6 +368,14 @@
             break;
         case DISABLE_HIDDEN_PORTRAIT:{
             isButtonOn = [DEFAULTS boolForKey:RCDDebugHidePortraitEnable];
+        }
+            break;
+        case ENABLE_CUSTOM_EMOJI:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableCustomEmoji];
+        }
+            break;
+        case DISABLE_EMOJI_BUTTON:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableEmojiBtn];
         }
             break;
         default:
@@ -453,6 +469,16 @@
             break;
         }
             
+        case ENABLE_CUSTOM_EMOJI: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableCustomEmoji];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_EMOJI_BUTTON: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableEmojiBtn];
+            [DEFAULTS synchronize];
+            break;
+        }
     default:
         break;
     }

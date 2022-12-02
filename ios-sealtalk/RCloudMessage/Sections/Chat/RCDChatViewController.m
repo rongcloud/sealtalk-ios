@@ -73,6 +73,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 @property (nonatomic, strong) RealTimeLocationStatusView *realTimeLocationStatusView;
 @property (nonatomic, assign) BOOL drawAsyncEnable;
 @property (nonatomic, assign) BOOL hidePortrait;
+@property (nonatomic, copy) NSString *leftBackTitle;
+@property (nonatomic, assign) BOOL updateRightNaviBar;
 @end
 
 @implementation RCDChatViewController
@@ -100,10 +102,15 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     // 初始化时需要读取焚毁状态
     BOOL isBurnMessageOn = [DEFAULTS boolForKey:RCDDebugBurnMessageKey];
     RCKitConfigCenter.message.enableDestructMessage = isBurnMessageOn;
+    
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+    self.disableSystemEmoji = enable;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.updateRightNaviBar = YES;
     self.loading = NO;
     self.enableSaveNewPhotoToLocalSystem = YES;
     [self notifyUpdateUnreadMessageCount];
@@ -126,6 +133,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self handleChatSessionInputBarControlDemo];
     [self insertMessageDemo];
     [self addEmoticonTabDemo];
+    [self hideEmojiButtonIfNeed];
     [self addQuicklySendImage];
     [self setupChatBackground];
     
@@ -553,13 +561,17 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
  */
 - (void)notifyUpdateUnreadMessageCount {
     if (self.allowsMessageCellSelection) {
+        self.leftBackTitle = nil;
+        self.updateRightNaviBar = YES;
         [super notifyUpdateUnreadMessageCount];
         return;
     }
-    rcd_dispatch_main_async_safe(^{
-        [self setLeftNavigationItem];
+    [self setLeftNavigationItem];
+    
+    if (self.updateRightNaviBar) {
         [self setRightNavigationItems];
-    });
+        self.updateRightNaviBar = NO;
+    }
 }
 
 - (void)saveNewPhotoToLocalSystemAfterSendingSuccess:(UIImage *)newImage {
@@ -775,14 +787,21 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
      */
 }
 
+- (void)hideEmojiButtonIfNeed {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableEmojiBtn] boolValue];
+    if (enable) {
+        self.chatSessionInputBarControl.inputContainerView.hideEmojiButton = enable;
+    }
+}
+
 - (void)addEmoticonTabDemo {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+    BOOL enable = [[userDefault valueForKey:RCDDebugEnableCustomEmoji] boolValue];
     if (!enable) {
         return;
     }
-    
-//      //表情面板添加自定义表情包
+      //表情面板添加自定义表情包
       UIImage *icon = [RCKitUtility imageNamed:@"emoji_btn_normal"
                                       ofBundle:@"RongCloud.bundle"];
       RCDCustomerEmoticonTab *emoticonTab1 = [[RCDCustomerEmoticonTab alloc] initWith:self.chatSessionInputBarControl.emojiBoardView];
@@ -851,14 +870,22 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
             backString = [NSString stringWithFormat:@"(...)"];
         }
     }
+    if ([self.leftBackTitle isEqualToString:backString]) {
+        return;
+    }
+    self.leftBackTitle = backString;
     UIImage *img = RCResourceImage(@"navigator_btn_back");
     img = [RCDSemanticContext imageflippedForRTL:img];
-    [self.navigationItem setLeftBarButtonItems:[RCKitUtility getLeftNavigationItems:img title:backString target:self action:@selector(leftBarButtonItemPressed:)]];
+    rcd_dispatch_main_async_safe(^{
+        [self.navigationItem setLeftBarButtonItems:[RCKitUtility getLeftNavigationItems:img title:backString target:self action:@selector(leftBarButtonItemPressed:)]];
+    })
 }
 
 - (void)setRightNavigationItem:(UIImage *)image{
-    RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:image target:self action:@selector(rightBarButtonItemClicked:)];
-    self.navigationItem.rightBarButtonItem = rightBtn;
+    rcd_dispatch_main_async_safe(^{
+        RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:image target:self action:@selector(rightBarButtonItemClicked:)];
+        self.navigationItem.rightBarButtonItem = rightBtn;
+    });
 }
 
 - (void)clearHistoryMSG {
@@ -957,7 +984,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         if (self.groupInfo.isDismiss ||
             ![[RCDGroupManager getGroupMembers:self.targetId]
                 containsObject:[RCIM sharedRCIM].currentUserInfo.userId]) {
-            self.navigationItem.rightBarButtonItem = nil;
+            rcd_dispatch_main_async_safe(^{
+                self.navigationItem.rightBarButtonItem = nil;
+            });
             return;
         }
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];

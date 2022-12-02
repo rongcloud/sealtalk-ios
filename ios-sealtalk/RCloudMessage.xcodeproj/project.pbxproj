@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00055E75292CB66F0037DDCB /* RCEmojiBoardView+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = 00055E5B292CB66E0037DDCB /* RCEmojiBoardView+Ext.m */; };
 		00057A1127C60B110011D694 /* RCDTranslationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 000579FF27C60B110011D694 /* RCDTranslationManager.m */; };
 		001599C227F162B8007BFA3E /* RCDEnvironmentContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 001599C127F162B8007BFA3E /* RCDEnvironmentContext.m */; };
 		001599C527F162D5007BFA3E /* RCDEnvironmentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 001599C427F162D5007BFA3E /* RCDEnvironmentModel.m */; };
@@ -34,12 +35,12 @@
 		007558CF286083AB0082F0EB /* RCDChannelUserInfoCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558CE286083AB0082F0EB /* RCDChannelUserInfoCellViewModel.m */; };
 		007558D2286198630082F0EB /* RCDUGChannelSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558D1286198630082F0EB /* RCDUGChannelSettingCell.m */; };
 		007F52FB28508B8B00B3487E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C497201A24849E00098C8A /* CoreLocation.framework */; };
-		00BD7FED28C86ECD00F3FADB /* RCDSemanticContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BD7FEC28C86ECD00F3FADB /* RCDSemanticContext.m */; };
-		00A9356228E189FB00F2A00C /* RCDDotterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A9356128E189FB00F2A00C /* RCDDotterViewController.m */; };
 		00A5AA7628DDA15900C051B1 /* RCDAllConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA7528DDA15900C051B1 /* RCDAllConversationViewController.m */; };
 		00A5AA8828DDABD800C051B1 /* RCDLocalMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA8728DDABD800C051B1 /* RCDLocalMessagesViewController.m */; };
 		00A5AA8B28DDAC7F00C051B1 /* RCDLocalMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA8A28DDAC7F00C051B1 /* RCDLocalMessagesView.m */; };
 		00A5AA8E28DDB05200C051B1 /* RCDLocalMessagesQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA8D28DDB05100C051B1 /* RCDLocalMessagesQueryView.m */; };
+		00A9356228E189FB00F2A00C /* RCDDotterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A9356128E189FB00F2A00C /* RCDDotterViewController.m */; };
+		00BD7FED28C86ECD00F3FADB /* RCDSemanticContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BD7FEC28C86ECD00F3FADB /* RCDSemanticContext.m */; };
 		00C94E1F27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C94E1E27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.m */; };
 		00CEE55828043BF40079C6AE /* RCDDebugComChatListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE55728043BF40079C6AE /* RCDDebugComChatListController.m */; };
 		00CEE55B28043C460079C6AE /* RCDDebugComChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE55A28043C460079C6AE /* RCDDebugComChatViewController.m */; };
@@ -378,6 +379,27 @@
 			remoteGlobalIDString = 17D7D1D71D534F56000AEC54;
 			remoteInfo = SealTalkShareExtension;
 		};
+		1BF9FE41293762AB007AB335 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C57053BEA8668F592D0D6982293157B5;
+			remoteInfo = DQAlertView;
+		};
+		1BF9FE43293762AB007AB335 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D9C203AF2F5D868FFFED227C2527287F;
+			remoteInfo = MMWormhole;
+		};
+		1BF9FE45293762AB007AB335 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 08AC708F340E650A335101F431E0FDEC;
+			remoteInfo = "Pods-SealTalkNotificationService";
+		};
 		276599A6229E87B20074FAB2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
@@ -490,6 +512,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00055E5A292CB66E0037DDCB /* RCEmojiBoardView+Ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCEmojiBoardView+Ext.h"; sourceTree = "<group>"; };
+		00055E5B292CB66E0037DDCB /* RCEmojiBoardView+Ext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCEmojiBoardView+Ext.m"; sourceTree = "<group>"; };
 		000579FF27C60B110011D694 /* RCDTranslationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDTranslationManager.m; sourceTree = "<group>"; };
 		00057A0027C60B110011D694 /* RCDTranslationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDTranslationManager.h; sourceTree = "<group>"; };
 		001599C027F162B8007BFA3E /* RCDEnvironmentContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDEnvironmentContext.h; sourceTree = "<group>"; };
@@ -538,10 +562,6 @@
 		007558CE286083AB0082F0EB /* RCDChannelUserInfoCellViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDChannelUserInfoCellViewModel.m; sourceTree = "<group>"; };
 		007558D0286198630082F0EB /* RCDUGChannelSettingCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUGChannelSettingCell.h; sourceTree = "<group>"; };
 		007558D1286198630082F0EB /* RCDUGChannelSettingCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGChannelSettingCell.m; sourceTree = "<group>"; };
-		00BD7FEB28C86ECD00F3FADB /* RCDSemanticContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDSemanticContext.h; sourceTree = "<group>"; };
-		00BD7FEC28C86ECD00F3FADB /* RCDSemanticContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDSemanticContext.m; sourceTree = "<group>"; };
-		00A9356028E189FB00F2A00C /* RCDDotterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDotterViewController.h; sourceTree = "<group>"; };
-		00A9356128E189FB00F2A00C /* RCDDotterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDotterViewController.m; sourceTree = "<group>"; };
 		00A5AA7428DDA15900C051B1 /* RCDAllConversationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAllConversationViewController.h; sourceTree = "<group>"; };
 		00A5AA7528DDA15900C051B1 /* RCDAllConversationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAllConversationViewController.m; sourceTree = "<group>"; };
 		00A5AA8628DDABD800C051B1 /* RCDLocalMessagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDLocalMessagesViewController.h; sourceTree = "<group>"; };
@@ -550,8 +570,10 @@
 		00A5AA8A28DDAC7F00C051B1 /* RCDLocalMessagesView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDLocalMessagesView.m; sourceTree = "<group>"; };
 		00A5AA8C28DDB05100C051B1 /* RCDLocalMessagesQueryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDLocalMessagesQueryView.h; sourceTree = "<group>"; };
 		00A5AA8D28DDB05100C051B1 /* RCDLocalMessagesQueryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDLocalMessagesQueryView.m; sourceTree = "<group>"; };
-		00C2C7A128EDEB4500DA4E7A /* SealTalkNotificationServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkNotificationServiceDebug.entitlements; sourceTree = "<group>"; };
-		00C2C7B328EEDE5100DA4E7A /* SealTalkNotificationService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkNotificationService.entitlements; sourceTree = "<group>"; };
+		00A9356028E189FB00F2A00C /* RCDDotterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDotterViewController.h; sourceTree = "<group>"; };
+		00A9356128E189FB00F2A00C /* RCDDotterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDotterViewController.m; sourceTree = "<group>"; };
+		00BD7FEB28C86ECD00F3FADB /* RCDSemanticContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDSemanticContext.h; sourceTree = "<group>"; };
+		00BD7FEC28C86ECD00F3FADB /* RCDSemanticContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDSemanticContext.m; sourceTree = "<group>"; };
 		00C94E1D27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupUnreadMessageViewController.h; sourceTree = "<group>"; };
 		00C94E1E27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupUnreadMessageViewController.m; sourceTree = "<group>"; };
 		00CEE55628043BF40079C6AE /* RCDDebugComChatListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugComChatListController.h; sourceTree = "<group>"; };
@@ -613,6 +635,7 @@
 		1B98DB1D27C7928D00E97EBA /* AutoRelease.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AutoRelease.xcconfig; sourceTree = "<group>"; };
 		1B98DB2F27C7A3DE00E97EBA /* SealTalkShareExtensionAppStoreRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkShareExtensionAppStoreRelease.entitlements; sourceTree = "<group>"; };
 		1B98DB3F27C7A6BC00E97EBA /* SealTalkShareExtensionAppStoreDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkShareExtensionAppStoreDebug.entitlements; sourceTree = "<group>"; };
+		1BF9FE4729376511007AB335 /* SealTalkNotificationServiceAppStoreRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = SealTalkNotificationServiceAppStoreRelease.entitlements; sourceTree = "<group>"; };
 		1C3EE1254F250BC346B4AFE6 /* Pods-SealTalk.autorelease.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.autorelease.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.autorelease.xcconfig"; sourceTree = "<group>"; };
 		1C6F845C283F32020027B06B /* SmAntiFraud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmAntiFraud.h; sourceTree = "<group>"; };
 		1C6F8460283F32290027B06B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -1375,6 +1398,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00055E59292CB66E0037DDCB /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				00055E5A292CB66E0037DDCB /* RCEmojiBoardView+Ext.h */,
+				00055E5B292CB66E0037DDCB /* RCEmojiBoardView+Ext.m */,
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
 		000579FE27C60B110011D694 /* Translation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1657,11 +1689,14 @@
 				3BC0C810229F8F3B0079234F /* AFNetworking */,
 				3BACB0072500CED50001A92C /* DoraemonKit */,
 				3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */,
+				1BF9FE42293762AB007AB335 /* DQAlertView */,
 				3BC0C812229F8F3B0079234F /* FMDB */,
 				9C226D0F229FD5C800F49FC5 /* GCDWebServer */,
 				276599A7229E87B20074FAB2 /* Masonry */,
 				A2E705C622BA1D1E0047DF47 /* MBProgressHUD */,
+				1BF9FE44293762AB007AB335 /* MMWormhole */,
 				276599A9229E87B20074FAB2 /* Pods-SealTalk */,
+				1BF9FE46293762AB007AB335 /* Pods-SealTalkNotificationService */,
 				279C1E8D22BB724D009FD15C /* SDWebImage */,
 				279C1E8F22BB724D009FD15C /* SSZipArchive */,
 				3B47890322B78F1C00D33F10 /* ZXingObjC */,
@@ -2668,8 +2703,7 @@
 		A27AD72A265C96C0008D35F7 /* SealTalkNotificationService */ = {
 			isa = PBXGroup;
 			children = (
-				00C2C7B328EEDE5100DA4E7A /* SealTalkNotificationService.entitlements */,
-				00C2C7A128EDEB4500DA4E7A /* SealTalkNotificationServiceDebug.entitlements */,
+				1BF9FE4729376511007AB335 /* SealTalkNotificationServiceAppStoreRelease.entitlements */,
 				F16A40C227F43E7D00C4B927 /* SealTalkNotificationService.entitlements */,
 				F16A40B027F43E7200C4B927 /* SealTalkNotificationServiceDebug.entitlements */,
 				F16A409627F3FA8000C4B927 /* SealTalkNotificationServiceRelease.entitlements */,
@@ -3383,6 +3417,7 @@
 		E4D40F2A1A031F460045097C /* RCloudMessage */ = {
 			isa = PBXGroup;
 			children = (
+				00055E59292CB66E0037DDCB /* Test */,
 				A2B126F922C1FDB300697964 /* AppDelegate.h */,
 				00BD7FDB28C86EBF00F3FADB /* Semantic */,
 				A2B126F822C1FDB300697964 /* AppDelegate.m */,
@@ -3563,6 +3598,30 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1BF9FE42293762AB007AB335 /* DQAlertView */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = DQAlertView;
+			path = DQAlertView.framework;
+			remoteRef = 1BF9FE41293762AB007AB335 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1BF9FE44293762AB007AB335 /* MMWormhole */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = MMWormhole;
+			path = MMWormhole.framework;
+			remoteRef = 1BF9FE43293762AB007AB335 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1BF9FE46293762AB007AB335 /* Pods-SealTalkNotificationService */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = "Pods-SealTalkNotificationService";
+			path = Pods_SealTalkNotificationService.framework;
+			remoteRef = 1BF9FE45293762AB007AB335 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		276599A7229E87B20074FAB2 /* Masonry */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -3823,6 +3882,7 @@
 				3BB6CE2D22D833AC0007FFFB /* RCDSelectAddressBookCell.m in Sources */,
 				A2AD039E22D3251400F8E64D /* RCDQRCodeManager.m in Sources */,
 				3BEB4F7322C380A7003923CC /* RCDContactNotificationMessage.m in Sources */,
+				00055E75292CB66F0037DDCB /* RCEmojiBoardView+Ext.m in Sources */,
 				27AD3025229E721F003C2680 /* RCDTableView.m in Sources */,
 				1C98D4D8281005E10082C70C /* RCDChatTitleAlertView.m in Sources */,
 				27AD303C229E721F003C2680 /* RCDTabBarBtn.m in Sources */,
@@ -4276,7 +4336,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$SHARE_PROFILE";
+				PROVISIONING_PROFILE = $SHARE_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -4341,7 +4401,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$SHARE_PROFILE";
+				PROVISIONING_PROFILE = $SHARE_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -4605,8 +4665,8 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CODE_SIGN_ENTITLEMENTS = "RCloudMessage/Supporting Files/SealTalkAppStoreRelease.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -4672,13 +4732,14 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SealTalkShareExtension/SealTalkShareExtensionAppStoreRelease.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CQJSB93Y3D;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CQJSB93Y3D;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -4695,6 +4756,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = SealTalkRCIMShareExten_Dis;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = SealTalkRCIMShareExten_Dis;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -4722,14 +4784,15 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = SealTalkNotificationService/SealTalkNotificationService.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				CODE_SIGN_ENTITLEMENTS = SealTalkNotificationService/SealTalkNotificationServiceAppStoreRelease.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CQJSB93Y3D;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CQJSB93Y3D;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework/RongIMLibCore",
@@ -4748,6 +4811,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.rcim.notificationservice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = SealTalkRCIMNotiExtension_Dis;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = SealTalkRCIMNotiExtension_Dis;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -5003,7 +5067,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5075,7 +5139,7 @@
 				OTHER_LIBTOOLFLAGS = "$(OTHER_LDFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im;
 				PRODUCT_NAME = SealTalk;
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -5116,7 +5180,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -5189,7 +5253,7 @@
 				OTHER_LIBTOOLFLAGS = "$(OTHER_LDFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im;
 				PRODUCT_NAME = SealTalk;
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

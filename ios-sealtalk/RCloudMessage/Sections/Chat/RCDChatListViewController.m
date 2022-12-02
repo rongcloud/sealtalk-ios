@@ -36,6 +36,7 @@
 @property (nonatomic, strong) RCDSearchBar *searchBar;
 @property (nonatomic, assign) NSUInteger index;
 @property (nonatomic, assign) BOOL isClick;
+@property (nonatomic, copy) NSString *tabarBadge;
 @end
 
 @implementation RCDChatListViewController
@@ -533,9 +534,22 @@
 }
 
 - (void)updateBadgeValueForTabBarItem {
+    __block int count = [RCDUtilities getTotalUnreadCount];
+    NSString *badge;
+    if (count <= 99) {
+        badge = [NSString stringWithFormat:@"%d", count];
+    } else if (count > 99 && count < 1000) {
+        badge = [NSString stringWithFormat:@"99+"];
+    } else {
+        badge = [NSString stringWithFormat:@"···"];
+    }
+    if ([badge isEqualToString:self.tabarBadge]) {
+        return;
+    }else{
+        self.tabarBadge = badge;
+    }
     __weak typeof(self) __weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        int count = [RCDUtilities getTotalUnreadCount];
         if (count > 0) {
             [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:0 badgeValue:count];
 
