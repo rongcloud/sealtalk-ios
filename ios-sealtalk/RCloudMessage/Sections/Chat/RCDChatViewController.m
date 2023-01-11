@@ -53,6 +53,8 @@
 #import "RealTimeLocationDefine.h"
 #import <RongLocation/RongLocation.h>
 #import "RCDSemanticContext.h"
+
+static const NSInteger kRealTimeMaxParticipants = 5; // 实时位置支持的最大共享人数
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
 static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusViewKey";
 
@@ -124,6 +126,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self setupFraudPreventionTipsView];
     
     /*******************实时位置共享***************/
+    [self enableRealTimeLocationIfNeeded];
     [self registerRealTimeLocationCell];
     [self getRealTimeLocationProxy];
     /******************实时位置共享**************/
@@ -655,10 +658,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         //清除聊天记录之后reload data
         __weak RCDChatViewController *weakSelf = self;
         [settingVC setClearMessageHistory:^{
-            [weakSelf.conversationDataRepository removeAllObjects];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.conversationMessageCollectionView reloadData];
-            });
+            [weakSelf clearHistoryMSG];
         }];
         [self.navigationController pushViewController:settingVC animated:YES];
     } else if (ConversationType_APPSERVICE == self.conversationType ||
@@ -889,8 +889,11 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 - (void)clearHistoryMSG {
-    [self.conversationDataRepository removeAllObjects];
-    [self.conversationMessageCollectionView reloadData];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.conversationDataRepository removeAllObjects];
+        [self.conversationMessageCollectionView reloadData];
+        [self.unReadButton removeFromSuperview];
+    });
 }
 
 - (void)popupChatViewController {
@@ -1063,7 +1066,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     CGFloat topHeight = [self statusBarHeight] +
                                       CGRectGetMaxY(self.navigationController.navigationBar.bounds);
 
-    alertView.frame = CGRectMake(0, topHeight, self.view.frame.size.width, 63);
+    alertView.frame = CGRectMake(0, topHeight, self.view.frame.size.width, FRAUD_PREVENTION_TIPS_HEIGHT);
 
     CGRect collectionFrame = self.conversationMessageCollectionView.frame;
     collectionFrame.origin.y = alertView.frame.size.height + alertView.frame.origin.y;
@@ -1213,6 +1216,24 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         }];
 }
 
+- (void)enableRealTimeLocationIfNeeded {
+    id obj = [NSClassFromString(@"RCRealTimeLocationService") performSelector:NSSelectorFromString(@"sharedService")];
+    NSArray *types = [obj performSelector:NSSelectorFromString(@"allowedConversationTypes")];
+    if ([DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation]) {
+        if (![types containsObject:@(3) ]) {
+            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types?:@[]];
+            [allowTypes addObject:@(3)];
+            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
+        }
+    } else {
+        if ([types containsObject:@(3) ]) {
+            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types];
+            [allowTypes removeObject:@(3)];
+            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
+        }
+    }
+}
+
 //弹出实时位置共享页面
 - (void)showRealTimeLocationViewController {
     RealTimeLocationViewController *lsvc = [[RealTimeLocationViewController alloc] init];
@@ -1289,9 +1310,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
             NSString *displayName = [RCKitUtility getDisplayName:userInfo];
             if (displayName.length) {
-                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RTLLocalizedString(@"someone_join_share_location"), displayName]];
+                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RCDLocalizedString(@"someone_join_share_location"), displayName]];
             } else {
-                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RTLLocalizedString(@"user_join_share_location"), userId]];
+                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RCDLocalizedString(@"user_join_share_location"), userId]];
             }
         }];
     }
@@ -1300,14 +1321,14 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (void)onParticipantsQuit:(NSString *)userId {
     __weak typeof(self) weakSelf = self;
     if ([userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
-        [self notifyParticipantChange:RTLLocalizedString(@"you_quit_location_share")];
+        [self notifyParticipantChange:RCDLocalizedString(@"you_quit_location_share")];
     } else {
         [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
             NSString *displayName = [RCKitUtility getDisplayName:userInfo];
             if (displayName.length) {
-                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RTLLocalizedString(@"someone_quit_location_share"), displayName]];
+                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RCDLocalizedString(@"someone_quit_location_share"), displayName]];
             } else {
-                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RTLLocalizedString(@"user_quit_location_share"), userId]];
+                [weakSelf notifyParticipantChange:[NSString stringWithFormat:RCDLocalizedString(@"user_quit_location_share"), userId]];
             }
         }];
     }
@@ -1344,9 +1365,16 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 #pragma mark - 实时位置共享状态 view 代理方法
+
 - (void)onJoin {
-    [self showRealTimeLocationViewController];
+    if (self.realTimeLocation.getParticipants.count >= kRealTimeMaxParticipants) {
+        NSString *message = NSLocalizedStringFromTable(@"real_time_max_participant_notice", @"SealTalk", nil);
+        [RCAlertView showAlertController:nil message:message cancelTitle:RCLocalizedString(@"Cancel")];
+    } else {
+        [self showRealTimeLocationViewController];
+    }
 }
+
 - (RCRealTimeLocationStatus)getStatus {
     return [self.realTimeLocation getStatus];
 }

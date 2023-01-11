@@ -28,6 +28,7 @@
 #import <RongChatRoom/RongChatRoom.h>
 #import "UIView+MBProgressHUD.h"
 #import "RCDDebugComChatListController.h"
+#import "RCDDebugFileIconViewController.h"
 
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
@@ -44,6 +45,8 @@
 #define DISABLE_HIDDEN_PORTRAIT 112
 #define ENABLE_CUSTOM_EMOJI 113
 #define DISABLE_EMOJI_BUTTON 114
+#define DISABLE_CHECK_DUP_MESSAGE 115
+#define ENABLE_GROUP_REAL_TIME_LOCATION 116
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCCoreClient()
@@ -166,6 +169,12 @@
     if ([title isEqualToString:@"隐藏表情按钮"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_EMOJI_BUTTON];
     }
+    if ([title isEqualToString:@"关闭消息排重并杀死APP"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_CHECK_DUP_MESSAGE];
+    }
+    if ([title isEqualToString:@"开启群组实时位置共享"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_GROUP_REAL_TIME_LOCATION];
+    }
   
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -247,6 +256,8 @@
         [self selectConversationCollectionInfoModifyType];
     } else if ([title isEqualToString:@"刷新NaviData"]) {
         [self refreshNaviData];
+    } else if ([title isEqualToString:@"自定义文件图标"]) {
+        [self showCustomFileIcon];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -277,7 +288,10 @@
         @"动态常用语",
         @"隐藏头像",
         @"自定义表情",
-        @"隐藏表情按钮"
+        @"隐藏表情按钮",
+        @"关闭消息排重并杀死APP",
+        @"开启群组实时位置共享",
+        @"自定义文件图标"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -376,7 +390,14 @@
             break;
         case DISABLE_EMOJI_BUTTON:{
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableEmojiBtn];
+            break;
         }
+        case DISABLE_CHECK_DUP_MESSAGE:{
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableCheckDupMessage];
+            break;
+        }
+        case  ENABLE_GROUP_REAL_TIME_LOCATION:
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation];
             break;
         default:
             break;
@@ -476,6 +497,16 @@
         }
         case DISABLE_EMOJI_BUTTON: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableEmojiBtn];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_CHECK_DUP_MESSAGE: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableCheckDupMessage];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case ENABLE_GROUP_REAL_TIME_LOCATION: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableRealTimeLocation];
             [DEFAULTS synchronize];
             break;
         }
@@ -907,6 +938,11 @@
         tempTextField = textField;
     }];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)showCustomFileIcon {
+    RCDDebugFileIconViewController *controller = [[RCDDebugFileIconViewController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 @end

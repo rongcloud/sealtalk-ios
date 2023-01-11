@@ -119,12 +119,15 @@
         if (self.isFirstTimeToLoad) {
             if (-90.0f <= location.coordinate.latitude && location.coordinate.latitude <= 90.0f &&
                 -180.0f <= location.coordinate.longitude && location.coordinate.longitude <= 180.0f) {
-                CLLocationCoordinate2D center;
-                center.latitude = location.coordinate.latitude;
-                center.longitude = location.coordinate.longitude;
+                CLLocationCoordinate2D center = location.coordinate;
+                if (type == RCRealTimeLocationTypeWGS84) {
+                    CLLocationCoordinate2D temp = [RCLocationConvert wgs84ToGcj02:location.coordinate];
+                    center.latitude = temp.latitude;
+                    center.longitude = temp.longitude;
+                }
                 MKCoordinateSpan span;
-                span.latitudeDelta = 0.1;
-                span.longitudeDelta = 0.1;
+                span.latitudeDelta = 0.008;
+                span.longitudeDelta = 0.008;
                 MKCoordinateRegion region = {center, span};
                 self.theSpan = span;
                 self.theRegion = region;

@@ -30,6 +30,7 @@
 #import "RCDUtilities.h"
 #import "RCDNavigationViewController.h"
 #import "RCDGroupManager.h"
+
 @interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate>
 @property (nonatomic, strong) RCDNavigationViewController *searchNavigationController;
 @property (nonatomic, strong) UIView *headerView;
@@ -565,12 +566,13 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         int allRequesteds = [RCDUserInfoManager getFriendRequesteds];
         if (allRequesteds > 0) {
-            [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:2];
+            [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:1];
         } else {
-            [__weakSelf.tabBarController.tabBar hideBadgeOnItemIndex:2];
+            [__weakSelf.tabBarController.tabBar hideBadgeOnItemIndex:1];
         }
     });
 }
+
 
 - (void)pushNoticeListVC {
     RCDGroupNoticeListController *noticeListVC = [[RCDGroupNoticeListController alloc] init];
@@ -647,7 +649,7 @@
 - (void)getFriendRequesteds {
     int allRequesteds = [RCDUserInfoManager getFriendRequesteds];
     if (allRequesteds > 0) {
-        [self.tabBarController.tabBar showBadgeOnItemIndex:2];
+        [self.tabBarController.tabBar showBadgeOnItemIndex:1];
     }
 }
 

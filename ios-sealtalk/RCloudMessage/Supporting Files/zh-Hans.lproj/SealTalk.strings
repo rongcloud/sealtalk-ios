@@ -552,3 +552,5 @@
 "socks_proxy_hostaddr_notice"="请输入正确的代理地址";
 "socks_proxy_port_notice"="请输入正确的代理端口号";
 "socks_proxy_testhost_notice"="请输入正确的测试地址";
+
+"real_time_max_participant_notice"="超过最大位置共享人数";

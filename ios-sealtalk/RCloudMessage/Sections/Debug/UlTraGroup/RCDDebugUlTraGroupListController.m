@@ -11,6 +11,9 @@
 #import "RCDUIBarButtonItem.h"
 #import "RCDDebugUltraGroupSendMessage.h"
 #import "UIView+MBProgressHUD.h"
+#import "RCDSearchBar.h"
+#import "RCDDebugUltraGroupSearchViewController.h"
+#import "RCDNavigationViewController.h"
 
 @interface RCConversationListViewController ()
 
@@ -18,9 +21,13 @@
 
 @end
 
-@interface RCDDebugUltraGroupListController ()
+@interface RCDDebugUltraGroupListController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) UITextField *targetIdTextField;
+
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) RCDSearchBar *searchBar;
+@property (nonatomic, strong) RCDNavigationViewController *searchNavigationController;
 
 @end
 
@@ -41,6 +48,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setNavi];
+    
+    self.conversationListTableView.tableHeaderView = self.searchBar;
 }
 
 - (void)setNavi {
@@ -209,6 +218,43 @@
     lab.layer.masksToBounds = YES;
     [lab sizeToFit];
     return lab;
+}
+
+- (UIView *)headerView {
+    if (!_headerView) {
+        _headerView =
+            [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.conversationListTableView.frame.size.width, 44)];
+        if (@available(iOS 11.0, *)) {
+            _headerView.frame = CGRectMake(0, 0, self.conversationListTableView.frame.size.width, 56);
+        }
+    }
+    return _headerView;
+}
+
+- (RCDSearchBar *)searchBar {
+    if (!_searchBar) {
+        _searchBar =
+            [[RCDSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.conversationListTableView.frame.size.width,
+                                                           self.headerView.frame.size.height)];
+        _searchBar.delegate = self;
+    }
+    return _searchBar;
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    RCDDebugUltraGroupSearchViewController *searchViewController = [[RCDDebugUltraGroupSearchViewController alloc] init];
+    self.searchNavigationController = [[RCDNavigationViewController alloc] initWithRootViewController:searchViewController];
+    self.searchNavigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:self.searchNavigationController animated:NO completion:^{
+    }];
+}
+
+#pragma mark - RCDSearchViewDelegate
+
+- (void)searchViewControllerDidClickCancel {
+    [self.searchNavigationController dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

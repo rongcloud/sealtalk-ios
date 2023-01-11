@@ -21,4 +21,7 @@
 
 #define RTLIsIPad [[UIDevice currentDevice].model containsString:@"iPad"]
 
+#define FRAUD_PREVENTION_TIPS_HEIGHT 63
+
+
 #endif /* RealTimeLocationDefine_h */

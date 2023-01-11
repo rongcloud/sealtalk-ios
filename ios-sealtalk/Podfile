@@ -22,12 +22,12 @@ target 'SealTalk' do
   pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   
-  pod 'RongCloudIM/IMLib', '5.3.2'
-  pod 'RongCloudIM/IMKit', '5.3.2'
-  pod 'RongCloudIM/RongSticker', '5.3.2'
-  pod 'RongCloudIM/Sight', '5.3.2'
-  pod 'RongCloudIM/ContactCard', '5.3.2'
-  pod 'RongCloudIM/LocationKit', '5.3.2'
+  pod 'RongCloudIM/IMLib', '5.3.4'
+  pod 'RongCloudIM/IMKit', '5.3.4'
+  pod 'RongCloudIM/RongSticker', '5.3.4'
+  pod 'RongCloudIM/Sight', '5.3.4'
+  pod 'RongCloudIM/ContactCard', '5.3.4'
+  pod 'RongCloudIM/LocationKit', '5.3.4'
   pod 'RongCloudRTC/RongCallLib'
   pod 'RongCloudRTC/RongCallKit'
 end
@@ -37,3 +37,10 @@ target "SealTalkNotificationService" do
   pod 'MMWormhole', '~> 2.0.0'
 end
 
+post_install do |installer|
+ installer.pods_project.targets.each do |target|
+  target.build_configurations.each do |config|
+   config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+  end
+ end
+end

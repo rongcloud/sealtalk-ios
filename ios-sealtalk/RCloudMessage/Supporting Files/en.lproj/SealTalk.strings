@@ -550,3 +550,5 @@
 "socks_proxy_hostaddr_notice"="Please enter the correct address";
 "socks_proxy_port_notice"="Please enter the correct port number";
 "socks_proxy_testhost_notice"="Please enter the correct test host";
+
+"real_time_max_participant_notice"="Maximum number exceed";

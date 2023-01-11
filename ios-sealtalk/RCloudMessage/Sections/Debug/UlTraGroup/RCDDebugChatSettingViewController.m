@@ -20,6 +20,9 @@
 #import "RCDDebugConversationChannelNotificationLevelViewController.h"
 #import "RCDDebugUltraGroupUnreadMessageViewController.h"
 
+#import "RCDNavigationViewController.h"
+#import "RCDDebugUltraGroupChatSearchViewController.h"
+
 @interface RCDDebugChatSettingViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSString *groupId;
@@ -59,7 +62,9 @@
                     @"6.2.1 设置指定超级群特定频道默认通知配置",//23
                     @"6.2.2 查询指定超级群特定频道默认通知配置",// 24
                     @"(其他)获取超级群未读数", //25
-                    @"发一条携带敏感词{key(123):毛泽东}文本消息" //26
+                    @"发一条携带敏感词{key(123):毛泽东}文本消息", //26
+                    @"搜索超级群当前频道的消息记录", //27
+                    @"搜索超级群所有频道的消息记录" //28
     ];
     [self setupSubviews];
     [self setNavi];
@@ -287,6 +292,12 @@
             break;
         case 26:
             [self sendBlockKVTextMessage];
+            break;
+        case 27:
+            [self showUltraGroupChatSearchCurrentChannel];
+            break;
+        case 28:
+            [self showUltraGroupChatSearchAllChannel];
             break;
         default:
             break;
@@ -650,6 +661,24 @@
                                        msg:nil];
                 });
         }];
+}
+
+- (void)showUltraGroupChatSearchCurrentChannel {
+    
+    RCDDebugUltraGroupChatSearchViewController *controller = [[RCDDebugUltraGroupChatSearchViewController alloc] init];
+    controller.targetId = self.targetId;
+    controller.channelId = self.channelId;
+    RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:navigationController animated:NO completion:nil];
+}
+
+- (void)showUltraGroupChatSearchAllChannel {
+    RCDDebugUltraGroupChatSearchViewController *controller = [[RCDDebugUltraGroupChatSearchViewController alloc] init];
+    controller.targetId = self.targetId;
+    RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
+    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:navigationController animated:NO completion:nil];
 }
 
 #pragma mark- 沙盒

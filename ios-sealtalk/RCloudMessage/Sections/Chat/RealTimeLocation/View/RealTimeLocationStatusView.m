@@ -93,7 +93,7 @@
             [UIView beginAnimations:nil context:NULL];
             [UIView setAnimationDuration:0.1f];
             CGRect frame = RC_REAL_TIME_LOCATION_STATUS_FRAME;
-            frame.origin.y = 44 + statusBarHeight;
+            frame.origin.y = 44 + statusBarHeight + FRAUD_PREVENTION_TIPS_HEIGHT;
             self.frame = frame;
             [UIView commitAnimations];
         } else {
@@ -101,7 +101,7 @@
             [UIView beginAnimations:nil context:NULL];
             [UIView setAnimationDuration:0.1f];
             CGRect frame = RC_REAL_TIME_LOCATION_EXPEND_FRAME;
-            frame.origin.y = 44 + statusBarHeight;
+            frame.origin.y = 44 + statusBarHeight + FRAUD_PREVENTION_TIPS_HEIGHT;
             self.frame = frame;
             [UIView commitAnimations];
         }

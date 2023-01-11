@@ -15,6 +15,7 @@
 #import "RCDDebugComChatListController.h"
 #import "RCDDotterViewController.h"
 #import "RCDLocalMessagesViewController.h"
+#import "RCDStickerTest.h"
 
 NSString *const RCDUGSettingsControllerCellIdentifier = @"RCDUGSettingsControllerCellIdentifier";
 NSString *const RCDUGSettingsTitle = @"RCDUGSettingsTitle";
@@ -36,8 +37,11 @@ typedef NS_ENUM(NSInteger, RCDUnreadCoutType) {
 };
 
 typedef NS_ENUM(NSInteger, RCDUGSettingsOtherType) {
-    RCDUGSettingsOtherTypeDot // 打点测试
+    RCDUGSettingsOtherTypeDot, // 打点测试
+    RCDUGSettingsOtherTypeSticker, // 多线程访问sticker,
+    RCDUGSettingsOtherTypeUserInfo, // 多线程访问userInfo
 };
+
 @interface RCDUGSettingsController()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) RCDUGListView *settingsView;
 @property (nonatomic, strong) NSArray *dataSource;
@@ -121,6 +125,12 @@ typedef NS_ENUM(NSInteger, RCDUGSettingsOtherType) {
             [self showVC:vc];
         }
             break;
+        case RCDUGSettingsOtherTypeSticker:
+            [RCDStickerTest test];
+            break;
+        case RCDUGSettingsOtherTypeUserInfo:
+            [self testCurrentUserInfo];
+            break;
         default:
             break;
     }
@@ -164,6 +174,23 @@ typedef NS_ENUM(NSInteger, RCDUGSettingsOtherType) {
     }
 }
 
+- (void)testCurrentUserInfo {
+    NSString *userId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
+    for (int i = 0 ;i<20000; i++) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            RCUserInfo *userInfo = [RCUserInfo new];
+            userInfo.userId =  userId;
+            userInfo.name = @"223";
+            [[RCCoreClient sharedCoreClient] setCurrentUserInfo:userInfo];
+//            NSLog(@"[VO] userID : %@", userId);
+        });
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            RCUserInfo *userInfo = [RCCoreClient sharedCoreClient].currentUserInfo;
+            NSString *userId = userInfo.userId;
+//            NSLog(@"[VO] userID : %@", userId);
+        });
+    }
+}
 #pragma mark - UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -284,7 +311,9 @@ typedef NS_ENUM(NSInteger, RCDUGSettingsOtherType) {
 - (NSArray *)arrayOther {
     if (!_arrayOther) {
         _arrayOther = @[
-            @(RCDUGSettingsOtherTypeDot)
+            @(RCDUGSettingsOtherTypeDot),
+            @(RCDUGSettingsOtherTypeSticker),
+            @(RCDUGSettingsOtherTypeUserInfo)
         ];
     }
     return _arrayOther;
@@ -306,7 +335,10 @@ typedef NS_ENUM(NSInteger, RCDUGSettingsOtherType) {
     
     if (!_dicOther) {
         _dicOther = @{
-            @(RCDUGSettingsOtherTypeDot) : @"打点测试"
+            @(RCDUGSettingsOtherTypeDot) : @"打点测试",
+            @(RCDUGSettingsOtherTypeSticker) : @"Sticker测试",
+            @(RCDUGSettingsOtherTypeUserInfo) : @"UserInfo测试"
+
         };
     }
     return _dicOther;

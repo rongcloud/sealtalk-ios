@@ -136,7 +136,10 @@
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     [[RCIMClient sharedRCIMClient] setAppVer:app_Version];
-
+    
+    //关闭消息排重
+    [self disableCheckDupMessageIfNeed];
+    
     [DEFAULTS setObject:appKey forKey:RCDAppKeyKey];
 
     // 注册自定义测试消息
@@ -913,6 +916,15 @@
     }else{
         return UIInterfaceOrientationMaskPortrait;
     }
+}
+
+- (void)disableCheckDupMessageIfNeed {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableCheckDupMessage] boolValue];
+    if (enable) {
+        [[RCCoreClient sharedCoreClient] setCheckDuplicateMessage:!enable];
+    }
+    NSLog(@"SealTalk setCheckDuplicateMessage %@", @(!enable));
 }
 
 #pragma mark -- RCTranslationClientDelegate

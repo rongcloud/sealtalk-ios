@@ -59,5 +59,7 @@
 #define RCDPushExtensionIdentifierKey @"RCDPushExtensionIdentifierKey"
 #define RCDDebugEnableCustomEmoji @"RCDDebugEnableCustomEmoji"
 #define RCDDebugDisableEmojiBtn @"RCDDebugDisableEmojiBtn"
+#define RCDDebugDisableCheckDupMessage @"RCDDebugDisableCheckDupMessage"
+#define RCDDebugEnableRealTimeLocation @"RCDDebugEnableRealTimeLocation"
 
 #endif /* RCDCommonString_h */
