@@ -47,6 +47,7 @@
 #define DISABLE_EMOJI_BUTTON 114
 #define DISABLE_CHECK_DUP_MESSAGE 115
 #define ENABLE_GROUP_REAL_TIME_LOCATION 116
+#define ENABLE_INTERCEPT_WILLSEND_COMBINE 117
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCCoreClient()
@@ -175,7 +176,10 @@
     if ([title isEqualToString:@"开启群组实时位置共享"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_GROUP_REAL_TIME_LOCATION];
     }
-  
+    if ([title isEqualToString:@"开启合并转发拦截"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_INTERCEPT_WILLSEND_COMBINE];
+    }
+
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -291,6 +295,7 @@
         @"隐藏表情按钮",
         @"关闭消息排重并杀死APP",
         @"开启群组实时位置共享",
+        @"开启合并转发拦截",
         @"自定义文件图标"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
@@ -399,6 +404,10 @@
         case  ENABLE_GROUP_REAL_TIME_LOCATION:
             isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation];
             break;
+        case ENABLE_INTERCEPT_WILLSEND_COMBINE: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugInterceptWillSendCombineFuntion];
+            break;
+        }
         default:
             break;
     }
@@ -507,6 +516,11 @@
         }
         case ENABLE_GROUP_REAL_TIME_LOCATION: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableRealTimeLocation];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case ENABLE_INTERCEPT_WILLSEND_COMBINE: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugInterceptWillSendCombineFuntion];
             [DEFAULTS synchronize];
             break;
         }

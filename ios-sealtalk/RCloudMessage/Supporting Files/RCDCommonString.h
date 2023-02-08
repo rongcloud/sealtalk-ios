@@ -61,5 +61,6 @@
 #define RCDDebugDisableEmojiBtn @"RCDDebugDisableEmojiBtn"
 #define RCDDebugDisableCheckDupMessage @"RCDDebugDisableCheckDupMessage"
 #define RCDDebugEnableRealTimeLocation @"RCDDebugEnableRealTimeLocation"
+#define RCDDebugInterceptWillSendCombineFuntion @"RCDDebugInterceptWillSendCombineFuntion"
 
 #endif /* RCDCommonString_h */

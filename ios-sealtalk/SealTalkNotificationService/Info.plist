@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.3.4 Dev</string>
+	<string>5.3.5 Dev</string>
 	<key>CFBundleVersion</key>
-	<string>202301101035</string>
+	<string>202302081022</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

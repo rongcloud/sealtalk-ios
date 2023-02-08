@@ -26,7 +26,6 @@
 #import "RCDRegistrationAgreementController.h"
 #import "RCDIMService.h"
 #import "RCDTranslationManager.h"
-#import "RCNotificationServiceAppPlugin.h"
 #if RCDTranslationEnable
 #import <RongTranslation/RongTranslation.h>
 #endif

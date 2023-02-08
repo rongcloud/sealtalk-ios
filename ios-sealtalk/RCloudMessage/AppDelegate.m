@@ -38,7 +38,6 @@
 #import <UMAPM/UMAPMConfig.h>
 #import "RCDHTTPUtility.h"
 #import "RCDUltraGroupNotificationMessage.h"
-#import "RCNotificationServiceAppPlugin.h"
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
 #endif
@@ -118,8 +117,6 @@
     NSString *userId = [DEFAULTS objectForKey:RCDUserIdKey];
     NSString *token = [DEFAULTS objectForKey:RCDIMTokenKey];
     
-    [[RCNotificationServiceAppPlugin sharedInstance] configWithApplicationGroupIdentifier:RCDNotificationServiceGroup appkey:RONGCLOUD_IM_APPKEY userId:userId token:token];
-    
     NSString *navServer = [RCDEnvironmentContext navServer];
     NSString *fileServer = [RCDEnvironmentContext fileServer];
     if (navServer.length > 0 || fileServer.length > 0) {
@@ -189,6 +186,8 @@
     //   设置优先使用WebView打开URL
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
     [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:YES];
+    
+    [RCIM sharedRCIM].messageInterceptor = self;
 }
 
 #pragma mark - RCUltraGroupConversationDelegate
@@ -417,7 +416,6 @@
      不需要开发者对 deviceToken 进行处理，可直接传入。
      */
     [[RCIMClient sharedRCIMClient] setDeviceTokenData:deviceToken];
-    [[RCNotificationServiceAppPlugin sharedInstance] updateDeviceTokenData:deviceToken];
     [RCDNotificationServiceDefaults setValue:deviceToken forKey:RCDDeviceTokenKey];
 }
 
@@ -941,4 +939,59 @@
     }
 }
 #endif
+
+#pragma mark -- RCIMMessageInterceptor
+
+- (BOOL)interceptWillSendMessage:(RCMessage *)message {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL openIntercept = [[userDefault valueForKey:RCDDebugInterceptWillSendCombineFuntion] boolValue];
+    if (!openIntercept) {
+        return NO;
+    }
+
+    if ([message.content isKindOfClass:[RCCombineMessage class]]) {
+        // 只拦截合并转发消息
+        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:nil pushData:nil uploadPrepare:^(RCUploadMediaStatusListener *uploadListener) {
+
+            RCCombineMessage *msgContent = (RCCombineMessage *)uploadListener.currentMessage.content;
+            msgContent.remoteUrl = @"https://html-aws-or.ronghub.com/VA5SSVUES1xcVVsAXXJheU1hfVtORggOAAQBDQAPCTc3OTg=.html";
+            uploadListener.successBlock(msgContent);
+
+        } progress:nil successBlock:nil errorBlock:nil cancel:nil];
+        return YES;
+    }
+    else if ([message.content isKindOfClass:[RCImageMessage class]]) {
+        // 只拦截合并转发消息
+//        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:nil pushData:nil uploadPrepare:^(RCUploadMediaStatusListener *uploadListener) {
+//
+//            RCImageMessage *msgContent = (RCImageMessage *)uploadListener.currentMessage.content;
+//            msgContent.remoteUrl = @"http://image-aws-or.ronghub.com/VAtfRFUBRlFcUFYNXXdsdE1kcFZOQwUDAAENBwUBAjcyNDU=.jpg";
+//            uploadListener.successBlock(msgContent);
+//
+//        } progress:nil successBlock:nil errorBlock:nil cancel:nil];
+//        return YES;
+        
+        
+        // 拦截更换一下内容, 会继续使用SDK进行发送
+        RCImageMessage *msgContent = (RCImageMessage *)message.content;
+        msgContent.remoteUrl = @"http://image-aws-or.ronghub.com/VAtfRFUBRlFcUFYNXXdsdE1kcFZOQwUDAAENBwUBAjcyNDU=.jpg";
+        return NO;
+    }
+    
+    else if ([message.content isKindOfClass:[RCTextMessage class]]) {
+        // 不拦截继续使用SDK 方法发送，只更新文本消息内容
+        RCTextMessage *msgContent = (RCTextMessage *)message.content;
+        msgContent.content = @"拦截并替换了，SDK发送";
+        return NO;
+    }
+    
+    
+    return NO;
+}
+
+- (void)interceptDidSendMessage:(RCMessage *)message {
+    NSString *statusStr = (SentStatus_SENT == message.sentStatus ? @"完成" : @"失败");
+    DebugLog(@"interceptDidSendMessage 发送%@", statusStr);
+}
+
 @end

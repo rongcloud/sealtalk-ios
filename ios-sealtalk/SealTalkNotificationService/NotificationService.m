@@ -9,7 +9,6 @@
 #import "NotificationService.h"
 #import "RCDCommonDefine.h"
 #import "RCDEnvironmentContext.h"
-#import "RCNotificationServicePlugin.h"
 @interface NotificationService ()
 
 @property (nonatomic, strong) void (^contentHandler)(UNNotificationContent *contentToDeliver);
@@ -60,17 +59,12 @@
         self.contentHandler(self.bestAttemptContent);
     }
     
-    [[RCNotificationServicePlugin sharedInstance] configApplicationGroupIdentifier:RCDNotificationServiceGroup];
-    [[RCNotificationServicePlugin sharedInstance] connectIMWithNotificationRequest:request withContentHandler:contentHandler];
-    
-    
  
 }
 
 - (void)serviceExtensionTimeWillExpire {
     // Called just before the extension will be terminated by the system.
     // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
-    [[RCNotificationServicePlugin sharedInstance] serviceExtensionTimeWillExpire];
     NSLog(@"qxb %s",__func__);
 }
 
@@ -102,9 +96,11 @@
                 [[NSFileManager defaultManager] removeItemAtPath:localURL error:nil];
             }
             NSError *error;
-            BOOL success = [[NSFileManager defaultManager] moveItemAtPath:location.path toPath:localURL error:&error];
-            if (success) {
-                localPath = localURL;
+            if (location.path.length > 0 && localURL.length > 0){
+                BOOL success = [[NSFileManager defaultManager] moveItemAtPath:location.path toPath:localURL error:&error];
+                if (success) {
+                    localPath = localURL;
+                }
             }
         }
         handler(localPath);

@@ -893,6 +893,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         [self.conversationDataRepository removeAllObjects];
         [self.conversationMessageCollectionView reloadData];
         [self.unReadButton removeFromSuperview];
+        [self.unReadMentionedButton removeFromSuperview];
+        [self.unreadRightBottomIcon removeFromSuperview];
     });
 }
 
