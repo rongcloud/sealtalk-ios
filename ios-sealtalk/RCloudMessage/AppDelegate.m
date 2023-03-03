@@ -120,19 +120,19 @@
     NSString *navServer = [RCDEnvironmentContext navServer];
     NSString *fileServer = [RCDEnvironmentContext fileServer];
     if (navServer.length > 0 || fileServer.length > 0) {
-        [[RCIMClient sharedRCIMClient] setServerInfo:navServer fileServer:fileServer];
+        [[RCCoreClient sharedCoreClient] setServerInfo:navServer fileServer:fileServer];
     }
     
     NSString *statsServer = [RCDEnvironmentContext statsServer];
     if (statsServer.length > 0) {
-        [[RCIMClient sharedRCIMClient] setStatisticServer:statsServer];
+        [[RCCoreClient sharedCoreClient] setStatisticServer:statsServer];
     }
     NSString *appKey = [RCDEnvironmentContext appKey];
     [[RCIM sharedRCIM] initWithAppKey:appKey];
     // 设置appVersion
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
-    [[RCIMClient sharedRCIMClient] setAppVer:app_Version];
+    [[RCCoreClient sharedCoreClient] setAppVer:app_Version];
     
     //关闭消息排重
     [self disableCheckDupMessageIfNeed];
@@ -150,9 +150,9 @@
     [[RCIM sharedRCIM] registerMessageType:[RCDUltraGroupNotificationMessage class]];
 
 
-    [RCIMClient sharedRCIMClient].voiceMsgType = RCVoiceMessageTypeHighQuality;
+    [RCCoreClient sharedCoreClient].voiceMsgType = RCVoiceMessageTypeHighQuality;
     
-    [RCIMClient sharedRCIMClient].logLevel = RC_Log_Level_Info;
+    [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Info;
     // 超级群会话同步状态监听代理 要在初始化之后, 连接之前设置
     [[RCChannelClient sharedChannelManager] setUltraGroupConversationDelegate:self];
     //设置会话列表头像和会话页面头像
@@ -415,7 +415,8 @@
      设置 deviceToken（已兼容 iOS 13），推荐使用，需升级 SDK 版本至 2.9.25
      不需要开发者对 deviceToken 进行处理，可直接传入。
      */
-    [[RCIMClient sharedRCIMClient] setDeviceTokenData:deviceToken];
+    [[RCCoreClient sharedCoreClient] setDeviceTokenData:deviceToken];
+
     [RCDNotificationServiceDefaults setValue:deviceToken forKey:RCDDeviceTokenKey];
 }
 
@@ -425,7 +426,7 @@
     didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
     NSString *token = [self getHexStringForData:deviceToken];
-    [[RCIMClient sharedRCIMClient] setDeviceToken:token];
+    [[RCCoreClient sharedCoreClient] setDeviceToken:token];
 }
 
 // Data 转换成 NSString（NSData ——> NSString）
@@ -459,11 +460,11 @@
     /**
      * 统计推送打开率2
      */
-    [[RCIMClient sharedRCIMClient] recordRemoteNotificationEvent:userInfo];
+    [[RCCoreClient sharedCoreClient] recordRemoteNotificationEvent:userInfo];
     /**
      * 获取融云推送服务扩展字段2
      */
-    NSDictionary *pushServiceData = [[RCIMClient sharedRCIMClient] getPushExtraFromRemoteNotification:userInfo];
+    NSDictionary *pushServiceData = [[RCCoreClient sharedCoreClient] getPushExtraFromRemoteNotification:userInfo];
     if (pushServiceData) {
         NSLog(@"该远程推送包含来自融云的推送服务");
         for (id key in [pushServiceData allKeys]) {
@@ -478,11 +479,11 @@
     /**
      * 统计推送打开率3
      */
-    [[RCIMClient sharedRCIMClient] recordLocalNotificationEvent:notification];
+    [[RCCoreClient sharedCoreClient] recordLocalNotificationEvent:notification];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    RCConnectionStatus status = [[RCIMClient sharedRCIMClient] getConnectionStatus];
+    RCConnectionStatus status = [[RCCoreClient sharedCoreClient] getConnectionStatus];
     if (status != ConnectionStatus_SignOut) {
         int unreadMsgCount = [RCDUtilities getTotalUnreadCount];
         application.applicationIconBadgeNumber = unreadMsgCount;
@@ -491,13 +492,13 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // 登陆状态下为消息分享保存会话信息
-    if ([RCIMClient sharedRCIMClient].getConnectionStatus == ConnectionStatus_Connected) {
+    if ([RCCoreClient sharedCoreClient].getConnectionStatus == ConnectionStatus_Connected) {
         [self saveConversationInfoForMessageShare];
     }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    if ([[RCIMClient sharedRCIMClient] getConnectionStatus] == ConnectionStatus_Connected) {
+    if ([[RCCoreClient sharedCoreClient] getConnectionStatus] == ConnectionStatus_Connected) {
         // 插入分享消息
         [self insertSharedMessageIfNeed];
     }
@@ -505,7 +506,7 @@
 
 - (void)didReceiveMessageNotification:(NSNotification *)notification {
     NSNumber *left = [notification.userInfo objectForKey:@"left"];
-    if ([RCIMClient sharedRCIMClient].sdkRunningMode == RCSDKRunningMode_Background && 0 == left.integerValue) {
+    if ([RCCoreClient sharedCoreClient].sdkRunningMode == RCSDKRunningMode_Background && 0 == left.integerValue) {
         int unreadMsgCount = [RCDUtilities getTotalUnreadCount];
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIApplication sharedApplication].applicationIconBadgeNumber = unreadMsgCount;
@@ -566,7 +567,7 @@
             cancelBtnTitle:RCDLocalizedString(@"i_know")];
         */
         
-        [[RCIMClient sharedRCIMClient] disconnect];
+        [[RCCoreClient sharedCoreClient] disconnect];
         RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
         RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
         self.window.rootViewController = _navi;
@@ -578,7 +579,7 @@
         [self showAlert:RCDLocalizedString(@"alert")
                    message:RCDLocalizedString(@"Your_account_has_been_logout")
             cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        [[RCIMClient sharedRCIMClient] disconnect];
+        [[RCCoreClient sharedCoreClient] disconnect];
         RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
         RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
         self.window.rootViewController = _navi;
@@ -668,7 +669,7 @@
             richMsg.url = [sharedInfo objectForKey:@"url"];
             richMsg.imageURL = [sharedInfo objectForKey:@"imageURL"];
             richMsg.extra = [sharedInfo objectForKey:@"extra"];
-            RCMessage *message = [[RCIMClient sharedRCIMClient]
+            RCMessage *message = [[RCCoreClient sharedCoreClient]
                 insertOutgoingMessage:[[sharedInfo objectForKey:@"conversationType"] intValue]
                              targetId:[sharedInfo objectForKey:@"targetId"]
                            sentStatus:SentStatus_SENT
@@ -683,7 +684,7 @@
 //为消息分享保存会话信息
 - (void)saveConversationInfoForMessageShare {
     NSArray *conversationList =
-        [[RCIMClient sharedRCIMClient] getConversationList:@[ @(ConversationType_PRIVATE), @(ConversationType_GROUP) ]];
+        [[RCCoreClient sharedCoreClient] getConversationList:@[ @(ConversationType_PRIVATE), @(ConversationType_GROUP) ]];
 
     NSMutableArray *conversationInfoList = [[NSMutableArray alloc] init];
     if (conversationList.count > 0) {
@@ -785,11 +786,11 @@
     /**
      * 统计推送打开率1
      */
-    [[RCIMClient sharedRCIMClient] recordLaunchOptionsEvent:launchOptions];
+    [[RCCoreClient sharedCoreClient] recordLaunchOptionsEvent:launchOptions];
     /**
      * 获取融云推送服务扩展字段1
      */
-    NSDictionary *pushServiceData = [[RCIMClient sharedRCIMClient] getPushExtraFromLaunchOptions:launchOptions];
+    NSDictionary *pushServiceData = [[RCCoreClient sharedCoreClient] getPushExtraFromLaunchOptions:launchOptions];
     if (pushServiceData) {
         NSLog(@"该启动事件包含来自融云的推送服务");
         for (id key in [pushServiceData allKeys]) {

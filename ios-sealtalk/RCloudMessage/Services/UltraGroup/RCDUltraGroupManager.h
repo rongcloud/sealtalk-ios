@@ -66,4 +66,37 @@
 + (void)disbandUltraGroupChannel:(NSString *)groupID
                        channelID:(NSString *)channelID
                         complete:(void (^)(NSString *channelID, BOOL result))complete;
+
+#pragma mark - 用户组
+
++ (void)createUserGroup:(NSString *)groupID
+          userGroupName:(NSString *)userGroupName
+               complete:(void (^)(NSString * userGroupID, RCDUltraGroupCode ret))complete;
++ (void)deleteUserGroup:(NSString *)groupID
+            userGroupID:(NSString *)userGroupID
+               complete:(void (^)(RCDUltraGroupCode ret))complete;
++ (void)addToUserGroup:(NSString *)groupID
+           userGroupID:(NSString *)userGroupID
+               members:(NSArray<NSString *> *)members
+              complete:(void (^)(RCDUltraGroupCode ret))complete;
++ (void)removeFromUserGroup:(NSString *)groupID
+                userGroupID:(NSString *)userGroupID
+                    members:(NSArray<NSString *> *)members
+                   complete:(void (^)(RCDUltraGroupCode ret))complete;
++ (void)bindToUserGroup:(NSString *)groupID
+              channelID:(NSString *)channelID
+             userGroups:(NSArray<NSString *> *)userGroups
+               complete:(void (^)(RCDUltraGroupCode ret))complete;
++ (void)unbindFromUserGroup:(NSString *)groupID
+                  channelID:(NSString *)channelID
+                 userGroups:(NSArray<NSString *> *)userGroups
+                   complete:(void (^)(RCDUltraGroupCode ret))complete;
++ (void)queryUserGroups:(NSString *)groupID
+               complete:(void (^)(NSArray *array ,RCDUltraGroupCode ret))complete;
++ (void)queryChannelUserGroups:(NSString *)groupID
+                     channelID:(NSString *)channelID
+                      complete:(void (^)(NSArray *array ,RCDUltraGroupCode ret)) complete;
++ (void)queryUserGroupMembers:(NSString *)groupID
+                  userGroupID:(NSString *)userGroupID
+                     complete:(void (^)(NSArray *array ,RCDUltraGroupCode ret)) complete;
 @end

@@ -86,6 +86,11 @@ sed -i '' -e "/RongSight.framework/d"  ${Project}
 sed -i '' -e "/RongContactCard.framework/d"  ${Project}
 sed -i '' -e "/RongTranslation.framework/d"  ${Project}
 sed -i '' -e "/RongLocationKit.framework/d"  ${Project}
+sed -i '' -e "/RCNotificationServicePlugin.h/d"  ${Project}
+sed -i '' -e "/RCNotificationServicePlugin.m/d"  ${Project}
+sed -i '' -e "/RCNotificationServiceAppPlugin.h/d"  ${Project}
+sed -i '' -e "/RCNotificationServiceAppPlugin.m/d"  ${Project}
+
 
 # app extention 不支持手动引入 XCFramework；pod 1.11.2 不支持 app 与 extension 导入同一 SDK start
 sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationService.m

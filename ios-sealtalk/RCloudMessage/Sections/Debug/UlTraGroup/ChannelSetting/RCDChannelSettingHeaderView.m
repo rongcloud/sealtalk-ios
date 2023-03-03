@@ -1,21 +1,21 @@
 //
-//  RCDChannelSetttingHeaderView.m
+//  RCDChannelSettingHeaderView.m
 //  SealTalk
 //
 //  Created by RobinCui on 2022/6/17.
 //  Copyright © 2022 RongCloud. All rights reserved.
 //
 
-#import "RCDChannelSetttingHeaderView.h"
+#import "RCDChannelSettingHeaderView.h"
 #import <Masonry/Masonry.h>
 
-NSString * const RCDChannelSetttingHeaderViewIdentifier = @"RCDChannelSetttingHeaderViewIdentifier";
+NSString * const RCDChannelSettingHeaderViewIdentifier = @"RCDChannelSettingHeaderViewIdentifier";
 
-@interface RCDChannelSetttingHeaderView()
+@interface RCDChannelSettingHeaderView()
 @property (nonatomic, strong, readwrite) UICollectionView *collectionView;
 @end
 
-@implementation RCDChannelSetttingHeaderView
+@implementation RCDChannelSettingHeaderView
 
 - (instancetype)init
 {

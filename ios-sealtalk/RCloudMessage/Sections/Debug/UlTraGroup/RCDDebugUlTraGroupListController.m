@@ -93,7 +93,7 @@
 
 
 - (void)toChatVCWithUserId:(NSString *)userId {
-    [[RCIMClient sharedRCIMClient] clearMessages:ConversationType_GROUP targetId:userId];
+    [[RCCoreClient sharedCoreClient] clearMessages:ConversationType_GROUP targetId:userId];
     RCDDebugUltraGroupChatViewController *chatVC = [[RCDDebugUltraGroupChatViewController alloc] initWithConversationType:ConversationType_ULTRAGROUP targetId:userId];
 
     chatVC.title = userId;

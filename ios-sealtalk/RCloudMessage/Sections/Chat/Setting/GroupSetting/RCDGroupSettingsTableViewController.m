@@ -321,7 +321,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         [myInfoVC setUpdateMemberDetail:^{
             [self.headerView reloadData];
         }];
-        myInfoVC.userId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+        myInfoVC.userId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
         myInfoVC.groupId = self.group.groupId;
         [self.navigationController pushViewController:myInfoVC animated:YES];
     }
@@ -487,20 +487,20 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 - (void)clearConversationAndMessage {
     NSArray *latestMessages =
-        [[RCIMClient sharedRCIMClient] getLatestMessages:ConversationType_GROUP targetId:self.group.groupId count:1];
+        [[RCCoreClient sharedCoreClient] getLatestMessages:ConversationType_GROUP targetId:self.group.groupId count:1];
     if (latestMessages.count > 0) {
         RCMessage *message = (RCMessage *)[latestMessages firstObject];
-        [[RCIMClient sharedRCIMClient] clearRemoteHistoryMessages:ConversationType_GROUP
+        [[RCCoreClient sharedCoreClient] clearRemoteHistoryMessages:ConversationType_GROUP
                                                          targetId:self.group.groupId
                                                        recordTime:message.sentTime
                                                           success:^{
-                                                              [[RCIMClient sharedRCIMClient]
+                                                              [[RCCoreClient sharedCoreClient]
                                                                   clearMessages:ConversationType_GROUP
                                                                        targetId:self.group.groupId];
                                                           }
                                                             error:nil];
     }
-    [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_GROUP targetId:self.group.groupId];
+    [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_GROUP targetId:self.group.groupId];
 }
 
 - (void)refreshGroupMemberInfo {
@@ -605,7 +605,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 }
 
 - (void)setCurrentNotificationStatus:(UISwitch *)switchButton {
-    [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_GROUP
+    [[RCCoreClient sharedCoreClient] getConversationNotificationStatus:ConversationType_GROUP
         targetId:self.group.groupId
         success:^(RCConversationNotificationStatus nStatus) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -720,7 +720,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         [RCAlertView showAlertController:nil message:RCDLocalizedString(@"Set failed") cancelTitle:RCDLocalizedString(@"confirm")];
         return;
     }
-    [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:ConversationType_GROUP
+    [[RCCoreClient sharedCoreClient] setConversationNotificationStatus:ConversationType_GROUP
         targetId:self.group.groupId
         isBlocked:swch.on
         success:^(RCConversationNotificationStatus nStatus) {
@@ -735,7 +735,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 - (void)clickIsTopBtn:(id)sender {
     UISwitch *swch = sender;
-    [[RCIMClient sharedRCIMClient] setConversationToTop:ConversationType_GROUP
+    [[RCCoreClient sharedCoreClient] setConversationToTop:ConversationType_GROUP
                                                targetId:self.group.groupId
                                                   isTop:swch.on];
 }
@@ -923,7 +923,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
     if (!_headerView) {
         CGRect tempRect =
             CGRectMake(0, 0, RCDScreenWidth, _headerView.collectionViewLayout.collectionViewContentSize.height);
-        NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+        NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
         NSString *groupOwnerId = [RCDGroupManager getGroupOwner:self.group.groupId];
         NSArray<NSString *> *groupManagers = [RCDGroupManager getGroupManagers:self.group.groupId];
         BOOL isCreator = NO;

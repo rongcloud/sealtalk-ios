@@ -386,7 +386,7 @@
         deleteFriend:userId
             complete:^(BOOL success) {
                 if (success) {
-                    [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_PRIVATE targetId:userId];
+                    [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_PRIVATE targetId:userId];
                     [RCDDBManager deleteFriends:@[ userId ]];
                 }
                 if (completeBlock) {
@@ -434,9 +434,9 @@
                  complete:^(BOOL success) {
                      if (success) {
                          for (NSString *friendId in friendIds) {
-                             [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_PRIVATE
+                             [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_PRIVATE
                                                                       targetId:friendId];
-                             [[RCIMClient sharedRCIMClient] clearMessages:ConversationType_PRIVATE targetId:friendId];
+                             [[RCCoreClient sharedCoreClient] clearMessages:ConversationType_PRIVATE targetId:friendId];
                          }
                          [RCDDBManager deleteFriends:friendIds];
                          [self getFriendListFromServer:^(NSArray<RCDFriendInfo *> *friendList) {

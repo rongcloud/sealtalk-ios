@@ -129,7 +129,7 @@
 //更新携带敏感词KV
 - (void)updateBlockKV {
     
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.currMessageModel.senderUserId;
     
     RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.currMessageModel.messageUId];
@@ -138,7 +138,7 @@
         NSMutableDictionary *dic = [NSMutableDictionary new];
         dic[@"123"] = @"毛泽东";
         [[RCCoreClient sharedCoreClient] updateMessageExpansion:dic messageUId:message.messageUId success:^{
-            RCMessage *msg = [[RCIMClient sharedRCIMClient] getMessageByUId:message.messageUId];
+            RCMessage *msg = [[RCCoreClient sharedCoreClient] getMessageByUId:message.messageUId];
             NSLog(@"Expansion %@", msg.expansionDic);
             NSString *text = [NSString stringWithFormat:@"KV已改为%@", msg.expansionDic];
             [self showAlertTitle:msg.messageUId message:text];
@@ -161,7 +161,7 @@
     message.expansionDic = @{@"tKey":[self getTimeString]};
     
     __weak typeof(self) weakSelf = self;
-    [[RCIMClient sharedRCIMClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
+    [[RCCoreClient sharedCoreClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
         [weakSelf appendAndDisplayMessage:successMessage];
         [self showToastMsg:@"发送携带KV的文本消息成功"];
     } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -181,7 +181,7 @@
     message.expansionDic = @{@"123":@"毛泽东"};
     
     __weak typeof(self) weakSelf = self;
-    [[RCIMClient sharedRCIMClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
+    [[RCCoreClient sharedCoreClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
         [weakSelf appendAndDisplayMessage:successMessage];
         [self showToastMsg:@"发送携带敏感词KV的文本消息成功"];
     } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -206,6 +206,7 @@
     pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
     pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
+    pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
     pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
     pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];

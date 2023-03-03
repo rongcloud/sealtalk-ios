@@ -180,7 +180,7 @@
                 weakSelf.noticeList = nil;
                 [weakSelf.tableView reloadData];
                 [weakSelf reloadEmptyView];
-                [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_PRIVATE
+                [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_PRIVATE
                                                          targetId:RCDGroupNoticeTargetId];
             } else {
                 [weakSelf.view showHUDMessage:RCDLocalizedString(@"Failed")];

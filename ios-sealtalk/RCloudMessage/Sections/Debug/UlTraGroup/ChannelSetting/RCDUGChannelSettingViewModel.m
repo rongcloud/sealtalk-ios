@@ -13,8 +13,8 @@
 #import <RongIMKit/RCIM.h>
 
 @interface RCDUGChannelSettingViewModel()
-@property (nonatomic, copy) NSString *groupID;
-@property (nonatomic, copy) NSString *channelID;
+@property (nonatomic, copy, readwrite) NSString *groupID;
+@property (nonatomic, copy, readwrite) NSString *channelID;
 @property (nonatomic, strong, readwrite) NSMutableArray *members;
 @property (nonatomic, strong) NSMutableSet *whiteList;
 @property (nonatomic, assign, readwrite) BOOL isPrivate;

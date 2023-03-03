@@ -18,6 +18,8 @@
 "all_group_member_z"="All Group Members(%@)";
 "group_portrait"="Group Portrait";
 "group_name"="Group Name";
+"group_user_group"="User Group";
+
 "group_announcement"="Group Announcement";
 "search_chat_history"="Search Chat History";
 "mute_notifications"="Mute Notifications";

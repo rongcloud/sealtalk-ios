@@ -10,6 +10,7 @@
 #import "RCDChannelUserInfo.h"
 #import <UIKit/UIKit.h>
 #import "RCDChannelUserInfoCellViewModel.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, RCDUGChannelSettingRowType){
@@ -17,6 +18,7 @@ typedef NS_ENUM(NSInteger, RCDUGChannelSettingRowType){
 //    RCDUGChannelSettingRowTypeAddAll, // 添加全部
 //    RCDUGChannelSettingRowTypeRemoveAll, // 移除全部
     RCDUGChannelSettingRowTypeChannelType = 0, // 修改频道类型
+    RCDUGChannelSettingRowTypeUserGroup, // 用户组
     RCDUGChannelSettingRowTypeTotalNumber
 };
 
@@ -38,7 +40,8 @@ typedef NS_ENUM(NSInteger, RCDUGChannelSettingRowType){
 @property (nonatomic, weak) id<RCDUGChannelTypeDelegate> typeDelegate;
 @property (nonatomic, assign, readonly) BOOL isOwner;
 @property (nonatomic, assign, readonly) BOOL isPrivate;
-
+@property (nonatomic, copy, readonly) NSString *groupID;
+@property (nonatomic, copy, readonly) NSString *channelID;
 - (instancetype)initWithGroupID:(NSString *)groupID
                       channelID:(NSString *)channelID
                       isPrivate:(BOOL)isPrivate

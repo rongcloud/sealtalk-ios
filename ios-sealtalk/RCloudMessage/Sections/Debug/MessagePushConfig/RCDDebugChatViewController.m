@@ -159,7 +159,7 @@
 - (void)recallMessage:(long)messageId {
     RCMessagePushConfig *pushConfig = [self getPushConfig];
     RCMessageConfig *config = [self getConfig];
-    RCMessage *msg = [[RCIMClient sharedRCIMClient] getMessage:messageId];
+    RCMessage *msg = [[RCCoreClient sharedCoreClient] getMessage:messageId];
     msg.messagePushConfig = pushConfig;
     msg.messageConfig = config;
     if (msg.messageDirection != MessageDirection_SEND && msg.sentStatus != SentStatus_SENT) {
@@ -167,7 +167,7 @@
         return;
     }
     
-    [[RCIMClient sharedRCIMClient] recallMessage:msg
+    [[RCCoreClient sharedCoreClient] recallMessage:msg
                                      pushContent:nil
                                          success:^(long messageId) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -198,6 +198,7 @@
     pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
     pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
+    pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
     pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
     pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];

@@ -56,7 +56,7 @@
     }
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [[RCIMClient sharedRCIMClient].pushProfile setPushLauguage:lauguage success:^{
+    [[RCCoreClient sharedCoreClient].pushProfile setPushLauguage:lauguage success:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             if (lauguage== RCPushLauguage_AR_SA) {

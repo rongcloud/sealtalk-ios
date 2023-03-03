@@ -171,7 +171,7 @@
 }
 
 - (void)setupUserInfo {
-    NSString *userId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *userId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     RCUserInfo *userInfo = [RCDUserInfoManager getUserInfo:userId];
     [self.portraitImageView sd_setImageWithURL:[NSURL URLWithString:userInfo.portraitUri] placeholderImage:nil];
     self.nameLabel.text = userInfo.name;

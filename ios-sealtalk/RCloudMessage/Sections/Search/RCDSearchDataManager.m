@@ -149,7 +149,7 @@
     }
     NSMutableArray *array = [NSMutableArray array];
     NSArray *messsageResult =
-        [[RCIMClient sharedRCIMClient] searchConversations:@[ @(ConversationType_GROUP), @(ConversationType_PRIVATE) ]
+        [[RCCoreClient sharedCoreClient] searchConversations:@[ @(ConversationType_GROUP), @(ConversationType_PRIVATE) ]
                                                messageType:@[
                                                    [RCTextMessage getObjectName],
                                                    [RCRichContentMessage getObjectName],

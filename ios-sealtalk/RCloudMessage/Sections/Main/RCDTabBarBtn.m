@@ -178,7 +178,7 @@
     [self.samllCircleView removeFromSuperview];
     [self.shapeLayer removeFromSuperlayer];
     [self removeFromSuperview];
-    NSArray *conversationList = [[RCIMClient sharedRCIMClient] getConversationList:@[
+    NSArray *conversationList = [[RCCoreClient sharedCoreClient] getConversationList:@[
         @(ConversationType_PRIVATE),
         @(ConversationType_APPSERVICE),
         @(ConversationType_PUBLICSERVICE),
@@ -190,7 +190,7 @@
         for (int i = 0; i < conversationList.count; i++) {
             RCConversation *conversation = conversationList[i];
             if (conversation.unreadMessageCount > 0) {
-                [[RCIMClient sharedRCIMClient] clearMessagesUnreadStatus:conversation.conversationType
+                [[RCCoreClient sharedCoreClient] clearMessagesUnreadStatus:conversation.conversationType
                                                                 targetId:conversation.targetId];
                 [syncConversations addObject:conversation];
             }

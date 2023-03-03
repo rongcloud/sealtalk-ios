@@ -486,7 +486,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
                     [super pluginBoardView:self.chatSessionInputBarControl.pluginBoardView
                         clickedItemWithTag:PLUGIN_BOARD_ITEM_LOCATION_TAG];
                 }else{
-                    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+                    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
                     if (RC_NotReachable == status) {
                         [self.view showHUDMessage:RCDLocalizedString(@"network_can_not_use_please_check")];
                     }else{
@@ -599,7 +599,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if ([model.content isKindOfClass:[RCDGroupNotificationMessage class]]) {
         RCDGroupNotificationMessage *groupNotif = (RCDGroupNotificationMessage *)model.content;
         if ([groupNotif.operation isEqualToString:RCDGroupMemberManagerRemove]) {
-            [[RCIMClient sharedRCIMClient] deleteMessages:@[ @(model.messageId) ]];
+            [[RCCoreClient sharedCoreClient] deleteMessages:@[ @(model.messageId) ]];
             return CGSizeZero;
         }
     }
@@ -760,7 +760,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
     //默认输入类型为语音
     // self.defaultInputType = RCChatSessionInputBarInputExtention;
-    if ([self.targetId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if ([self.targetId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_VOIP_TAG];
         [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_VIDEO_VOIP_TAG];
     }
@@ -775,7 +775,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
      BOOL saveToDB = NO;  //是否保存到数据库中
      RCMessage *savedMsg ;
      if (saveToDB) {
-     savedMsg = [[RCIMClient sharedRCIMClient]
+     savedMsg = [[RCCoreClient sharedCoreClient]
      insertOutgoingMessage:self.conversationType targetId:self.targetId
      sentStatus:SentStatus_SENT content:warningMsg];
      } else {
@@ -908,7 +908,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 - (void)refreshUserInfoOrGroupInfo {
-    if ([[RCIMClient sharedRCIMClient] getCurrentNetworkStatus] == RC_NotReachable ) {
+    if ([[RCCoreClient sharedCoreClient] getCurrentNetworkStatus] == RC_NotReachable ) {
         return;
     }
     //打开单聊强制从demo server 获取用户信息更新本地数据库
@@ -1306,7 +1306,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (void)onParticipantsJoin:(NSString *)userId {
     __weak typeof(self) weakSelf = self;
-    if ([userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if ([userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         [self notifyParticipantChange:RTLLocalizedString(@"you_join_location_share")];
     } else {
         [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
@@ -1322,7 +1322,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
 - (void)onParticipantsQuit:(NSString *)userId {
     __weak typeof(self) weakSelf = self;
-    if ([userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if ([userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         [self notifyParticipantChange:RCDLocalizedString(@"you_quit_location_share")];
     } else {
         [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
@@ -1432,7 +1432,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 //        recordTime = model.sentTime;
 //    }
 //    __weak typeof(self) weakSelf = self;
-//    [[RCIMClient sharedRCIMClient] getRemoteChatroomHistoryMessages:self.targetId
+//    [[RCCoreClient sharedCoreClient] getRemoteChatroomHistoryMessages:self.targetId
 //        recordTime:recordTime
 //        count:20
 //        order:RC_Timestamp_Desc

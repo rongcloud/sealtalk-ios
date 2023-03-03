@@ -63,7 +63,7 @@ NSString *const RCDCListViewControllerCellIdentifier = @"RCDCListViewControllerC
                         @(ConversationType_CHATROOM)];
     NSMutableArray *array = [NSMutableArray array];
     NSArray *conversationList =
-    [[RCIMClient sharedRCIMClient] getConversationList:types];
+    [[RCCoreClient sharedCoreClient] getConversationList:types];
     for (RCConversation *conversation in conversationList) {
         RCDConversationItem *item = [RCDConversationItem new];
         item.targetID = conversation.targetId;

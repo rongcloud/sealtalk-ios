@@ -113,7 +113,7 @@
         return YES;
     } else if ([message.content isMemberOfClass:[RCDClearMessage class]]) {
         RCDClearMessage *msg = (RCDClearMessage *)message.content;
-        [[RCIMClient sharedRCIMClient] clearHistoryMessages:message.conversationType
+        [[RCCoreClient sharedCoreClient] clearHistoryMessages:message.conversationType
             targetId:message.targetId
             recordTime:msg.clearTime
             clearRemote:YES

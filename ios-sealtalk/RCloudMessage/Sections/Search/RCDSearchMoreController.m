@@ -117,7 +117,7 @@
     RCDSearchMoreController *viewController = [[RCDSearchMoreController alloc] init];
     viewController.searchString = self.searchBar.text;
     viewController.type = [NSString stringWithFormat:RCDLocalizedString(@"total_related_message"), model.count];
-    NSArray *array = [[RCIMClient sharedRCIMClient] searchMessages:model.conversationType
+    NSArray *array = [[RCCoreClient sharedCoreClient] searchMessages:model.conversationType
                                                           targetId:model.targetId
                                                            keyword:self.searchBar.text
                                                              count:model.count
@@ -146,7 +146,7 @@
     _conversationVC.targetId = model.targetId;
     _conversationVC.title = model.name;
     _conversationVC.locatedMessageSentTime = model.time;
-    int unreadCount = [[RCIMClient sharedRCIMClient] getUnreadCount:model.conversationType targetId:model.targetId];
+    int unreadCount = [[RCCoreClient sharedCoreClient] getUnreadCount:model.conversationType targetId:model.targetId];
     _conversationVC.unReadMessage = unreadCount;
     _conversationVC.enableNewComingMessageIcon = YES; //开启消息提醒
     _conversationVC.enableUnreadMessageIcon = YES;

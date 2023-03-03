@@ -28,7 +28,7 @@
 		003A90AA289A167C000AC1FE /* RCDMentionedQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A9289A167C000AC1FE /* RCDMentionedQueryView.m */; };
 		007322A82858625A00B51977 /* RCDChatViewController+Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 007322A72858625A00B51977 /* RCDChatViewController+Alert.m */; };
 		007558A8285C65CF0082F0EB /* RCDUGChannelSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558A7285C65CF0082F0EB /* RCDUGChannelSettingViewController.m */; };
-		007558AB285C66970082F0EB /* RCDChannelSetttingHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558AA285C66970082F0EB /* RCDChannelSetttingHeaderView.m */; };
+		007558AB285C66970082F0EB /* RCDChannelSettingHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558AA285C66970082F0EB /* RCDChannelSettingHeaderView.m */; };
 		007558AE285C68200082F0EB /* RCDUGChannelSettingViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558AD285C68200082F0EB /* RCDUGChannelSettingViewModel.m */; };
 		007558BA286061B60082F0EB /* RCDChannelUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558B9286061B60082F0EB /* RCDChannelUserInfo.m */; };
 		007558CC28607C170082F0EB /* RCDChannelUserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558CB28607C170082F0EB /* RCDChannelUserInfoCell.m */; };
@@ -36,6 +36,24 @@
 		007558D2286198630082F0EB /* RCDUGChannelSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558D1286198630082F0EB /* RCDUGChannelSettingCell.m */; };
 		007807E22940735400947E3A /* RCDStickerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 007807E12940735400947E3A /* RCDStickerTest.m */; };
 		007F52FB28508B8B00B3487E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C497201A24849E00098C8A /* CoreLocation.framework */; };
+		00850BF3296D7BA50066E25C /* RCDUserGroupListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850BF0296D7BA50066E25C /* RCDUserGroupListController.m */; };
+		00850BF4296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850BF1296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.m */; };
+		00850BF5296D7BA50066E25C /* RCDUserGroupCreateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850BF2296D7BA50066E25C /* RCDUserGroupCreateViewController.m */; };
+		00850BF8296D7C790066E25C /* RCDUserGroupBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850BF7296D7C790066E25C /* RCDUserGroupBaseView.m */; };
+		00850BFB296D7CD30066E25C /* RCDUserGroupListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850BFA296D7CD30066E25C /* RCDUserGroupListView.m */; };
+		00850BFF296D7DA50066E25C /* UIView+RCD.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850BFE296D7DA50066E25C /* UIView+RCD.m */; };
+		00850C03296D80940066E25C /* RCDUserGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C02296D80940066E25C /* RCDUserGroupInfo.m */; };
+		00850C08296E5DD60066E25C /* RCDUserGroupCreateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C07296E5DD60066E25C /* RCDUserGroupCreateView.m */; };
+		00850C1D296E62590066E25C /* RCDUserGroupUserSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C1C296E62590066E25C /* RCDUserGroupUserSelectorView.m */; };
+		00850C20296E8FF40066E25C /* RCDUserGroupMemberInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C1F296E8FF40066E25C /* RCDUserGroupMemberInfo.m */; };
+		00850C23296E926C0066E25C /* RCDUserGroupMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C22296E926C0066E25C /* RCDUserGroupMemberCell.m */; };
+		00850C26296EAB160066E25C /* RCDUserGroupDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C25296EAB160066E25C /* RCDUserGroupDetailViewController.m */; };
+		00850C29296EAC380066E25C /* RCDUserGroupDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C28296EAC380066E25C /* RCDUserGroupDetailView.m */; };
+		00850C2C296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C2B296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.m */; };
+		00850C2F296FA92F0066E25C /* RCDUserGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C2E296FA92F0066E25C /* RCDUserGroupSelectorViewController.m */; };
+		00850C32296FA97A0066E25C /* RCDUserGroupChannelBelongView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C31296FA97A0066E25C /* RCDUserGroupChannelBelongView.m */; };
+		00850C35296FDDE90066E25C /* RCDUserGroupSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C34296FDDE90066E25C /* RCDUserGroupSelectorView.m */; };
+		00850C38296FDEEE0066E25C /* RCDUserGroupOptionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 00850C37296FDEEE0066E25C /* RCDUserGroupOptionInfo.m */; };
 		00A5AA7628DDA15900C051B1 /* RCDAllConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA7528DDA15900C051B1 /* RCDAllConversationViewController.m */; };
 		00A5AA8828DDABD800C051B1 /* RCDLocalMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA8728DDABD800C051B1 /* RCDLocalMessagesViewController.m */; };
 		00A5AA8B28DDAC7F00C051B1 /* RCDLocalMessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00A5AA8A28DDAC7F00C051B1 /* RCDLocalMessagesView.m */; };
@@ -50,8 +68,6 @@
 		00CEE56428045AA90079C6AE /* RCDebugPushLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE56328045AA90079C6AE /* RCDebugPushLevelViewController.m */; };
 		00CEE567280516DC0079C6AE /* RCDebugComBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE566280516DC0079C6AE /* RCDebugComBaseViewController.m */; };
 		00D31183289A686600FCC908 /* RCDMessageDigestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D31182289A686600FCC908 /* RCDMessageDigestCell.m */; };
-		11AE69E127F5A22E00F09499 /* RCNotificationServiceAppPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 11AE69E027F5A22E00F09499 /* RCNotificationServiceAppPlugin.m */; };
-		11AE69E427F5A84D00F09499 /* RCNotificationServicePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 11AE69E327F5A84D00F09499 /* RCNotificationServicePlugin.m */; };
 		178998221F6244FA00FC44D3 /* sms-received.caf in Resources */ = {isa = PBXBuildFile; fileRef = 178998211F6244FA00FC44D3 /* sms-received.caf */; };
 		17B181851D587A1C0061E02B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A6EFABA01BB0EDAC007E9D67 /* libxml2.tbd */; };
 		17BE51CF1D5828EC0001418D /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 17BE51CE1D5828EC0001418D /* check.png */; };
@@ -554,8 +570,8 @@
 		007322A72858625A00B51977 /* RCDChatViewController+Alert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCDChatViewController+Alert.m"; sourceTree = "<group>"; };
 		007558A6285C65CF0082F0EB /* RCDUGChannelSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDUGChannelSettingViewController.h; sourceTree = "<group>"; };
 		007558A7285C65CF0082F0EB /* RCDUGChannelSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDUGChannelSettingViewController.m; sourceTree = "<group>"; };
-		007558A9285C66970082F0EB /* RCDChannelSetttingHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDChannelSetttingHeaderView.h; sourceTree = "<group>"; };
-		007558AA285C66970082F0EB /* RCDChannelSetttingHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDChannelSetttingHeaderView.m; sourceTree = "<group>"; };
+		007558A9285C66970082F0EB /* RCDChannelSettingHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDChannelSettingHeaderView.h; sourceTree = "<group>"; };
+		007558AA285C66970082F0EB /* RCDChannelSettingHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDChannelSettingHeaderView.m; sourceTree = "<group>"; };
 		007558AC285C68200082F0EB /* RCDUGChannelSettingViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUGChannelSettingViewModel.h; sourceTree = "<group>"; };
 		007558AD285C68200082F0EB /* RCDUGChannelSettingViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGChannelSettingViewModel.m; sourceTree = "<group>"; };
 		007558B8286061B60082F0EB /* RCDChannelUserInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDChannelUserInfo.h; sourceTree = "<group>"; };
@@ -568,6 +584,42 @@
 		007558D1286198630082F0EB /* RCDUGChannelSettingCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUGChannelSettingCell.m; sourceTree = "<group>"; };
 		007807E02940735400947E3A /* RCDStickerTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDStickerTest.h; sourceTree = "<group>"; };
 		007807E12940735400947E3A /* RCDStickerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDStickerTest.m; sourceTree = "<group>"; };
+		00850BED296D7BA50066E25C /* RCDUserGroupListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupListController.h; sourceTree = "<group>"; };
+		00850BEE296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupUserSelectorViewController.h; sourceTree = "<group>"; };
+		00850BEF296D7BA50066E25C /* RCDUserGroupCreateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupCreateViewController.h; sourceTree = "<group>"; };
+		00850BF0296D7BA50066E25C /* RCDUserGroupListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupListController.m; sourceTree = "<group>"; };
+		00850BF1296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupUserSelectorViewController.m; sourceTree = "<group>"; };
+		00850BF2296D7BA50066E25C /* RCDUserGroupCreateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupCreateViewController.m; sourceTree = "<group>"; };
+		00850BF6296D7C790066E25C /* RCDUserGroupBaseView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupBaseView.h; sourceTree = "<group>"; };
+		00850BF7296D7C790066E25C /* RCDUserGroupBaseView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupBaseView.m; sourceTree = "<group>"; };
+		00850BF9296D7CD30066E25C /* RCDUserGroupListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupListView.h; sourceTree = "<group>"; };
+		00850BFA296D7CD30066E25C /* RCDUserGroupListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupListView.m; sourceTree = "<group>"; };
+		00850BFD296D7DA50066E25C /* UIView+RCD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+RCD.h"; sourceTree = "<group>"; };
+		00850BFE296D7DA50066E25C /* UIView+RCD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+RCD.m"; sourceTree = "<group>"; };
+		00850C01296D80940066E25C /* RCDUserGroupInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupInfo.h; sourceTree = "<group>"; };
+		00850C02296D80940066E25C /* RCDUserGroupInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupInfo.m; sourceTree = "<group>"; };
+		00850C06296E5DD60066E25C /* RCDUserGroupCreateView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupCreateView.h; sourceTree = "<group>"; };
+		00850C07296E5DD60066E25C /* RCDUserGroupCreateView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupCreateView.m; sourceTree = "<group>"; };
+		00850C1B296E62590066E25C /* RCDUserGroupUserSelectorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupUserSelectorView.h; sourceTree = "<group>"; };
+		00850C1C296E62590066E25C /* RCDUserGroupUserSelectorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupUserSelectorView.m; sourceTree = "<group>"; };
+		00850C1E296E8FF40066E25C /* RCDUserGroupMemberInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupMemberInfo.h; sourceTree = "<group>"; };
+		00850C1F296E8FF40066E25C /* RCDUserGroupMemberInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupMemberInfo.m; sourceTree = "<group>"; };
+		00850C21296E926C0066E25C /* RCDUserGroupMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupMemberCell.h; sourceTree = "<group>"; };
+		00850C22296E926C0066E25C /* RCDUserGroupMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupMemberCell.m; sourceTree = "<group>"; };
+		00850C24296EAB160066E25C /* RCDUserGroupDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupDetailViewController.h; sourceTree = "<group>"; };
+		00850C25296EAB160066E25C /* RCDUserGroupDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupDetailViewController.m; sourceTree = "<group>"; };
+		00850C27296EAC380066E25C /* RCDUserGroupDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupDetailView.h; sourceTree = "<group>"; };
+		00850C28296EAC380066E25C /* RCDUserGroupDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupDetailView.m; sourceTree = "<group>"; };
+		00850C2A296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupChannelBelongViewController.h; sourceTree = "<group>"; };
+		00850C2B296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupChannelBelongViewController.m; sourceTree = "<group>"; };
+		00850C2D296FA92F0066E25C /* RCDUserGroupSelectorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupSelectorViewController.h; sourceTree = "<group>"; };
+		00850C2E296FA92F0066E25C /* RCDUserGroupSelectorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupSelectorViewController.m; sourceTree = "<group>"; };
+		00850C30296FA97A0066E25C /* RCDUserGroupChannelBelongView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupChannelBelongView.h; sourceTree = "<group>"; };
+		00850C31296FA97A0066E25C /* RCDUserGroupChannelBelongView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupChannelBelongView.m; sourceTree = "<group>"; };
+		00850C33296FDDE90066E25C /* RCDUserGroupSelectorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupSelectorView.h; sourceTree = "<group>"; };
+		00850C34296FDDE90066E25C /* RCDUserGroupSelectorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupSelectorView.m; sourceTree = "<group>"; };
+		00850C36296FDEEE0066E25C /* RCDUserGroupOptionInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDUserGroupOptionInfo.h; sourceTree = "<group>"; };
+		00850C37296FDEEE0066E25C /* RCDUserGroupOptionInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserGroupOptionInfo.m; sourceTree = "<group>"; };
 		00A5AA7428DDA15900C051B1 /* RCDAllConversationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAllConversationViewController.h; sourceTree = "<group>"; };
 		00A5AA7528DDA15900C051B1 /* RCDAllConversationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAllConversationViewController.m; sourceTree = "<group>"; };
 		00A5AA8628DDABD800C051B1 /* RCDLocalMessagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDLocalMessagesViewController.h; sourceTree = "<group>"; };
@@ -597,10 +649,6 @@
 		00D31181289A686600FCC908 /* RCDMessageDigestCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDMessageDigestCell.h; sourceTree = "<group>"; };
 		00D31182289A686600FCC908 /* RCDMessageDigestCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMessageDigestCell.m; sourceTree = "<group>"; };
 		0A1DDD9F22169D7300A9FE21 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = "RCloudMessage/Supporting Files/PrefixHeader.pch"; sourceTree = SOURCE_ROOT; };
-		11AE69DF27F5A22E00F09499 /* RCNotificationServiceAppPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCNotificationServiceAppPlugin.h; path = RCloudMessage/RCNotificationServiceAppPlugin.h; sourceTree = SOURCE_ROOT; };
-		11AE69E027F5A22E00F09499 /* RCNotificationServiceAppPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCNotificationServiceAppPlugin.m; path = RCloudMessage/RCNotificationServiceAppPlugin.m; sourceTree = SOURCE_ROOT; };
-		11AE69E227F5A84D00F09499 /* RCNotificationServicePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNotificationServicePlugin.h; sourceTree = "<group>"; };
-		11AE69E327F5A84D00F09499 /* RCNotificationServicePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNotificationServicePlugin.m; sourceTree = "<group>"; };
 		178998211F6244FA00FC44D3 /* sms-received.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "sms-received.caf"; path = "RCloudMessage/Supporting Files/sms-received.caf"; sourceTree = SOURCE_ROOT; };
 		17B181861D587B0F0061E02B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		17BE51CE1D5828EC0001418D /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
@@ -1486,8 +1534,8 @@
 			children = (
 				007558A6285C65CF0082F0EB /* RCDUGChannelSettingViewController.h */,
 				007558A7285C65CF0082F0EB /* RCDUGChannelSettingViewController.m */,
-				007558A9285C66970082F0EB /* RCDChannelSetttingHeaderView.h */,
-				007558AA285C66970082F0EB /* RCDChannelSetttingHeaderView.m */,
+				007558A9285C66970082F0EB /* RCDChannelSettingHeaderView.h */,
+				007558AA285C66970082F0EB /* RCDChannelSettingHeaderView.m */,
 				007558AC285C68200082F0EB /* RCDUGChannelSettingViewModel.h */,
 				007558AD285C68200082F0EB /* RCDUGChannelSettingViewModel.m */,
 				007558B8286061B60082F0EB /* RCDChannelUserInfo.h */,
@@ -1500,6 +1548,81 @@
 				007558D1286198630082F0EB /* RCDUGChannelSettingCell.m */,
 			);
 			path = ChannelSetting;
+			sourceTree = "<group>";
+		};
+		00850BCF296D749A0066E25C /* UserGroup */ = {
+			isa = PBXGroup;
+			children = (
+				00850C00296D807D0066E25C /* Model */,
+				00850BFC296D7D8C0066E25C /* Category */,
+				00850BEC296D7BA50066E25C /* VC */,
+				00850BEB296D7BA50066E25C /* Views */,
+			);
+			path = UserGroup;
+			sourceTree = "<group>";
+		};
+		00850BEB296D7BA50066E25C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				00850BF6296D7C790066E25C /* RCDUserGroupBaseView.h */,
+				00850BF7296D7C790066E25C /* RCDUserGroupBaseView.m */,
+				00850BF9296D7CD30066E25C /* RCDUserGroupListView.h */,
+				00850BFA296D7CD30066E25C /* RCDUserGroupListView.m */,
+				00850C06296E5DD60066E25C /* RCDUserGroupCreateView.h */,
+				00850C07296E5DD60066E25C /* RCDUserGroupCreateView.m */,
+				00850C1B296E62590066E25C /* RCDUserGroupUserSelectorView.h */,
+				00850C1C296E62590066E25C /* RCDUserGroupUserSelectorView.m */,
+				00850C21296E926C0066E25C /* RCDUserGroupMemberCell.h */,
+				00850C22296E926C0066E25C /* RCDUserGroupMemberCell.m */,
+				00850C27296EAC380066E25C /* RCDUserGroupDetailView.h */,
+				00850C28296EAC380066E25C /* RCDUserGroupDetailView.m */,
+				00850C30296FA97A0066E25C /* RCDUserGroupChannelBelongView.h */,
+				00850C31296FA97A0066E25C /* RCDUserGroupChannelBelongView.m */,
+				00850C33296FDDE90066E25C /* RCDUserGroupSelectorView.h */,
+				00850C34296FDDE90066E25C /* RCDUserGroupSelectorView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		00850BEC296D7BA50066E25C /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				00850BEF296D7BA50066E25C /* RCDUserGroupCreateViewController.h */,
+				00850BF2296D7BA50066E25C /* RCDUserGroupCreateViewController.m */,
+				00850BED296D7BA50066E25C /* RCDUserGroupListController.h */,
+				00850BF0296D7BA50066E25C /* RCDUserGroupListController.m */,
+				00850BEE296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.h */,
+				00850BF1296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.m */,
+				00850C24296EAB160066E25C /* RCDUserGroupDetailViewController.h */,
+				00850C25296EAB160066E25C /* RCDUserGroupDetailViewController.m */,
+				00850C2A296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.h */,
+				00850C2B296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.m */,
+				00850C2D296FA92F0066E25C /* RCDUserGroupSelectorViewController.h */,
+				00850C2E296FA92F0066E25C /* RCDUserGroupSelectorViewController.m */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		00850BFC296D7D8C0066E25C /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				00850BFD296D7DA50066E25C /* UIView+RCD.h */,
+				00850BFE296D7DA50066E25C /* UIView+RCD.m */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		00850C00296D807D0066E25C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				00850C01296D80940066E25C /* RCDUserGroupInfo.h */,
+				00850C02296D80940066E25C /* RCDUserGroupInfo.m */,
+				00850C1E296E8FF40066E25C /* RCDUserGroupMemberInfo.h */,
+				00850C1F296E8FF40066E25C /* RCDUserGroupMemberInfo.m */,
+				00850C36296FDEEE0066E25C /* RCDUserGroupOptionInfo.h */,
+				00850C37296FDEEE0066E25C /* RCDUserGroupOptionInfo.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		00BD7FDB28C86EBF00F3FADB /* Semantic */ = {
@@ -2696,6 +2819,7 @@
 		A25167442796AE5C00BA4BFD /* UltraGroup */ = {
 			isa = PBXGroup;
 			children = (
+				00850BCF296D749A0066E25C /* UserGroup */,
 				003A90802897F776000AC1FE /* Setting */,
 				A25167462796AE5C00BA4BFD /* RCDUltraGroupController.h */,
 				A25167452796AE5C00BA4BFD /* RCDUltraGroupController.m */,
@@ -2728,8 +2852,6 @@
 				F16A409627F3FA8000C4B927 /* SealTalkNotificationServiceRelease.entitlements */,
 				A27AD72B265C96C0008D35F7 /* NotificationService.h */,
 				A27AD72C265C96C0008D35F7 /* NotificationService.m */,
-				11AE69E227F5A84D00F09499 /* RCNotificationServicePlugin.h */,
-				11AE69E327F5A84D00F09499 /* RCNotificationServicePlugin.m */,
 				A27AD72E265C96C0008D35F7 /* Info.plist */,
 			);
 			path = SealTalkNotificationService;
@@ -3449,8 +3571,6 @@
 				A2B126F922C1FDB300697964 /* AppDelegate.h */,
 				A2B126F822C1FDB300697964 /* AppDelegate.m */,
 				00BD7FDB28C86EBF00F3FADB /* Semantic */,
-				11AE69DF27F5A22E00F09499 /* RCNotificationServiceAppPlugin.h */,
-				11AE69E027F5A22E00F09499 /* RCNotificationServiceAppPlugin.m */,
 				27AD2764229E6B06003C2680 /* Sections */,
 				9C1193D1229CF0AE005407ED /* Services */,
 				9C6B962C229E60EF00442B5B /* Categories */,
@@ -3521,7 +3641,6 @@
 				A27AD725265C96C0008D35F7 /* Sources */,
 				A27AD726265C96C0008D35F7 /* Frameworks */,
 				A27AD727265C96C0008D35F7 /* Resources */,
-				462367DCC100B8E7DA613272 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3537,13 +3656,14 @@
 			buildConfigurationList = E4D40F4E1A031F460045097C /* Build configuration list for PBXNativeTarget "SealTalk" */;
 			buildPhases = (
 				A9A81101CCA7835E3636010D /* [CP] Check Pods Manifest.lock */,
+				2E29FF1D1DC1BBAA00AF2DF0 /* ShellScript */,
 				E4D40F241A031F460045097C /* Sources */,
 				E4D40F251A031F460045097C /* Frameworks */,
 				E4D40F261A031F460045097C /* Resources */,
 				17D7D1E91D534F56000AEC54 /* Embed App Extensions */,
 				C5058288BDE887CC6D4836AD /* [CP] Embed Pods Frameworks */,
 				3B118042256CFF10001E5105 /* Embed Frameworks */,
-				0EDDBD93A4324D5BCD3C3EFB /* [CP] Copy Pods Resources */,
+				3B446BB1257E297D00E8B0C3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3780,77 +3900,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0EDDBD93A4324D5BCD3C3EFB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongCallKit.bundle",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/en.lproj",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/zh-Hans.lproj",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/ar.lproj",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongRTCLib.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCallKit.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongRTCLib.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		462367DCC100B8E7DA613272 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService-resources.sh",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		A5B3AF25F49B279150DF10A6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3914,21 +3963,6 @@
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
 				"${BUILT_PRODUCTS_DIR}/ZXingObjC/ZXingObjC.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/ChatRoom/RongChatRoom.framework/RongChatRoom",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/ContactCard/RongContactCard.framework/RongContactCard",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/CustomerService/RongCustomerService.framework/RongCustomerService",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Discussion/RongDiscussion.framework/RongDiscussion",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMKit/RongIMKit.framework/RongIMKit",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMLib/RongIMLib.framework/RongIMLib",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMLibCore/RongIMLibCore.framework/RongIMLibCore",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Location/RongLocation.framework/RongLocation",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/LocationKit/RongLocationKit.framework/RongLocationKit",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/PublicService/RongPublicService.framework/RongPublicService",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/RongSticker/RongSticker.framework/RongSticker",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Sight/RongSight.framework/RongSight",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongCallKit/RongCallKit.framework/RongCallKit",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongCallLib/RongCallLib.framework/RongCallLib",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongRTCLib/RongRTCLib.framework/RongRTCLib",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -3944,21 +3978,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SSZipArchive.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZXingObjC.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongChatRoom.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongContactCard.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCustomerService.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongDiscussion.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMLib.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMLibCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongLocation.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongLocationKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongPublicService.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongSticker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongSight.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCallKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCallLib.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongRTCLib.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3987,7 +4006,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11AE69E427F5A84D00F09499 /* RCNotificationServicePlugin.m in Sources */,
 				A27AD72D265C96C0008D35F7 /* NotificationService.m in Sources */,
 				001599DA27F1A2B4007BFA3E /* RCDEnvironmentModel.m in Sources */,
 				001599CA27F1A2B0007BFA3E /* RCDEnvironmentContext.m in Sources */,
@@ -4031,6 +4049,7 @@
 				A2A5253E22B73305008188A1 /* RCDImageSlideController.m in Sources */,
 				A2AD03CD22D481B400F8E64D /* RCDGroupNoticeCell.m in Sources */,
 				A2AD039C22D3251400F8E64D /* RCDScannerView.m in Sources */,
+				00850BF5296D7BA50066E25C /* RCDUserGroupCreateViewController.m in Sources */,
 				3B16DA6E22FBF56600AD2770 /* RCDChatBackgroundCell.m in Sources */,
 				3B16DA5B22FBCB0500AD2770 /* RCDChatBackgroundViewController.m in Sources */,
 				A2A5256122B87D71008188A1 /* RCDGroupMemberCell.m in Sources */,
@@ -4043,6 +4062,8 @@
 				00CEE56128044DBE0079C6AE /* RCDebugGlobalUndistributeViewController.m in Sources */,
 				3BC0C7DA229E79490079234F /* RCDContactViewController.m in Sources */,
 				276599E5229E969D0074FAB2 /* RCDUIBarButtonItem.m in Sources */,
+				00850C38296FDEEE0066E25C /* RCDUserGroupOptionInfo.m in Sources */,
+				00850C29296EAC380066E25C /* RCDUserGroupDetailView.m in Sources */,
 				A29070AF229E7F61006BDAC7 /* HeadCollectionView.m in Sources */,
 				A221948822BB5F1B00274D4D /* RCDChooseUserController.m in Sources */,
 				A2402F9922B2381C00BF8F6A /* RCDChatRoomAPI.m in Sources */,
@@ -4054,6 +4075,7 @@
 				27AD302D229E721F003C2680 /* RCDSquareCell.m in Sources */,
 				270C242322A4C88E000F22A2 /* RCDSearchResultViewCell.m in Sources */,
 				27F0E3C522A0E3E300C8B0B8 /* RCDEditUserNameViewController.m in Sources */,
+				00850C1D296E62590066E25C /* RCDUserGroupUserSelectorView.m in Sources */,
 				A29070AE229E7F61006BDAC7 /* RealTimeLocationStartCell.m in Sources */,
 				9C226D14229FD8F300F49FC5 /* RCDLoginManager.m in Sources */,
 				001599C827F19004007BFA3E /* RCDEnvironmentTableViewController.m in Sources */,
@@ -4102,6 +4124,7 @@
 				3B47892922B8D70B00D33F10 /* RCDHaveSelectedViewController.m in Sources */,
 				3B27F27E2577972F00916241 /* RCDDebugChatViewController.m in Sources */,
 				27AD303A229E721F003C2680 /* RCDMainTabBarViewController.m in Sources */,
+				00850BF8296D7C790066E25C /* RCDUserGroupBaseView.m in Sources */,
 				A2F0A99222FAA4C600422802 /* RCDGroupLeftMember.m in Sources */,
 				27AD300F229E721F003C2680 /* RCDSearchFriendController.m in Sources */,
 				274E2BFF22BB8C770016EE65 /* KxMenu.m in Sources */,
@@ -4118,6 +4141,7 @@
 				A25167472796AE5C00BA4BFD /* RCDUltraGroupController.m in Sources */,
 				3BC0C7E0229E79490079234F /* RCDPersonDetailViewController.m in Sources */,
 				9C20EEFB22B79B9300E4008B /* RCDUploadManager.m in Sources */,
+				00850BF4296D7BA50066E25C /* RCDUserGroupUserSelectorViewController.m in Sources */,
 				276599E0229E95250074FAB2 /* UIColor+RCColor.m in Sources */,
 				A29070AA229E7F61006BDAC7 /* RCLocationView.m in Sources */,
 				A20131ED22F28C1200C24160 /* RCDPokeAlertView.m in Sources */,
@@ -4140,9 +4164,11 @@
 				007558A8285C65CF0082F0EB /* RCDUGChannelSettingViewController.m in Sources */,
 				A2A7EA1325C7EA8D00C99173 /* RCDDebugConversationTagController.m in Sources */,
 				A29070A8229E7F61006BDAC7 /* RCAnnotation.m in Sources */,
+				00850C2F296FA92F0066E25C /* RCDUserGroupSelectorViewController.m in Sources */,
 				3B208C9B22F28BFB004076EA /* RCDQuicklySendManager.m in Sources */,
 				27F0E3DB22A0E3E300C8B0B8 /* RCDSettingsTableViewController.m in Sources */,
 				001599C527F162D5007BFA3E /* RCDEnvironmentModel.m in Sources */,
+				00850C35296FDDE90066E25C /* RCDUserGroupSelectorView.m in Sources */,
 				A252716F27A145B500996A73 /* RCDUltraGroupNotificationMessage.m in Sources */,
 				A2F0A98C22FAA3E100422802 /* RCDGroupLeftUserListController.m in Sources */,
 				3B0F2C5522DC1C470017979E /* RCDUnableGetContactsView.m in Sources */,
@@ -4154,6 +4180,7 @@
 				003A90952897FA49000AC1FE /* RCDUGListView.m in Sources */,
 				A2074367253E95BF003BD64D /* RCDDebugMessageExtensionLogController.m in Sources */,
 				3B0E2AA622D48EA8000E1BE6 /* RCDAddFriendListCell.m in Sources */,
+				00850C20296E8FF40066E25C /* RCDUserGroupMemberInfo.m in Sources */,
 				A25750A822B8DA6700A79749 /* RCDGroupMemberSelectCell.m in Sources */,
 				A2907090229E7F61006BDAC7 /* RCDGroupAnnouncementViewController.m in Sources */,
 				A2B572A124B4225F0065E313 /* RCDSearchController.m in Sources */,
@@ -4185,7 +4212,7 @@
 				A6B1D8EB1B1FFCB700AD32EC /* RCWKNotifier.m in Sources */,
 				27F0E3C822A0E3E300C8B0B8 /* RCDMeTableViewController.m in Sources */,
 				A25EE9C622A0D2810064E0F2 /* RCDUserListCollectionView.m in Sources */,
-				11AE69E127F5A22E00F09499 /* RCNotificationServiceAppPlugin.m in Sources */,
+				00850BFB296D7CD30066E25C /* RCDUserGroupListView.m in Sources */,
 				3B47893222B8DB5800D33F10 /* RCDHaveSelectedCell.m in Sources */,
 				A2FF706D22B0EE2900962AB3 /* RCDGroupAPI.m in Sources */,
 				007558BA286061B60082F0EB /* RCDChannelUserInfo.m in Sources */,
@@ -4220,14 +4247,16 @@
 				79B029F622D5FE920062CBA5 /* RCDChatConfig.m in Sources */,
 				A2910A9925E50264005651E2 /* RCDDebugGroupReadReceiptChatController.m in Sources */,
 				A2AD03C722D47F3200F8E64D /* RCDGroupNoticeListController.m in Sources */,
-				007558AB285C66970082F0EB /* RCDChannelSetttingHeaderView.m in Sources */,
+				007558AB285C66970082F0EB /* RCDChannelSettingHeaderView.m in Sources */,
 				3B47890622B78F3200D33F10 /* RCDBottomResultView.m in Sources */,
 				003A90922897F796000AC1FE /* RCDUGSettingsController.m in Sources */,
 				27AD302B229E721F003C2680 /* RCDGroupInfo.m in Sources */,
+				00850C23296E926C0066E25C /* RCDUserGroupMemberCell.m in Sources */,
 				D5A18A0027C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.m in Sources */,
 				3B27F26A2577971400916241 /* RCDDebugChatListViewController.m in Sources */,
 				27F0E3D922A0E3E300C8B0B8 /* RCDBlackListViewController.m in Sources */,
 				3B16DA1422F8181600AD2770 /* RCDPictureView.m in Sources */,
+				00850C03296D80940066E25C /* RCDUserGroupInfo.m in Sources */,
 				A2074364253E95BF003BD64D /* RCDDebugSelectChatController.m in Sources */,
 				A2074358253E958E003BD64D /* RCDDebugChatRoomCell.m in Sources */,
 				1C836A5D283F3329007FABD2 /* RCDAlertBuilder.m in Sources */,
@@ -4254,10 +4283,12 @@
 				27AD3014229E721F003C2680 /* RCDSearchViewController.m in Sources */,
 				27F0E3D122A0E3E300C8B0B8 /* RCDCSTagView.m in Sources */,
 				27F0E3C422A0E3E300C8B0B8 /* RCDMeDetailsCell.m in Sources */,
+				00850BFF296D7DA50066E25C /* UIView+RCD.m in Sources */,
 				A2A5257022B88E74008188A1 /* RCDGroupManagerCell.m in Sources */,
 				007807E22940735400947E3A /* RCDStickerTest.m in Sources */,
 				A290709A229E7F61006BDAC7 /* RCDReceiptDetailsTableViewController.m in Sources */,
 				27AD3021229E721F003C2680 /* DefaultPortraitView.m in Sources */,
+				00850C32296FA97A0066E25C /* RCDUserGroupChannelBelongView.m in Sources */,
 				3B16DA2622F96D8500AD2770 /* RCDPictureDetailViewController.m in Sources */,
 				27AD3032229E721F003C2680 /* RCDCountryListController.m in Sources */,
 				00057A1127C60B110011D694 /* RCDTranslationManager.m in Sources */,
@@ -4280,6 +4311,7 @@
 				A2074359253E958E003BD64D /* RCDDebugChatroomViewController.m in Sources */,
 				A28F1E3E22E16AEF007C5814 /* RCDGroupNoticeUpdateMessage.m in Sources */,
 				27F0E3CF22A0E3E300C8B0B8 /* RCDCSButton.m in Sources */,
+				00850BF3296D7BA50066E25C /* RCDUserGroupListController.m in Sources */,
 				3B47896222BB2BA900D33F10 /* RCDSelectGroupViewController.m in Sources */,
 				27F0E3DD22A0E3E300C8B0B8 /* RCDLogoTableViewCell.m in Sources */,
 				27AD3029229E721F003C2680 /* RCDIndicateTextField.m in Sources */,
@@ -4287,7 +4319,9 @@
 				3B9CC5CC2754B5E40009E7BA /* RCDDebugChatSettingViewController.m in Sources */,
 				3B0F2C6722DC684B0017979E /* RCDAddressBookFriendsViewController.m in Sources */,
 				3B208CA122F29D35004076EA /* RCDQuicklySendView.m in Sources */,
+				00850C2C296FA8BA0066E25C /* RCDUserGroupChannelBelongViewController.m in Sources */,
 				3B0E2A9522D48CED000E1BE6 /* RCDAddFriendListViewController.m in Sources */,
+				00850C08296E5DD60066E25C /* RCDUserGroupCreateView.m in Sources */,
 				00277C2E27D0BDDE00D8653D /* RCDTranslationViewController.m in Sources */,
 				00CEE55B28043C460079C6AE /* RCDDebugComChatViewController.m in Sources */,
 				9F7614A02779B81800131616 /* RCDDebugUlTraGroupDefine.m in Sources */,
@@ -4296,6 +4330,7 @@
 				00BD7FED28C86ECD00F3FADB /* RCDSemanticContext.m in Sources */,
 				27AD303B229E721F003C2680 /* RCDNavigationViewController.m in Sources */,
 				27F0E3D522A0E3E300C8B0B8 /* RCDCustomerServiceViewController.m in Sources */,
+				00850C26296EAB160066E25C /* RCDUserGroupDetailViewController.m in Sources */,
 				27F0E3DC22A0E3E300C8B0B8 /* RCDPrivacyTableViewController.m in Sources */,
 				00A9356228E189FB00F2A00C /* RCDDotterViewController.m in Sources */,
 				3B4789B222BCE1DB00D33F10 /* RCDForwardSearchMoreController.m in Sources */,
@@ -4469,7 +4504,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$SHARE_PROFILE";
+				PROVISIONING_PROFILE = $SHARE_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -4534,7 +4569,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$SHARE_PROFILE";
+				PROVISIONING_PROFILE = $SHARE_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -5200,7 +5235,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5272,7 +5307,7 @@
 				OTHER_LIBTOOLFLAGS = "$(OTHER_LDFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im;
 				PRODUCT_NAME = SealTalk;
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -5313,7 +5348,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -5386,7 +5421,7 @@
 				OTHER_LIBTOOLFLAGS = "$(OTHER_LDFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.rongcloud.im;
 				PRODUCT_NAME = SealTalk;
-				PROVISIONING_PROFILE = "$APP_PROFILE";
+				PROVISIONING_PROFILE = $APP_PROFILE;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

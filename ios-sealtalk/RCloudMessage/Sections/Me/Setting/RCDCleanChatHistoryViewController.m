@@ -91,7 +91,7 @@ static NSString *cleanConversationCellIdentifier = @"RCDCleanConversationCellIde
 #pragma mark - Private Method
 - (void)setupData {
     NSArray *conversations =
-        [[RCIMClient sharedRCIMClient] getConversationList:@[ @(ConversationType_PRIVATE), @(ConversationType_GROUP),@(ConversationType_APPSERVICE),@(ConversationType_PUBLICSERVICE),@(ConversationType_SYSTEM) ]];
+        [[RCCoreClient sharedCoreClient] getConversationList:@[ @(ConversationType_PRIVATE), @(ConversationType_GROUP),@(ConversationType_APPSERVICE),@(ConversationType_PUBLICSERVICE),@(ConversationType_SYSTEM) ]];
     NSMutableArray *dealWithArray = [NSMutableArray array];
     for (RCConversation *conversation in conversations) {
         if (![conversation.targetId isEqualToString:RCDGroupNoticeTargetId]) {
@@ -143,8 +143,8 @@ static NSString *cleanConversationCellIdentifier = @"RCDCleanConversationCellIde
     hud.labelText = RCDLocalizedString(@"Deleting");
     [hud show:YES];
     for (RCConversation *conversation in self.deleteConversationArray) {
-        [[RCIMClient sharedRCIMClient] clearMessages:conversation.conversationType targetId:conversation.targetId];
-        [[RCIMClient sharedRCIMClient] removeConversation:conversation.conversationType targetId:conversation.targetId];
+        [[RCCoreClient sharedCoreClient] clearMessages:conversation.conversationType targetId:conversation.targetId];
+        [[RCCoreClient sharedCoreClient] removeConversation:conversation.conversationType targetId:conversation.targetId];
     }
     [hud hideAnimated:YES];
     [self.view showHUDMessage:RCDLocalizedString(@"DeleteSuccess")];

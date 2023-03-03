@@ -17,7 +17,7 @@
 #import "RCDChooseUserController.h"
 #import "RCDUGChannelSettingViewController.h"
 
-@interface RCConversationViewController ()<RCDUGChannelTypeDelegate>
+@interface RCConversationViewController ()<RCDUGChannelTypeDelegate,RCUserGroupStatusDelegate>
 @property (nonatomic, strong) id dataSource;
 - (void)reloadRecalledMessage:(long)recalledMsgId;
 - (void)didReceiveMessageNotification:(NSNotification *)notification;
@@ -39,6 +39,7 @@
     [[RCChannelClient sharedChannelManager] setRCUltraGroupReadTimeDelegate:self];
     [[RCChannelClient sharedChannelManager] setRCUltraGroupTypingStatusDelegate:self];
     [[RCChannelClient sharedChannelManager] setRCUltraGroupMessageChangeDelegate:self];
+    [[RCChannelClient sharedChannelManager] setUserGroupStatusDelegate:self];
     [RCCoreClient sharedCoreClient].messageBlockDelegate = self;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDDebugChatSettingViewControllerEvent:) name:kRCDDebugChatSettingNotification object:nil];
     
@@ -141,23 +142,12 @@
                                                isPrivate:self.isPrivate
                                                ownnerID:self.ultraGroup.creatorId];
     viewModel.typeDelegate = self;
-    RCDUGChannelSettingViewController *settingVC = [[RCDUGChannelSettingViewController alloc] initWithViewModel:viewModel];;
+    RCDUGChannelSettingViewController *settingVC = [[RCDUGChannelSettingViewController alloc] initWithViewModel:viewModel];
+    settingVC.title = self.title;
     [self.navigationController pushViewController:settingVC animated:YES];
 }
 
-- (void)rightBarButtonItemClicked:(id)sender {
-    long long recordTime = 0;
-    if (self.conversationDataRepository.count > 0) {
-        RCMessageModel *model = self.conversationDataRepository.lastObject;
-        recordTime = model.sentTime;
-    }
-    RCDDebugChatSettingViewController *settingVC = [[RCDDebugChatSettingViewController alloc] init];
-    settingVC.targetId = self.targetId;
-    settingVC.channelId = self.channelId;
-    settingVC.type = self.conversationType;
-    settingVC.recordTime = recordTime;
-    [self.navigationController pushViewController:settingVC animated:YES];
-}
+ 
 
 - (void)syncReadStatus {
     NSString *firstReadTime = @"None";
@@ -273,6 +263,7 @@
     pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
     pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
+    pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
     pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
     pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];
@@ -353,6 +344,19 @@
     
     return list.copy;
 }
+- (void)rightBarButtonItemClicked:(id)sender {
+    long long recordTime = 0;
+    if (self.conversationDataRepository.count > 0) {
+        RCMessageModel *model = self.conversationDataRepository.lastObject;
+        recordTime = model.sentTime;
+    }
+    RCDDebugChatSettingViewController *settingVC = [[RCDDebugChatSettingViewController alloc] init];
+    settingVC.targetId = self.targetId;
+    settingVC.channelId = self.channelId;
+    settingVC.type = self.conversationType;
+    settingVC.recordTime = recordTime;
+    [self.navigationController pushViewController:settingVC animated:YES];
+}
 
 - (void)didLongTouchMessageCell:(RCMessageModel *)model inView:(UIView *)view {
     [super didLongTouchMessageCell:model inView:view];
@@ -375,7 +379,7 @@
     if (text.length == 0) {
         return;
     }
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
     
     if ([currentUserId isEqualToString:senderUserId]) {
@@ -402,7 +406,7 @@
     message.targetId = self.targetId;
     message.conversationType = ConversationType_ULTRAGROUP;
     
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
     
     if ([currentUserId isEqualToString:senderUserId]) {
@@ -427,7 +431,7 @@
     message.targetId = self.targetId;
     message.conversationType = ConversationType_ULTRAGROUP;
     
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
     
     if ([currentUserId isEqualToString:senderUserId]) {
@@ -449,7 +453,7 @@
 */
 - (void)updateUltraGroupMessageExpansion {
     
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
     
     RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.menuSelectModel.messageUId];
@@ -461,7 +465,7 @@
             dic[key] = @"已修改的拓展";
         }
         [[RCChannelClient sharedChannelManager] updateUltraGroupMessageExpansion:message.messageUId expansionDic:dic success:^{
-            RCMessage *msg = [[RCIMClient sharedRCIMClient] getMessageByUId:message.messageUId];
+            RCMessage *msg = [[RCCoreClient sharedCoreClient] getMessageByUId:message.messageUId];
             [self showAlertTitle:msg.messageUId message:[msg.expansionDic description]];
         } error:^(RCErrorCode status) {
             [self showToastMsg:[NSString stringWithFormat:@"msgUid:%@的KV更新失败%zd",message.messageUId,status]];
@@ -473,7 +477,7 @@
 
 - (void)updateUltraGroupMessageExpansion3_1 {
     
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
     
     RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.menuSelectModel.messageUId];
@@ -496,7 +500,7 @@
 */
 - (void)removeUltraGroupMessageExpansion {
     
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
     
     RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.menuSelectModel.messageUId];
@@ -567,7 +571,7 @@
  */
 - (void)onUltraGroupMessageModified:(NSArray<RCMessage*>*)messages {
     NSMutableArray * userids = [NSMutableArray new];
-    NSString *currentUserId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
 
     for (RCMessage* msg in messages) {
         if (![msg.senderUserId isEqualToString:currentUserId]) {
@@ -582,7 +586,7 @@
 }
 
 - (void)removeModelIfNeed:(long)recalledMsgId {
-    RCMessage *recalledMsg = [[RCIMClient sharedRCIMClient] getMessage:recalledMsgId];
+    RCMessage *recalledMsg = [[RCCoreClient sharedCoreClient] getMessage:recalledMsgId];
     if (!recalledMsg) {
         NSInteger msgID = recalledMsgId;
         SEL sel = NSSelectorFromString(@"didReloadRecalledMessage:");
@@ -705,7 +709,7 @@
 }
 
 - (void)checkMessageChangedStatus{
-    RCMessage *message = [[RCIMClient sharedRCIMClient] getMessage:self.menuSelectModel.messageId];
+    RCMessage *message = [[RCCoreClient sharedCoreClient] getMessage:self.menuSelectModel.messageId];
     [self showToastMsg:message.hasChanged?@"消息已被修改":@"消息未被修改"];
 }
 
@@ -743,7 +747,7 @@
     message.expansionDic = @{kRCDebugKVMessageKey:[self getTimeString]};
     
     __weak typeof(self) weakSelf = self;
-    [[RCIMClient sharedRCIMClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
+    [[RCCoreClient sharedCoreClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
         [weakSelf appendAndDisplayMessage:successMessage];
         [self showToastMsg:@"发送携带KV的文本消息成功"];
     } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -763,7 +767,7 @@
     message.expansionDic = @{@"123":@"毛泽东"};
     
     __weak typeof(self) weakSelf = self;
-    [[RCIMClient sharedRCIMClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
+    [[RCCoreClient sharedCoreClient] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
         [weakSelf appendAndDisplayMessage:successMessage];
         [self showToastMsg:@"发送携带敏感词KV的文本消息成功"];
     } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -858,4 +862,49 @@
     self.allowsMessageCellSelection = NO;
 }
 
+
+#pragma mark - RCUserGroupStatusDelegate
+/*!
+ 当前用户收到超级群下的用户组中解散通知
+ */
+- (void)userGroupDisbandFrom:(RCConversationIdentifier *)identifier
+                userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
+/*!
+ 当前用户被添加到超级群下的用户组
+ */
+- (void)userAddedTo:(RCConversationIdentifier *)identifier
+       userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
+/*!
+ 当前用户从到超级群下的用户组中被移除
+ */
+- (void)userRemovedFrom:(RCConversationIdentifier *)identifier
+           userGroupIds:(NSArray<NSString *> *)userGroupId {
+    
+}
+
+
+/*!
+ 频道中绑定用户组回调
+ */
+- (void)userGroupBindTo:(RCChannelIdentifier *)identifier
+            channelType:(RCUltraGroupChannelType)channelType
+           userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
+/*!
+ 频道解绑用户组回调
+
+ */
+- (void)userGroupUnbindFrom:(RCChannelIdentifier *)identifier
+                channelType:(RCUltraGroupChannelType)channelType
+               userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
 @end

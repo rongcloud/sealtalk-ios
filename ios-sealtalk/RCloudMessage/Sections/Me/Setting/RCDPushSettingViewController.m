@@ -36,7 +36,7 @@
 }
 
 - (void)updateShowPushContentStatus:(BOOL)show {
-    [[RCIMClient sharedRCIMClient]
+    [[RCCoreClient sharedCoreClient]
             .pushProfile updateShowPushContentStatus:show
         success:^{
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -72,13 +72,13 @@
         case 0: {
             [cell setCellStyle:SwitchStyle];
             cell.switchButton.tag = 101;
-            cell.switchButton.on = [RCIMClient sharedRCIMClient].pushProfile.isShowPushContent;
+            cell.switchButton.on = [RCCoreClient sharedCoreClient].pushProfile.isShowPushContent;
             cell.leftLabel.text = RCDLocalizedString(@"Display_remotely_pushed_content");
 
         } break;
 
         case 1: {
-            //            RCPushLauguage pushLauguage = [RCIMClient sharedRCIMClient].pushProfile.pushLauguage;
+            //            RCPushLauguage pushLauguage = [RCCoreClient sharedCoreClient].pushProfile.pushLauguage;
             //            switch (pushLauguage) {
             //                case RCPushLauguage_ZH_CN:
             //                    cell.rightLabel.text = @"中文";
@@ -96,7 +96,7 @@
         case 2: {
             //          [cell setCellStyle:SwitchStyle];
             //          cell.switchButton.tag = 102;
-            //          cell.switchButton.on = [RCIMClient sharedRCIMClient].pushProfile.enableMultiDevicePush;
+            //          cell.switchButton.on = [RCCoreClient sharedCoreClient].pushProfile.enableMultiDevicePush;
             //          cell.leftLabel.text = @"本手机是否接收远程推送";
         } break;
         default:
@@ -195,7 +195,7 @@
 
     case 102: {
         //      if (switchButton.on == YES) {
-        //        [[RCIMClient sharedRCIMClient].pushProfile updateMultiDevicePushStatus:YES success:^{
+        //        [[RCCoreClient sharedCoreClient].pushProfile updateMultiDevicePushStatus:YES success:^{
         //          dispatch_async(dispatch_get_main_queue(), ^{
         //            [self AlertMessage:RCDLocalizedString(@"setting_success")];
         //          });
@@ -204,7 +204,7 @@
         //            [self AlertMessage:RCDLocalizedString(@"set_fail")];
         //          });
         //        }];      } else {
-        //          [[RCIMClient sharedRCIMClient].pushProfile updateMultiDevicePushStatus:NO success:^{
+        //          [[RCCoreClient sharedCoreClient].pushProfile updateMultiDevicePushStatus:NO success:^{
         //            dispatch_async(dispatch_get_main_queue(), ^{
         //              [self AlertMessage:RCDLocalizedString(@"setting_success")];
         //            });

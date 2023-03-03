@@ -100,7 +100,7 @@
     } else {
         _conversationVC.title = model.name;
     }
-    int unreadCount = [[RCIMClient sharedRCIMClient] getUnreadCount:model.conversationType targetId:model.targetId];
+    int unreadCount = [[RCCoreClient sharedCoreClient] getUnreadCount:model.conversationType targetId:model.targetId];
     _conversationVC.unReadMessage = unreadCount;
     _conversationVC.enableNewComingMessageIcon = YES; //开启消息提醒
     _conversationVC.enableUnreadMessageIcon = YES;
@@ -114,7 +114,7 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     self.resultArray = nil;
-    NSArray *array = [[RCIMClient sharedRCIMClient] searchMessages:self.conversationType
+    NSArray *array = [[RCCoreClient sharedCoreClient] searchMessages:self.conversationType
                                                           targetId:self.targetId
                                                            keyword:searchText
                                                              count:50
@@ -177,7 +177,7 @@
 
 - (void)searchMoreMessage {
     RCDSearchResultModel *model = self.resultArray[self.resultArray.count - 1];
-    NSArray *array = [[RCIMClient sharedRCIMClient] searchMessages:self.conversationType
+    NSArray *array = [[RCCoreClient sharedCoreClient] searchMessages:self.conversationType
                                                           targetId:self.targetId
                                                            keyword:self.searchBar.text
                                                              count:50

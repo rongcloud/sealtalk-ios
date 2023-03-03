@@ -203,7 +203,7 @@
                     NSString *nickName =
                     [data[@"operatorNickname"] isKindOfClass:[NSString class]] ? data[@"operatorNickname"] : nil;
                     if ([nickName isEqualToString:[RCIM sharedRCIM].currentUserInfo.name]) {
-                        [[RCIMClient sharedRCIMClient] removeConversation:model.conversationType targetId:model.targetId];
+                        [[RCCoreClient sharedCoreClient] removeConversation:model.conversationType targetId:model.targetId];
                         [self refreshConversationTableViewIfNeeded];
                     }
                 }
@@ -227,7 +227,7 @@
                     if (success) {
                         [self.conversationListDataSource removeObjectAtIndex:indexPath.row];
                         [self.conversationListTableView reloadData];
-                        [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_PRIVATE
+                        [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_PRIVATE
                                                                targetId:RCDGroupNoticeTargetId];
                         
                         [self updateBadgeValueForTabBarItem];
@@ -238,7 +238,7 @@
         } inViewController:self];
     }else {
         //可以从数据库删除数据
-        [[RCIMClient sharedRCIMClient] removeConversation:model.conversationType targetId:model.targetId];
+        [[RCCoreClient sharedCoreClient] removeConversation:model.conversationType targetId:model.targetId];
         [self.conversationListDataSource removeObjectAtIndex:indexPath.row];
         [self.conversationListTableView reloadData];
     }

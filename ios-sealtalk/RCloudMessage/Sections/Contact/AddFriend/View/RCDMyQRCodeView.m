@@ -40,7 +40,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.targetId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+        self.targetId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
         [self setupSubviews];
         [self setupData];
     }
@@ -116,7 +116,7 @@
     NSString *name = user.name;
     NSString *info = RCDLocalizedString(@"MyScanQRCodeInfo");
     NSString *qrInfo = [NSString stringWithFormat:@"%@?key=sealtalk://user/info?u=%@", RCDQRCodeContentInfoUrl,
-                                                  [RCIMClient sharedRCIMClient].currentUserInfo.userId];
+                                                  [RCCoreClient sharedCoreClient].currentUserInfo.userId];
     self.qrCodeImageView.image = [RCDQRCodeManager getQRCodeImage:qrInfo];
     if (![portraitUri isEqualToString:@""]) {
         [self.portraitImageView sd_setImageWithURL:[NSURL URLWithString:portraitUri]

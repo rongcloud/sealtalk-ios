@@ -19,7 +19,7 @@
 - (void)conversationStatusChanged:(NSNotification *)notification;
 @end
 
-@interface RCDUltraGroupChannelListController ()<RCUltraGroupChannelDelegate, RCUltraGroupMessageChangeDelegate>
+@interface RCDUltraGroupChannelListController ()<RCUltraGroupChannelDelegate, RCUltraGroupMessageChangeDelegate, RCUserGroupStatusDelegate>
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIButton *inviteButton;
@@ -52,6 +52,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[RCChannelClient sharedChannelManager] setUltraGroupChannelDelegate:self];
+    [[RCChannelClient sharedChannelManager] setUserGroupStatusDelegate:self];
     self.conversationListTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self addSubviews];
 }
@@ -425,6 +426,88 @@
         [self refreshConversationTableViewIfNeeded];
     });
 }
+
+#pragma mark - RCUserGroupStatusDelegate
+/*!
+ 当前用户收到超级群下的用户组中解散通知
+ 
+ @param identifier           会话标识[type:ConversationType_ULTRAGROUP ]
+ @param userGroupIds          用户组ID列表
+ 
+ @discussion
+ @warning
+ @since
+ */
+- (void)userGroupDisbandFrom:(RCConversationIdentifier *)identifier
+                userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
+/*!
+ 当前用户被添加到超级群下的用户组
+ 
+ @param identifier           会话标识[type:ConversationType_ULTRAGROUP ]
+ @param userGroupIds          用户组ID列表
+ 
+ @discussion
+ @warning
+ @since
+ */
+- (void)userAddedTo:(RCConversationIdentifier *)identifier
+       userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
+/*!
+ 当前用户从到超级群下的用户组中被移除
+ 
+ @param identifier           会话标识[type:ConversationType_ULTRAGROUP ]
+ @param userGroupIds          用户组ID列表
+ 
+ @discussion
+ @warning
+ @since
+ */
+- (void)userRemovedFrom:(RCConversationIdentifier *)identifier
+           userGroupIds:(NSArray<NSString *> *)userGroupId {
+    
+}
+
+
+/*!
+ 频道中绑定用户组回调
+ 
+ @param identifier         频道标识[type:ConversationType_ULTRAGROUP ]
+ @param channelType        频道类型
+ @param userGroupIds          用户组ID列表
+ 
+ @discussion
+ @warning
+ @since
+ */
+- (void)userGroupBindTo:(RCChannelIdentifier *)identifier
+            channelType:(RCUltraGroupChannelType)channelType
+           userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
+/*!
+ 频道解绑用户组回调
+ 
+ @param identifier         频道标识[type:ConversationType_ULTRAGROUP ]
+ @param channelType        频道类型
+ @param userGroupIds       用户组ID列表
+ 
+ @discussion
+ @warning
+ @since
+ */
+- (void)userGroupUnbindFrom:(RCChannelIdentifier *)identifier
+                channelType:(RCUltraGroupChannelType)channelType
+               userGroupIds:(NSArray<NSString *> *)userGroupIds {
+    
+}
+
 #pragma mark - privite
 - (void)invite{
     RCDContactSelectedTableViewController *contactSelectedVC =

@@ -93,7 +93,7 @@
 }
 
 - (void)handleData {
-    RCMessage *message = [[RCIMClient sharedRCIMClient] getMessageByUId:self.message.messageUId];
+    RCMessage *message = [[RCCoreClient sharedCoreClient] getMessageByUId:self.message.messageUId];
     NSMutableDictionary *readReceiptUserList = message.readReceiptInfo.userIdList;
     NSArray *hasReadUserList = [readReceiptUserList allKeys];
     if (hasReadUserList.count > 1) {

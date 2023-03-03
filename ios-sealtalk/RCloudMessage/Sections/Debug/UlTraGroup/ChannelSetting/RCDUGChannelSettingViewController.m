@@ -7,16 +7,17 @@
 //
 
 #import "RCDUGChannelSettingViewController.h"
-#import "RCDChannelSetttingHeaderView.h"
+#import "RCDChannelSettingHeaderView.h"
 #import "RCDChannelUserInfoCell.h"
 #import "RCDUGChannelSettingCell.h"
 #import "UIView+MBProgressHUD.h"
 #import <RongIMKit/RongIMKit.h>
+#import "RCDUserGroupChannelBelongViewController.h"
 
 
 @interface RCDUGChannelSettingViewController () <UICollectionViewDelegate, UICollectionViewDataSource, RCDUGChannelSettingViewModelDelegate>
 @property (nonatomic, strong) RCDUGChannelSettingViewModel *viewModel;
-@property (nonatomic, strong) RCDChannelSetttingHeaderView *headerView;
+@property (nonatomic, strong) RCDChannelSettingHeaderView *headerView;
 @property (nonatomic, strong) UIView *footerView;
 @end
 
@@ -78,6 +79,15 @@
         
     }];
 }
+
+- (void)showUserGroup {
+    RCDUserGroupChannelBelongViewController *vc = [RCDUserGroupChannelBelongViewController new];
+    vc.title = self.title;
+    vc.channelID = self.viewModel.channelID;
+    vc.groupID = self.viewModel.groupID;
+    vc.isOwner = self.viewModel.isOwner;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 #pragma mark -  RCDUGChannelSettingViewModelDelegate
 
 - (void)memberInfoDidLoaded {
@@ -132,6 +142,14 @@
              tCell = cell;
         }
             break;
+        case RCDUGChannelSettingRowTypeUserGroup: {
+            RCDUGChannelSettingCell *cell = (RCDUGChannelSettingCell *)[tableView dequeueReusableCellWithIdentifier:RCDUGChannelSettingCellIdentifier
+                                                   forIndexPath:indexPath];
+            [cell updateCellWith:@"用户组" subtitle:@""];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+             tCell = cell;
+        }
+            break;
             
         default:
             break;
@@ -144,15 +162,18 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (!self.viewModel.isOwner) {
-        return;
-    }
+ 
     switch (indexPath.row) {
-        case RCDUGChannelSettingRowTypeChannelType:
-  
+        case RCDUGChannelSettingRowTypeChannelType: {
+            if (!self.viewModel.isOwner) {
+                return;
+            }
             [self editChannelType];
+        }
             break;
-            
+        case RCDUGChannelSettingRowTypeUserGroup:
+            [self showUserGroup];
+            break;
         default:
             break;
     }
@@ -187,9 +208,9 @@
     [vm changeUserStatus];
 }
 
-- (RCDChannelSetttingHeaderView *)headerView {
+- (RCDChannelSettingHeaderView *)headerView {
     if (!_headerView) {
-        _headerView = [RCDChannelSetttingHeaderView new];
+        _headerView = [RCDChannelSettingHeaderView new];
     }
     return _headerView;
 }

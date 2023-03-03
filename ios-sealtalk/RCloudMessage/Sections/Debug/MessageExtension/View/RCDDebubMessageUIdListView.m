@@ -15,7 +15,7 @@
 @end
 @implementation RCDDebubMessageUIdListView
 + (void)showMessageUIdListView:(UIView *)inview conversationType:(RCConversationType)type targetId:(NSString *)targetId selectMessageBlock:(void (^)(RCMessage *message))selectMessageBlock{
-    NSArray *array = [[RCIMClient sharedRCIMClient] getHistoryMessages:type targetId:targetId oldestMessageId:-1 count:10];
+    NSArray *array = [[RCCoreClient sharedCoreClient] getHistoryMessages:type targetId:targetId oldestMessageId:-1 count:10];
     CGFloat height = 300;
     if (array.count < 10) {
         height = array.count * 30 + 40;

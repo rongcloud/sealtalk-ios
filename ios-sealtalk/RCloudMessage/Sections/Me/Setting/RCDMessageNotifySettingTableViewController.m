@@ -31,7 +31,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
+    [[RCCoreClient sharedCoreClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (spanMins >= 1439) {
                 self.isReceiveNotification = NO;
@@ -130,7 +130,7 @@
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = RCDLocalizedString(@"setting");
     if (!switchBtn.on) {
-        [[RCIMClient sharedRCIMClient] setNotificationQuietHours:@"00:00:00"
+        [[RCCoreClient sharedCoreClient] setNotificationQuietHours:@"00:00:00"
             spanMins:1439
             success:^{
                 NSLog(@"setNotificationQuietHours succeed");
@@ -151,7 +151,7 @@
                 });
             }];
     } else {
-        [[RCIMClient sharedRCIMClient] removeNotificationQuietHours:^{
+        [[RCCoreClient sharedCoreClient] removeNotificationQuietHours:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [hud hide:YES];
                 self.isReceiveNotification = YES;

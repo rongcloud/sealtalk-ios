@@ -110,7 +110,7 @@ NSString *const RCDChatNotificationCloseRegularClearNtf = @"closeRegularClear";
 - (NSString *)formatContent {
     NSString *content;
     NSString *operationName = [RCDUserInfoManager getUserInfo:self.operatorUserId].name;
-    if ([self.operatorUserId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if ([self.operatorUserId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         operationName = RCLocalizedString(@"You");
     } else {
         RCDFriendInfo *friend = [RCDUserInfoManager getFriendInfo:self.operatorUserId];

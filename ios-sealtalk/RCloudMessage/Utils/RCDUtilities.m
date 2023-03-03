@@ -315,7 +315,7 @@
 }
 
 + (int)getTotalUnreadCount {
-    int unreadMsgCount = [[RCIMClient sharedRCIMClient] getUnreadCount:@[
+    int unreadMsgCount = [[RCCoreClient sharedCoreClient] getUnreadCount:@[
         @(ConversationType_PRIVATE),
         @(ConversationType_APPSERVICE),
         @(ConversationType_PUBLICSERVICE),

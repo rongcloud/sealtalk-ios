@@ -54,7 +54,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
             cell.leftLabel.text = RCDLocalizedString(@"stick_on_top");
             cell.switchButton.hidden = NO;
             RCConversation *currentConversation =
-            [[RCIMClient sharedRCIMClient] getConversation:self.conversationType targetId:self.targetId];
+            [[RCCoreClient sharedCoreClient] getConversation:self.conversationType targetId:self.targetId];
             cell.switchButton.on = currentConversation.isTop;
             [cell.switchButton addTarget:self
                                   action:@selector(clickIsTopBtn:)
@@ -135,7 +135,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         [RCAlertView showAlertController:nil message:RCDLocalizedString(@"Set failed") cancelTitle:RCDLocalizedString(@"confirm")];
         return;
     }
-    [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:self.conversationType
+    [[RCCoreClient sharedCoreClient] setConversationNotificationStatus:self.conversationType
         targetId:self.targetId
         isBlocked:swch.on
         success:^(RCConversationNotificationStatus nStatus) {
@@ -149,11 +149,11 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 - (void)clickIsTopBtn:(id)sender {
     UISwitch *swch = sender;
-    [[RCIMClient sharedRCIMClient] setConversationToTop:self.conversationType targetId:self.targetId isTop:swch.on];
+    [[RCCoreClient sharedCoreClient] setConversationToTop:self.conversationType targetId:self.targetId isTop:swch.on];
 }
 
 - (void)setCurrentNotificationStatus:(UISwitch *)switchButton {
-    [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:self.conversationType
+    [[RCCoreClient sharedCoreClient] getConversationNotificationStatus:self.conversationType
         targetId:self.targetId
         success:^(RCConversationNotificationStatus nStatus) {
             dispatch_async(dispatch_get_main_queue(), ^{

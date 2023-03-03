@@ -869,7 +869,7 @@
                       progressHandler:nil];
     if ([FILEMANAGER fileExistsAtPath:zipFilePath]) {
         RCFileMessage *zipFileMessage = [RCFileMessage messageWithFile:zipFilePath];
-        [[RCIMClient sharedRCIMClient] sendMediaMessage:ConversationType_PRIVATE
+        [[RCCoreClient sharedCoreClient] sendMediaMessage:ConversationType_PRIVATE
             targetId:[RCIM sharedRCIM].currentUserInfo.userId
             content:zipFileMessage
             pushContent:nil
@@ -903,7 +903,7 @@
                                           AES:YES
                               progressHandler:nil];
             RCFileMessage *zipFileMessage = [RCFileMessage messageWithFile:zipFilePath];
-            [[RCIMClient sharedRCIMClient] sendMediaMessage:ConversationType_PRIVATE
+            [[RCCoreClient sharedCoreClient] sendMediaMessage:ConversationType_PRIVATE
                 targetId:[RCIM sharedRCIM].currentUserInfo.userId
                 content:zipFileMessage
                 pushContent:nil

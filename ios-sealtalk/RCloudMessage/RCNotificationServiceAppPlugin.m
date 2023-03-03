@@ -140,6 +140,9 @@
 }
 
 - (BOOL)moveItemAtPath:(NSString *)path toPath:(NSString *)toPath{
+    if (!path || !toPath) {
+        return NO;
+    }
     //获得目标文件的上级目录
     NSString *toDirPath = [toPath stringByDeletingLastPathComponent];
     if (![[NSFileManager defaultManager] fileExistsAtPath:toDirPath]) {

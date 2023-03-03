@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-extern NSString * const  RCDChannelSetttingHeaderViewIdentifier;
+extern NSString * const  RCDChannelSettingHeaderViewIdentifier;
 
-@interface RCDChannelSetttingHeaderView : UITableViewHeaderFooterView
+@interface RCDChannelSettingHeaderView : UITableViewHeaderFooterView
 @property (nonatomic, strong, readonly) UICollectionView *collectionView;
 @end
 

@@ -28,7 +28,7 @@
     [super viewDidLoad];
     self.title = RCDLocalizedString(@"MyInfoInGroup");
     self.tableView.tableFooterView = [self setFooterView];
-    BOOL isCurrentUser = [self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId];
+    BOOL isCurrentUser = [self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId];
     self.tableTitleArr = @[
         @[
            isCurrentUser ? RCDLocalizedString(@"MyNicknameInGroup") : RCDLocalizedString(@"GroupNickname"),
@@ -81,7 +81,7 @@
     NSArray *sections = self.tableTitleArr[indexPath.section];
     NSString *title = sections[indexPath.row];
     NSString *placeholder = self.inputHolderArr[indexPath.section][indexPath.row];
-    if ([self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if ([self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         [cell setLeftTitle:title placeholder:placeholder];
     } else {
         [cell setLeftTitle:title placeholder:RCDLocalizedString(@"NotSetting")];
@@ -107,7 +107,7 @@
         if (self.describeArray && self.describeArray.count > indexPath.row) {
             [cell setDetailInfo:self.describeArray[indexPath.row]];
         }
-        if ([self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+        if ([self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
             [cell showClearButton:YES];
         }
     }
@@ -142,7 +142,7 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1 && [self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if (indexPath.section == 1 && [self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         return YES;
     }
     return NO;
@@ -273,7 +273,7 @@
 }
 
 - (void)onSelectPhoneRegionCode:(RCDGroupMemberDetailCell *)cell {
-    if (![self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if (![self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         return;
     }
     RCDCountryListController *countryListVC = [[RCDCountryListController alloc] init];
@@ -322,7 +322,7 @@
 }
 
 - (void)setNaviItem {
-    if (![self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if (![self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         self.title = RCDLocalizedString(@"Personal_information");
         return;
     }
@@ -337,7 +337,7 @@
 
 - (void)clickDoneBtn {
     [self hideKeyboard];
-    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
     if (RC_NotReachable == status) {
         [self.view showHUDMessage:RCDLocalizedString(@"network_can_not_use_please_check")];
         return;
@@ -348,7 +348,7 @@
             [array addObject:str];
         }
     }
-    self.memberDetail.userId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    self.memberDetail.userId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     self.memberDetail.describeArray = array.copy;
     if (self.memberDetail.phone.length <= 0) {
         self.memberDetail.region = @"";
@@ -426,7 +426,7 @@
 }
 
 - (UIView *)setFooterView {
-    if (![self.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if (![self.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         return [UIView new];
     }
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];

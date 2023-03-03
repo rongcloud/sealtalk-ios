@@ -452,4 +452,270 @@ RCDUtralGroupChannelType type = !isPrivate ? RCDUtralGroupChannelTypePublic : RC
         }
     }];
 }
+
+#pragma mark - 用户组
++ (void)createUserGroup:(NSString *)groupID
+          userGroupName:(NSString *)userGroupName
+               complete:(void (^)(NSString * userGroupID, RCDUltraGroupCode ret)) complete {
+    if (!groupID || !userGroupName) {
+        SealTalkLog(@"groupId or userGroupName is nil");
+        if (complete) {
+            complete(nil,RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"userGroupName" : userGroupName
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"ultragroup/usergroup/add"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (result.success) {
+                NSString *userGroupID = result.content;
+                if (complete) {
+                    complete(userGroupID, result.errorCode);
+                }
+            } else {
+                if (complete) {
+                    complete(nil, result.errorCode);
+                }
+            }
+        });
+    }];
+}
+
++ (void)deleteUserGroup:(NSString *)groupID
+            userGroupID:(NSString *)userGroupID
+               complete:(void (^)(RCDUltraGroupCode ret)) complete {
+    if (!groupID || !userGroupID) {
+        SealTalkLog(@"groupId or userGroupID is nil");
+        if (complete) {
+            complete(RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"userGroupId" : userGroupID
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"ultragroup/usergroup/del"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                complete(result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)addToUserGroup:(NSString *)groupID
+         userGroupID:(NSString *)userGroupID
+             members:(NSArray<NSString *> *)members
+               complete:(void (^)(RCDUltraGroupCode ret)) complete {
+    if (!groupID || !members || !userGroupID) {
+        SealTalkLog(@"groupId or userGroupID , members is nil");
+        if (complete) {
+            complete(RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    
+    if (members.count == 0) {
+        if (complete) {
+            complete(RCDUltraGroupCodeSuccess);
+        }
+        return;
+    }
+    
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"userGroupId" : userGroupID,
+                              @"memberIds": members
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"ultragroup/usergroup/member/add"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                complete(result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)removeFromUserGroup:(NSString *)groupID
+         userGroupID:(NSString *)userGroupID
+             members:(NSArray<NSString *> *)members
+               complete:(void (^)(RCDUltraGroupCode ret)) complete {
+    if (!groupID || !members) {
+        SealTalkLog(@"groupId or userGroupID is nil");
+        if (complete) {
+            complete(RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    if (members.count == 0) {
+        if (complete) {
+            complete(RCDUltraGroupCodeSuccess);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"userGroupId" : userGroupID,
+                              @"memberIds": members
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"ultragroup/usergroup/member/del"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                complete(result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)bindToUserGroup:(NSString *)groupID
+              channelID:(NSString *)channelID
+             userGroups:(NSArray<NSString *> *)userGroups
+               complete:(void (^)(RCDUltraGroupCode ret)) complete {
+    if (!groupID || !channelID || !userGroups) {
+        SealTalkLog(@"groupId or userGroupID is nil");
+        if (complete) {
+            complete(RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"channelId" : channelID,
+                              @"userGroupIds": userGroups
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"/ultragroup/channel/usergroup/bind"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                complete(result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)unbindFromUserGroup:(NSString *)groupID
+              channelID:(NSString *)channelID
+             userGroups:(NSArray<NSString *> *)userGroups
+               complete:(void (^)(RCDUltraGroupCode ret)) complete {
+    if (!groupID || !channelID || !userGroups) {
+        SealTalkLog(@"groupId or userGroupID is nil");
+        if (complete) {
+            complete(RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"channelId" : channelID,
+                              @"userGroupIds": userGroups
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"/ultragroup/channel/usergroup/unbind"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                complete(result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)queryUserGroups:(NSString *)groupID
+               complete:(void (^)(NSArray *array ,RCDUltraGroupCode ret))complete {
+    if (!groupID) {
+        SealTalkLog(@"groupId or userGroupID is nil");
+        if (complete) {
+            complete(nil, RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"pageNum" : @(1),
+                              @"limit": @(50)
+    };
+    
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"/ultragroup/usergroup/query"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                NSArray *array = result.content;
+                complete(array, result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)queryChannelUserGroups:(NSString *)groupID
+                     channelID:(NSString *)channelID
+               complete:(void (^)(NSArray *array ,RCDUltraGroupCode ret)) complete {
+    if (!groupID || !channelID) {
+        SealTalkLog(@"groupId or channelID is nil");
+        if (complete) {
+            complete(nil, RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"channelId" : channelID,
+                              @"pageNum" : @(1),
+                              @"limit": @(50)
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"/ultragroup/channel/usergroup/query"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                NSArray *array = result.content;
+
+                complete(array, result.errorCode);
+            }
+        });
+    }];
+}
+
++ (void)queryUserGroupMembers:(NSString *)groupID
+                  userGroupID:(NSString *)userGroupID
+               complete:(void (^)(NSArray *array ,RCDUltraGroupCode ret)) complete {
+    if (!groupID || !userGroupID) {
+        SealTalkLog(@"groupId or userGroupID is nil");
+        if (complete) {
+            complete(nil, RCDUltraGroupCodeParameterError);
+        }
+        return;
+    }
+    NSDictionary *params = @{ @"groupId" : groupID,
+                              @"userGroupId" : userGroupID,
+                              @"pageNum" : @(1),
+                              @"limit": @(50)
+    };
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"/ultragroup/usergroup/member/query"
+                               parameters:params
+                                 response:^(RCDHTTPResult *result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                NSArray *array = result.content;
+
+                complete(array, result.errorCode);
+            }
+        });
+    }];
+}
 @end

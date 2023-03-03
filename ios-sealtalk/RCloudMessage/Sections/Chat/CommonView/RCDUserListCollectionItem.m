@@ -107,7 +107,7 @@
 }
 
 - (void)setUIInfo:(RCUserInfo *)user {
-    if ([user.userId isEqualToString:[RCIMClient sharedRCIMClient].currentUserInfo.userId]) {
+    if ([user.userId isEqualToString:[RCCoreClient sharedCoreClient].currentUserInfo.userId]) {
         [self.btnImg setHidden:YES];
     }
     self.ivAva.image = nil;

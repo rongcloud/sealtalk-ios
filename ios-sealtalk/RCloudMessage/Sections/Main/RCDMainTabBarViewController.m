@@ -145,7 +145,7 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     case 0: {
         if (self.previousIndex == index) {
             //判断如果有未读数存在，发出定位到未读数会话的通知
-            if ([[RCIMClient sharedRCIMClient] getTotalUnreadCount] > 0) {
+            if ([[RCCoreClient sharedCoreClient] getTotalUnreadCount] > 0) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"GotoNextConversation" object:nil];
             }
             self.previousIndex = index;

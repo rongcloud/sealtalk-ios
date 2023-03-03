@@ -41,14 +41,14 @@
                successBlock:(void (^)(void))successBlock
                  errorBlock:(void (^)(RCErrorCode))errorBlock {
     NSArray *latestMessages =
-        [[RCIMClient sharedRCIMClient] getLatestMessages:conversationType targetId:targetId count:1];
+        [[RCCoreClient sharedCoreClient] getLatestMessages:conversationType targetId:targetId count:1];
     if (latestMessages.count > 0) {
         RCMessage *message = (RCMessage *)[latestMessages firstObject];
-        [[RCIMClient sharedRCIMClient] clearRemoteHistoryMessages:conversationType
+        [[RCCoreClient sharedCoreClient] clearRemoteHistoryMessages:conversationType
             targetId:targetId
             recordTime:message.sentTime
             success:^{
-                [[RCIMClient sharedRCIMClient] deleteMessages:conversationType
+                [[RCCoreClient sharedCoreClient] deleteMessages:conversationType
                     targetId:targetId
                     success:^{
                         rcd_dispatch_main_async_safe(^{

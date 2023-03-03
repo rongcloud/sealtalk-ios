@@ -300,7 +300,7 @@
         [[RCDForwardSearchMoreController alloc] initWithSuperViewController:self.superViewController];
     viewController.searchString = self.searchBar.text;
     viewController.type = [NSString stringWithFormat:RCDLocalizedString(@"total_related_message"), model.count];
-    NSArray *msgArray = [[RCIMClient sharedRCIMClient] searchMessages:model.conversationType
+    NSArray *msgArray = [[RCCoreClient sharedCoreClient] searchMessages:model.conversationType
                                                              targetId:model.targetId
                                                               keyword:self.searchBar.text
                                                                 count:model.count

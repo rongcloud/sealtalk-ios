@@ -247,7 +247,7 @@
 
 - (BOOL)dealWithNetworkStatus {
     BOOL isconnected = NO;
-    RCNetworkStatus networkStatus = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    RCNetworkStatus networkStatus = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
     if (networkStatus == 0) {
         [self showAlertView:RCLocalizedString(@"ConnectionIsNotReachable")
              cancelBtnTitle:RCDLocalizedString(@"confirm")];

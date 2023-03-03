@@ -267,7 +267,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         [RCAlertView showAlertController:nil message:RCDLocalizedString(@"Set failed") cancelTitle:RCDLocalizedString(@"confirm")];
         return;
     }
-    [[RCIMClient sharedRCIMClient] setConversationNotificationStatus:ConversationType_PRIVATE
+    [[RCCoreClient sharedCoreClient] setConversationNotificationStatus:ConversationType_PRIVATE
         targetId:self.userId
         isBlocked:swch.on
         success:^(RCConversationNotificationStatus nStatus) {
@@ -281,11 +281,11 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 - (void)clickIsTopBtn:(id)sender {
     UISwitch *swch = sender;
-    [[RCIMClient sharedRCIMClient] setConversationToTop:ConversationType_PRIVATE targetId:self.userId isTop:swch.on];
+    [[RCCoreClient sharedCoreClient] setConversationToTop:ConversationType_PRIVATE targetId:self.userId isTop:swch.on];
 }
 
 - (void)setCurrentNotificationStatus:(UISwitch *)switchButton {
-    [[RCIMClient sharedRCIMClient] getConversationNotificationStatus:ConversationType_PRIVATE
+    [[RCCoreClient sharedCoreClient] getConversationNotificationStatus:ConversationType_PRIVATE
         targetId:self.userId
         success:^(RCConversationNotificationStatus nStatus) {
             dispatch_async(dispatch_get_main_queue(), ^{

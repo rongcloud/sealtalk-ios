@@ -57,7 +57,7 @@
 
 #pragma mark - Super
 - (void)willDisplayMessageCell:(RCMessageBaseCell *)cell atIndexPath:(NSIndexPath *)indexPath{
-    RCMessage *msg = [[RCIMClient sharedRCIMClient] getMessage:cell.model.messageId];
+    RCMessage *msg = [[RCCoreClient sharedCoreClient] getMessage:cell.model.messageId];
     if (cell.model.messageDirection == MessageDirection_SEND && [cell isKindOfClass:[RCMessageCell class]]) {
         RCMessageCell *msgCell = (RCMessageCell *)cell;
         cell.model.isCanSendReadReceipt = NO;
@@ -79,7 +79,7 @@
     NSMutableArray *readReceiptModelarray = [NSMutableArray array];
     for (int i = 0; i < self.conversationDataRepository.count; i++) {
         RCMessageModel *rcMsgModel = [self.conversationDataRepository objectAtIndex:i];
-        RCMessage *rcMsg = [[RCIMClient sharedRCIMClient] getMessage:rcMsgModel.messageId];
+        RCMessage *rcMsg = [[RCCoreClient sharedCoreClient] getMessage:rcMsgModel.messageId];
         if (([[rcMsg.content class] persistentFlag] & MessagePersistent_ISCOUNTED) == MessagePersistent_ISCOUNTED &&  rcMsg.messageDirection == MessageDirection_RECEIVE && !rcMsg.groupReadReceiptInfoV2.hasRespond) {
             [readReceiptarray addObject:rcMsg];
             [readReceiptModelarray addObject:rcMsgModel];

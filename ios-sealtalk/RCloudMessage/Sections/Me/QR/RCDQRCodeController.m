@@ -63,7 +63,7 @@
             countInfo = [NSString stringWithFormat:@"%@ %@", self.group.number, RCDLocalizedString(@"Person")];
             info = RCDLocalizedString(@"GroupScanQRCodeInfo");
             qrInfo = [NSString stringWithFormat:@"%@?key=sealtalk://group/join?g=%@&u=%@", RCDQRCodeContentInfoUrl,
-                                                self.targetId, [RCIMClient sharedRCIMClient].currentUserInfo.userId];
+                                                self.targetId, [RCCoreClient sharedCoreClient].currentUserInfo.userId];
             self.countLabel.text = countInfo;
             self.qrCodeImageView.image = [RCDQRCodeManager getQRCodeImage:qrInfo];
         }
@@ -73,7 +73,7 @@
         name = [RCKitUtility getDisplayName:user];
         info = RCDLocalizedString(@"MyScanQRCodeInfo");
         qrInfo = [NSString stringWithFormat:@"%@?key=sealtalk://user/info?u=%@", RCDQRCodeContentInfoUrl,
-                                            [RCIMClient sharedRCIMClient].currentUserInfo.userId];
+                                            [RCCoreClient sharedCoreClient].currentUserInfo.userId];
         self.qrCodeImageView.image = [RCDQRCodeManager getQRCodeImage:qrInfo];
     }
     if (![portraitUri isEqualToString:@""]) {

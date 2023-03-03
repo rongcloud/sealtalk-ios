@@ -23,7 +23,7 @@
 
     [self initSubviews];
 
-    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
+    [[RCCoreClient sharedCoreClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.startTimeTextField.text = startTime;
             self.durationTimeTextField.text = [NSString stringWithFormat:@"%ld", (long)spanMins];
@@ -37,7 +37,7 @@
     int spanMins = [self.durationTimeTextField.text intValue];
 
     __weak typeof(self) ws = self;
-    [[RCIMClient sharedRCIMClient] setNotificationQuietHours:startTime
+    [[RCCoreClient sharedCoreClient] setNotificationQuietHours:startTime
         spanMins:spanMins
         success:^{
             [ws showAlert:YES];

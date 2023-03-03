@@ -33,7 +33,7 @@
     long time = [self.updateTimeTextField.text integerValue];
     int time1 = (int)time;
     __weak typeof(self) ws = self;
-    [[RCIMClient sharedRCIMClient] setOfflineMessageDuration:time1
+    [[RCCoreClient sharedCoreClient] setOfflineMessageDuration:time1
         success:^{
             [ws showAlert:YES];
         }
@@ -63,7 +63,7 @@
         _offLineMessageTimeLabel.textColor = [UIColor blackColor];
         [_offLineMessageTimeLabel
             setText:[NSString stringWithFormat:RCDLocalizedString(@"xday"),
-                                               [[RCIMClient sharedRCIMClient] getOfflineMessageDuration]]];
+                                               [[RCCoreClient sharedCoreClient] getOfflineMessageDuration]]];
     }
     return _offLineMessageTimeLabel;
 }

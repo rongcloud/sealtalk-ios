@@ -119,7 +119,7 @@
 
 - (void)deleteGroupManager:(NSString *)userId {
 
-    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
     if (RC_NotReachable == status) {
         [self.view showHUDMessage:RCDLocalizedString(@"network_can_not_use_please_check")];
         return;

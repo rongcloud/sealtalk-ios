@@ -56,7 +56,7 @@
         }
 
         int timeDif = timeDiff / 60;
-        [[RCIMClient sharedRCIMClient] setNotificationQuietHours:startTime
+        [[RCCoreClient sharedCoreClient] setNotificationQuietHours:startTime
             spanMins:timeDif
             success:^{
                 [DEFAULTS
@@ -84,7 +84,7 @@
 
 - (void)getNoDisturbStaus {
     __weak typeof(self) weakSelf = self;
-    [[RCIMClient sharedRCIMClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
+    [[RCCoreClient sharedCoreClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
         NSDateFormatter *formatterE = [[NSDateFormatter alloc] init];
         [formatterE setDateFormat:@"HH:mm:ss"];
         NSDate *startDate = [formatterE dateFromString:startTime];
@@ -140,7 +140,7 @@
     int timeDif = timeDiff / 60;
 
     __weak typeof(self) blockSelf = self;
-    [[RCIMClient sharedRCIMClient] setNotificationQuietHours:startTimeStr
+    [[RCCoreClient sharedCoreClient] setNotificationQuietHours:startTimeStr
         spanMins:timeDif
         success:^{
 
@@ -157,7 +157,7 @@
 
 - (void)removeQuietHours {
     __weak typeof(self) blockSelf = self;
-    [[RCIMClient sharedRCIMClient] removeNotificationQuietHours:^{
+    [[RCCoreClient sharedCoreClient] removeNotificationQuietHours:^{
 
     }
         error:^(RCErrorCode status) {

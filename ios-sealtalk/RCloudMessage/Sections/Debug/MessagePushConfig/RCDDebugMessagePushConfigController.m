@@ -43,6 +43,8 @@
 
 @property (nonatomic, strong) UITextField *channelIdHWTF;
 
+@property (nonatomic, strong) UITextField *categoryHWTF;
+
 @property (nonatomic, strong) UITextField *channelIdOPPOTF;
 
 @property (nonatomic, strong) UITextField *typeVivoTF;
@@ -98,6 +100,7 @@
     [self.contentView addSubview:self.apnsCollapseIdTF];
     [self.contentView addSubview:self.channelIdMiTF];
     [self.contentView addSubview:self.channelIdHWTF];
+    [self.contentView addSubview:self.categoryHWTF];
     [self.contentView addSubview:self.channelIdOPPOTF];
     [self.contentView addSubview:self.typeVivoTF];
     [self.contentView addSubview:self.fcmTF];
@@ -186,8 +189,13 @@
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
-    [self.channelIdOPPOTF mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.categoryHWTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.channelIdHWTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.channelIdOPPOTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.categoryHWTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
@@ -260,6 +268,7 @@
         self.apnsCollapseIdTF.text = self.pushConfig.iOSConfig.apnsCollapseId;
         self.channelIdMiTF.text = self.pushConfig.androidConfig.channelIdMi;
         self.channelIdHWTF.text = self.pushConfig.androidConfig.channelIdHW;
+        self.categoryHWTF.text = self.pushConfig.androidConfig.categoryHW;
         self.channelIdOPPOTF.text = self.pushConfig.androidConfig.channelIdOPPO;
         self.typeVivoTF.text = self.pushConfig.androidConfig.typeVivo;
         self.fcmTF.text = self.pushConfig.androidConfig.fcmCollapseKey;
@@ -303,6 +312,7 @@
     pushConfig.androidConfig.notificationId = self.notificationIdTF.text;
     pushConfig.androidConfig.channelIdMi = self.channelIdMiTF.text;
     pushConfig.androidConfig.channelIdHW = self.channelIdHWTF.text;
+    pushConfig.androidConfig.categoryHW = self.categoryHWTF.text;
     pushConfig.androidConfig.channelIdOPPO = self.channelIdOPPOTF.text;
     pushConfig.androidConfig.typeVivo = self.typeVivoTF.text;
     pushConfig.androidConfig.fcmCollapseKey = self.fcmTF.text;
@@ -341,6 +351,7 @@
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.notificationId forKey:@"pushConfig-android-id"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdMi forKey:@"pushConfig-android-mi"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdHW forKey:@"pushConfig-android-hw"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.categoryHW forKey:@"pushConfig-android-hw-category"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdOPPO forKey:@"pushConfig-android-oppo"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.typeVivo forKey:@"pushConfig-android-vivo"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmCollapseKey forKey:@"pushConfig-android-fcm"];
@@ -372,6 +383,7 @@
     self.pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     self.pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
     self.pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
+    self.pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     self.pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
     self.pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
     self.pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];
@@ -562,6 +574,15 @@
         _channelIdHWTF.layer.borderWidth = 1;
     }
     return _channelIdHWTF;
+}
+
+- (UITextField *)categoryHWTF {
+    if (!_categoryHWTF) {
+        _categoryHWTF = [[UITextField alloc] init];
+        _categoryHWTF.placeholder = @"华为 categoryHW";
+        _categoryHWTF.layer.borderWidth = 1;
+    }
+    return _categoryHWTF;
 }
 
 - (UITextField *)channelIdOPPOTF {

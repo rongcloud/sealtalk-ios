@@ -219,11 +219,11 @@
         if (noticeList && noticeList.count > 0) {
             [RCDDBManager clearGroupNoticeList];
             [RCDDBManager saveGroupNoticeList:noticeList];
-            RCConversation *conversation = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_PRIVATE targetId:RCDGroupNoticeTargetId];
+            RCConversation *conversation = [[RCCoreClient sharedCoreClient] getConversation:ConversationType_PRIVATE targetId:RCDGroupNoticeTargetId];
             if (!conversation) {
                 RCDGroupNoticeUpdateMessage *msg = [[RCDGroupNoticeUpdateMessage alloc] init];
                 msg.operation = RCDGroupMemberInvite;
-                [[RCIMClient sharedRCIMClient] insertIncomingMessage:ConversationType_PRIVATE targetId:RCDGroupNoticeTargetId senderUserId:RCDGroupNoticeTargetId receivedStatus:ReceivedStatus_READ content:msg];
+                [[RCCoreClient sharedCoreClient] insertIncomingMessage:ConversationType_PRIVATE targetId:RCDGroupNoticeTargetId senderUserId:RCDGroupNoticeTargetId receivedStatus:ReceivedStatus_READ content:msg];
             }
         }
         if (complete) {
@@ -574,9 +574,9 @@
             errorBlock:^(RCErrorCode status){
 
             }];
-        [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_GROUP targetId:message.targetId];
+        [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_GROUP targetId:message.targetId];
     } else if ([msg.operation isEqualToString:RCDGroupMemberManagerRemove]) {
-        [[RCIMClient sharedRCIMClient] deleteMessages:@[ @(message.messageId) ]];
+        [[RCCoreClient sharedCoreClient] deleteMessages:@[ @(message.messageId) ]];
     }
 
     if ([msg.operation isEqualToString:RCDGroupDismiss] || [msg.operation isEqualToString:RCDGroupMemberQuit] ||

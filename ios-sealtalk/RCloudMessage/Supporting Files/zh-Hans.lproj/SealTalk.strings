@@ -19,6 +19,7 @@
 "portrait"="头像";
 "group_portrait"="群组头像";
 "group_name"="群组名称";
+"group_user_group"="用户组";
 "group_announcement"="群公告";
 "total_related_message"="%d条相关记录";
 "chat_history"="聊天记录";

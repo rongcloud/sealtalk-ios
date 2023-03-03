@@ -99,7 +99,7 @@
 
 #pragma mark - action
 - (void)didTapLoginButtonClicked:(UIButton *)sender{
-    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
     if (RC_NotReachable == status) {
         self.errorMsgLb.text = RCDLocalizedString(@"network_can_not_use_please_check");
         return;
@@ -386,7 +386,7 @@
 }
 
 - (void)getVerifyCode:(NSString *)phoneCode phoneNumber:(NSString *)phoneNumber {
-    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
     if (RC_NotReachable == status) {
         self.errorMsgLb.text = RCDLocalizedString(@"network_can_not_use_please_check");
         return;
@@ -758,7 +758,7 @@
 - (UITextView *)getFooterLabel {
     NSString *registrationTerms = [NSString stringWithFormat:RCDLocalizedString(@"Registration_Terms_Format"), RCDLocalizedString(@"Registration_Terms")];
     NSString *privacyPolicy = [NSString stringWithFormat:RCDLocalizedString(@"Privacy_Policy_Format"), RCDLocalizedString(@"Privacy_Policy")];
-    NSString *content = [NSString stringWithFormat:RCDLocalizedString(@"Registration_Bottom_Text"), registrationTerms,  privacyPolicy, [RCIMClient getVersion]];
+    NSString *content = [NSString stringWithFormat:RCDLocalizedString(@"Registration_Bottom_Text"), registrationTerms,  privacyPolicy, [RCCoreClient getVersion]];
     UITextView *contentTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-[RCKitUtility getWindowSafeAreaInsets].bottom-100, self.view.frame.size.width, 100)];
     contentTextView.backgroundColor = self.view.backgroundColor;
     contentTextView.attributedText = [self getContentLabelAttributedText:content];

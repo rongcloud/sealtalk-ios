@@ -795,7 +795,7 @@ static int ULTRAGROUP_CHANNEL_TABLE_VERSION = 1;
     __block RCDUserSetting *userSetting;
     NSString *sql = @"SELECT * FROM t_user_setting WHERE user_id = ?";
     [RCDDBHelper executeQuery:sql
-         withArgumentsInArray:@[ [RCIMClient sharedRCIMClient].currentUserInfo.userId ]
+         withArgumentsInArray:@[ [RCCoreClient sharedCoreClient].currentUserInfo.userId ]
                    syncResult:^(FMResultSet *_Nonnull resultSet) {
                        while ([resultSet next]) {
                            userSetting = [self generateUserSettingFromFMResultSet:resultSet];

@@ -208,16 +208,16 @@
 
     //上传用户信息，nickname是必须要填写的
     RCCustomerServiceInfo *csInfo = [[RCCustomerServiceInfo alloc] init];
-    csInfo.userId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+    csInfo.userId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     csInfo.nickName = RCDLocalizedString(@"nickname");
     csInfo.loginName = @"登录名称";
-    csInfo.name = [RCIMClient sharedRCIMClient].currentUserInfo.name;
+    csInfo.name = [RCCoreClient sharedCoreClient].currentUserInfo.name;
     csInfo.grade = @"11级";
     csInfo.gender = @"男";
     csInfo.birthday = @"2016.5.1";
     csInfo.age = @"36";
     csInfo.profession = @"software engineer";
-    csInfo.portraitUrl = [RCIMClient sharedRCIMClient].currentUserInfo.portraitUri;
+    csInfo.portraitUrl = [RCCoreClient sharedCoreClient].currentUserInfo.portraitUri;
     csInfo.province = @"beijing";
     csInfo.city = @"beijing";
     csInfo.memo = @"这是一个好顾客!";
@@ -265,7 +265,7 @@
         RCIMProxy *improxy = [RCDProxySettingControllerViewController currentAPPSettingIMProxy];
         
         // 测试先断开连接-支持中途修改
-        [[RCIMClient sharedRCIMClient] disconnect];
+        [[RCCoreClient sharedCoreClient] disconnect];
         
         // improxy 为nil，取消代理
         // 设置成功才断开重连， 必须 SDK 初始化前设置，否则设置失败
@@ -277,7 +277,7 @@
             
             // APP 内部重新设置代理或者取消代理，都要重连
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:RCDIMTokenKey];
-            [[RCIMClient sharedRCIMClient] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
+            [[RCCoreClient sharedCoreClient] connectWithToken:token dbOpened:^(RCDBErrorCode code) {
                 NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
             } success:^(NSString * _Nonnull userId) {
                 NSLog(@"connectWithToken success: %@", userId);

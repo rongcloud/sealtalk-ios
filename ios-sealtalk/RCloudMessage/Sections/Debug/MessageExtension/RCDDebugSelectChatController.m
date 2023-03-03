@@ -23,7 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
-    self.chatList = [[RCIMClient sharedRCIMClient] getConversationList:@[@(ConversationType_PRIVATE),@(ConversationType_GROUP)]];
+    self.chatList = [[RCCoreClient sharedCoreClient] getConversationList:@[@(ConversationType_PRIVATE),@(ConversationType_GROUP)]];
     [self.tableView reloadData];
 }
 

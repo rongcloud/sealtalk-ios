@@ -325,9 +325,9 @@ typedef NS_ENUM(NSInteger, RCDFriendDescriptionType) {
                   complete:^(BOOL success) {
                       if (success) {
                           weakSelf.inBlacklist = YES;
-                          [[RCIMClient sharedRCIMClient] clearMessages:ConversationType_PRIVATE
+                          [[RCCoreClient sharedCoreClient] clearMessages:ConversationType_PRIVATE
                                                               targetId:weakSelf.userId];
-                          [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_PRIVATE
+                          [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_PRIVATE
                                                                    targetId:weakSelf.userId];
                           dispatch_async(dispatch_get_main_queue(), ^{
                               [RCDDataSource syncFriendList];

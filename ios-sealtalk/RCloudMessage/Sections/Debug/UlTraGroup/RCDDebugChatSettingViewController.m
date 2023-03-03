@@ -345,7 +345,7 @@
 
 - (void)clickIsTopBtn:(id)sender {
     UISwitch *swch = sender;
-    [[RCIMClient sharedRCIMClient] setConversationToTop:ConversationType_ULTRAGROUP targetId:self.targetId isTop:swch.on];
+    [[RCCoreClient sharedCoreClient] setConversationToTop:ConversationType_ULTRAGROUP targetId:self.targetId isTop:swch.on];
 }
 
 - (void)clearHistoryMessage:(BOOL)clearRemote {

@@ -37,7 +37,7 @@
     NSLog(@"get the query of %@", query);
 
     if ([query isEqualToString:WK_APP_COMMUNICATE_QUERY_UNREAD_COUNT]) {
-        int count = [[RCIMClient sharedRCIMClient] getUnreadCount:@[
+        int count = [[RCCoreClient sharedCoreClient] getUnreadCount:@[
             @(ConversationType_PRIVATE),
             @(ConversationType_APPSERVICE),
             @(ConversationType_PUBLICSERVICE),
@@ -46,7 +46,7 @@
         [self replyWKApp:[NSNumber numberWithInt:count]];
     } else if ([query isEqualToString:WK_APP_COMMUNICATE_QUERY_CONVERSATION_LIST]) {
         NSArray *conversationTypes = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_CONVERSATION_TYPE];
-        NSArray *conversationList = [[RCIMClient sharedRCIMClient] getConversationList:conversationTypes];
+        NSArray *conversationList = [[RCCoreClient sharedCoreClient] getConversationList:conversationTypes];
 
         for (RCConversation *conversation in conversationList) {
             NSLog(@"object is %@", conversation.objectName);
@@ -59,7 +59,7 @@
         NSNumber *conversationType = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_CONVERSATION_TYPE];
         NSNumber *olderMsgId = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_OLDER_MESSAG_ID];
         NSNumber *count = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_COUNT];
-        NSArray *messages = [[RCIMClient sharedRCIMClient] getHistoryMessages:[conversationType intValue]
+        NSArray *messages = [[RCCoreClient sharedCoreClient] getHistoryMessages:[conversationType intValue]
                                                                      targetId:targetID
                                                               oldestMessageId:[olderMsgId longValue]
                                                                         count:[count intValue]];
@@ -142,7 +142,7 @@
          error:(void (^)(RCErrorCode nErrorCode,
          long messageId))errorBlock;
          */
-        id response = [[RCIMClient sharedRCIMClient] sendMessage:[conversationType intValue]
+        id response = [[RCCoreClient sharedCoreClient] sendMessage:[conversationType intValue]
             targetId:targetID
             content:content
             pushContent:nil
@@ -173,8 +173,8 @@
     } else if ([query isEqualToString:WK_APP_COMMUNICATE_REQUEST_NOTIFICATION]) {
         NSNumber *notify = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_NOTIFY_OR_NOT];
         [[RCWKNotifier sharedWKNotifier] setWatchAttached:[notify boolValue]];
-        if ([RCIMClient sharedRCIMClient].watchKitStatusDelegate == nil) {
-            [RCIMClient sharedRCIMClient].watchKitStatusDelegate = [RCWKNotifier sharedWKNotifier];
+        if ([RCCoreClient sharedCoreClient].watchKitStatusDelegate == nil) {
+            [RCCoreClient sharedCoreClient].watchKitStatusDelegate = [RCWKNotifier sharedWKNotifier];
         }
         [self replyWKApp:nil];
     } else if ([query isEqualToString:WK_APP_COMMUNICATE_REQUEST_LOGOUT]) {
@@ -190,7 +190,7 @@
         NSString *targetID = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_TARGET_ID];
         NSNumber *conversationType = [self getQueryParameter:WK_APP_COMMUNICATE_PARAMETER_CONVERSATION_TYPE];
         BOOL result =
-            [[RCIMClient sharedRCIMClient] clearMessagesUnreadStatus:[conversationType intValue] targetId:targetID];
+            [[RCCoreClient sharedCoreClient] clearMessagesUnreadStatus:[conversationType intValue] targetId:targetID];
         [self replyWKApp:[NSNumber numberWithBool:result]];
     } else if ([query isEqualToString:WK_APP_COMMUNICATE_QUERY_CONTACT_LIST]) {
         NSArray *contacts = [self.provider getAllFriends];
@@ -223,7 +223,7 @@
                 }
             });
         } else {
-            [[RCIMClient sharedRCIMClient] downloadMediaFile:[conversationType intValue]
+            [[RCCoreClient sharedCoreClient] downloadMediaFile:[conversationType intValue]
                 targetId:targetId
                 mediaType:MediaType_IMAGE
                 mediaUrl:imageUrl

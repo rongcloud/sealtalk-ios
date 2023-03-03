@@ -15,6 +15,7 @@
 #import "NormalAlertView.h"
 #import "RCDUltraGroupManager.h"
 #import "UIView+MBProgressHUD.h"
+#import "RCDUserGroupListController.h"
 
 static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
@@ -48,6 +49,16 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Private
+
+- (void)showUserGroup {
+    RCDUserGroupListController *vc = [RCDUserGroupListController new];
+    vc.groupID = self.ultraGroup.groupId;
+    BOOL ret = [self.ultraGroup.creatorId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId];
+    vc.isOwner = ret;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -61,10 +72,17 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *title = self.settingTableArr[indexPath.section];
     RCDGroupSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
     if (!cell) {
         cell = [[RCDGroupSettingsTableViewCell alloc] initWithTitle:title andGroupInfo:(RCDGroupInfo *)self.ultraGroup];
     }
-    cell.rightLabel.text = self.ultraGroup.groupName;
+    if (indexPath.row == 0) {
+        cell.leftLabel.text = title;
+        cell.rightLabel.text = self.ultraGroup.groupName;
+    } else {
+        cell.leftLabel.text = RCDLocalizedString(@"group_user_group");
+        cell.rightLabel.text = @"";
+    }
     return cell;
 }
 
@@ -80,6 +98,12 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
     return 44.f;
 }
 
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 1) {
+        [self showUserGroup];
+    }
+}
 #pragma mark - helper
 - (void)quitGroup {
 
@@ -106,24 +130,24 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 - (void)clearConversationAndMessage {
     NSArray *latestMessages =
-        [[RCIMClient sharedRCIMClient] getLatestMessages:ConversationType_GROUP targetId:self.ultraGroup.groupId count:1];
+        [[RCCoreClient sharedCoreClient] getLatestMessages:ConversationType_GROUP targetId:self.ultraGroup.groupId count:1];
     if (latestMessages.count > 0) {
         RCMessage *message = (RCMessage *)[latestMessages firstObject];
-        [[RCIMClient sharedRCIMClient] clearRemoteHistoryMessages:ConversationType_GROUP
+        [[RCCoreClient sharedCoreClient] clearRemoteHistoryMessages:ConversationType_GROUP
                                                          targetId:self.ultraGroup.groupId
                                                        recordTime:message.sentTime
                                                           success:^{
-                                                              [[RCIMClient sharedRCIMClient]
+                                                              [[RCCoreClient sharedCoreClient]
                                                                   clearMessages:ConversationType_GROUP
                                                                        targetId:self.ultraGroup.groupId];
                                                           }
                                                             error:nil];
     }
-    [[RCIMClient sharedRCIMClient] removeConversation:ConversationType_GROUP targetId:self.ultraGroup.groupId];
+    [[RCCoreClient sharedCoreClient] removeConversation:ConversationType_GROUP targetId:self.ultraGroup.groupId];
 }
 
 - (void)refreshTableViewInfo {
-    self.settingTableArr = @[RCDLocalizedString(@"group_name")];
+    self.settingTableArr = @[RCDLocalizedString(@"group_name"),RCDLocalizedString(@"group_user_group")];
     [self.tableView reloadData];
 }
 

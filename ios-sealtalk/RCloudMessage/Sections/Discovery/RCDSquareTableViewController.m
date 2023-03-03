@@ -156,7 +156,7 @@
 
 - (void)fetchRemoteChatRoomListAndRefresh {
 
-    RCNetworkStatus status = [[RCIMClient sharedRCIMClient] getCurrentNetworkStatus];
+    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
     if (RC_NotReachable == status) {
         return;
     }
