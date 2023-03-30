@@ -22,7 +22,7 @@ static dispatch_once_t onceToken;
 
 // 获取环境列表
 + (NSArray <NSDictionary<NSString *, NSNumber *> *>*)appEnvironments {
-    return [RCDEnvironmentModel appOverseaEnvironments];
+    return [RCDEnvironmentModel appEnvironments];
 }
 
 + (void)saveEnvironmentByCategory:(NSNumber *)category {
@@ -33,10 +33,6 @@ static dispatch_once_t onceToken;
     
     [RCDEnvironmentModel saveEnvironmentCategory:[category integerValue]];
     [RCDEnvironmentContext sharedInstance].environmentModel = [RCDEnvironmentModel appEnvironmentByCategory:type];
-}
-
-+ (BOOL)isOversea {
-    return [RCDEnvironmentModel isOverseaEnvironment];
 }
 
 + (NSString *)currentEnvironmentNameKey {

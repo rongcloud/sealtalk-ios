@@ -29,7 +29,6 @@
 #import "UIView+MBProgressHUD.h"
 #import "RCDDebugComChatListController.h"
 #import "RCDDebugFileIconViewController.h"
-
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
 #define JOIN_CHATROOM_TAG 102

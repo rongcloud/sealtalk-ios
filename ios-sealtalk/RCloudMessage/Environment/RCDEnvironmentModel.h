@@ -13,7 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, RCDEnvironmentCategory) {
     RCDEnvironmentCategoryDefault, //默认
     RCDEnvironmentCategorySigapore, // 新加坡
-    RCDEnvironmentCategoryNorthAmerican // 北美
+    RCDEnvironmentCategoryNorthAmerican, // 北美
+    RCDEnvironmentCategoryTest // 
 };
 
 @interface RCDEnvironmentModel : NSObject
@@ -35,10 +36,8 @@ typedef NS_ENUM(NSInteger, RCDEnvironmentCategory) {
 + (void)saveEnvironmentCategory:(RCDEnvironmentCategory)category;
 
 // 获取环境列表
-+ (NSArray <NSDictionary<NSString *, NSNumber *> *>*)appOverseaEnvironments;
++ (NSArray <NSDictionary<NSString *, NSNumber *> *>*)appEnvironments;
 
-// 是否为国外环境
-+ (BOOL)isOverseaEnvironment;
 @end
 
 NS_ASSUME_NONNULL_END

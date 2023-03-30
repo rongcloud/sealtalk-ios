@@ -17,7 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 // 保存环境类型
 + (void)saveEnvironmentByCategory:(NSNumber *)category;
 
-+ (BOOL)isOversea;
 + (NSString *)currentEnvironmentNameKey;
 
 + (NSString *)appKey;

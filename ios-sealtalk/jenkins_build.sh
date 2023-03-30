@@ -78,21 +78,6 @@ TEMP_TIME=$(date +%s)
 
 echo "build ${APP_NAME}"
 
-if [ "${APP_NAME}" = "RC IM" ];then
-  sed -i '' -e 's?cn.rongcloud.im?cn.rongcloud.im.sg?g' ./RCloudMessage.xcodeproj/project.pbxproj
-  sed -i '' -e 's?cn.rongcloud.im.sg.shareextension?cn.rongcloud.im.sg.ShareExtension?g' ./RCloudMessage.xcodeproj/project.pbxproj
-  sed -i '' -e 's?cn.rongcloud.im.notificationservice?cn.rongcloud.im.sg.notificationservice?g' ./RCloudMessage.xcodeproj/project.pbxproj
-
-  sed -i '' -e 's?<string>融云 IM</string>?<string>'"${APP_NAME}"'</string>?g' ./RCloudMessage/Supporting\ Files/info.plist
-  sed -i '' -e 's?融云 IM?'"${APP_NAME}"'?g' ./SealTalkShareExtension/info.plist
-  sed -i '' -e 's?融云 IM?'"${APP_NAME}"'?g' ./SealTalkNotificationService/info.plist
-  sed -i '' -e 's?融云 IM?'\ "${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/InfoPlist.strings
- 
-  sed -i '' -e 's?"融云 IM?'\""${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
-  sed -i '' -e 's?融云 IM?'\ "${APP_NAME}"'?g' ./RCloudMessage/Supporting\ Files/zh-Hans.lproj/SealTalk.strings
-  
-fi
-
 #appkey
 if [ -n "${DEMO_APPKEY}" ]; then
     sed -i '' -e '/RONGCLOUD_IM_APPKEY/s/@"n19jmcy59f1q9"/@"'$DEMO_APPKEY'"/g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
@@ -102,10 +87,8 @@ fi
 if [ -n "${DEMO_SERVER_URL}" ]; then
     if [[ $DEMO_SERVER_URL =~ ^http ]]; then
         sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
-        sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?'$DEMO_SERVER_URL'?g' ./SealTalkShareExtension/RCDShareChatListController.m
     else
         sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?http://'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
-        sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?http://'$DEMO_SERVER_URL'?g' ./SealTalkShareExtension/RCDShareChatListController.m
     fi
 fi
 

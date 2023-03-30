@@ -8,26 +8,35 @@
 
 #import "RCDEnvironmentModel.h"
 #import "RCDCommonDefine.h"
-
+#import "RCDCommonString.h"
 NSString* const RCDEnvironmentCategoryKey = @"RCDEnvironmentCategoryKey";
 NSString* const RCDEnvironmentOverseaBundleID = @"cn.rongcloud.im.sg";
 NSString* const RCDDefaultRegionNameKey = @"RegionNameDefault";
 
-NSString* const RCDSigaporeAppKey = @"8w7jv4qb8340y";
+NSString* const RCDSigaporeAppKey = @"";
 NSString* const RCDSigaporeServiceID = @"";
-NSString* const RCDSigaporevServerURL = @"https://sealtalk-server-awssg.ronghub.com/";
-NSString* const RCDSigaporeNavServer = @"https://navsg01.cn.ronghub.com";
+NSString* const RCDSigaporevServerURL = @"";
+NSString* const RCDSigaporeNavServer = @"";
 NSString* const RCDSigaporeFileServer = @"";
 NSString* const RCDSigaporeStatsServer = @"";
 NSString* const RCDSigaporeRegionNameKey = @"RegionNameSigapore";
 
-NSString* const RCDNorthAmericanAppKey = @"4z3hlwrv4hqwt";
+NSString* const RCDNorthAmericanAppKey = @"";
 NSString* const RCDNorthAmericanServiceID = @"";
-NSString* const RCDNorthAmericanServerURL = @"https://sealtalk-server-us.ronghub.com/";
-NSString* const RCDNorthAmericanNavServer = @"https://nav-us.ronghub.com";
+NSString* const RCDNorthAmericanServerURL = @"";
+NSString* const RCDNorthAmericanNavServer = @"";
 NSString* const RCDNorthAmericanFileServer = @"";
 NSString* const RCDNorthAmericanStatsServer = @"";
 NSString* const RCDNorthAmericanRegionNameKey = @"RegionNameNorthAmerican";
+
+NSString* const RCDTestAppKey = @"";
+NSString* const RCDTestServiceID = SERVICE_ID;
+NSString* const RCDTestServerURL = @"";
+NSString* const RCDTestNavServer = @"";
+NSString* const RCDTestFileServer = @"";
+NSString* const RCDTestStatsServer = @"";
+NSString* const RCDTestRegionNameKey = @"吕布";
+
 @implementation RCDEnvironmentModel
 
 #pragma mark - Public
@@ -38,21 +47,27 @@ NSString* const RCDNorthAmericanRegionNameKey = @"RegionNameNorthAmerican";
 }
 
 + (void)saveEnvironmentCategory:(RCDEnvironmentCategory)category {
-    if ([self isOverseaEnvironment]) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setValue:@(category) forKey:RCDEnvironmentCategoryKey];
-        [userDefaults synchronize];
-    }
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setValue:@(category) forKey:RCDEnvironmentCategoryKey];
+    [userDefaults synchronize];
+    [self saveShareDemoServer:category];
 }
 
-+ (NSArray <NSDictionary *>*)appOverseaEnvironments {
-    NSMutableArray *array = [NSMutableArray array];
-    
-    NSDictionary *dic = @{RCDSigaporeRegionNameKey:@(RCDEnvironmentCategorySigapore)};
-    [array addObject:dic];
-    
-    dic = @{RCDNorthAmericanRegionNameKey:@(RCDEnvironmentCategoryNorthAmerican)};
-    [array addObject:dic];
++ (void)saveShareDemoServer:(RCDEnvironmentCategory)category{
+    RCDEnvironmentModel *model = [self appEnvironmentByCategory:category];
+    NSUserDefaults *shareUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
+    [shareUserDefaults setValue:model.serverURL forKey:RCDDemoServerKey];
+    [shareUserDefaults synchronize];
+}
+
++ (NSArray <NSDictionary *>*)appEnvironments {
+    NSMutableArray *array = @[@{RCDDefaultRegionNameKey:@(RCDEnvironmentCategoryDefault)},
+                       @{RCDSigaporeRegionNameKey:@(RCDEnvironmentCategorySigapore)},
+                       @{RCDNorthAmericanRegionNameKey:@(RCDEnvironmentCategoryNorthAmerican)}].mutableCopy;
+    BOOL showTest = [DEFAULTS boolForKey:RCDSwitchTestEnvKey];
+    if (showTest) {
+        [array addObject:@{RCDTestRegionNameKey:@(RCDEnvironmentCategoryTest)}];
+    }
     return array;
 }
 
@@ -65,6 +80,9 @@ NSString* const RCDNorthAmericanRegionNameKey = @"RegionNameNorthAmerican";
         case RCDEnvironmentCategoryNorthAmerican:
             model = [self appEnvironmentOfNorthAmerican];
             break;
+        case RCDEnvironmentCategoryTest:
+            model = [self appEnvironmenTest];
+            break;
         default:
             model = [self appEnvironmentDefault];
             break;
@@ -72,13 +90,19 @@ NSString* const RCDNorthAmericanRegionNameKey = @"RegionNameNorthAmerican";
     return model;
 }
 
-// 是否为国外环境
-+ (BOOL)isOverseaEnvironment {
-    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    return [bundleIdentifier isEqualToString:RCDEnvironmentOverseaBundleID];
-}
-
 #pragma mark - Private
++ (instancetype)appEnvironmenTest{
+    RCDEnvironmentModel *model = [[RCDEnvironmentModel alloc] init];
+    model.appKey = RCDTestAppKey;
+    model.serviceID = SERVICE_ID;
+    model.serverURL = RCDTestServerURL;
+    model.navServer = RCDTestNavServer;
+    model.fileServer = RCDTestFileServer;
+    model.statsServer = RCDTestStatsServer;
+    model.category = RCDEnvironmentCategoryTest;
+    model.regionNameKey = RCDTestRegionNameKey;
+    return model;
+}
 
 + (instancetype)appEnvironmentDefault {
     RCDEnvironmentModel *model = [[RCDEnvironmentModel alloc] init];
@@ -89,7 +113,7 @@ NSString* const RCDNorthAmericanRegionNameKey = @"RegionNameNorthAmerican";
     model.fileServer = RONGCLOUD_FILE_SERVER;
     model.statsServer = RONGCLOUD_STATS_SERVER;
     model.category = RCDEnvironmentCategoryDefault;
-    model.regionNameKey = RCDSigaporeRegionNameKey;
+    model.regionNameKey = RCDDefaultRegionNameKey;
     return model;
 }
 
@@ -119,17 +143,30 @@ NSString* const RCDNorthAmericanRegionNameKey = @"RegionNameNorthAmerican";
     return model;
 }
 
+
+
 + (RCDEnvironmentCategory)currentEnvironmentCategory {
-    if ([self isOverseaEnvironment]) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *num = [userDefaults valueForKey:RCDEnvironmentCategoryKey];
-        if (num) {
-            return [num integerValue];
-        } else {
-            return RCDEnvironmentCategorySigapore;
-        }
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *num = [userDefaults valueForKey:RCDEnvironmentCategoryKey];
+    if (num) {
+        return [num integerValue];
     }
-    return RCDEnvironmentCategoryDefault;
+    RCDEnvironmentCategory category = RCDEnvironmentCategoryDefault;
+    if (![self isShowDefault]){
+        category = RCDEnvironmentCategorySigapore;
+    }
+    [self saveEnvironmentCategory:category];
+    return category;
+}
+
+//根据时区判断当前是否在中国
++ (BOOL)isShowDefault {
+    BOOL result = NO;
+    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([language containsString:@"zh-Hans"]) {
+        return YES;
+    }
+    return result;
 }
 
 @end

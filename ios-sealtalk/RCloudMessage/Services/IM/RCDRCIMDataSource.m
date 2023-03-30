@@ -114,27 +114,26 @@
 - (void)getUserInfoWithUserId:(NSString *)userId
                       inGroup:(NSString *)groupId
                    completion:(void (^)(RCUserInfo *userInfo))completion {
+    if (userId.length == 0 || groupId.length == 0) return;
     //在这里查询该group内的群名片信息，如果能查到，调用completion返回。如果查询不到也一定要调用completion(nil)
     if ([groupId isEqualToString:@"22"] && [userId isEqualToString:@"30806"]) {
         completion([[RCUserInfo alloc] initWithUserId:@"30806" name:@"我在22群中的名片" portrait:nil]);
-    } else {
-        [RCDGroupManager getGroupMemberDetailInfoFromServer:userId
-                                                    groupId:groupId
-                                                   complete:^(RCDGroupMemberDetailInfo *member) {
-                                                       [self
-                                                           getUserInfoWithUserId:userId
-                                                                      completion:^(RCUserInfo *userInfo) {
-                                                                          RCDFriendInfo *friend =
-                                                                              [RCDUserInfoManager getFriendInfo:userId];
-                                                                          if (friend.displayName.length > 0) {
-                                                                              userInfo.name = friend.displayName;
-                                                                          } else if (member.groupNickname.length > 0) {
-                                                                              userInfo.name = member.groupNickname;
-                                                                          }
-                                                                          return completion(userInfo);
-                                                                      }];
-                                                   }];
+        return;
     }
+    
+    [RCDGroupManager getGroupMemberDetailInfoFromServer:userId
+                                                groupId:groupId
+                                               complete:^(RCDGroupMemberDetailInfo *member) {
+        [self getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
+            RCDFriendInfo *friend = [RCDUserInfoManager getFriendInfo:userId];
+            if (friend.displayName.length > 0) {
+                userInfo.name = friend.displayName;
+            } else if (member.groupNickname.length > 0) {
+                userInfo.name = member.groupNickname;
+            }
+            return completion(userInfo);
+        }];
+    }];
 }
 
 #pragma mark - RCIMGroupMemberDataSource

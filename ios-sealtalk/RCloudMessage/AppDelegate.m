@@ -38,16 +38,16 @@
 #import <UMAPM/UMAPMConfig.h>
 #import "RCDHTTPUtility.h"
 #import "RCDUltraGroupNotificationMessage.h"
+#import <RongiFlyKit/RongiFlyKit.h>
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
 #endif
-
 #define DORAEMON_APPID @""
 #define BUGLY_APPID @""
 #define LOG_EXPIRE_TIME -7 * 24 * 60 * 60
 
-#define WECHAT_APPID @"wxe3d4d4ec21b00104"
 #define UMENG_APPKEY @""
+#define IFLY_APPKEY @""
 
 #import "RCDTranslationManager.h"
 
@@ -114,25 +114,18 @@
         [RCDHTTPUtility configProxySDWebImage];
     }
 
-    NSString *userId = [DEFAULTS objectForKey:RCDUserIdKey];
-    NSString *token = [DEFAULTS objectForKey:RCDIMTokenKey];
-    
-    NSString *navServer = [RCDEnvironmentContext navServer];
-    NSString *fileServer = [RCDEnvironmentContext fileServer];
-    if (navServer.length > 0 || fileServer.length > 0) {
-        [[RCCoreClient sharedCoreClient] setServerInfo:navServer fileServer:fileServer];
-    }
-    
-    NSString *statsServer = [RCDEnvironmentContext statsServer];
-    if (statsServer.length > 0) {
-        [[RCCoreClient sharedCoreClient] setStatisticServer:statsServer];
-    }
+    RCInitOption *initOption = [[RCInitOption alloc] init];
+    initOption.naviServer = [RCDEnvironmentContext navServer];
+    initOption.fileServer = [RCDEnvironmentContext fileServer];
+    initOption.statisticServer = [RCDEnvironmentContext statsServer];
     NSString *appKey = [RCDEnvironmentContext appKey];
-    [[RCIM sharedRCIM] initWithAppKey:appKey];
+    [[RCIM sharedRCIM] initWithAppKey:appKey option:initOption];
+    
     // 设置appVersion
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     [[RCCoreClient sharedCoreClient] setAppVer:app_Version];
+    [RCiFlyKit setiFlyAppkey:IFLY_APPKEY];
     
     //关闭消息排重
     [self disableCheckDupMessageIfNeed];

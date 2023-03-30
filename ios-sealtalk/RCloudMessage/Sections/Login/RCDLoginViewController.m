@@ -497,28 +497,26 @@
     [self.inputBackground addSubview:self.loginButton];
     [self.view addSubview:self.proxyButton];
 }
-//布局海外UI
+//数据中心切换 UI
 - (void)layoutForOverseaIfNeed {
-    if ([RCDEnvironmentContext isOversea]) {
-        [self.inputBackground addSubview:self.environmentTextField];
-        [self.inputBackground mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.leading.equalTo(self.view).offset(41);
-            make.trailing.equalTo(self.view).offset(-41);
-            make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
-            make.centerX.equalTo(self.view);
-            make.height.offset(310);
-        }];
-        [self.environmentTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.leading.trailing.top.equalTo(self.inputBackground);
-            make.height.offset(60);
-        }];
-        
-        [self.countryTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.leading.trailing.equalTo(self.inputBackground);
-            make.top.equalTo(self.environmentTextField.mas_bottom);
-            make.height.offset(60);
-        }];
-    }
+    [self.inputBackground addSubview:self.environmentTextField];
+    [self.inputBackground mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(self.view).offset(41);
+        make.trailing.equalTo(self.view).offset(-41);
+        make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
+        make.centerX.equalTo(self.view);
+        make.height.offset(310);
+    }];
+    [self.environmentTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.leading.trailing.top.equalTo(self.inputBackground);
+        make.height.offset(60);
+    }];
+    
+    [self.countryTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.leading.trailing.equalTo(self.inputBackground);
+        make.top.equalTo(self.environmentTextField.mas_bottom);
+        make.height.offset(60);
+    }];
 }
 
 - (void)setLayout {
@@ -591,15 +589,26 @@
     if (!_environmentTextField) {
         _environmentTextField = [[RCDIndicateTextField alloc] init];
         _environmentTextField.indicateInfoLabel.text = RCDLocalizedString(@"DataCenter");
-        _environmentTextField.textField.text = self.currentRegion.countryName;
         _environmentTextField.textField.userInteractionEnabled = NO;
         [_environmentTextField indicateIconShow:YES];
         UITapGestureRecognizer *tap =
             [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapEnvironmentTextField)];
         [_environmentTextField addGestureRecognizer:tap];
+        UILongPressGestureRecognizer *longGes =
+        [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPressEnvironmentTextField:)];
+        [_environmentTextField addGestureRecognizer:longGes];
         _environmentTextField.userInteractionEnabled = YES;
     }
     return _environmentTextField;
+}
+
+- (void)didLongPressEnvironmentTextField:(UIGestureRecognizer *)gestrue{
+    if (gestrue.state != UIGestureRecognizerStateEnded) {
+        return;
+    }
+    BOOL showTest = [DEFAULTS boolForKey:RCDSwitchTestEnvKey];
+    [DEFAULTS setBool:!showTest forKey:RCDSwitchTestEnvKey];
+    [DEFAULTS synchronize];
 }
 
 - (RCDIndicateTextField *)countryTextField {

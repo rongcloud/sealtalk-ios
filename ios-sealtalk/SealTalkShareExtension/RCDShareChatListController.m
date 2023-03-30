@@ -18,8 +18,6 @@
 #define ReuseIdentifier @"cellReuseIdentifier"
 #define RCDLocalizedString(key) NSLocalizedStringFromTable(key, @"SealTalk", nil)
 
-#define DemoServer @"http://api-sealtalk.rongcloud.cn/" //线上正式环境
-
 @implementation RCDShareChatListController
 
 - (void)viewDidLoad {
@@ -54,8 +52,13 @@
 
 - (void)sendMessageTofriend:(id)sender {
     NSDictionary *dic = self.dataArray[self.selectIndexPath.row];
+    
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
+    NSString *demoServer = [userDefaults valueForKey:@"RCDDemoServer"];
+    NSString *cookie = [userDefaults valueForKey:@"Cookie"];
+
     // 1.创建URL
-    NSString *urlStr = [NSString stringWithFormat:@"%@misc/send_message", DemoServer];
+    NSString *urlStr = [NSString stringWithFormat:@"%@misc/send_message", demoServer];
     NSURL *url = [NSURL URLWithString:urlStr];
 
     // 2.准备请求对象
@@ -63,8 +66,6 @@
 
     [request setHTTPMethod:@"POST"];
 
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
-    NSString *cookie = [userDefaults valueForKey:@"Cookie"];
 
     [request setValue:cookie forHTTPHeaderField:@"Cookie"];
 

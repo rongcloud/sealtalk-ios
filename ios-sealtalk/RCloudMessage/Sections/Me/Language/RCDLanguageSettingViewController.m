@@ -59,19 +59,32 @@
     [[RCCoreClient sharedCoreClient].pushProfile setPushLauguage:lauguage success:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-            if (lauguage== RCPushLauguage_AR_SA) {
-                [UIView appearance].semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
-            } else {
-                [UIView appearance].semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+            UIWindow *keyWindow;
+            for (UIWindow *window in [UIApplication sharedApplication].windows) {
+                if ([window isKeyWindow]) {
+                    keyWindow = window;
+                }
             }
-            //设置当前语言
-            [[RCDLanguageManager sharedRCDLanguageManager] setLocalizableLanguage:self.language];
             //重置vc堆栈
             AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            if (lauguage== RCPushLauguage_AR_SA) {
+                [UIView appearance].semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
+                keyWindow.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
+                app.window.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
+            } else {
+                [UIView appearance].semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+                keyWindow.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+                app.window.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+            }
+        
+            //设置当前语言
+            [[RCDLanguageManager sharedRCDLanguageManager] setLocalizableLanguage:self.language];
+           
             RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
             RCDNavigationViewController *nav = [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
             mainTabBarVC.selectedIndex = 3;
             app.window.rootViewController = nav;
+         
         });
     } error:^(RCErrorCode status) {
         dispatch_async(dispatch_get_main_queue(), ^{
