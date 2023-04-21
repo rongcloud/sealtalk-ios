@@ -46,6 +46,17 @@
                                  }];
 }
 
++ (void)removeAccount:(void (^)(BOOL success))completeBlock{
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
+                                URLString:@"user/del"
+                               parameters:nil
+                                 response:^(RCDHTTPResult *_Nonnull result) {
+                                     if (completeBlock) {
+                                         completeBlock(result.success);
+                                     }
+                                 }];
+}
+
 + (void)getVersionInfo:(void (^)(NSDictionary *))completeBlock {
     [RCDHTTPUtility
         requestWithHTTPMethod:HTTPMethodGet
@@ -81,11 +92,33 @@
                      }];
 }
 
++ (void)getPictureVerificationCode:(void (^)(NSString *base64String, NSString *codeId))successBlock
+                             error:(void (^)(RCDLoginErrorCode code))errorBlock{
+    [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodGet
+                                URLString:@"user/pic_code"
+                               parameters:nil
+                                 response:^(RCDHTTPResult *_Nonnull result) {
+        if (result.success) {
+            NSString *base64String = result.content[@"picCode"];
+            NSString *codeId = result.content[@"picCodeId"];
+            if (successBlock) {
+                successBlock(base64String,codeId);
+            }
+        } else {
+            if (errorBlock) {
+                errorBlock(result.errorCode);
+            }
+        }
+    }];
+}
+
 + (void)getVerificationCode:(NSString *)phoneCode
                 phoneNumber:(NSString *)phoneNumber
+                pictureCode:(nonnull NSString *)pictureCode
+              pictureCodeId:(nonnull NSString *)pictureCodeId
                     success:(void (^)(BOOL))successBlock
                       error:(void (^)(RCDLoginErrorCode, NSString *))errorBlock {
-    NSDictionary *params = @{ @"region" : phoneCode, @"phone" : phoneNumber };
+    NSDictionary *params = @{ @"region" : phoneCode, @"phone" : phoneNumber, @"picCodeId": pictureCodeId?:@"", @"picCode": pictureCode?:@"" };
     [RCDHTTPUtility requestWithHTTPMethod:HTTPMethodPost
                                 URLString:@"user/send_code_yp"
                                parameters:params

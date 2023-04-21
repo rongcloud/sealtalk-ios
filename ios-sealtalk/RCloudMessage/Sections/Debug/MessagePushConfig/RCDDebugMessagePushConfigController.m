@@ -49,6 +49,8 @@
 
 @property (nonatomic, strong) UITextField *typeVivoTF;
 
+@property (nonatomic, strong) UITextField *categoryVivoTF;
+
 @property (nonatomic, strong) UITextField *fcmTF;
 
 @property (nonatomic, strong) UITextField *fcmUrlTF;
@@ -103,6 +105,7 @@
     [self.contentView addSubview:self.categoryHWTF];
     [self.contentView addSubview:self.channelIdOPPOTF];
     [self.contentView addSubview:self.typeVivoTF];
+    [self.contentView addSubview:self.categoryVivoTF];
     [self.contentView addSubview:self.fcmTF];
     [self.contentView addSubview:self.fcmUrlTF];
     [self.contentView addSubview:self.hwLvel];
@@ -204,8 +207,13 @@
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
-    [self.fcmTF mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.categoryVivoTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.typeVivoTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.fcmTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.categoryVivoTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
 
@@ -271,6 +279,7 @@
         self.categoryHWTF.text = self.pushConfig.androidConfig.categoryHW;
         self.channelIdOPPOTF.text = self.pushConfig.androidConfig.channelIdOPPO;
         self.typeVivoTF.text = self.pushConfig.androidConfig.typeVivo;
+        self.categoryVivoTF.text = self.pushConfig.androidConfig.categoryVivo;
         self.fcmTF.text = self.pushConfig.androidConfig.fcmCollapseKey;
         self.fcmUrlTF.text = self.pushConfig.androidConfig.fcmImageUrl;
         self.hwLvel.text = self.pushConfig.androidConfig.importanceHW;
@@ -315,6 +324,7 @@
     pushConfig.androidConfig.categoryHW = self.categoryHWTF.text;
     pushConfig.androidConfig.channelIdOPPO = self.channelIdOPPOTF.text;
     pushConfig.androidConfig.typeVivo = self.typeVivoTF.text;
+    pushConfig.androidConfig.categoryVivo = self.categoryVivoTF.text;
     pushConfig.androidConfig.fcmCollapseKey = self.fcmTF.text;
     pushConfig.androidConfig.fcmImageUrl = self.fcmUrlTF.text;
     pushConfig.androidConfig.importanceHW = self.hwLvel.text;
@@ -354,6 +364,7 @@
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.categoryHW forKey:@"pushConfig-android-hw-category"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdOPPO forKey:@"pushConfig-android-oppo"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.typeVivo forKey:@"pushConfig-android-vivo"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.categoryVivo forKey:@"pushConfig-android-vivo-category"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmCollapseKey forKey:@"pushConfig-android-fcm"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmImageUrl forKey:@"pushConfig-android-fcmImageUrl"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.importanceHW forKey:@"pushConfig-android-importanceHW"];
@@ -386,6 +397,7 @@
     self.pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     self.pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
     self.pushConfig.androidConfig.typeVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo"];
+    self.pushConfig.androidConfig.categoryVivo = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-vivo-category"];
     self.pushConfig.androidConfig.fcmCollapseKey = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcm"];
     self.pushConfig.androidConfig.fcmImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmImageUrl"];
     self.pushConfig.androidConfig.hwImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hwImageUrl"];
@@ -601,6 +613,15 @@
         _typeVivoTF.layer.borderWidth = 1;
     }
     return _typeVivoTF;
+}
+
+- (UITextField *)categoryVivoTF {
+    if (!_categoryVivoTF) {
+        _categoryVivoTF = [[UITextField alloc] init];
+        _categoryVivoTF.placeholder = @"vivo category";
+        _categoryVivoTF.layer.borderWidth = 1;
+    }
+    return _categoryVivoTF;
 }
 
 - (UITextField *)fcmTF {

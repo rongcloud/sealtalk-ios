@@ -37,7 +37,7 @@
 #import "RCDFraudPreventionManager.h"
 #import "RCDAlertBuilder.h"
 #import <RongRTCLib/RongRTCLib.h>
-
+#import "UIView+MBProgressHUD.h"
 #define UserTextFieldTag 1000
 
 @interface RCDLoginViewController () <UITextFieldDelegate, RCDCountryListControllerDelegate, UITextViewDelegate>
@@ -53,6 +53,9 @@
 
 @property (nonatomic, strong) UILabel *errorMsgLb;
 
+@property (nonatomic, strong) RCUnderlineTextField *pictureVerCodeTextField;
+@property (nonatomic, strong) UIButton *pictureVerCodeButton;
+
 @property (nonatomic, strong) RCUnderlineTextField *verificationCodeField;
 @property (nonatomic, strong) UIButton *sendCodeButton;
 @property (nonatomic, strong) UILabel *vCodeTimerLb;
@@ -61,6 +64,7 @@
 
 @property (nonatomic, strong) NSTimer *countDownTimer;
 @property (nonatomic, assign) int seconds;
+@property (nonatomic, strong) NSString *codeId;
 @end
 
 @implementation RCDLoginViewController {
@@ -75,7 +79,6 @@
     [self initSubviews];
 
     [self setLayout];
-    [self layoutForOverseaIfNeed];
     [self addNotifications];
 }
 
@@ -85,6 +88,7 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     NSString *nameKey = [RCDEnvironmentContext currentEnvironmentNameKey];
     self.environmentTextField.textField.text = RCDLocalizedString(nameKey);
+    [self refreshPictureVerificationCode];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -159,11 +163,24 @@
 - (void)sendCodeEvent {
     self.errorMsgLb.text = @"";
     NSString *phoneNumber = self.phoneTextField.textField.text;
-    if (phoneNumber.length > 0) {
-        [self getVerifyCode:self.currentRegion.phoneCode phoneNumber:phoneNumber];
-    } else {
+    if (phoneNumber.length == 0) {
         self.errorMsgLb.text = RCDLocalizedString(@"phone_number_type_error");
+        return;
     }
+    
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSNumber *value = [userDefault valueForKey:@"RCDDebugUltraGroupEnable"];
+    if(![value boolValue]) {
+        NSString *picCode = [self.pictureVerCodeTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        if (picCode.length == 0) {
+            self.errorMsgLb.text = RCDLocalizedString(@"picture_verification_code_null");
+            return;
+        }
+    }
+    
+    [self getVerifyCode:self.currentRegion.phoneCode phoneNumber:phoneNumber];
+    
 }
 
 - (void)didTapCountryTextField {
@@ -190,6 +207,38 @@
     transition.subtype = kCATransitionFromLeft; //可更改为其他方式
     [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
     [self.navigationController pushViewController:temp animated:NO];
+}
+
+- (void)refreshPictureVerificationCode{
+    RCNetworkStatus status = [[RCCoreClient sharedCoreClient] getCurrentNetworkStatus];
+    if (RC_NotReachable == status) {
+        [self.view showHUDMessage:RCDLocalizedString(@"network_can_not_use_please_check")];
+        [self.pictureVerCodeButton setImage:nil forState:(UIControlStateNormal)];
+        self.codeId = @"";
+        return;
+    } else {
+        self.errorMsgLb.text = @"";
+    }
+    [RCDLoginManager getPictureVerificationCode:^(NSString * _Nonnull base64String, NSString * _Nonnull codeId) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.pictureVerCodeButton setImage:[self getImageVerification:base64String] forState:(UIControlStateNormal)];
+            self.codeId = codeId;
+        });
+    } error:^(RCDLoginErrorCode code) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.pictureVerCodeButton setImage:nil forState:(UIControlStateNormal)];
+            self.codeId = @"";
+        });
+    }];
+}
+
+- (UIImage *)getImageVerification:(NSString *)base64String{
+    if (base64String) {
+        NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64String
+                                                            options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        return [UIImage imageWithData:imageData];
+    }
+    return nil;
 }
 
 #pragma mark - RCDCountryListControllerDelegate
@@ -272,7 +321,7 @@
         [[RCTranslationClient sharedInstance] updateAuthToken:token];
         }
                                                  failure:^(NSInteger code) {
-            
+           
         }];
 #endif
 }
@@ -395,9 +444,8 @@
     hud.color = [UIColor colorWithHexString:@"343637" alpha:0.8];
     [hud show:YES];
     __weak typeof(self) ws = self;
-    [RCDLoginManager getVerificationCode:self.currentRegion.phoneCode
-        phoneNumber:phoneNumber
-        success:^(BOOL success) {
+    [RCDLoginManager getVerificationCode:self.currentRegion.phoneCode phoneNumber:phoneNumber
+     pictureCode:[self.pictureVerCodeTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] pictureCodeId:self.codeId success:^(BOOL success) {
             rcd_dispatch_main_async_safe(^{
                 [hud hide:YES];
                 if (success) {
@@ -414,9 +462,11 @@
                     ws.errorMsgLb.text = RCDLocalizedString(@"phone_number_type_error");
                 } else if (errorCode == RCDLoginErrorCodeVerificationCodeFrequencyTransfinite){
                     ws.errorMsgLb.text = RCDLocalizedString(@"verification_code_send_over_limit");
-                } else if(errorCode){
+                } else if (errorCode == RCDLoginErrorCodeVerificationCodeError) {
+                    self.errorMsgLb.text = RCDLocalizedString(@"picture_code_expired");
+                } else if(errorMsg){
                     ws.errorMsgLb.text = errorMsg;
-                }else{
+                } else{
                     ws.errorMsgLb.text = RCDLocalizedString(@"failed");
                 }
             });
@@ -489,47 +539,39 @@
     [self.view addSubview:[self getSwitchLanguage]];
     [self.view addSubview:[self getFooterLabel]];
 
+    [self.inputBackground addSubview:self.environmentTextField];
     [self.inputBackground addSubview:self.countryTextField];
     [self.inputBackground addSubview:self.phoneTextField];
+    [self.inputBackground addSubview:self.pictureVerCodeTextField];
+    [self.inputBackground addSubview:self.pictureVerCodeButton];
     [self.inputBackground addSubview:self.verificationCodeField];
     [self.inputBackground addSubview:self.sendCodeButton];
     [self.inputBackground addSubview:self.vCodeTimerLb];
     [self.inputBackground addSubview:self.loginButton];
     [self.view addSubview:self.proxyButton];
 }
-//数据中心切换 UI
-- (void)layoutForOverseaIfNeed {
-    [self.inputBackground addSubview:self.environmentTextField];
-    [self.inputBackground mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(self.view).offset(41);
-        make.trailing.equalTo(self.view).offset(-41);
-        make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
-        make.centerX.equalTo(self.view);
-        make.height.offset(310);
-    }];
-    [self.environmentTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.leading.trailing.top.equalTo(self.inputBackground);
-        make.height.offset(60);
-    }];
-    
-    [self.countryTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.leading.trailing.equalTo(self.inputBackground);
-        make.top.equalTo(self.environmentTextField.mas_bottom);
-        make.height.offset(60);
-    }];
-}
 
 - (void)setLayout {
+    CGFloat logoSize = 100;
+    CGFloat logoTop = 70;
+    CGFloat inputBackgroundTop = 20;
+    CGFloat loginButtonTop = 20;
+    if (SCREEN_HEIGHT < 665) {
+        logoSize = 70;
+        logoTop = 20;
+        inputBackgroundTop = 10;
+        loginButtonTop = 10;
+    }
     [self.rongLogo mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.height.offset(100);
-        make.top.equalTo(self.view).offset(70);
+        make.width.height.offset(logoSize);
+        make.top.equalTo(self.view).offset(logoTop);
         make.centerX.equalTo(self.view);
     }];
     
     [self.errorMsgLb mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(self.view).offset(41);
         make.trailing.equalTo(self.view).offset(-41);
-        make.top.equalTo(self.rongLogo.mas_bottom).offset(20);
+        make.top.equalTo(self.rongLogo.mas_bottom).offset(10);
         make.centerX.equalTo(self.view);
         make.height.offset(15);
     }];
@@ -537,13 +579,19 @@
     [self.inputBackground mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(self.view).offset(41);
         make.trailing.equalTo(self.view).offset(-41);
-        make.top.equalTo(self.rongLogo.mas_bottom).offset(50);
+        make.top.equalTo(self.rongLogo.mas_bottom).offset(20);
         make.centerX.equalTo(self.view);
-        make.height.offset(250);
+        make.height.offset(370);
+    }];
+    
+    [self.environmentTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.trailing.top.equalTo(self.inputBackground);
+        make.height.offset(60);
     }];
     
     [self.countryTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.trailing.top.equalTo(self.inputBackground);
+        make.leading.trailing.equalTo(self.inputBackground);
+        make.top.equalTo(self.environmentTextField.mas_bottom);
         make.height.offset(60);
     }];
     
@@ -553,14 +601,28 @@
         make.height.offset(60);
     }];
     
-    [self.verificationCodeField mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.pictureVerCodeTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(self.countryTextField);
         make.top.equalTo(self.phoneTextField.mas_bottom);
         make.height.offset(60);
     }];
     
+    [self.pictureVerCodeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(self.pictureVerCodeTextField).offset(-10);;
+        make.bottom.equalTo(self.pictureVerCodeTextField.mas_bottom).offset(-20);
+        make.height.offset(41);
+        make.width.offset(103);
+    }];
+    
+    [self.verificationCodeField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.trailing.equalTo(self.countryTextField);
+        make.top.equalTo(self.pictureVerCodeTextField.mas_bottom);
+        make.height.offset(60);
+    }];
+    
     [self.loginButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.trailing.bottom.equalTo(self.inputBackground);
+        make.leading.trailing.equalTo(self.inputBackground);
+        make.top.equalTo(self.verificationCodeField.mas_bottom).offset(loginButtonTop);
         make.height.offset(50);
     }];
     
@@ -689,6 +751,34 @@
         _errorMsgLb.textColor = [UIColor colorWithRed:204.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1];
     }
     return _errorMsgLb;
+}
+
+- (RCUnderlineTextField *)pictureVerCodeTextField{
+    if (!_pictureVerCodeTextField) {
+        _pictureVerCodeTextField = [[RCUnderlineTextField alloc] initWithFrame:CGRectZero];
+        _pictureVerCodeTextField.backgroundColor = [UIColor clearColor];
+        UIColor *color = [UIColor whiteColor];
+        _pictureVerCodeTextField.attributedPlaceholder =
+            [[NSAttributedString alloc] initWithString:RCDLocalizedString(@"picture_verification_code")
+                                            attributes:@{NSForegroundColorAttributeName : color}];
+        _pictureVerCodeTextField.textColor = [UIColor whiteColor];
+        _pictureVerCodeTextField.delegate = self;
+    }
+    return _pictureVerCodeTextField;
+}
+
+- (UIButton *)pictureVerCodeButton{
+    if (!_pictureVerCodeButton) {
+        _pictureVerCodeButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [_pictureVerCodeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _pictureVerCodeButton.titleLabel.font = [UIFont systemFontOfSize:13];
+        [_pictureVerCodeButton addTarget:self action:@selector(refreshPictureVerificationCode) forControlEvents:UIControlEventTouchUpInside];
+        [_pictureVerCodeButton setTitle:RCDLocalizedString(@"refresh") forState:UIControlStateNormal];
+        _pictureVerCodeButton.backgroundColor = HEXCOLOR(0x0099ff);
+        [_pictureVerCodeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _pictureVerCodeButton.layer.cornerRadius = 4;
+    }
+    return _pictureVerCodeButton;
 }
 
 - (RCUnderlineTextField *)verificationCodeField {

@@ -19,15 +19,21 @@ NS_ASSUME_NONNULL_BEGIN
                success:(void (^)(NSString *token, NSString *userId, NSString *nickName))successBlock
                  error:(void (^)(RCDLoginErrorCode errorCode))errorBlock;
 
-// 当前用户注销
+
 + (void)logout:(void (^)(BOOL success))completeBlock;
+
++ (void)removeAccount:(void (^)(BOOL success))completeBlock;
 
 + (BOOL)openDB:(NSString *)currentUserId;
 
++ (void)getPictureVerificationCode:(void (^)(NSString *base64String, NSString *codeId))successBlock
+                             error:(void (^)(RCDLoginErrorCode code))errorBlock;
 
 // 向手机发送验证码(云片服务)
 + (void)getVerificationCode:(NSString *)phoneCode
                 phoneNumber:(NSString *)phoneNumber
+                pictureCode:(NSString *)pictureCode
+              pictureCodeId:(NSString *)pictureCodeId
                     success:(void (^)(BOOL success))successBlock
                       error:(void (^)(RCDLoginErrorCode errorCode, NSString *errorMsg))errorBlock;
 

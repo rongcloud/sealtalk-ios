@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.4.1 Dev</string>
+	<string>5.4.2 Dev</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -54,7 +54,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>202303291912</string>
+	<string>202304202049</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -84,10 +84,12 @@
 	<string>请允许访问您的相册，这样可以保存照片到相册，也可以发送图片消息！</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>请允许访问您的麦克风，这样可以发送语音消息！</string>
+	<key>NSContactsUsageDescription</key>
+	<string>请允许 RC IM 获取您的通讯录，完成手机通讯录至服务器匹配朋友，RC IM 不会保存您的通讯录</string>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
 	<key>SealTalk Version</key>
-	<string>5.4.1</string>
+	<string>5.4.2</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

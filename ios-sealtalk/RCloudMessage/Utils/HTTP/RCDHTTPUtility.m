@@ -166,8 +166,11 @@ static AFHTTPSessionManager *manager;
     result.httpCode = ((NSHTTPURLResponse *)task.response).statusCode;
     result.errorCode = result.httpCode;
     NSLog(@"%@, {%@}", task.currentRequest.URL, result);
+    
+    BOOL isPicVer = [task.currentRequest.URL.absoluteString containsString:@"user/pic_code"];
+    
     //权限校验失败(未登录或登录凭证失效)
-    if (result.httpCode == 403) {
+    if (result.httpCode == 403 && !isPicVer) {
         NSData *data = error.userInfo[@"com.alamofire.serialization.response.error.data"];
         if (data) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];

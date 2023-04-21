@@ -47,6 +47,7 @@
     }
 }
 - (void)openUrlFor:(NSInteger)index {
+    if (index >= self.urls.count) return;
     NSString *urlString = self.urls[index];
     if (!urlString.length) {
         return;
@@ -59,11 +60,10 @@
 
 #pragma mark - UITableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
     if (0 == indexPath.row) {
         static NSString *logoCellWithIdentifier = @"RCDLogoTableViewCell";
         RCDLogoTableViewCell *logoCell = [self.tableView dequeueReusableCellWithIdentifier:logoCellWithIdentifier];
@@ -73,7 +73,7 @@
         logoCell.selectionStyle = UITableViewCellSelectionStyleNone;
         return logoCell;
     }
-    if (4 == indexPath.row) {
+    if (3 == indexPath.row) {
         static NSString *versionCellWithIdentifier = @"RCDVersionCell";
         RCDVersionCell *versionCell = [self.tableView dequeueReusableCellWithIdentifier:versionCellWithIdentifier];
         if (versionCell == nil) {
@@ -93,26 +93,22 @@
 
     static NSString *reusableCellWithIdentifier = @"RCDBaseSettingTableViewCell";
     RCDBaseSettingTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reusableCellWithIdentifier];
-
     if (cell == nil) {
         cell = [[RCDBaseSettingTableViewCell alloc] init];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     if (1 == indexPath.row) {
         [cell setCellStyle:DefaultStyle];
-        cell.leftLabel.text = RCDLocalizedString(@"update_log");
+        cell.leftLabel.text = RCDLocalizedString(@"function_introduce");
     } else if (2 == indexPath.row) {
         [cell setCellStyle:DefaultStyle];
-        cell.leftLabel.text = RCDLocalizedString(@"function_introduce");
-    } else if (3 == indexPath.row) {
-        [cell setCellStyle:DefaultStyle];
         cell.leftLabel.text = RCDLocalizedString(@"offical_website");
-    } else if (5 == indexPath.row) {
+    } else if (4 == indexPath.row) {
         [cell setCellStyle:DefaultStyle_RightLabel_WithoutRightArrow];
         cell.leftLabel.text = RCDLocalizedString(@"SDK_version");
         NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
         cell.rightLabel.text = version;
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
@@ -125,12 +121,11 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    if (indexPath.row < 4) {
+    if (indexPath.row < 3) {
         [self openUrlFor:indexPath.row];
-    } else if (indexPath.row == 4) {
+    } else if (indexPath.row == 3) {
         [self downloadNewVersionIfNeed];
-    } else if (indexPath.row == 5) {
+    } else if (indexPath.row == 4) {
         if (self.clickTimes == 0) {
             self.firstClickDate = [[NSDate alloc] init];
             self.clickTimes = 1;
@@ -204,7 +199,6 @@
     if (!_urls) {
         _urls = @[
             @"http://rongcloud.cn/",
-            @"http://blog.rongcloud.cn/?page_id=1569",
             @"http://rongcloud.cn/features",
             @"http://rongcloud.cn/"
         ];

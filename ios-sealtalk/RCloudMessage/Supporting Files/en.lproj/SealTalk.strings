@@ -554,3 +554,10 @@
 "socks_proxy_testhost_notice"="Please enter the correct test host";
 
 "real_time_max_participant_notice"="Maximum number exceed";
+"picture_verification_code"="Image Verification Code";
+"picture_verification_code_null"="image verification code is null";
+"delete_account"="delete account";
+"delete_account_alert"="Are you sure delete the account?";
+"delete_account_fail"="delete fail";
+"refresh"="Refresh";
+"picture_code_expired"="The image verification code is expired,please try again";

@@ -18,7 +18,7 @@
                                parameters:nil
                                  response:^(RCDHTTPResult *_Nonnull result) {
         if (result.success) {
-            BOOL openEnable = result.content[@"openEnable"] ;
+            BOOL openEnable = [result.content[@"openEnable"] boolValue] ;
             if (successBlock) {
                 successBlock(openEnable);
             }

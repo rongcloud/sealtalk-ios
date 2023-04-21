@@ -19,7 +19,6 @@
 @implementation NotificationService
 
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
-    NSLog(@"qxb NotificationService start");
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
 
@@ -65,7 +64,6 @@
 - (void)serviceExtensionTimeWillExpire {
     // Called just before the extension will be terminated by the system.
     // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
-    NSLog(@"qxb %s",__func__);
 }
 
 

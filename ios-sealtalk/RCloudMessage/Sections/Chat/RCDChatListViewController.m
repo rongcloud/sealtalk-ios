@@ -592,6 +592,9 @@
 }
 
 - (void)pushChatVC:(RCConversationModel *)model {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+    
     RCDChatViewController *chatVC = [[RCDChatViewController alloc] init];
     chatVC.conversationType = model.conversationType;
     chatVC.targetId = model.targetId;
@@ -603,12 +606,11 @@
         if (model.conversationType == ConversationType_SYSTEM) {
             chatVC.title = RCDLocalizedString(@"de_actionbar_sub_system");
         } else if (model.conversationType == ConversationType_PRIVATE) {
-            chatVC.displayUserNameInCell = NO;
+            chatVC.displayUserNameInCell = [[userDefault valueForKey:RCDDebugDisplayUserName] boolValue];
         }
     }
     
-    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
+
     chatVC.disableSystemEmoji = enable;
     [self.navigationController pushViewController:chatVC animated:YES];
 }

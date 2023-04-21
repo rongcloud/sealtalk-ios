@@ -39,7 +39,7 @@
 #pragma mark - Table view Delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -50,6 +50,8 @@
         row = 3;
     } else if (2 == section) {
         row = 1;
+    } else if (3 == section) {
+        row = 1;
     }
     return row;
 }
@@ -58,6 +60,8 @@
 
     if (2 == indexPath.section) {
         return [self createQuitCell];
+    } else if (3 == indexPath.section){
+        return [self createCancellationCell];
     }
 
     static NSString *reusableCellWithIdentifier = @"RCDBaseSettingTableViewCell";
@@ -122,6 +126,12 @@
             cancelBtnTitle:RCDLocalizedString(@"cancel")
              otherBtnTitle:RCDLocalizedString(@"confirm")
                        tag:1010];
+    } else if (3 == indexPath.section) {
+        //注销账户
+        [self showAlert:RCDLocalizedString(@"delete_account_alert")
+            cancelBtnTitle:RCDLocalizedString(@"cancel")
+             otherBtnTitle:RCDLocalizedString(@"confirm")
+                       tag:1012];
     }
 }
 
@@ -166,19 +176,38 @@
 
 //退出登录
 - (void)logout {
+    [self clearAccountInfo];
+    [RCDLoginManager logout:^(BOOL success){
+    }];
+}
+
+- (void)removeAccount{
+    [RCDLoginManager removeAccount:^(BOOL success) {
+        if(success){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self clearAccountInfo];
+                [DEFAULTS removeObjectForKey:RCDPhoneKey];
+                [DEFAULTS synchronize];
+            });
+        }else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [RCAlertView showAlertController:RCDLocalizedString(@"delete_account_fail") message:nil cancelTitle:RCDLocalizedString(@"confirm") inViewController:self];
+            });
+        }
+    }];
+}
+
+- (void)clearAccountInfo{
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [DEFAULTS removeObjectForKey:RCDIMTokenKey];
     [RCDNotificationServiceDefaults removeObjectForKey:RCDIMTokenKey];
     [DEFAULTS synchronize];
 
-    [RCDLoginManager logout:^(BOOL success){
-    }];
-
     RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
     UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:loginVC];
     self.view.window.rootViewController = navi;
     [[RCIM sharedRCIM] logout];
-
+    
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:MCShareExtensionKey];
     [userDefaults removeObjectForKey:RCDCookieKey];
     [userDefaults synchronize];
@@ -193,6 +222,8 @@
             [self logout];
         } else if (tag == 1011) {
             [self clearCache];
+        } else if(tag == 1012) {
+            [self removeAccount];
         }
     } inViewController:self];
 }
@@ -230,6 +261,37 @@
                                                                     multiplier:1
                                                                       constant:0]];
     return quitCell;
+}
+
+- (UITableViewCell *)createCancellationCell {
+    UITableViewCell *cancelCell = [[UITableViewCell alloc] init];
+    cancelCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cancelCell.backgroundColor = [RCDUtilities generateDynamicColor:HEXCOLOR(0xffffff)
+                                                        darkColor:[HEXCOLOR(0x1c1c1e) colorWithAlphaComponent:0.4]];
+    UILabel *label = [[UILabel alloc] init];
+    label.font = [UIFont systemFontOfSize:16];
+    label.textColor = RCDDYCOLOR(0x000000, 0x9f9f9f);
+    label.text = RCDLocalizedString(@"delete_account");
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [cancelCell setSeparatorInset:UIEdgeInsetsMake(0, 100, 0, 1000)];
+    [cancelCell.contentView addSubview:label];
+    [cancelCell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:label
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:cancelCell.contentView
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1
+                                                                      constant:0]];
+
+    [cancelCell.contentView addConstraint:[NSLayoutConstraint constraintWithItem:label
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:cancelCell.contentView
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1
+                                                                      constant:0]];
+    return cancelCell;
 }
 
 - (void)initUI {

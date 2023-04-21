@@ -193,12 +193,9 @@ dispatch_queue_t rcd_im_pushext_queue = NULL;
                           identifier:@"RCNSNotifyKey"];
     
     [self.wormhole listenForMessageWithIdentifier:@"RCNSAppNotifyKey" listener:^(id messageObject) {
-        
         NSString *appClientPtr = [messageObject valueForKey:@"ClientPointer"];
         NSString *pushExtClientPtr = [NSString stringWithFormat:@"%p",[RCCoreClient sharedCoreClient]];
-//        NSLog(@"qxb addWormholeListener appClientPointer %@ PushExtPointer %@",appClientPtr,pushExtClientPtr);
         if (![pushExtClientPtr isEqualToString:appClientPtr]) {
-//            NSLog(@"qxb [RCCoreClient sharedCoreClient] PushExt %@ pid:%u disconnect",[RCCoreClient sharedCoreClient],getpid());
             [self disconnectAndCallback];
         }
     }];

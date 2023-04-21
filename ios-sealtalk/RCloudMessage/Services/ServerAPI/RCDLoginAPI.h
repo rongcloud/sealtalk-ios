@@ -19,10 +19,17 @@
 
 + (void)logout:(void (^)(BOOL success))completeBlock;
 
++ (void)removeAccount:(void (^)(BOOL success))completeBlock;
+
 + (void)getVersionInfo:(void (^)(NSDictionary *versionInfo))completeBlock;
+
++ (void)getPictureVerificationCode:(void (^)(NSString *base64String, NSString *codeId))successBlock
+                             error:(void (^)(RCDLoginErrorCode code))errorBlock;
 
 + (void)getVerificationCode:(NSString *)phoneCode
                 phoneNumber:(NSString *)phoneNumber
+                pictureCode:(nonnull NSString *)pictureCode
+              pictureCodeId:(nonnull NSString *)pictureCodeId
                     success:(void (^)(BOOL success))successBlock
                       error:(void (^)(RCDLoginErrorCode errorCode, NSString *errorMsg))errorBlock;
 

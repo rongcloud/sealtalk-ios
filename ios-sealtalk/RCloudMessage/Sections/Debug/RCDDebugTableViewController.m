@@ -47,6 +47,7 @@
 #define DISABLE_CHECK_DUP_MESSAGE 115
 #define ENABLE_GROUP_REAL_TIME_LOCATION 116
 #define ENABLE_INTERCEPT_WILLSEND_COMBINE 117
+#define ENABLE_CONVERSATION_DISPLAY_NAME 118
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCCoreClient()
@@ -178,7 +179,10 @@
     if ([title isEqualToString:@"开启合并转发拦截"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_INTERCEPT_WILLSEND_COMBINE];
     }
-
+    if ([title isEqualToString:@"私聊显示用户名"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_CONVERSATION_DISPLAY_NAME];
+    }
+    
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -295,7 +299,8 @@
         @"关闭消息排重并杀死APP",
         @"开启群组实时位置共享",
         @"开启合并转发拦截",
-        @"自定义文件图标"
+        @"自定义文件图标",
+        @"私聊显示用户名"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -406,6 +411,11 @@
         case ENABLE_INTERCEPT_WILLSEND_COMBINE: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugInterceptWillSendCombineFuntion];
             break;
+        }
+        case ENABLE_CONVERSATION_DISPLAY_NAME: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisplayUserName];
+            break;
+            
         }
         default:
             break;
@@ -523,6 +533,12 @@
             [DEFAULTS synchronize];
             break;
         }
+        case ENABLE_CONVERSATION_DISPLAY_NAME: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisplayUserName];
+            [DEFAULTS synchronize];
+            break;
+        }
+            
     default:
         break;
     }
