@@ -29,6 +29,9 @@
 #import "UIView+MBProgressHUD.h"
 #import "RCDDebugComChatListController.h"
 #import "RCDDebugFileIconViewController.h"
+#import "AppDelegate.h"
+#import "RCDMainTabBarViewController.h"
+#import "RCDNavigationViewController.h"
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
 #define JOIN_CHATROOM_TAG 102
@@ -247,7 +250,9 @@
         [self pushDebugMessageExtensionVC];
     } else if ([title isEqualToString:@"设置推送语言"]) {
         [self setPushLauguageCode];
-    } else if ([title isEqualToString:@"会话标签"]) {
+    } else if ([title isEqualToString:@"设置 Kit UI 布局方向"]){
+        [self setIMKitUIDirection];
+    }else if ([title isEqualToString:@"会话标签"]) {
         [self pushConversationTagVC];
     }else if ([title isEqualToString:@"新的群已读回执"]) {
         [self pushGroupChatListVC];
@@ -311,7 +316,7 @@
     ]
             forKey:RCDLocalizedString(@"time_setting")];
 
-    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群", @"选择聚合头像方式"] forKey:@"功能"];
+    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言",@"设置 Kit UI 布局方向", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群", @"选择聚合头像方式"] forKey:@"功能"];
     self.functions = [dic copy];
 }
 
@@ -967,6 +972,21 @@
         tempTextField = textField;
     }];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)setIMKitUIDirection{
+    [RCActionSheetView showActionSheetView:[NSString stringWithFormat:@"当前设置：%@",@(RCKitConfigCenter.ui.layoutDirection)] cellArray:@[@"不设置", @"left to right", @"right to left"] cancelTitle:RCDLocalizedString(@"cancel") selectedBlock:^(NSInteger index) {
+        RCKitConfigCenter.ui.layoutDirection = index;
+        [[NSUserDefaults standardUserDefaults] setValue:@(RCKitConfigCenter.ui.layoutDirection) forKey:@"layoutDirection"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
+        RCDNavigationViewController *nav = [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
+        mainTabBarVC.selectedIndex = 3;
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        app.window.rootViewController = nav;
+    } cancelBlock:^{
+    }];
+
 }
 
 - (void)showCustomFileIcon {

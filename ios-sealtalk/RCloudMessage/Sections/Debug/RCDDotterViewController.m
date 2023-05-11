@@ -12,6 +12,8 @@
 #import <RongIMKit/RongIMKit.h>
 
 @interface RCDDotterViewController ()
+@property(nonatomic, strong) RCDownloadItem *item;
+@property(nonatomic, assign) bool loadable;
 @end
 
 @implementation RCDDotterViewController
@@ -29,97 +31,49 @@
 
 - (UIView *)dotterView {
     UIView *view = [UIView new];
-    UIButton *btnSwitch = [self buttonWith:@"异步判断HackDNS(弃用)" selector:@selector(networkSwitched)];
-    UIButton *btnDNS = [self buttonWith:@"同步判断HackDNS(弃用)" selector:@selector(dnsCheckSwitched)];
+    UIButton *btnLoad = [self buttonWith:@"加载[False:无效链接, True: 有效链接]" selector:@selector(loadFileURL)];
+    UIButton *btnReload = [self buttonWith:@"恢复" selector:@selector(reloadURL)];
 
-    UIButton *btnFore = [self buttonWith:@"标记进入前台(弃用)" selector:@selector(enterForeground)];
-    UIButton *btnRedirect = [self buttonWith:@"重定向" selector:@selector(redirect)];
-    UIButton *btnHeart = [self buttonWith:@"心跳超时(进入后台返回)" selector:@selector(heartBeateTimeout)];
-    UIButton *btnTimeout = [self buttonWith:@"两小时超时" selector:@selector(timeoutIn2Hours)];
-    UIButton *btnRequest = [self buttonWith:@"App 连接" selector:@selector(request)];
+    UIButton *btnSuspend = [self buttonWith:@"休眠" selector:@selector(itemSuspend)];
+    UIButton *btnSwitch = [self buttonWith:@"切换[False]" selector:@selector(redirect:)];
+    UIButton *btnCancel = [self buttonWith:@"取消" selector:@selector(itemCancel)];
 
-    UIButton *btnRTCRequest = [self buttonWith:@"RTC重连" selector:@selector(rtcReconnect)];
-
-    UIButton *btnRTCFetch = [self buttonWith:@"RTC刷新Navi" selector:@selector(refetch)];
-    UIButton *btnVoIP = [self buttonWith:@"VOIP重连" selector:@selector(voipReconnect)];
-    UIButton *btnDeviceToken = [self buttonWith:@"DeviceToken重连" selector:@selector(deviceTokenReconnect)];
-
+    [view addSubview:btnLoad];
+    [view addSubview:btnReload];
+    [view addSubview:btnSuspend];
     [view addSubview:btnSwitch];
-    [view addSubview:btnFore];
-    [view addSubview:btnRedirect];
-    [view addSubview:btnHeart];
-    [view addSubview:btnTimeout];
-    [view addSubview:btnDNS];
-    
-    [view addSubview:btnRTCRequest];
-    [view addSubview:btnRTCFetch];
-    [view addSubview:btnVoIP];
-    [view addSubview:btnDeviceToken];
-    
-    
-    [view addSubview:btnRequest];
-    
-    [btnSwitch mas_makeConstraints:^(MASConstraintMaker *make) {
+    [view addSubview:btnCancel];
+  
+    [btnLoad mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(view).mas_offset(40);
         make.centerX.mas_equalTo(view);
         make.width.mas_equalTo(300);
     }];
     
-    [btnFore mas_makeConstraints:^(MASConstraintMaker *make) {
+    [btnReload mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(btnLoad.mas_bottom).mas_offset(20);
+        make.centerX.mas_equalTo(view);
+        make.width.mas_equalTo(300);
+    }];
+    
+    [btnSuspend mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(btnReload.mas_bottom).mas_offset(20);
+        make.centerX.mas_equalTo(view);
+        make.width.mas_equalTo(300);
+    }];
+    
+    [btnSwitch mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(btnSuspend.mas_bottom).mas_offset(20);
+        make.centerX.mas_equalTo(view);
+        make.width.mas_equalTo(300);
+    }];
+    
+    [btnCancel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(btnSwitch.mas_bottom).mas_offset(20);
         make.centerX.mas_equalTo(view);
         make.width.mas_equalTo(300);
     }];
     
-    [btnRedirect mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnFore.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    
-    [btnHeart mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnRedirect.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    
-    [btnTimeout mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnHeart.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    
-    [btnDNS mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnTimeout.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    [btnRequest mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnDNS.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    [btnRTCRequest mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnRequest.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    [btnRTCFetch mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnRTCRequest.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    [btnVoIP mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnRTCFetch.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
-    [btnDeviceToken mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(btnVoIP.mas_bottom).mas_offset(20);
-        make.centerX.mas_equalTo(view);
-        make.width.mas_equalTo(300);
-    }];
- 
     view.backgroundColor = [UIColor whiteColor];
     return view;
 }
@@ -136,17 +90,55 @@
         [self.view showHUDMessage:msg];
     });
 }
-- (void)networkSwitched {
-    Class cls2 =  NSClassFromString(@"RCNaviThread");
-    NSURL *url = [NSURL URLWithString:@"http://www.google.com"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [cls2 performSelector:@selector(checkLocalDNSHijackedWithUrl:) withObject:url];
-    });
-    [self showTips:@"异步验证DNS"];
 
+- (void)downloadItem:(RCDownloadItem *)item state:(RCDownloadItemState)state {
+    NSLog(@"[DD] state: %d", state);
 }
-- (void)dnsCheckSwitched {
-  
+
+/**
+下载进度上报时调用
+
+@param item 下载任务
+@param progress 下载进度
+*/
+- (void)downloadItem:(RCDownloadItem *)item progress:(float)progress {
+    NSLog(@"[DD] progress: %f", progress);
+}
+
+/**
+任务结束时调用
+
+@param item 下载任务
+@param error 错误信息对象，成功时为 nil
+@param path 下载完成后文件的路径，此路径为相对路径，相对于沙盒根目录 NSHomeDirectory
+*/
+- (void)downloadItem:(RCDownloadItem *)item didCompleteWithError:(nullable NSError *)error filePath:(nullable NSString *)path {
+    NSLog(@"[DD] error: %@", [error localizedDescription]);
+}
+static int indexCount = 0;
+
+- (void)loadFileURL {
+    indexCount++;
+    NSString *identify = [NSString stringWithFormat: @"identify-%d", indexCount];
+    NSString *url = @"";
+    if (self.loadable) {
+        url= @"http://qapm-1253358381.cosgz.myqcloud.com/QAPM_SDK_Outer_v3.0.3.zip";
+    }
+    NSLog(@"[DD] url: %@", url);
+    RCResumeableDownloader *downloader = [RCResumeableDownloader defaultInstance];
+    self.item =
+        [downloader itemWithIdentify:identify
+                                 url:url
+                            fileName:@"identify"];
+    self.item.delegate = self;
+    [self.item downLoad];
+}
+
+
+- (void)reloadURL {
+    NSLog(@"[DD] resume: %d", [self.item resumable]);
+
+    [self.item resume];
 }
 
 - (void)request {
@@ -163,37 +155,22 @@
     
 }
 
-- (void)enterForeground {
-    
+- (void)itemSuspend {
+    [self.item suspend];
+    NSLog(@"[DD] : suspend");
 }
 
-- (void)redirect {
-    Class cls =  NSClassFromString(@"RCConnectionService");
-    id instance = [cls performSelector:@selector(sharedInstance)];
-    SEL sel = NSSelectorFromString(@"startRetry:");
-    NSMethodSignature *signature = [instance methodSignatureForSelector:sel];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-    NSInteger reason = 3;
-    [invocation setArgument:&reason atIndex:2];
-    invocation.selector = sel;
-    invocation.target = instance;
-    [invocation invoke];
-    [self showTips:@"重定向已发出"];
+- (void)redirect:(UIButton *)btn {
+    self.loadable = !self.loadable;
+    if (self.loadable) {
+        [btn setTitle:@"切换[True]" forState:UIControlStateNormal];
+    } else {
+        [btn setTitle:@"切换[False]" forState:UIControlStateNormal];
+    }
 }
 
-- (void)heartBeateTimeout {
-    Class cls =  NSClassFromString(@"RCConnectionService");
-    id instance = [cls performSelector:@selector(sharedInstance)];
-    SEL sel = NSSelectorFromString(@"startRetry:");
-    NSMethodSignature *signature = [instance methodSignatureForSelector:sel];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-    NSInteger reason = 4;
-    [invocation setArgument:&reason atIndex:2];
-    invocation.selector = sel;
-    invocation.target = instance;
-    [invocation invoke];
-    
-    [self showTips:@"心跳已超时"];
+- (void)itemCancel {
+    [self.item cancel];
 }
 
 - (void)refetch {

@@ -4637,7 +4637,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = CQJSB93Y3D;
+				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
@@ -4705,7 +4705,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = CQJSB93Y3D;
+				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -4756,7 +4756,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = CQJSB93Y3D;
+				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4833,12 +4833,13 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CODE_SIGN_ENTITLEMENTS = "RCloudMessage/Supporting Files/SealTalkAppStoreRelease.entitlements";
-				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = CQJSB93Y3D;
+				DEVELOPMENT_TEAM = T7DYH4JM86;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
@@ -4891,6 +4892,7 @@
 				PRODUCT_NAME = SealTalk;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = SealTalkRCIM_Dis;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = SealTalkRCIM_Dis;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = AppStoreRelease;
@@ -4900,14 +4902,14 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SealTalkShareExtension/SealTalkShareExtensionAppStoreRelease.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = CQJSB93Y3D;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CQJSB93Y3D;
+				DEVELOPMENT_TEAM = T7DYH4JM86;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -4953,14 +4955,14 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = SealTalkNotificationService/SealTalkNotificationServiceAppStoreRelease.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Rong Cloud Network Technology CO., LTD (CQJSB93Y3D)";
+				CODE_SIGN_IDENTITY = "Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 202202241449;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = CQJSB93Y3D;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CQJSB93Y3D;
+				DEVELOPMENT_TEAM = T7DYH4JM86;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T7DYH4JM86;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/framework/RongIMLibCore",

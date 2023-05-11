@@ -696,6 +696,7 @@
             [[RCDSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.conversationListTableView.frame.size.width,
                                                            self.headerView.frame.size.height)];
         _searchBar.delegate = self;
+        _searchBar.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
     }
     return _searchBar;
 }

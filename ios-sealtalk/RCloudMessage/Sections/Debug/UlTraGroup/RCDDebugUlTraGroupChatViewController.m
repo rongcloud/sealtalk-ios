@@ -611,6 +611,10 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:RCKitDispatchRecallMessageNotification
                                                             object:@(msg.messageId)
                                                           userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:RCKitDispatchRecallMessageDetailNotification
+                                                            object:msg
+                                                          userInfo:nil];
+        
         [self removeModelIfNeed:msg.messageId];
         
     }

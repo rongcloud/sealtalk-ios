@@ -38,6 +38,7 @@
 #import <UMAPM/UMAPMConfig.h>
 #import "RCDHTTPUtility.h"
 #import "RCDUltraGroupNotificationMessage.h"
+#import <RongiFlyKit/RongiFlyKit.h>
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
 #endif
@@ -99,6 +100,9 @@
 }
 
 - (void)configRongIM {
+    NSNumber *value = [[NSUserDefaults standardUserDefaults] objectForKey:@"layoutDirection"];
+    RCKitConfigCenter.ui.layoutDirection = [value integerValue];
+    
     // 每次启动都检测本地是否有代理配置缓存
     RCIMProxy *improxy = [RCDProxySettingControllerViewController currentAPPSettingIMProxy];
     // improxy 为nil，取消代理
@@ -124,7 +128,7 @@
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     [[RCCoreClient sharedCoreClient] setAppVer:app_Version];
-
+    [RCiFlyKit setiFlyAppkey:IFLY_APPKEY];
     
     //关闭消息排重
     [self disableCheckDupMessageIfNeed];
