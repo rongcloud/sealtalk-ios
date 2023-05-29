@@ -1,6 +1,16 @@
-source 'https://github.com/CocoaPods/Specs.git'
 
 platform :ios, '9.0'
+inhibit_all_warnings!
+
+def im
+  pod 'RongCloudIM/IMLibCore', '5.4.5'
+  pod 'RongCloudIM/IMLib', '5.4.5'
+  pod 'RongCloudIM/IMKit', '5.4.5'
+  pod 'RongCloudIM/RongSticker', '5.4.5'
+  pod 'RongCloudIM/Sight', '5.4.5'
+  pod 'RongCloudIM/ContactCard', '5.4.5'
+  pod 'RongCloudIM/LocationKit', '5.4.5'
+end
 
 target 'SealTalk' do
   use_frameworks!
@@ -25,12 +35,8 @@ target 'SealTalk' do
   pod 'DoraemonKit/WithLoad', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   pod 'DoraemonKit/WithMLeaksFinder', '3.0.2', :configurations => ['Debug', 'AppStoreDebug']
   
-  pod 'RongCloudIM/IMLib', '5.4.4'
-  pod 'RongCloudIM/IMKit', '5.4.4'
-  pod 'RongCloudIM/RongSticker', '5.4.4'
-  pod 'RongCloudIM/Sight', '5.4.4'
-  pod 'RongCloudIM/ContactCard', '5.4.4'
-  pod 'RongCloudIM/LocationKit', '5.4.4'
+  im
+  
   pod 'RongCloudRTC/RongCallLib', '~> 5.3.5'
   pod 'RongCloudRTC/RongCallKit', '~> 5.3.5'
 end
@@ -38,6 +44,8 @@ end
 target "SealTalkNotificationService" do
   use_frameworks!
   pod 'MMWormhole', '~> 2.0.0'
+  
+  im
 end
 
 post_install do |installer|

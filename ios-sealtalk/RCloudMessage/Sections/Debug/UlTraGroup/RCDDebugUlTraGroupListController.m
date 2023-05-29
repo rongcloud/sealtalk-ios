@@ -128,25 +128,27 @@
     if (model.conversationType == ConversationType_ULTRAGROUP) {
         int totalMentionCount = [[RCChannelClient sharedChannelManager] getUltraGroupUnreadMentionedCount:model.targetId];
       
-        int conversationMentionCount = 0;
+        int conversationMentionCount = 0,mentionMe = 0;
         //超级群未读
         if (model.channelId.length == 0) {
             RCConversation *conversation = 
                 [[RCCoreClient sharedCoreClient] getConversation:ConversationType_ULTRAGROUP 
                                                         targetId:model.targetId];
             conversationMentionCount = conversation.mentionedCount;
+            mentionMe = conversation.mentionedMeCount;
         } else {
             RCConversation *conversation =
                 [[RCChannelClient sharedChannelManager] getConversation:ConversationType_ULTRAGROUP
                                                         targetId:model.targetId 
                                                               channelId:model.channelId];
             conversationMentionCount = conversation.mentionedCount;
+            mentionMe = conversation.mentionedMeCount;
         }
         NSString *mentionString = @"";
         if (totalMentionCount > 0 && conversationMentionCount > 0) {
             mentionString = [NSString stringWithFormat:@"%d-%d", conversationMentionCount, totalMentionCount];
         }
-        NSString *text = [NSString stringWithFormat:@"L%ld [%d:%d] ",model.notificationLevel, conversationMentionCount, totalMentionCount];
+        NSString *text = [NSString stringWithFormat:@"L%ld [%d:%d:%d] ",model.notificationLevel, conversationMentionCount, totalMentionCount,mentionMe];
         [self configureTagViewFor:cell text:text];
     }
     
@@ -213,7 +215,7 @@
     lab.textColor = [UIColor whiteColor];
     lab.text = text;
     lab.backgroundColor = HEXCOLOR(0x0099fff);
-    lab.font = [UIFont boldSystemFontOfSize:12];
+    lab.font = [UIFont boldSystemFontOfSize:8];
     lab.layer.cornerRadius = 2;
     lab.layer.masksToBounds = YES;
     [lab sizeToFit];

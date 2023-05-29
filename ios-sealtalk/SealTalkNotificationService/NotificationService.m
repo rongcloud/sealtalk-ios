@@ -7,6 +7,7 @@
 //
 
 #import "NotificationService.h"
+#import <RongIMLibCore/RongIMLibCore.h>
 #import "RCDCommonDefine.h"
 #import "RCDEnvironmentContext.h"
 @interface NotificationService ()
@@ -21,14 +22,17 @@
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
+    [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:NO];
 
     NSDictionary *userInfo = self.bestAttemptContent.userInfo;
     
     NSString *statsServer = [RCDEnvironmentContext statsServer];
     NSString *naviServer = [RCDEnvironmentContext navServer];
     if (naviServer.length > 0) {
+        [[RCCoreClient sharedCoreClient] setServerInfo:naviServer fileServer:nil];
     }
     if (statsServer.length > 0) {
+        [[RCCoreClient sharedCoreClient] setStatisticServer:statsServer];
     }
     
     NSDictionary *aps = [userInfo objectForKey:@"aps"];
@@ -58,6 +62,7 @@
         self.contentHandler(self.bestAttemptContent);
     }
     
+    [[RCCoreClient sharedCoreClient] recordReceivedRemoteNotificationEvent:userInfo];
  
 }
 

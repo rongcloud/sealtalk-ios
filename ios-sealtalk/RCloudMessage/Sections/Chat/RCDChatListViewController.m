@@ -31,7 +31,7 @@
 #import "RCDNavigationViewController.h"
 #import "RCDGroupManager.h"
 
-@interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate>
+@interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate, RCIMClientReceiveMessageDelegate>
 @property (nonatomic, strong) RCDNavigationViewController *searchNavigationController;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) RCDSearchBar *searchBar;
@@ -66,6 +66,8 @@
     [self setTabBarStyle];
     [self registerNotification];
     [self getFriendRequesteds];
+    [[RCCoreClient sharedCoreClient] addReceiveMessageDelegate: self];
+
 }
 
 - (void)viewWillLayoutSubviews{
@@ -609,7 +611,10 @@
             chatVC.displayUserNameInCell = [[userDefault valueForKey:RCDDebugDisplayUserName] boolValue];
         }
     }
-    
+    NSInteger num = [DEFAULTS integerForKey:RCDChatroomDefalutHistoryMessageCountKey];
+    if (num > 0) {
+        chatVC.defaultMessageCount = [@(num) intValue];
+    }
 
     chatVC.disableSystemEmoji = enable;
     [self.navigationController pushViewController:chatVC animated:YES];
@@ -688,7 +693,19 @@
     self.tabBarController.navigationItem.rightBarButtonItems = @[ rightBtn ];
     self.tabBarController.navigationItem.title = RCDLocalizedString(@"Messages");
 }
+#pragma mark - RCIMClientReceiveMessageDelegate
 
+- (void)onReceived:(RCMessage *)message left:(int)nLeft object:(nullable id)object {
+    if ([message.content isKindOfClass:[RCDGroupNotificationMessage class]]) {
+        RCDGroupNotificationMessage *groupNotification = (RCDGroupNotificationMessage *)message.content;
+        if ([groupNotification.operation isEqualToString:@"Dismiss"]) {
+            [[RCCoreClient sharedCoreClient] removeConversation:message.conversationType
+                                                       targetId:message.targetId
+                                                     completion:nil];
+        }
+
+    }
+}
 #pragma mark - geter & setter
 - (RCDSearchBar *)searchBar {
     if (!_searchBar) {

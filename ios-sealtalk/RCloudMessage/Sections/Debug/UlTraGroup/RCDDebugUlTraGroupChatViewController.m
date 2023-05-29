@@ -23,7 +23,7 @@
 - (void)didReceiveMessageNotification:(NSNotification *)notification;
 @end
 
-@interface RCDDebugUltraGroupChatViewController () <RCUltraGroupReadTimeDelegate, RCMessageBlockDelegate,RCUltraGroupTypingStatusDelegate, RCUltraGroupMessageChangeDelegate>
+@interface RCDDebugUltraGroupChatViewController () <RCUltraGroupReadTimeDelegate, RCMessageBlockDelegate,RCUltraGroupTypingStatusDelegate, RCUltraGroupMessageChangeDelegate, RCIMClientReceiveMessageDelegate>
 @property (nonatomic, strong) RCMessageModel *menuSelectModel;
 @end
 
@@ -49,6 +49,7 @@
     [self syncReadStatus];
     
     [[RCChannelClient sharedChannelManager] clearMessagesUnreadStatus:ConversationType_ULTRAGROUP targetId:self.targetId channelId:self.channelId];
+    [[RCCoreClient sharedCoreClient] addReceiveMessageDelegate: self];
 }
 
 - (void)didReceiveMessageNotification:(NSNotification *)notification{
@@ -176,6 +177,21 @@
     dateFormart.timeZone = [NSTimeZone systemTimeZone];
     NSString *dateString = [dateFormart stringFromDate:[NSDate date]];
     return dateString;
+}
+#pragma mark - RCIMClientReceiveMessageDelegate
+
+- (void)onReceived:(RCMessage *)message left:(int)nLeft object:(nullable id)object {
+    if (nLeft !=0) {
+        return;
+    }
+    if ([message.targetId isEqualToString:self.targetId] && [message.channelId isEqualToString:self.channelId]) {
+        NSTimeInterval currentTimestamp = [[NSDate date] timeIntervalSince1970]*1000;
+        [[RCChannelClient sharedChannelManager] syncUltraGroupReadStatus:self.targetId
+                                                               channelId:self.channelId
+                                                                    time:currentTimestamp
+                                                                 success:nil
+                                                                   error:nil];
+    }
 }
 
 #pragma mark - RCDUGChannelTypeDelegate

@@ -38,7 +38,7 @@
 #import <UMAPM/UMAPMConfig.h>
 #import "RCDHTTPUtility.h"
 #import "RCDUltraGroupNotificationMessage.h"
-#import <RongiFlyKit/RongiFlyKit.h>
+//#import <RongiFlyKit/RongiFlyKit.h>
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
 #endif
@@ -128,7 +128,7 @@
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     [[RCCoreClient sharedCoreClient] setAppVer:app_Version];
-    [RCiFlyKit setiFlyAppkey:IFLY_APPKEY];
+    //[RCiFlyKit setiFlyAppkey:IFLY_APPKEY];
     
     //关闭消息排重
     [self disableCheckDupMessageIfNeed];

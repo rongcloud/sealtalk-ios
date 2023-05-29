@@ -32,6 +32,10 @@
 #import "AppDelegate.h"
 #import "RCDMainTabBarViewController.h"
 #import "RCDNavigationViewController.h"
+#import <RongSight/RongSight.h>
+#import <RongLocationKit/RongLocationKit.h>
+#import <RongSticker/RongSticker.h>
+#import <RongContactCard/RongContactCard.h>
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
 #define JOIN_CHATROOM_TAG 102

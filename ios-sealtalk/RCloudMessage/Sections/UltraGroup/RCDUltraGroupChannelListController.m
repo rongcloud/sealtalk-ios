@@ -188,6 +188,20 @@
                 [(UIImageView *)(converCell.headerImageView) sd_setImageWithURL:[NSURL URLWithString:[RCDUtilities defaultUltraChannelPortrait:channel groupId:model.targetId]] placeholderImage:[RCDUtilities imageNamed:@"default_portrait_msg" ofBundle:@"RongCloud.bundle"]];
             }
         }];
+        if([cell isKindOfClass:RCConversationCell.class]){
+            RCConversationCell *conCell = (RCConversationCell *)cell;
+            if([conCell.detailContentView.hightlineLabel.text  isEqualToString:RCLocalizedString(@"HaveMentioned")]){
+                [[RCChannelClient sharedChannelManager] getConversation:model.conversationType targetId:model.targetId channelId:model.channelId completion:^(RCConversation * _Nullable conversation) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if([conCell.detailContentView.hightlineLabel.text isEqualToString:RCLocalizedString(@"HaveMentioned")]){
+                            conCell.detailContentView.hightlineLabel.text = [NSString stringWithFormat:@"[有%d人@我，%d人@所有人]",conversation.mentionedMeCount,conversation.mentionedCount-conversation.mentionedMeCount];
+                            [conCell.detailContentView updateLayout];
+                        }
+                    });
+                }];
+            }
+        }
+        
     }
 }
 

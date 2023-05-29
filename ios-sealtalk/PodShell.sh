@@ -55,6 +55,9 @@ sed -i '' -e "/RongiFlyKit.framework/d"  ${Project}
 sed -i '' -e "/iflyMSC.framework/d"  ${Project}
 sed -i '' -e "/RongCloudiFly.bundle/d"  ${Project}
 
+sed -i "" -e 's?\[RCiFlyKit?//\[RCiFlyKit?' RCloudMessage/AppDelegate.m
+sed -i "" -e 's?^#import <RongiFlyKit?//#import <RongiFlyKit?' RCloudMessage/AppDelegate.m
+
 
 # im start
 
@@ -107,8 +110,8 @@ sed -i '' -e "/RCNotificationServiceAppPlugin.m/d"  ${Project}
 
 
 # app extention 不支持手动引入 XCFramework；pod 1.11.2 不支持 app 与 extension 导入同一 SDK start
-sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationService.m
-sed -i '' -e "/RCCoreClient/d" ./SealTalkNotificationService/NotificationService.m
+#sed -i '' -e "/RongIMLibCore/d" ./SealTalkNotificationService/NotificationService.m
+#sed -i '' -e "/RCCoreClient/d" ./SealTalkNotificationService/NotificationService.m
 # app extention 不支持手动引入 XCFramework，pod 1.11.2 不支持 app 与 extension 导入同一 SDK end
 
 # SmAntiFraud
@@ -140,3 +143,14 @@ sed -i '' -e 's/#/''/g'  Podfile
 sed -i '' -e '/RongCloud/s/5.2.3/'${Version}'/g' Podfile
 #pod update
 
+num=0
+while ((num<10))
+do
+    num+=1
+    pod install --repo-update
+    [ $? -eq 0 ] && num=10
+done
+
+xcodebuild -sdk iphoneos -workspace RCloudMessage.xcworkspace -scheme SealTalk
+
+[ $? -ne 0 ] && exit 1
