@@ -177,6 +177,7 @@ echo "sealtalk clean env times: $(($(date +%s) - $TEMP_TIME))"
 TEMP_TIME=$(date +%s)
 
 echo "***开始build iphoneos文件***"
+[ -d "framework" ] && rm -rf framework
   xcodebuild -scheme "${targetName}" archive -archivePath "./${BUILD_DIR}/${targetName}.xcarchive" -configuration ${CONFIGURATION} APP_PROFILE="${BUILD_APP_PROFILE}" SHARE_PROFILE="${BUILD_SHARE_PROFILE}"
   
   echo "sealtalk archive times: $(($(date +%s) - $TEMP_TIME))"

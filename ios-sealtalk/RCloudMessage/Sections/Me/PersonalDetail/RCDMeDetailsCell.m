@@ -11,7 +11,7 @@
 #import "RCDUtilities.h"
 #import <RongIMKit/RongIMKit.h>
 #import "RCDCommonString.h"
-
+#import "RCDSemanticContext.h"
 @implementation RCDMeDetailsCell
 
 /*
@@ -33,6 +33,11 @@
         self.leftLabel.text = [DEFAULTS stringForKey:RCDUserNickNameKey];
         self.leftLabel.textColor = [RCKitUtility generateDynamicColor:HEXCOLOR(0x000000) darkColor:[HEXCOLOR(0xffffff) colorWithAlphaComponent:0.9]];
         self.leftLabel.font = [UIFont systemFontOfSize:18];
+        if ([RCDSemanticContext isRTL]) {
+            self.leftLabel.textAlignment = NSTextAlignmentRight;
+        }else{
+            self.leftLabel.textAlignment = NSTextAlignmentLeft;
+        }
         self.rightArrow.hidden = YES;
         if (RCKitConfigCenter.ui.globalConversationAvatarStyle == RC_USER_AVATAR_CYCLE &&
             RCKitConfigCenter.ui.globalMessageAvatarStyle == RC_USER_AVATAR_CYCLE) {

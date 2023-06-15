@@ -64,7 +64,9 @@
                     @"(其他)获取超级群未读数", //25
                     @"发一条携带敏感词{key(123):毛泽东}文本消息", //26
                     @"搜索超级群当前频道的消息记录", //27
-                    @"搜索超级群所有频道的消息记录" //28
+                    @"搜索超级群所有频道的消息记录", //28
+                    @"修改超级群当前频道第一条消息", //29
+                    @"批量获取超级群未读数" //30
     ];
     [self setupSubviews];
     [self setNavi];
@@ -298,6 +300,12 @@
             break;
         case 28:
             [self showUltraGroupChatSearchAllChannel];
+            break;
+        case 29:
+            [self modifyFirstMessage];
+            break;
+        case 30:
+            [self getUnreadCountWithBatchTargetId];
             break;
         default:
             break;
@@ -679,6 +687,57 @@
     RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
     navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:navigationController animated:NO completion:nil];
+}
+
+- (void)modifyFirstMessage {
+    RCHistoryMessageOption *option = [[RCHistoryMessageOption alloc] init];
+    option.count = 1;
+    [[RCChannelClient sharedChannelManager] getMessages:self.type targetId:self.targetId channelId:self.channelId option:option complete:^(NSArray<RCMessage *> * _Nullable messages, RCErrorCode code) {
+        if (messages.count == 0) return;
+        RCMessage *message = messages.firstObject;
+        RCTextMessage *content = [RCTextMessage messageWithContent:@"modify text message"];
+        [[RCChannelClient sharedChannelManager] modifyUltraGroupMessage:message.messageUId messageContent:content success:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *msg = [message.messageUId stringByAppendingFormat:@": %@", content.content];
+                [RCAlertView showAlertController:@"修改超级群消息" message:msg cancelTitle:@"确定"];
+            });
+        } error:^(RCErrorCode status) {
+            NSLog(@"modifyUltraGroupMessage failed %@", @(status));
+        }];
+    }];
+}
+
+- (void)getUnreadCountWithBatchTargetId {
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"批量获取超级群未读数" message:@"targetId 以空格隔开" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UITextField *textField = controller.textFields.firstObject;
+        NSString *text = textField.text;
+//        if (text.length == 0) text = @"SJMLgITzr a7zNdEojB";
+        NSArray *tIds = [text componentsSeparatedByString:@" "];
+        if (tIds.count == 0) return;
+        [[RCChannelClient sharedChannelManager] getUltraGroupConversationUnreadInfoList:tIds success:^(NSArray<RCConversationUnreadInfo *> * _Nonnull list) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showUnreadCountResult:list];
+            });
+        } error:^(RCErrorCode status) {}];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}];
+    [controller addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {}];
+    [controller addAction:sureAction];
+    [controller addAction:cancelAction];
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void)showUnreadCountResult:(NSArray<RCConversationUnreadInfo *> *)list {
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"批量获取超级群未读数" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    for (RCConversationUnreadInfo *info in list) {
+        NSString *content = [NSString stringWithFormat:@"%@ %@:%@,%@,%@,%@", info.targetId, info.channelId, @(info.unreadMessageCount), @(info.mentionedCount), @(info.mentionedMeCount), @(info.notificationLevel)];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:content style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {}];
+        [controller addAction:action];
+    }
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}];
+    [controller addAction:cancelAction];
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 #pragma mark- 沙盒

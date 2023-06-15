@@ -13,6 +13,7 @@ function copy_sdk(){
     echo "----- SealTalk_Path: ${SealTalk_Path} -----"
     echo "----- SDK_Path: ${SDK_Path} -----"
     cp -af ${SDK_Path}/bin/* $SealTalk_Path
+    cp -af ${SDK_Path}/bin_tmp/iphoneos.sdk/*.framework $SealTalk_Path
     rm -rf ${SealTalk_Path}/*.xcframework
     if [ ${Need_Extract_Arch} = "true" ]; then
         lipo -remove x86_64 ${SealTalk_Path}/${SDK_Name}.framework/${SDK_Name} -output ${SealTalk_Path}/${SDK_Name}.framework/${SDK_Name}
@@ -163,6 +164,7 @@ if [ -d "$IFLY_PATH" ]; then
         mkdir -p $SEALTALK_IFLY_FRAMEWORKER_PATH
     fi
     cp -af ${IFLY_PATH}/* $SEALTALK_IFLY_FRAMEWORKER_PATH
+    cp -af ${IFLY_PATH}_tmp/iphoneos.sdk/*.framework $SEALTALK_IFLY_FRAMEWORKER_PATH
     rm -rf $SEALTALK_IFLY_FRAMEWORKER_PATH/*.xcframework
 fi
 
@@ -175,6 +177,7 @@ if [ -d "$CALLKIT_PATH" ]; then
         mkdir -p $SEALTALK_CALLKIT_FRAMEWORKER_PATH
     fi
     cp -af ${CALLKIT_PATH}/* $SEALTALK_CALLKIT_FRAMEWORKER_PATH
+    cp -af ${CALLKIT_PATH}_tmp/iphoneos.sdk/*.framework $SEALTALK_CALLKIT_FRAMEWORKER_PATH
     rm -rf $SEALTALK_CALLKIT_FRAMEWORKER_PATH/*.xcframework
     if [ ${Need_Extract_Arch} = "true" ]; then
         lipo -remove x86_64 ${SEALTALK_CALLKIT_FRAMEWORKER_PATH}/RongCallKit.framework/RongCallKit -output ${SEALTALK_CALLKIT_FRAMEWORKER_PATH}/RongCallKit.framework/RongCallKit
@@ -191,6 +194,7 @@ if [ -d "$CALLLIB_PATH" ]; then
     fi
     
     cp -af ${CALLLIB_PATH}/* $SEALTALK_CALLLIB_FRAMEWORKER_PATH
+    cp -af ${CALLLIB_PATH}_tmp/iphoneos.sdk/*.framework $SEALTALK_CALLLIB_FRAMEWORKER_PATH
     rm -rf $SEALTALK_CALLLIB_FRAMEWORKER_PATH/*.xcframework
     if [ ${Need_Extract_Arch} = "true" ]; then
         lipo -remove x86_64 ${SEALTALK_CALLLIB_FRAMEWORKER_PATH}/RongCallLib.framework/RongCallLib -output ${SEALTALK_CALLLIB_FRAMEWORKER_PATH}/RongCallLib.framework/RongCallLib
@@ -206,6 +210,7 @@ if [ -d "$RTCLIB_PATH" ]; then
         mkdir -p $SEALTALK_RTCLIB_FRAMEWORKER_PATH
     fi
     cp -af ${RTCLIB_PATH}/* $SEALTALK_RTCLIB_FRAMEWORKER_PATH
+    cp -af ${RTCLIB_PATH}_tmp/iphoneos.sdk/*.framework $SEALTALK_RTCLIB_FRAMEWORKER_PATH
     rm -rf $SEALTALK_RTCLIB_FRAMEWORKER_PATH/*.xcframework
     if [ ${Need_Extract_Arch} = "true" ]; then
         lipo -remove x86_64 ${SEALTALK_RTCLIB_FRAMEWORKER_PATH}/RongRTCLib.framework/RongRTCLib -output ${SEALTALK_RTCLIB_FRAMEWORKER_PATH}/RongRTCLib.framework/RongRTCLib
