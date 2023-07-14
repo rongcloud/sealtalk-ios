@@ -226,6 +226,8 @@
     NSString *title = cell.textLabel.text;
     if ([title isEqualToString:RCDLocalizedString(@"force_crash")]) {
         [self doCrash];
+    } else if ([title isEqualToString:@"强制 crash sinal"]) {
+        [self doCrashSignal];
     } else if ([title isEqualToString:RCDLocalizedString(@"send_log")]) {
         [self copyAndSendFiles];
     } else if ([title isEqualToString:@"显示沙盒内容"]) {
@@ -287,6 +289,7 @@
 
     [dic setObject:@[
         RCDLocalizedString(@"force_crash"),
+        @"强制 crash sinal",
         RCDLocalizedString(@"send_log"),
         @"显示沙盒内容",
         @"显示PushExt沙盒",
@@ -585,6 +588,24 @@
 - (void)doCrash {
     [@[] objectAtIndex:1];
 }
+
+- (void)doCrashSignal {
+    [self signalSIGABRT];
+}
+
+typedef struct Test
+{
+    int a;
+    int b;
+}Test;
+
+- (void)signalSIGABRT {
+    // 导致SIGABRT的错误，因为内存中根本就没有这个空间，哪来的free，就在栈中的对象而已
+    Test *pTest = {1,2};
+    free(pTest);
+    pTest->a = 5;
+}
+
 
 /**
  跳转到设置离线消息补偿时间的页面
