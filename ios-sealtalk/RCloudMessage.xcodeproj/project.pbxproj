@@ -82,6 +82,7 @@
 		17E018C81D59BCBB0093D3A0 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 17E018C41D59BCBB0093D3A0 /* TFHppleElement.m */; };
 		17E018C91D59BCBB0093D3A0 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 17E018C61D59BCBB0093D3A0 /* XPathQuery.m */; };
 		1B1FF90F28CAF06F00DD8811 /* RCDProxySettingControllerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B1FF90E28CAF06F00DD8811 /* RCDProxySettingControllerViewController.m */; };
+		1B4BD93D2A8DF14A008FC1B1 /* RCURLCenter+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B4BD93C2A8DF14A008FC1B1 /* RCURLCenter+Test.m */; };
 		1C6F8461283F322A0027B06B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6F8460283F32290027B06B /* AdSupport.framework */; };
 		1C6F8463283F323D0027B06B /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6F8462283F323D0027B06B /* libsqlite3.0.tbd */; };
 		1C836A5C283F3329007FABD2 /* UIButton+AlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C836A4D283F3329007FABD2 /* UIButton+AlertAction.m */; };
@@ -673,6 +674,8 @@
 		18602902A340A5E172D35403 /* Pods-SealTalk.appstorerelease.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.appstorerelease.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.appstorerelease.xcconfig"; sourceTree = "<group>"; };
 		1B1FF90D28CAF06F00DD8811 /* RCDProxySettingControllerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDProxySettingControllerViewController.h; sourceTree = "<group>"; };
 		1B1FF90E28CAF06F00DD8811 /* RCDProxySettingControllerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDProxySettingControllerViewController.m; sourceTree = "<group>"; };
+		1B4BD93B2A8DF14A008FC1B1 /* RCURLCenter+Test.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCURLCenter+Test.h"; sourceTree = "<group>"; };
+		1B4BD93C2A8DF14A008FC1B1 /* RCURLCenter+Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCURLCenter+Test.m"; sourceTree = "<group>"; };
 		1B7BFB7A2840B651008CD5F9 /* RCDebugHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDebugHeader.h; sourceTree = "<group>"; };
 		1B98DAE327C767AA00E97EBA /* SealTalkDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkDebug.entitlements; sourceTree = "<group>"; };
 		1B98DAE427C767F900E97EBA /* SealTalkAutoDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkAutoDebug.entitlements; sourceTree = "<group>"; };
@@ -1468,6 +1471,8 @@
 				00055E5B292CB66E0037DDCB /* RCEmojiBoardView+Ext.m */,
 				007807E02940735400947E3A /* RCDStickerTest.h */,
 				007807E12940735400947E3A /* RCDStickerTest.m */,
+				1B4BD93B2A8DF14A008FC1B1 /* RCURLCenter+Test.h */,
+				1B4BD93C2A8DF14A008FC1B1 /* RCURLCenter+Test.m */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -3646,7 +3651,7 @@
 				A27AD725265C96C0008D35F7 /* Sources */,
 				A27AD726265C96C0008D35F7 /* Frameworks */,
 				A27AD727265C96C0008D35F7 /* Resources */,
-				5405789B312C8D01DB6BF259 /* [CP] Copy Pods Resources */,
+				14D2448F2E71A35827398471 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3668,7 +3673,7 @@
 				17D7D1E91D534F56000AEC54 /* Embed App Extensions */,
 				C5058288BDE887CC6D4836AD /* [CP] Embed Pods Frameworks */,
 				3B118042256CFF10001E5105 /* Embed Frameworks */,
-				30617EDEDC3F5EC2118D4D7A /* [CP] Copy Pods Resources */,
+				B62A6A5917180E8FB2DF2DB0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3905,46 +3910,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		30617EDEDC3F5EC2118D4D7A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
-				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongCallKit.bundle",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/en.lproj",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/zh-Hans.lproj",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/ar.lproj",
-				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongRTCLib.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCallKit.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongRTCLib.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5405789B312C8D01DB6BF259 /* [CP] Copy Pods Resources */ = {
+		14D2448F2E71A35827398471 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4018,6 +3984,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B62A6A5917180E8FB2DF2DB0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongCallKit.bundle",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/en.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/ar.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongRTCLib.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCallKit.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongRTCLib.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C5058288BDE887CC6D4836AD /* [CP] Embed Pods Frameworks */ = {
@@ -4191,6 +4196,7 @@
 				3BC0C7E3229E79490079234F /* RCDAddressBookViewController.m in Sources */,
 				003A90A7289A10EB000AC1FE /* RCDMentionedView.m in Sources */,
 				3B3DED12221D62E40079DFE6 /* NSBundle+RC.m in Sources */,
+				1B4BD93D2A8DF14A008FC1B1 /* RCURLCenter+Test.m in Sources */,
 				A2A5258022B8B9D1008188A1 /* NormalAlertView.m in Sources */,
 				A251674D2797B3C800BA4BFD /* RCDUltraGroupCell.m in Sources */,
 				A252715C27A1301500996A73 /* RCDChannel.m in Sources */,

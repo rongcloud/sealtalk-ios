@@ -65,5 +65,8 @@
 #define RCDDebugEnableRealTimeLocation @"RCDDebugEnableRealTimeLocation"
 #define RCDDebugInterceptWillSendCombineFuntion @"RCDDebugInterceptWillSendCombineFuntion"
 #define RCDDebugDisplayUserName @"RCDDebugDisplayUserName"
+#define RCDDebugBlockedCommonPhrasesButton @"RCDDebugBlockedCommonPhrasesButton"
+#define RCDDebugDisableDeleteRemoteMessage @"RCDDebugDisableDeleteRemoteMessage"
+#define RCDDebugENABLE_STATICCONF_TEST @"RCDDebugENABLE_STATICCONF_TEST"
 
 #endif /* RCDCommonString_h */

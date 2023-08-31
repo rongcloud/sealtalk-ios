@@ -108,6 +108,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
     self.disableSystemEmoji = enable;
+    
+    self.needDeleteRemoteMessage = ![DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
 }
 
 - (void)viewDidLoad {
@@ -165,7 +167,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [RCDPokeManager sharedInstance].currentConversation = conver;
     //    [self.chatSessionInputBarControl updateStatus:self.chatSessionInputBarControl.currentBottomBarStatus
     //    animated:NO];
-    [self showDynamicPhrasesIfNeed];
+    [self showDynamicPhrasesIfNeed]; 
 }
 
 
@@ -180,7 +182,11 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
             NSString *phrase = [NSString stringWithFormat:@"常用语 -> %d", i];
             [array addObject:phrase];
         }
+      
         [self.chatSessionInputBarControl setCommonPhrasesList:array];
+        if(self.defaultInputType == RCChatSessionInputBarInputDestructMode ) {
+            [self.chatSessionInputBarControl setDefaultInputType:self.defaultInputType];
+        }
     }
 }
 - (void)viewWillDisappear:(BOOL)animated {
@@ -614,6 +620,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
     [super willDisplayMessageCell:cell atIndexPath:indexPath];
 }
+
+- (BOOL)didTapCommonPhrasesButton {
+    [self showToastMsg:@"常用语按钮监听"];
+    return [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
+}
+
 #pragma mark - target action
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
@@ -1098,6 +1110,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         inputType = KBottomBarDestructStatus;
     }
     [[RCDIMService sharedService] saveInputStatus:self.conversationType targetId:self.targetId inputType:inputType];
+}
+
+- (void)showToastMsg:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:msg];
+    });
 }
 
 #pragma mark - *************消息多选功能:转发、删除*************

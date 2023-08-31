@@ -55,6 +55,10 @@
 #define ENABLE_GROUP_REAL_TIME_LOCATION 116
 #define ENABLE_INTERCEPT_WILLSEND_COMBINE 117
 #define ENABLE_CONVERSATION_DISPLAY_NAME 118
+#define BLOCKED_COMMON_PHRASES_BUTTON_ACTION 119
+#define DISABLE_DELETE_REMOTE_MESSAGE 120
+#define ENABLE_STATICCONF_TEST 121
+
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCCoreClient()
@@ -189,6 +193,15 @@
     if ([title isEqualToString:@"私聊显示用户名"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_CONVERSATION_DISPLAY_NAME];
     }
+    if ([title isEqualToString:@"是否拦截常用语按钮点击"]) {
+        [self setSwitchButtonCell:cell tag:BLOCKED_COMMON_PHRASES_BUTTON_ACTION];
+    }
+    if ([title isEqualToString:@"是否禁止消息长按删除删除远端"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_DELETE_REMOTE_MESSAGE];
+    }
+    if ([title isEqualToString:@"静态配置测试"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_STATICCONF_TEST];
+    }
     
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -312,7 +325,10 @@
         @"开启群组实时位置共享",
         @"开启合并转发拦截",
         @"自定义文件图标",
-        @"私聊显示用户名"
+        @"私聊显示用户名",
+        @"是否拦截常用语按钮点击",
+        @"是否禁止消息长按删除删除远端",
+        @"静态配置测试"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -428,6 +444,18 @@
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisplayUserName];
             break;
             
+        }
+        case BLOCKED_COMMON_PHRASES_BUTTON_ACTION: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
+            break;
+        }
+        case DISABLE_DELETE_REMOTE_MESSAGE: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
+            break;
+        }
+        case ENABLE_STATICCONF_TEST: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugENABLE_STATICCONF_TEST];
+            break;
         }
         default:
             break;
@@ -550,7 +578,22 @@
             [DEFAULTS synchronize];
             break;
         }
-            
+        case BLOCKED_COMMON_PHRASES_BUTTON_ACTION: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugBlockedCommonPhrasesButton];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_DELETE_REMOTE_MESSAGE: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableDeleteRemoteMessage];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case ENABLE_STATICCONF_TEST: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugENABLE_STATICCONF_TEST];
+            [DEFAULTS synchronize];
+            exit(0);
+            break;
+        }
     default:
         break;
     }
