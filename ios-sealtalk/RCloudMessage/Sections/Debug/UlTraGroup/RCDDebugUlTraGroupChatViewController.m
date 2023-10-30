@@ -877,10 +877,10 @@
 
 - (void)deleteMessages {
     NSArray *tempArray = [self.selectedMessages mutableCopy];
+    self.allowsMessageCellSelection = NO;
     for (int i = 0; i < tempArray.count; i++) {
         [self deleteMessage:tempArray[i]];
     }
-    self.allowsMessageCellSelection = NO;
 }
 
 

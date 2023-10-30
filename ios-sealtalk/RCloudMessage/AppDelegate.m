@@ -118,6 +118,10 @@
     }
 
     RCInitOption *initOption = [[RCInitOption alloc] init];
+    BOOL disable_crash_monitor = [[[NSUserDefaults standardUserDefaults] valueForKey:RCDDebugDISABLE_CRASH_MONITOR] boolValue];
+    if (disable_crash_monitor) {
+        initOption.crashMonitorEnable = NO;
+    }
     initOption.naviServer = [RCDEnvironmentContext navServer];
     initOption.fileServer = [RCDEnvironmentContext fileServer];
     initOption.statisticServer = [RCDEnvironmentContext statsServer];

@@ -54,6 +54,8 @@
 #import <RongLocation/RongLocation.h>
 #import "RCDSemanticContext.h"
 
+#import "RCDDebugSliceResumeDownloadVC.h"
+
 static const NSInteger kRealTimeMaxParticipants = 5; // 实时位置支持的最大共享人数
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
 static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusViewKey";
@@ -359,6 +361,18 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         RCDUserInfo *user =
             [[RCDUserInfo alloc] initWithUserId:cardMSg.userId name:cardMSg.name portrait:cardMSg.portraitUri];
         [self pushPersonDetailVC:user];
+        return;
+    }
+    BOOL enablePauseDownloadTest = [DEFAULTS boolForKey:RCDDebugEnablePauseDownloadTest];
+    if (enablePauseDownloadTest &&
+        ([model.content isKindOfClass:[RCSightMessage class]] ||
+         [model.content isKindOfClass:[RCFileMessage class]])) {
+        RCDDebugSliceResumeDownloadVC *vc = [[RCDDebugSliceResumeDownloadVC alloc] init];
+        vc.messageModel = model;
+        vc.playAction = ^(RCMessageModel * _Nonnull model) {
+            [super didTapMessageCell:model];
+        };
+        [self.navigationController pushViewController:vc animated:YES];
         return;
     }
     [super didTapMessageCell:model];

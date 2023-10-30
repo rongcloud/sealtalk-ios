@@ -68,5 +68,7 @@
 #define RCDDebugBlockedCommonPhrasesButton @"RCDDebugBlockedCommonPhrasesButton"
 #define RCDDebugDisableDeleteRemoteMessage @"RCDDebugDisableDeleteRemoteMessage"
 #define RCDDebugENABLE_STATICCONF_TEST @"RCDDebugENABLE_STATICCONF_TEST"
+#define RCDDebugEnablePauseDownloadTest @"RCDDebugEnablePauseDownloadTest"
+#define RCDDebugDISABLE_CRASH_MONITOR @"RCDDebugDISABLE_CRASH_MONITOR"
 
 #endif /* RCDCommonString_h */

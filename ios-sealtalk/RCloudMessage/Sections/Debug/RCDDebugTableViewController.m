@@ -58,6 +58,8 @@
 #define BLOCKED_COMMON_PHRASES_BUTTON_ACTION 119
 #define DISABLE_DELETE_REMOTE_MESSAGE 120
 #define ENABLE_STATICCONF_TEST 121
+#define ENABLE_PAUSE_DOWNLOAD_TEST 122
+#define DISABLE_CRASH_MONITOR 123
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
@@ -202,7 +204,12 @@
     if ([title isEqualToString:@"静态配置测试"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_STATICCONF_TEST];
     }
-    
+    if ([title isEqualToString:@"暂停下载功能测试"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_PAUSE_DOWNLOAD_TEST];
+    }
+    if ([title isEqualToString:@"是否禁用崩溃收集"]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_CRASH_MONITOR];
+    }
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -328,7 +335,9 @@
         @"私聊显示用户名",
         @"是否拦截常用语按钮点击",
         @"是否禁止消息长按删除删除远端",
-        @"静态配置测试"
+        @"静态配置测试",
+        @"暂停下载功能测试",
+        @"是否禁用崩溃收集"
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -455,6 +464,14 @@
         }
         case ENABLE_STATICCONF_TEST: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugENABLE_STATICCONF_TEST];
+            break;
+        }
+        case ENABLE_PAUSE_DOWNLOAD_TEST: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnablePauseDownloadTest];
+            break;
+        }
+        case DISABLE_CRASH_MONITOR: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDISABLE_CRASH_MONITOR];
             break;
         }
         default:
@@ -590,6 +607,17 @@
         }
         case ENABLE_STATICCONF_TEST: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugENABLE_STATICCONF_TEST];
+            [DEFAULTS synchronize];
+            exit(0);
+            break;
+        }
+        case ENABLE_PAUSE_DOWNLOAD_TEST: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnablePauseDownloadTest];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case DISABLE_CRASH_MONITOR: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDISABLE_CRASH_MONITOR];
             [DEFAULTS synchronize];
             exit(0);
             break;
