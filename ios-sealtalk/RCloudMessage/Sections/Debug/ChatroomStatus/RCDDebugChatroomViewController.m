@@ -15,7 +15,7 @@
 
 static NSString *debugChatRoomCellIdentifier = @"RCDDebugChatRoomCellIdentifier";
 
-@interface RCDDebugChatroomViewController () <UITableViewDelegate, UITableViewDataSource, RCChatRoomKVStatusChangeDelegate,RCChatRoomStatusDelegate,RCChatRoomNotifyEventDelegate>
+@interface RCDDebugChatroomViewController () <UITableViewDelegate, UITableViewDataSource, RCChatRoomKVStatusChangeDelegate,RCChatRoomStatusDelegate,RCChatRoomNotifyEventDelegate,RCChatRoomMemberDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArray;
@@ -27,7 +27,7 @@ static NSString *debugChatRoomCellIdentifier = @"RCDDebugChatRoomCellIdentifier"
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[RCChatRoomClient sharedChatRoomClient] setChatRoomStatusDelegate:self];
-    
+    [[RCChatRoomClient sharedChatRoomClient] setMemberDelegate:self];
     [[RCChatRoomClient sharedChatRoomClient] addChatRoomNotifyEventDelegate:self];
     [self setupData];
     [self setupNav];
@@ -422,6 +422,46 @@ static NSString *debugChatRoomCellIdentifier = @"RCDDebugChatRoomCellIdentifier"
 
     NSString *targetString =
     [NSString stringWithFormat:@"聊天室禁言相关事件:RCChatRoomMemberBanEvent, \n聊天室 ID:%@, \n禁言类型:%@, \n禁言时间戳(毫秒):%@, \n禁言时长(毫秒):%@, \n禁言用户ID列表:%@, \n扩展:%@", event.chatroomId, typeStr, @(event.operateTime), @(event.durationTime), event.userIdList, event.extra];
+    NSLog(@"%@", targetString);
+    
+    [self addStringToDataSource:targetString];
+}
+
+#pragma mark - RCChatRoomNotifyEventDelegate
+
+- (void)memberDidChange:(NSArray<RCChatRoomMemberAction *> *)members inRoom:(NSString *)roomId {
+    NSString *actionStr = @"";
+    NSMutableString *mutableStr = [[NSMutableString alloc] init];
+    for (RCChatRoomMemberAction *memberAction in members) {
+        if (RC_ChatRoom_Member_Quit == memberAction.action) {
+            actionStr = [NSString stringWithFormat:@"成员(%@)退出", memberAction.memberId];
+        }else if (RC_ChatRoom_Member_Join == memberAction.action) {
+            actionStr = [NSString stringWithFormat:@"成员(%@)加入", memberAction.memberId];
+        }
+        [mutableStr appendString:actionStr];
+        [mutableStr appendString:@";;;"];
+    }
+
+    NSString *targetString = [NSString stringWithFormat:@"聊天室成员加入或退出事件:memberDidChange:inRoom:, \n聊天室 ID:%@, \n变更列表信息:%@", roomId, mutableStr];
+    NSLog(@"%@", targetString);
+    
+    [self addStringToDataSource:targetString];
+}
+
+- (void)memberDidChange:(RCChatRoomMemberActionModel *)actionModel {
+    NSString *actionStr = @"";
+    NSMutableString *mutableStr = [[NSMutableString alloc] init];
+    for (RCChatRoomMemberAction *memberAction in actionModel.chatRoomMemberActions) {
+        if (RC_ChatRoom_Member_Quit == memberAction.action) {
+            actionStr = [NSString stringWithFormat:@"成员(%@)退出", memberAction.memberId];
+        }else if (RC_ChatRoom_Member_Join == memberAction.action) {
+            actionStr = [NSString stringWithFormat:@"成员(%@)加入", memberAction.memberId];
+        }
+        [mutableStr appendString:actionStr];
+        [mutableStr appendString:@";;;"];
+    }
+    
+    NSString *targetString = [NSString stringWithFormat:@"聊天室成员加入或退出事件:memberDidChange:, \n聊天室 ID:%@, \n变更列表信息:%@, \n当前的聊天室人数:%@", actionModel.roomId, mutableStr, @(actionModel.memberCount)];
     NSLog(@"%@", targetString);
     
     [self addStringToDataSource:targetString];

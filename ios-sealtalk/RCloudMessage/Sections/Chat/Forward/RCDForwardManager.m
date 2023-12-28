@@ -10,7 +10,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 
 @interface RCDForwardManager ()
-@property (nonatomic, strong) UIViewController *viewController;
+@property (nonatomic, weak) UIViewController *viewController;
 
 @property (nonatomic, assign) NSInteger friendCount;
 @property (nonatomic, assign) NSInteger groupCount;
@@ -222,6 +222,8 @@
 }
 
 - (void)clear {
+    self.selectConversationCompleted = nil;
+    self.willForwardMessageBlock = nil;
     self.isForward = NO;
     self.isMultiSelect = NO;
     self.selectedMessages = nil;

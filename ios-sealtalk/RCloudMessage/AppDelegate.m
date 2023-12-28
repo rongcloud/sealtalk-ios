@@ -15,8 +15,6 @@
 #import "RCDRCIMDataSource.h"
 #import "RCDTestMessage.h"
 #import "RCDUtilities.h"
-#import "RCWKNotifier.h"
-#import "RCWKRequestHandler.h"
 #import "UIColor+RCColor.h"
 #import "RCDBuglyManager.h"
 #import "RCDLoginManager.h"
@@ -64,7 +62,7 @@
 #import <RongRTCLib/RongRTCLib.h>
 
 #if RCDTranslationEnable
-@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
+@interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
 #else
 @interface AppDelegate () <RCWKAppInfoProvider, RCUltraGroupConversationDelegate>
 #endif
@@ -149,8 +147,9 @@
     [[RCIM sharedRCIM] registerMessageType:[RCDClearMessage class]];
     [[RCIM sharedRCIM] registerMessageType:[RCDUltraGroupNotificationMessage class]];
 
-
-    [RCCoreClient sharedCoreClient].voiceMsgType = RCVoiceMessageTypeHighQuality;
+    // 默认为高清语音
+    BOOL enableNormalVoiceMessage = [[DEFAULTS valueForKey:RCDDebugEnableNormalVoiceMessage] boolValue];
+    [RCIMClient sharedRCIMClient].voiceMsgType = enableNormalVoiceMessage ? RCVoiceMessageTypeOrdinary : RCVoiceMessageTypeHighQuality;
     
     [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Info;
     // 超级群会话同步状态监听代理 要在初始化之后, 连接之前设置
@@ -516,18 +515,6 @@
 
 - (void)didLoginCookieExpiredNotification:(NSNotification *)notification{
     [self gotoLoginViewAndDisplayReasonInfo:@"未登录或登录凭证失效"];
-}
-
-- (void)application:(UIApplication *)application
-    handleWatchKitExtensionRequest:(NSDictionary *)userInfo
-                             reply:(void (^)(NSDictionary *))reply {
-    RCWKRequestHandler *handler =
-        [[RCWKRequestHandler alloc] initHelperWithUserInfo:userInfo provider:self reply:reply];
-    if (![handler handleWatchKitRequest]) {
-        // can not handled!
-        // app should handle it here
-        NSLog(@"not handled the request: %@", userInfo);
-    }
 }
 
 #pragma mark - RCIMConnectionStatusDelegate

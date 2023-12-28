@@ -9,6 +9,13 @@
 #import "RCDDebugMessagePushConfigController.h"
 #import <Masonry/Masonry.h>
 
+typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
+    RCDInterruptionLevel_passive = 1,
+    RCDInterruptionLevel_active = 2,
+    RCDInterruptionLevel_time_sensitive = 3,
+    RCDInterruptionLevel_critical = 4
+};
+
 @interface RCDDebugMessagePushConfigController ()
 
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -30,6 +37,9 @@
 @property (nonatomic, strong) UITextField *pushDataTF;
 
 @property (nonatomic, strong) UITextField *imageUrlTF;
+
+@property (nonatomic, strong) UILabel *interruptionLevelInfoLbl;
+@property (nonatomic, strong) UITextField *interruptionLevelTF;
 
 @property (nonatomic, strong) UITextField *templateIdTF;
 
@@ -62,6 +72,10 @@
 @property (nonatomic, strong) UITextField *miImgUrlTF;
 
 @property (nonatomic, strong) UITextField *fcmChannelIdTF;
+
+@property (nonatomic, strong) UITextField *importanceHonorTF;
+
+@property (nonatomic, strong) UITextField *imageUrlHonorTF;
 
 @property (nonatomic, strong) RCMessagePushConfig *pushConfig;
 
@@ -96,6 +110,8 @@
     [self.contentView addSubview:self.pushContentTF];
     [self.contentView addSubview:self.pushDataTF];
     [self.contentView addSubview:self.imageUrlTF];
+    [self.contentView addSubview:self.interruptionLevelInfoLbl];
+    [self.contentView addSubview:self.interruptionLevelTF];
     [self.contentView addSubview:self.templateIdTF];
     [self.contentView addSubview:self.threadIdTF];
     [self.contentView addSubview:self.categoryTF];
@@ -112,6 +128,8 @@
     [self.contentView addSubview:self.hwImgUrlTF];
     [self.contentView addSubview:self.miImgUrlTF];
     [self.contentView addSubview:self.fcmChannelIdTF];
+    [self.contentView addSubview:self.importanceHonorTF];
+    [self.contentView addSubview:self.imageUrlHonorTF];
 
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.bottom.equalTo(self.view);
@@ -177,8 +195,18 @@
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
-    [self.notificationIdTF mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.interruptionLevelInfoLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.apnsCollapseIdTF.mas_bottom).offset(10);
+        make.left.right.equalTo(self.disableTitleBtn);
+        make.height.mas_equalTo(50);
+    }];
+    [self.interruptionLevelTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.interruptionLevelInfoLbl.mas_bottom).offset(2);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.notificationIdTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.interruptionLevelTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
@@ -240,6 +268,16 @@
     [self.hwLvel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.fcmChannelIdTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.importanceHonorTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.hwLvel.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+    
+    [self.imageUrlHonorTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.importanceHonorTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
         make.bottom.equalTo(self.contentView);
     }];
 }
@@ -269,6 +307,7 @@
         self.pushTitleTF.text = self.pushConfig.pushTitle;
         self.pushContentTF.text = self.pushConfig.pushContent;
         self.imageUrlTF.text = self.pushConfig.iOSConfig.richMediaUri;
+        self.interruptionLevelTF.text = [NSString stringWithFormat:@"%@", @([self p_interruptionLevelToInt:self.pushConfig.iOSConfig.interruptionLevel])];
         self.pushDataTF.text = self.pushConfig.pushData;
         self.templateIdTF.text = self.pushConfig.templateId;
         self.threadIdTF.text = self.pushConfig.iOSConfig.threadId;
@@ -286,11 +325,48 @@
         self.hwImgUrlTF.text = self.pushConfig.androidConfig.hwImageUrl;
         self.miImgUrlTF.text = self.pushConfig.androidConfig.miLargeIconUrl;
         self.fcmChannelIdTF.text = self.pushConfig.androidConfig.fcmChannelId;
+        self.importanceHonorTF.text = self.pushConfig.androidConfig.importanceHonor;
+        self.imageUrlHonorTF.text = self.pushConfig.androidConfig.imageUrlHonor;
     }
     
     if (self.config) {
         self.disableNotificationBtn.selected = self.config.disableNotification;
     }
+}
+
+- (RCDInterruptionLevel)p_interruptionLevelToInt:(NSString *)levelStr {
+    if ([kInterruptionLevel_passive isEqualToString:levelStr]) {
+        return RCDInterruptionLevel_passive;
+    }
+    else if ([kInterruptionLevel_active isEqualToString:levelStr]) {
+        return RCDInterruptionLevel_active;
+    }
+    else if ([kInterruptionLevel_time_sensitive isEqualToString:levelStr]) {
+        return RCDInterruptionLevel_time_sensitive;
+    }
+    else if ([kInterruptionLevel_critical isEqualToString:levelStr]) {
+        return RCDInterruptionLevel_critical;
+    }
+    return RCDInterruptionLevel_active;
+}
+
+- (NSString *)p_interruptionLevelToString:(RCDInterruptionLevel)level {
+    NSString *retLevelString = kInterruptionLevel_active;
+    switch (level) {
+        case RCDInterruptionLevel_passive:
+            retLevelString = kInterruptionLevel_passive;
+            break;
+        case RCDInterruptionLevel_active:
+            retLevelString = kInterruptionLevel_active;
+            break;
+        case RCDInterruptionLevel_time_sensitive:
+            retLevelString = kInterruptionLevel_time_sensitive;
+            break;
+        case RCDInterruptionLevel_critical:
+            retLevelString = kInterruptionLevel_critical;
+            break;
+    }
+    return retLevelString;
 }
 
 #pragma mark - Action
@@ -318,6 +394,7 @@
     pushConfig.iOSConfig.category = self.categoryTF.text;
     pushConfig.iOSConfig.apnsCollapseId = self.apnsCollapseIdTF.text;
     pushConfig.iOSConfig.richMediaUri = self.imageUrlTF.text;
+    pushConfig.iOSConfig.interruptionLevel = [self p_interruptionLevelToString:[self.interruptionLevelTF.text integerValue]];
     pushConfig.androidConfig.notificationId = self.notificationIdTF.text;
     pushConfig.androidConfig.channelIdMi = self.channelIdMiTF.text;
     pushConfig.androidConfig.channelIdHW = self.channelIdHWTF.text;
@@ -332,6 +409,8 @@
     pushConfig.androidConfig.hwImageUrl = self.hwImgUrlTF.text;
     pushConfig.androidConfig.miLargeIconUrl= self.miImgUrlTF.text;
     pushConfig.androidConfig.fcmChannelId = self.fcmChannelIdTF.text;
+    pushConfig.androidConfig.importanceHonor = self.importanceHonorTF.text;
+    pushConfig.androidConfig.imageUrlHonor = self.imageUrlHonorTF.text;
     
     [self saveToUserDefaults:pushConfig];
     
@@ -356,6 +435,7 @@
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.iOSConfig.apnsCollapseId forKey:@"pushConfig-apnsCollapseId"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.iOSConfig.richMediaUri forKey:@"pushConfig-richMediaUri"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.iOSConfig.category forKey:@"pushConfig-category"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.iOSConfig.interruptionLevel forKey:@"pushConfig-interruptionLevel"];
 
     
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.notificationId forKey:@"pushConfig-android-id"];
@@ -371,6 +451,9 @@
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.hwImageUrl forKey:@"pushConfig-android-hwImageUrl"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.miLargeIconUrl forKey:@"pushConfig-android-miLargeIconUrl"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.fcmChannelId forKey:@"pushConfig-android-fcmChannelId"];
+    // honor
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.importanceHonor forKey:@"pushConfig-android-importanceHonor"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.imageUrlHonor forKey:@"pushConfig-android-imageUrlHonor"];
 }
 
 - (void)saveConfigToUserDefaults:(RCMessageConfig *)config {
@@ -390,7 +473,8 @@
     self.pushConfig.iOSConfig.apnsCollapseId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-apnsCollapseId"];
     self.pushConfig.iOSConfig.richMediaUri = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-richMediaUri"];
     self.pushConfig.iOSConfig.category = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-category"];
-    
+    self.pushConfig.iOSConfig.interruptionLevel = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-interruptionLevel"];
+
     self.pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     self.pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
     self.pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
@@ -409,6 +493,12 @@
         self.pushConfig.androidConfig.importanceHW = RCImportanceHwNormal;
 
     }
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHonor"]) {
+        self.pushConfig.androidConfig.importanceHonor = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHonor"];
+    }else{
+        self.pushConfig.androidConfig.importanceHonor = RCImportanceHonorNormal;
+    }
+    self.pushConfig.androidConfig.imageUrlHonor = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-imageUrlHonor"];
 
     self.config = [[RCMessageConfig alloc] init];
     self.config.disableNotification = [[[NSUserDefaults standardUserDefaults] objectForKey:@"config-disableNotification"] boolValue];
@@ -514,6 +604,25 @@
         _imageUrlTF.layer.borderWidth = 1;
     }
     return _imageUrlTF;
+}
+
+- (UILabel *)interruptionLevelInfoLbl {
+    if (!_interruptionLevelInfoLbl) {
+        _interruptionLevelInfoLbl = [[UILabel alloc] init];
+        _interruptionLevelInfoLbl.numberOfLines = 2;
+        _interruptionLevelInfoLbl.textColor = UIColor.lightGrayColor;
+        _interruptionLevelInfoLbl.text = @"1:passive,2:active(default),3:time-sensitive,4:critical";
+    }
+    return _interruptionLevelInfoLbl;
+}
+
+- (UITextField *)interruptionLevelTF {
+    if (!_interruptionLevelTF) {
+        _interruptionLevelTF = [[UITextField alloc] init];
+        _interruptionLevelTF.placeholder = @"1:passive,2:active,3:time-sensitive,4:critical";
+        _interruptionLevelTF.layer.borderWidth = 1;
+    }
+    return _interruptionLevelTF;
 }
 
 - (UITextField *)pushDataTF {
@@ -677,6 +786,24 @@
         _fcmChannelIdTF.layer.borderWidth = 1;
     }
     return _fcmChannelIdTF;
+}
+
+- (UITextField *)importanceHonorTF {
+    if (!_importanceHonorTF) {
+        _importanceHonorTF = [[UITextField alloc] init];
+        _importanceHonorTF.placeholder = @"Honor 推送级别";
+        _importanceHonorTF.layer.borderWidth = 1;
+    }
+    return _importanceHonorTF;
+}
+
+- (UITextField *)imageUrlHonorTF {
+    if (!_imageUrlHonorTF) {
+        _imageUrlHonorTF = [[UITextField alloc] init];
+        _imageUrlHonorTF.placeholder = @"Honor 图片地址";
+        _imageUrlHonorTF.layer.borderWidth = 1;
+    }
+    return _imageUrlHonorTF;
 }
 
 

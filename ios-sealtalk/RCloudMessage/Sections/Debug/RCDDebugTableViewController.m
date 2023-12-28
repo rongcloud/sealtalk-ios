@@ -36,6 +36,8 @@
 #import <RongLocationKit/RongLocationKit.h>
 #import <RongSticker/RongSticker.h>
 #import <RongContactCard/RongContactCard.h>
+#import "RCDDebugMessageAuditInfoViewController.h"
+
 #define DISPLAY_ID_TAG 100
 #define DISPLAY_ONLINE_STATUS_TAG 101
 #define JOIN_CHATROOM_TAG 102
@@ -60,7 +62,7 @@
 #define ENABLE_STATICCONF_TEST 121
 #define ENABLE_PAUSE_DOWNLOAD_TEST 122
 #define DISABLE_CRASH_MONITOR 123
-
+#define ENABLE_NORMAL_VOICE_TAG 124
 #define FILEMANAGER [NSFileManager defaultManager]
 
 @interface RCCoreClient()
@@ -176,6 +178,9 @@
     if ([title isEqualToString:@"隐藏头像"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_HIDDEN_PORTRAIT];
     }
+    if ([title isEqualToString:@"使用普通语音消息"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_NORMAL_VOICE_TAG];
+    }
     
     if ([title isEqualToString:@"自定义表情"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_CUSTOM_EMOJI];
@@ -274,6 +279,8 @@
         [self pushToChatListVC];
     } else if ([title isEqualToString:@"消息扩展"]){
         [self pushDebugMessageExtensionVC];
+    } else if ([title isEqualToString:@"配置消息审核属性"]) {
+        [self pushToMessageAuditInfoVC];
     } else if ([title isEqualToString:@"设置推送语言"]) {
         [self setPushLauguageCode];
     } else if ([title isEqualToString:@"设置 Kit UI 布局方向"]){
@@ -348,7 +355,7 @@
     ]
             forKey:RCDLocalizedString(@"time_setting")];
 
-    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言",@"设置 Kit UI 布局方向", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群", @"选择聚合头像方式"] forKey:@"功能"];
+    [dic setObject:@[@"讨论组", @"配置消息推送属性", @"进入消息推送属性测试", @"设置推送语言",@"设置 Kit UI 布局方向", @"会话标签",@"新的群已读回执", @"消息断档",@"友盟设备识别信息", @"超级群", @"普通群", @"选择聚合头像方式", @"使用普通语音消息", @"配置消息审核属性"] forKey:@"功能"];
     self.functions = [dic copy];
 }
 
@@ -474,8 +481,13 @@
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDISABLE_CRASH_MONITOR];
             break;
         }
+        case ENABLE_NORMAL_VOICE_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableNormalVoiceMessage];
+            break;
+        }
         default:
             break;
+
     }
     switchView.on = isButtonOn;
     [cell.contentView addSubview:switchView];
@@ -622,8 +634,13 @@
             exit(0);
             break;
         }
-    default:
-        break;
+        case ENABLE_NORMAL_VOICE_TAG: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableNormalVoiceMessage];
+            [DEFAULTS synchronize];
+            break;
+        }
+        default:
+            break;
     }
 }
 
@@ -870,6 +887,11 @@ typedef struct Test
 
 - (void)pushToChatListVC {
     RCDDebugChatListViewController *vc = [[RCDDebugChatListViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)pushToMessageAuditInfoVC {
+    RCDDebugMessageAuditInfoViewController *vc = [[RCDDebugMessageAuditInfoViewController alloc] init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

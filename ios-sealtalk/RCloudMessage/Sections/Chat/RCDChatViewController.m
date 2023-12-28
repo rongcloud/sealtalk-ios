@@ -129,8 +129,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     // 防欺诈层级要比共享位置低
     [self setupFraudPreventionTipsView];
     
-    /*******************实时位置共享***************/
+    //sealTalk 专用，开发者不要调用此方法
     [self enableRealTimeLocationIfNeeded];
+    
+    /*******************实时位置共享***************/
     [self registerRealTimeLocationCell];
     [self getRealTimeLocationProxy];
     /******************实时位置共享**************/
@@ -231,6 +233,26 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self.conversationMessageCollectionView removeObserver:self forKeyPath:@"frame"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+//sealTalk 专用，开发者不要调用此方法
+- (void)enableRealTimeLocationIfNeeded {
+    id obj = [NSClassFromString(@"RCRealTimeLocationService") performSelector:NSSelectorFromString(@"sharedService")];
+    NSArray *types = [obj performSelector:NSSelectorFromString(@"allowedConversationTypes")];
+    if ([DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation]) {
+        if (![types containsObject:@(3) ]) {
+            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types?:@[]];
+            [allowTypes addObject:@(3)];
+            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
+        }
+    } else {
+        if ([types containsObject:@(3) ]) {
+            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types];
+            [allowTypes removeObject:@(3)];
+            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
+        }
+    }
+}
+//sealTalk 专用，开发者不要调用此方法
 
 #pragma mark - 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status {
@@ -439,6 +461,28 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         // RCTextMessage *textMsg = (RCTextMessage *)messageContent;
         // textMsg.extra = @"";
     }
+    
+    // 啫喱单聊审核增加测试信息
+    if ([messageContent isMemberOfClass:[RCTextMessage class]] ||
+        [messageContent isMemberOfClass:[RCVoiceMessage class]] ||
+        [messageContent isMemberOfClass:[RCHQVoiceMessage class]] ||
+        [messageContent isMemberOfClass:[RCImageMessage class]] ||
+        [messageContent isMemberOfClass:[RCGIFMessage class]] ||
+        [messageContent isMemberOfClass:[RCSightMessage class]] ||
+        [messageContent isMemberOfClass:[RCReferenceMessage class]]) {
+        
+        BOOL enableAudit = [DEFAULTS boolForKey:RCDDebugMessageAuditTypeKey];
+        NSString *auditProject = [DEFAULTS stringForKey:RCDDebugMessageAuditProjectKey];
+        NSString *auditStrategy = [DEFAULTS stringForKey:RCDDebugMessageAuditStrategyKey];
+        
+        RCMessageAuditInfo *auditInfo = [[RCMessageAuditInfo alloc] init];
+        auditInfo.auditType = enableAudit ? RCMessageAuditTypeAllow : RCMessageAuditTypeDisallow;
+        auditInfo.project = auditProject;
+        auditInfo.strategy = auditStrategy;
+        messageContent.auditInfo = auditInfo;
+    }
+
+    
     if (messageContent.mentionedInfo && messageContent.mentionedInfo.userIdList) {
         for (int i = 0; i < messageContent.mentionedInfo.userIdList.count; i++) {
             NSString *userId = messageContent.mentionedInfo.userIdList[i];
@@ -1239,24 +1283,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         error:^(RCRealTimeLocationErrorCode status) {
             NSLog(@"get location share failure with code %d", (int)status);
         }];
-}
-
-- (void)enableRealTimeLocationIfNeeded {
-    id obj = [NSClassFromString(@"RCRealTimeLocationService") performSelector:NSSelectorFromString(@"sharedService")];
-    NSArray *types = [obj performSelector:NSSelectorFromString(@"allowedConversationTypes")];
-    if ([DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation]) {
-        if (![types containsObject:@(3) ]) {
-            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types?:@[]];
-            [allowTypes addObject:@(3)];
-            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
-        }
-    } else {
-        if ([types containsObject:@(3) ]) {
-            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types];
-            [allowTypes removeObject:@(3)];
-            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
-        }
-    }
 }
 
 //弹出实时位置共享页面
