@@ -177,7 +177,7 @@ static AFHTTPSessionManager *manager;
             if (dic && [dic isKindOfClass:[NSDictionary class]]) {
                 result.errorCode = [dic[@"code"] integerValue];
                 result.content = dic[@"msg"];
-                if (result.errorCode == 10000) {
+                if (result.errorCode == 10000 || result.errorCode == 1000) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:RCDLoginCookieExpiredNotification object:nil];
                 }
             }

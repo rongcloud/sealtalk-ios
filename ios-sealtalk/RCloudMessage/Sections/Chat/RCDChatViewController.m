@@ -44,6 +44,10 @@
 #import <RongPublicService/RongPublicService.h>
 #import "RCDChatTitleAlertView.h"
 
+#import "RCDCombineV2MessageCell.h"
+#import "RCDCombineV2Utility.h"
+#import "RCDCombineV2PreviewController.h"
+
 /*******************实时位置共享***************/
 #import <objc/runtime.h>
 #import "RealTimeLocationEndCell.h"
@@ -124,7 +128,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
     [self refreshUserInfoOrGroupInfo];
     [self addNotifications];
-    //    [self addToolbarItems];
+    [self addToolbarItems];
     
     // 防欺诈层级要比共享位置低
     [self setupFraudPreventionTipsView];
@@ -369,6 +373,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDGroupNotificationMessage.class];
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDChatNotificationMessage.class];
     [self registerClass:RCDPokeMessageCell.class forMessageClass:RCDPokeMessage.class];
+    [self registerClass:[RCDCombineV2MessageCell class] forMessageClass:[RCCombineV2Message class]];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *value = [userDefault valueForKey:RCDDebugTextAsyncDrawEnable];
     self.drawAsyncEnable = [value boolValue];
@@ -383,6 +388,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         RCDUserInfo *user =
             [[RCDUserInfo alloc] initWithUserId:cardMSg.userId name:cardMSg.name portrait:cardMSg.portraitUri];
         [self pushPersonDetailVC:user];
+        return;
+    } else if ([model.content isKindOfClass:[RCCombineV2Message class]]) {
+        RCDCombineV2PreviewController *combineV2PreviewVC = [[RCDCombineV2PreviewController alloc] initWithMessage:model];
+        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:combineV2PreviewVC];
+        navi.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        [self presentViewController:navi animated:YES completion:nil];
         return;
     }
     BOOL enablePauseDownloadTest = [DEFAULTS boolForKey:RCDDebugEnablePauseDownloadTest];
@@ -1179,29 +1190,32 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 #pragma mark - *************消息多选功能:转发、删除*************
 /******************消息多选功能:转发、删除**********************/
 - (void)addToolbarItems {
-    //转发按钮
+    if (![DEFAULTS boolForKey:RCDDebugCombineV2EnableKey]) return;
+
     UIButton *forwardBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
     [forwardBtn setImage:[UIImage imageNamed:@"forward_message"] forState:UIControlStateNormal];
-    [forwardBtn addTarget:self action:@selector(forwardMessage) forControlEvents:UIControlEventTouchUpInside];
+    [forwardBtn addTarget:self action:@selector(combineV2forwardMessage) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardBtn];
-    //删除按钮
-    UIButton *deleteBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
-    [deleteBtn setImage:RCResourceImage(@"delete_message")
-               forState:UIControlStateNormal];
-    [deleteBtn addTarget:self action:@selector(deleteMessages) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *deleteBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
-    //按钮间 space
+    
+    NSMutableArray *array = [NSMutableArray arrayWithArray:self.messageSelectionToolbar.items];
+    [array addObject:forwardBarButtonItem];
+    
     UIBarButtonItem *spaceItem =
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self.messageSelectionToolbar
-        setItems:@[ spaceItem, forwardBarButtonItem, spaceItem, deleteBarButtonItem, spaceItem ]
-        animated:YES];
+    [array addObject:spaceItem];
+    [self.messageSelectionToolbar setItems:array animated:YES];
 }
 
-- (void)forwardMessage {
+- (void)combineV2forwardMessage {
     [RCDForwardManager sharedInstance].selectedMessages = self.selectedMessages;
     if ([[RCDForwardManager sharedInstance] allSelectedMessagesAreLegal]) {
         [RCDForwardManager sharedInstance].isForward = YES;
+        [RCDForwardManager sharedInstance].selectedMessages = self.selectedMessages;
+        [RCDForwardManager sharedInstance].selectConversationCompleted =
+        ^(NSArray<RCConversation *> *_Nonnull conversationList) {
+            [RCDCombineV2Utility forwardCombineV2MessageForConversations:conversationList withMessages:self.selectedMessages];
+            [self onEndForwardMessage:nil];
+        };
         RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
         UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
         navi.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -1222,9 +1236,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [RCDForwardManager sharedInstance].selectedMessages = self.selectedMessages;
     [RCDForwardManager sharedInstance].isForward = YES;
     [RCDForwardManager sharedInstance].selectConversationCompleted =
-        ^(NSArray<RCConversation *> *_Nonnull conversationList) {
-            completedBlock(conversationList);
-        };
+    ^(NSArray<RCConversation *> *_Nonnull conversationList) {
+        completedBlock(conversationList);
+    };
     RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
     UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
     navi.modalPresentationStyle = UIModalPresentationFullScreen;

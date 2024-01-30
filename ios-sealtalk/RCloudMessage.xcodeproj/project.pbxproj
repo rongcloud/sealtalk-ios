@@ -385,6 +385,10 @@
 		DD67603C26A6A356004CF458 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C497221A2484DB00098C8A /* MapKit.framework */; };
 		DD67605026A6A35D004CF458 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C330F31A0C722300E31B9A /* AudioToolbox.framework */; };
 		E4BFAE251A121839007165B1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4BFAE221A121839007165B1 /* Images.xcassets */; };
+		F1D550422B4CE84800BE7DB6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F1D550412B4CE84800BE7DB6 /* PrivacyInfo.xcprivacy */; };
+		F1E2A7722B46BC8300E78CBB /* RCDCombineV2MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A7702B46BC8300E78CBB /* RCDCombineV2MessageCell.m */; };
+		F1E2A7752B47D64100E78CBB /* RCDCombineV2Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A7742B47D64100E78CBB /* RCDCombineV2Utility.m */; };
+		F1E2A7782B47EBA500E78CBB /* RCDCombineV2PreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A7772B47EBA500E78CBB /* RCDCombineV2PreviewController.m */; };
 		F1E7784C21A622B00005C37D /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E7784B21A622B00005C37D /* UserNotifications.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F880EA791D0808B300FD5CC4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F880EA781D0808B300FD5CC4 /* VideoToolbox.framework */; };
 		F8AD4A551CAE56A4006C1CBB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8AD4A541CAE56A4006C1CBB /* PushKit.framework */; };
@@ -1321,6 +1325,13 @@
 		F16A40AA27F40B3F00C4B927 /* RCDCommonString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDCommonString.h; sourceTree = "<group>"; };
 		F16A40B027F43E7200C4B927 /* SealTalkNotificationServiceDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkNotificationServiceDebug.entitlements; sourceTree = "<group>"; };
 		F16A40C227F43E7D00C4B927 /* SealTalkNotificationService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealTalkNotificationService.entitlements; sourceTree = "<group>"; };
+		F1D550412B4CE84800BE7DB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F1E2A7702B46BC8300E78CBB /* RCDCombineV2MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDCombineV2MessageCell.m; sourceTree = "<group>"; };
+		F1E2A7712B46BC8300E78CBB /* RCDCombineV2MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDCombineV2MessageCell.h; sourceTree = "<group>"; };
+		F1E2A7732B47D64000E78CBB /* RCDCombineV2Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDCombineV2Utility.h; sourceTree = "<group>"; };
+		F1E2A7742B47D64100E78CBB /* RCDCombineV2Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDCombineV2Utility.m; sourceTree = "<group>"; };
+		F1E2A7762B47EBA500E78CBB /* RCDCombineV2PreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDCombineV2PreviewController.h; sourceTree = "<group>"; };
+		F1E2A7772B47EBA500E78CBB /* RCDCombineV2PreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDCombineV2PreviewController.m; sourceTree = "<group>"; };
 		F1E7784B21A622B00005C37D /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		F65BCD9366C6027B49220746 /* Pods-SealTalk.autodebug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.autodebug.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.autodebug.xcconfig"; sourceTree = "<group>"; };
 		F82B553F1DE03E40007392BD /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
@@ -2480,6 +2491,7 @@
 				9C119460229D4078005407ED /* Info.plist */,
 				A2F0A96322F9173000422802 /* poke.mp3 */,
 				9C11945D229D3F86005407ED /* main.m */,
+				F1D550412B4CE84800BE7DB6 /* PrivacyInfo.xcprivacy */,
 				A28C438F22E95818005BA7A0 /* InfoPlist.strings */,
 				A28C439122E95818005BA7A0 /* SealTalk.strings */,
 				E4BFAE221A121839007165B1 /* Images.xcassets */,
@@ -2841,6 +2853,7 @@
 				A2907079229E7F61006BDAC7 /* RealTimeLocation */,
 				A2907062229E7F61006BDAC7 /* CommonView */,
 				A290708D229E7F61006BDAC7 /* Forward */,
+				F1E2A75D2B46BC4200E78CBB /* CombineV2 */,
 				3B208C8D22F28BE4004076EA /* QuicklySend */,
 			);
 			path = Chat;
@@ -3362,6 +3375,19 @@
 			path = RCloudMessage;
 			sourceTree = "<group>";
 		};
+		F1E2A75D2B46BC4200E78CBB /* CombineV2 */ = {
+			isa = PBXGroup;
+			children = (
+				F1E2A7712B46BC8300E78CBB /* RCDCombineV2MessageCell.h */,
+				F1E2A7702B46BC8300E78CBB /* RCDCombineV2MessageCell.m */,
+				F1E2A7732B47D64000E78CBB /* RCDCombineV2Utility.h */,
+				F1E2A7742B47D64100E78CBB /* RCDCombineV2Utility.m */,
+				F1E2A7762B47EBA500E78CBB /* RCDCombineV2PreviewController.h */,
+				F1E2A7772B47EBA500E78CBB /* RCDCombineV2PreviewController.m */,
+			);
+			path = CombineV2;
+			sourceTree = "<group>";
+		};
 		F1FED46427C342EF008BE89E /* RongLocationKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -3669,6 +3695,7 @@
 				9B49C53D23C421720058D19F /* RealTimeLocation.strings in Resources */,
 				A28C439322E95818005BA7A0 /* InfoPlist.strings in Resources */,
 				E4BFAE251A121839007165B1 /* Images.xcassets in Resources */,
+				F1D550422B4CE84800BE7DB6 /* PrivacyInfo.xcprivacy in Resources */,
 				A28C439522E95818005BA7A0 /* SealTalk.strings in Resources */,
 				A27AF90B2480F3E800686890 /* jenkins_build.sh in Resources */,
 				A2F0A96F22F9173000422802 /* poke.mp3 in Resources */,
@@ -3853,6 +3880,7 @@
 				27F0E3C922A0E3E300C8B0B8 /* RCDMessageNoDisturbSettingController.m in Sources */,
 				A2E705D522BA2E4D0047DF47 /* RCDGroupNotificationMessage.m in Sources */,
 				27AD302D229E721F003C2680 /* RCDSquareCell.m in Sources */,
+				F1E2A7782B47EBA500E78CBB /* RCDCombineV2PreviewController.m in Sources */,
 				270C242322A4C88E000F22A2 /* RCDSearchResultViewCell.m in Sources */,
 				27F0E3C522A0E3E300C8B0B8 /* RCDEditUserNameViewController.m in Sources */,
 				00850C1D296E62590066E25C /* RCDUserGroupUserSelectorView.m in Sources */,
@@ -3938,6 +3966,7 @@
 				A2907093229E7F61006BDAC7 /* RCDGroupSettingsTableViewController.m in Sources */,
 				A2CEF0052366E3F7008BC233 /* RCDViewController.m in Sources */,
 				3B054E3422F2DCFC009A3C72 /* RCDRecentPictureViewController.m in Sources */,
+				F1E2A7752B47D64100E78CBB /* RCDCombineV2Utility.m in Sources */,
 				9C21F43B22A8F0BE003AB415 /* RCDGroupManager.m in Sources */,
 				3B3DED11221D62E40079DFE6 /* RCDLanguageManager.m in Sources */,
 				3BB6CE1F22D82D520007FFFB /* RCDSelectAddressBookViewController.m in Sources */,
@@ -4096,6 +4125,7 @@
 				3B47896222BB2BA900D33F10 /* RCDSelectGroupViewController.m in Sources */,
 				27F0E3DD22A0E3E300C8B0B8 /* RCDLogoTableViewCell.m in Sources */,
 				27AD3029229E721F003C2680 /* RCDIndicateTextField.m in Sources */,
+				F1E2A7722B46BC8300E78CBB /* RCDCombineV2MessageCell.m in Sources */,
 				3B9CC5CC2754B5E40009E7BA /* RCDDebugChatSettingViewController.m in Sources */,
 				3B0F2C6722DC684B0017979E /* RCDAddressBookFriendsViewController.m in Sources */,
 				3B208CA122F29D35004076EA /* RCDQuicklySendView.m in Sources */,

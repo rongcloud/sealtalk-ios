@@ -71,6 +71,8 @@
 #define RCDDebugEnablePauseDownloadTest @"RCDDebugEnablePauseDownloadTest"
 #define RCDDebugDISABLE_CRASH_MONITOR @"RCDDebugDISABLE_CRASH_MONITOR"
 #define RCDDebugEnableNormalVoiceMessage @"RCDDebugEnableNormalVoiceMessage"
+#define RCDDebugCombineV2EnableKey @"RCDDebugCombineV2EnableKey"
+
 // audit
 #define RCDDebugMessageAuditTypeKey @"RCDDebugMessageAuditTypeKey"
 #define RCDDebugMessageAuditProjectKey @"RCDDebugMessageAuditProjectKey"

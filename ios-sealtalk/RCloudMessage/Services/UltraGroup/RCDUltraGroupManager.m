@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, RCDUtralGroupChannelType) {
                 NSString *groupId = result.content[@"groupId"];
                 RCInformationNotificationMessage *info = [RCInformationNotificationMessage notificationWithMessage:[NSString stringWithFormat:@"%@ 创建了频道",[RCIM sharedRCIM].currentUserInfo.name] extra:nil];
                 RCMessage *message = [[RCMessage alloc] initWithType:ConversationType_ULTRAGROUP targetId:groupId direction:MessageDirection_SEND messageId:-1 content:info];
-                message.channelId = @"";
+                message.channelId = channelId;
                 [[RCIM sharedRCIM] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
                     
                 } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -311,24 +311,26 @@ typedef NS_ENUM(NSInteger, RCDUtralGroupChannelType) {
 }
 
 + (void)getChannelName:(NSString *)groupId channelId:(NSString *)channelId complete:(void (^)(NSString *))complete{
-    __block NSString *name = [RCDDBManager getChannelName:groupId channelId:channelId];
-    if (name.length == 0) {
-        [self getUltraGroupChannelList:groupId complete:^(NSArray<RCDChannel *> *list) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                name = [RCDDBManager getChannelName:groupId channelId:channelId];
-                if (name.length == 0) {
-                    name = [NSString stringWithFormat:@"Channel<%@>",channelId];
-                }
-                if (complete) {
-                    complete(name);
-                }
-            });
-        }];
-    }else{
-        if (complete) {
-            complete(name);
-        }
+    void(^innerCompletion)(NSString *) = ^(NSString *name){
+        if (complete) complete(name);
+    };
+    if (channelId.length == 0) {
+        return innerCompletion(@"Channel<>");
     }
+    NSString *name = [RCDDBManager getChannelName:groupId channelId:channelId];
+    if (name.length) {
+        return innerCompletion(name);
+    }
+    [self getUltraGroupChannelList:groupId complete:^(NSArray<RCDChannel *> *list) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (RCDChannel *channel in list) {
+                if ([channel.channelId isEqualToString:channelId]) {
+                    return innerCompletion(channel.channelName);
+                }
+            }
+            innerCompletion([NSString stringWithFormat:@"Channel<%@>",channelId]);
+        });
+    }];
 }
 
 #pragma mark - 私有频道

@@ -192,33 +192,33 @@
     if (model.content.destructDuration > 0) {
         return NO;
     }
-    if ([[self blackList] containsObject:model.objectName]) {
-        return NO;
+    if ([[self whiteList] containsObject:model.objectName]) {
+        return YES;
     }
-    return YES;
+    return NO;
 }
 
-- (NSArray<NSString *> *)blackList {
-    static NSArray *blackList = nil;
+- (NSArray<NSString *> *)whiteList {
+    static NSArray *whiteList = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        blackList = @[
-            @"RC:VCAccept",
-            @"RC:VCHangup",
-            @"RC:VCInvite",
-            @"RC:VCModifyMedia",
-            @"RC:VCModifyMem",
-            @"RC:VCRinging",
-            @"RC:VCSummary",
-            @"RC:RLStart",
-            @"RC:RLEnd",
-            @"RC:RLJoin",
-            @"RC:RLQuit",
-            @"RC:VcMsg",
-            @"ST:PokeMsg"
+        whiteList = @[
+            RCTextMessageTypeIdentifier,
+            @"RC:ImgTextMsg",
+            @"RC:StkMsg",
+            @"RC:CardMsg",
+            @"RC:LBSMsg",
+            RCSightMessageTypeIdentifier,
+            RCImageMessageTypeIdentifier,
+            RCFileMessageTypeIdentifier,
+            RCCombineMessageTypeIdentifier,
+            RCHQVoiceMessageTypeIdentifier,
+            RCVoiceMessageTypeIdentifier,
+            RCGIFMessageTypeIdentifier,
+            @"RC:VCSummary"
         ];
     });
-    return blackList;
+    return whiteList;
 }
 
 - (void)clear {

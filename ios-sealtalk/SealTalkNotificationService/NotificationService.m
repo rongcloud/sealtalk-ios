@@ -61,7 +61,7 @@
     } else {
         self.contentHandler(self.bestAttemptContent);
     }
-    
+    [[RCCoreClient sharedCoreClient] initWithAppKey:[RCDEnvironmentContext appKey]];
     [[RCCoreClient sharedCoreClient] recordReceivedRemoteNotificationEvent:userInfo];
  
 }

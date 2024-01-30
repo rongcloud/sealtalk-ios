@@ -63,7 +63,10 @@
 #define ENABLE_PAUSE_DOWNLOAD_TEST 122
 #define DISABLE_CRASH_MONITOR 123
 #define ENABLE_NORMAL_VOICE_TAG 124
+#define ENABLE_COMBINE_V2_TAG 125
 #define FILEMANAGER [NSFileManager defaultManager]
+
+NSString *const RCDDebugCombineV2EnableString = @"合并转发V2";
 
 @interface RCCoreClient()
 - (void)refetchNavidataSuccess:(void (^)(void))success
@@ -197,7 +200,7 @@
     if ([title isEqualToString:@"开启合并转发拦截"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_INTERCEPT_WILLSEND_COMBINE];
     }
-    if ([title isEqualToString:@"私聊显示用户名"]) {
+    if ([title isEqualToString:@"私聊显示用户名及会话置顶优先"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_CONVERSATION_DISPLAY_NAME];
     }
     if ([title isEqualToString:@"是否拦截常用语按钮点击"]) {
@@ -214,6 +217,9 @@
     }
     if ([title isEqualToString:@"是否禁用崩溃收集"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_CRASH_MONITOR];
+    }
+    if ([title isEqualToString:RCDDebugCombineV2EnableString]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_COMBINE_V2_TAG];
     }
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
@@ -339,12 +345,13 @@
         @"开启群组实时位置共享",
         @"开启合并转发拦截",
         @"自定义文件图标",
-        @"私聊显示用户名",
+        @"私聊显示用户名及会话置顶优先",
         @"是否拦截常用语按钮点击",
         @"是否禁止消息长按删除删除远端",
         @"静态配置测试",
         @"暂停下载功能测试",
-        @"是否禁用崩溃收集"
+        @"是否禁用崩溃收集",
+        RCDDebugCombineV2EnableString
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -483,6 +490,10 @@
         }
         case ENABLE_NORMAL_VOICE_TAG: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableNormalVoiceMessage];
+            break;
+        }
+        case ENABLE_COMBINE_V2_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugCombineV2EnableKey];
             break;
         }
         default:
@@ -636,6 +647,11 @@
         }
         case ENABLE_NORMAL_VOICE_TAG: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableNormalVoiceMessage];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case ENABLE_COMBINE_V2_TAG: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugCombineV2EnableKey];
             [DEFAULTS synchronize];
             break;
         }

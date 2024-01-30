@@ -64,7 +64,7 @@
 #if RCDTranslationEnable
 @interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
 #else
-@interface AppDelegate () <RCWKAppInfoProvider, RCUltraGroupConversationDelegate>
+@interface AppDelegate () <RCUltraGroupConversationDelegate>
 #endif
 
 @property (nonatomic, assign) BOOL allowAutorotate;
@@ -310,6 +310,9 @@
                 NSLog(@"Token无效");
             } else if (status == RC_CONN_USER_BLOCKED) {
                 [self fraudPreventionByUserBlocked] ;
+            } else {
+                NSString *reason = [NSString stringWithFormat:@"连接失败 %@", @(status)];
+                [self gotoLoginViewAndDisplayReasonInfo:reason];
             }
         }];
     } else {
