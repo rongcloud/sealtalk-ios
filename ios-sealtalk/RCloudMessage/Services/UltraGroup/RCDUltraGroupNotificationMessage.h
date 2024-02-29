@@ -8,7 +8,7 @@
 
 #import <RongIMLibCore/RongIMLibCore.h>
 
-extern NSString * const RCDUltraGroupDismiss;
+NSString * const RCDUltraGroupDismiss = @"Dismiss";
 
 #define RCDUltraGroupNotificationMessageIdentifier @"ST:UltraGrpNtf"
 

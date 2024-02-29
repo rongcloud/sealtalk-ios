@@ -131,6 +131,7 @@
                 MKCoordinateRegion region = {center, span};
                 self.theSpan = span;
                 self.theRegion = region;
+                [self.mapView setCenterCoordinate:center animated:YES];
                 [self.mapView setRegion:self.theRegion];
             }
         }

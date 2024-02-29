@@ -65,17 +65,5 @@
 #define RCDDebugEnableRealTimeLocation @"RCDDebugEnableRealTimeLocation"
 #define RCDDebugInterceptWillSendCombineFuntion @"RCDDebugInterceptWillSendCombineFuntion"
 #define RCDDebugDisplayUserName @"RCDDebugDisplayUserName"
-#define RCDDebugBlockedCommonPhrasesButton @"RCDDebugBlockedCommonPhrasesButton"
-#define RCDDebugDisableDeleteRemoteMessage @"RCDDebugDisableDeleteRemoteMessage"
-#define RCDDebugENABLE_STATICCONF_TEST @"RCDDebugENABLE_STATICCONF_TEST"
-#define RCDDebugEnablePauseDownloadTest @"RCDDebugEnablePauseDownloadTest"
-#define RCDDebugDISABLE_CRASH_MONITOR @"RCDDebugDISABLE_CRASH_MONITOR"
-#define RCDDebugEnableNormalVoiceMessage @"RCDDebugEnableNormalVoiceMessage"
-#define RCDDebugCombineV2EnableKey @"RCDDebugCombineV2EnableKey"
-
-// audit
-#define RCDDebugMessageAuditTypeKey @"RCDDebugMessageAuditTypeKey"
-#define RCDDebugMessageAuditProjectKey @"RCDDebugMessageAuditProjectKey"
-#define RCDDebugMessageAuditStrategyKey @"RCDDebugMessageAuditStrategyKey"
 
 #endif /* RCDCommonString_h */

@@ -53,16 +53,13 @@
             @(ConversationType_GROUP),
             @(ConversationType_SYSTEM)
         ]];
-        [self configTopPriorityIfNeed];
+
         //聚合会话类型
         [self setCollectionConversationType:@[ @(ConversationType_SYSTEM) ]];
     }
     return self;
 }
-- (void)configTopPriorityIfNeed {
-    NSNumber *ret = [[NSUserDefaults standardUserDefaults] valueForKey: RCDDebugDisplayUserName];
-    self.topPriority = [ret boolValue];;
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initSubviews];

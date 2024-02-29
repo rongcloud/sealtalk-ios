@@ -15,6 +15,8 @@
 #import "RCDRCIMDataSource.h"
 #import "RCDTestMessage.h"
 #import "RCDUtilities.h"
+#import "RCWKNotifier.h"
+#import "RCWKRequestHandler.h"
 #import "UIColor+RCColor.h"
 #import "RCDBuglyManager.h"
 #import "RCDLoginManager.h"
@@ -62,9 +64,9 @@
 #import <RongRTCLib/RongRTCLib.h>
 
 #if RCDTranslationEnable
-@interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
+@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
 #else
-@interface AppDelegate () <RCUltraGroupConversationDelegate>
+@interface AppDelegate () <RCWKAppInfoProvider, RCUltraGroupConversationDelegate>
 #endif
 
 @property (nonatomic, assign) BOOL allowAutorotate;
@@ -116,10 +118,6 @@
     }
 
     RCInitOption *initOption = [[RCInitOption alloc] init];
-    BOOL disable_crash_monitor = [[[NSUserDefaults standardUserDefaults] valueForKey:RCDDebugDISABLE_CRASH_MONITOR] boolValue];
-    if (disable_crash_monitor) {
-        initOption.crashMonitorEnable = NO;
-    }
     initOption.naviServer = [RCDEnvironmentContext navServer];
     initOption.fileServer = [RCDEnvironmentContext fileServer];
     initOption.statisticServer = [RCDEnvironmentContext statsServer];
@@ -147,9 +145,8 @@
     [[RCIM sharedRCIM] registerMessageType:[RCDClearMessage class]];
     [[RCIM sharedRCIM] registerMessageType:[RCDUltraGroupNotificationMessage class]];
 
-    // 默认为高清语音
-    BOOL enableNormalVoiceMessage = [[DEFAULTS valueForKey:RCDDebugEnableNormalVoiceMessage] boolValue];
-    [RCIMClient sharedRCIMClient].voiceMsgType = enableNormalVoiceMessage ? RCVoiceMessageTypeOrdinary : RCVoiceMessageTypeHighQuality;
+
+    [RCCoreClient sharedCoreClient].voiceMsgType = RCVoiceMessageTypeHighQuality;
     
     [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Info;
     // 超级群会话同步状态监听代理 要在初始化之后, 连接之前设置
@@ -310,9 +307,6 @@
                 NSLog(@"Token无效");
             } else if (status == RC_CONN_USER_BLOCKED) {
                 [self fraudPreventionByUserBlocked] ;
-            } else {
-                NSString *reason = [NSString stringWithFormat:@"连接失败 %@", @(status)];
-                [self gotoLoginViewAndDisplayReasonInfo:reason];
             }
         }];
     } else {
@@ -518,6 +512,18 @@
 
 - (void)didLoginCookieExpiredNotification:(NSNotification *)notification{
     [self gotoLoginViewAndDisplayReasonInfo:@"未登录或登录凭证失效"];
+}
+
+- (void)application:(UIApplication *)application
+    handleWatchKitExtensionRequest:(NSDictionary *)userInfo
+                             reply:(void (^)(NSDictionary *))reply {
+    RCWKRequestHandler *handler =
+        [[RCWKRequestHandler alloc] initHelperWithUserInfo:userInfo provider:self reply:reply];
+    if (![handler handleWatchKitRequest]) {
+        // can not handled!
+        // app should handle it here
+        NSLog(@"not handled the request: %@", userInfo);
+    }
 }
 
 #pragma mark - RCIMConnectionStatusDelegate

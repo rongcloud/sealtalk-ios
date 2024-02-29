@@ -30,7 +30,7 @@
 
 @implementation RCDUltraGroupController
 - (instancetype)init{
-    self= [super init];
+    self = [super init];
     if (self) {
         [self refreshData];
         [[NSNotificationCenter defaultCenter] addObserver:self

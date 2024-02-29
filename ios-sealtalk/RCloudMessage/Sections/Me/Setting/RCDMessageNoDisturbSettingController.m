@@ -255,7 +255,6 @@
         [self.swch setFrame:CGRectMake(self.view.frame.size.width - self.swch.frame.size.width - 15, 6, 0, 0)];
         [self.swch addTarget:self action:@selector(setSwitchState:) forControlEvents:UIControlEventValueChanged];
         [cell.contentView addSubview:self.swch];
-        cell.detailTextLabel.text = @"";
     } else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             cell.textLabel.text = RCDLocalizedString(@"Start_time");
@@ -263,8 +262,6 @@
             cell.textLabel.text = RCDLocalizedString(@"end_time");
         }
     } else {
-        cell.textLabel.text = @"";
-        cell.detailTextLabel.text = @"";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         [cell.contentView addSubview:self.datePicker];
     }

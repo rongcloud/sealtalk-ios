@@ -28,8 +28,7 @@ NSInteger const RCDTranslationKeySuccess = 200;
         return;
     }
     NSString *baseURL = [RCDEnvironmentContext serverURL];
-    NSString *urlString = [NSString stringWithFormat:@"user/getJwtToken?userId=%@", userID];
-    urlString = [baseURL stringByAppendingPathComponent:urlString];
+    NSString *urlString = [NSString stringWithFormat:@"%@user/getJwtToken?userId=%@", baseURL, userID];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     request.HTTPMethod = @"GET";
     NSURLSessionConfiguration *config = [RCDHTTPUtility rcSessionConfiguration];
