@@ -16,6 +16,7 @@
 
 #import "RCDSearchResultModel.h"
 #import "RCDDebugUlTraGroupChatViewController.h"
+#import "UIView+MBProgressHUD.h"
 
 @interface RCDDebugUltraGroupChatSearchViewController () <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
 
@@ -82,7 +83,7 @@
     if ([result.objectName isEqualToString:@"RC:TxtMsg"]) {
         title = [(RCTextMessage *)result.content content];
     }
-    cell.textLabel.text = title;
+    cell.textLabel.text = [NSString stringWithFormat:@"%zd -【%@】%@", indexPath.row + 1, result.channelId, title];
     return cell;
 }
 
@@ -96,6 +97,54 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     [self.resultArray removeAllObjects];
+    
+    if (self.userId && self.channelIds.count > 0) {
+        [[RCChannelClient sharedChannelManager] searchMessagesByUserForChannels:ConversationType_ULTRAGROUP targetId:self.targetId channelIds:self.channelIds userId:self.userId startTime:0 limit:100 success:^(NSArray<RCMessage *> * _Nonnull messages) {
+            dispatch_main_async_safe(^{
+                [self.resultArray addObjectsFromArray:messages];
+                [self.resultTableView reloadData];
+            });
+        } error:^(RCErrorCode errorCode) {
+            dispatch_main_async_safe((^{
+                [self showToastMsg:[NSString stringWithFormat:@"%@", @(errorCode)]];
+                [self.resultArray removeAllObjects];
+                [self.resultTableView reloadData];
+            }));
+        }];
+        return;
+    }
+    
+    if (self.userId) {
+        [[RCChannelClient sharedChannelManager] searchMessagesByUserForAllChannel:ConversationType_ULTRAGROUP targetId:self.targetId userId:self.userId startTime:0 limit:100 success:^(NSArray<RCMessage *> * _Nonnull messages) {
+            dispatch_main_async_safe(^{
+                [self.resultArray addObjectsFromArray:messages];
+                [self.resultTableView reloadData];
+            });
+        } error:^(RCErrorCode errorCode) {
+            dispatch_main_async_safe((^{
+                [self showToastMsg:[NSString stringWithFormat:@"%@", @(errorCode)]];
+                [self.resultArray removeAllObjects];
+                [self.resultTableView reloadData];
+            }));
+        }];
+        return;
+    }
+    
+    if (self.channelIds.count > 0) {
+        [[RCChannelClient sharedChannelManager] searchMessagesForChannels:ConversationType_ULTRAGROUP targetId:self.targetId channelIds:self.channelIds keyword:searchText startTime:0 limit:100 success:^(NSArray<RCMessage *> * _Nonnull messages) {
+            dispatch_main_async_safe(^{
+                [self.resultArray addObjectsFromArray:messages];
+                [self.resultTableView reloadData];
+            });
+        } error:^(RCErrorCode errorCode) {
+            dispatch_main_async_safe((^{
+                [self showToastMsg:[NSString stringWithFormat:@"%@", @(errorCode)]];
+                [self.resultArray removeAllObjects];
+                [self.resultTableView reloadData];
+            }));
+        }];
+        return;
+    }
     
     if (self.channelId.length == 0) {
         NSArray *results = [[RCChannelClient sharedChannelManager] searchMessagesForAllChannel:ConversationType_ULTRAGROUP
@@ -148,6 +197,12 @@
         return NO;
     }
     return YES;
+}
+
+- (void)showToastMsg:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:msg];
+    });
 }
 
 #pragma mark - getter

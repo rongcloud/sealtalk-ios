@@ -10,4 +10,5 @@
 
 @interface RCDChatViewController : RCConversationViewController
 @property (nonatomic, assign) BOOL needPopToRootView;
+- (CGFloat)statusBarHeight;
 @end

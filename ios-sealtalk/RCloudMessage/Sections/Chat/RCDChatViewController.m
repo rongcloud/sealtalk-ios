@@ -44,6 +44,10 @@
 #import <RongPublicService/RongPublicService.h>
 #import "RCDChatTitleAlertView.h"
 
+#import "RCDCombineV2MessageCell.h"
+#import "RCDCombineV2Utility.h"
+#import "RCDCombineV2PreviewController.h"
+
 /*******************实时位置共享***************/
 #import <objc/runtime.h>
 #import "RealTimeLocationEndCell.h"
@@ -53,6 +57,8 @@
 #import "RealTimeLocationDefine.h"
 #import <RongLocation/RongLocation.h>
 #import "RCDSemanticContext.h"
+
+#import "RCDDebugSliceResumeDownloadVC.h"
 
 static const NSInteger kRealTimeMaxParticipants = 5; // 实时位置支持的最大共享人数
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
@@ -108,6 +114,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
     self.disableSystemEmoji = enable;
+    
+    self.needDeleteRemoteMessage = ![DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
 }
 
 - (void)viewDidLoad {
@@ -120,13 +128,15 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 
     [self refreshUserInfoOrGroupInfo];
     [self addNotifications];
-    //    [self addToolbarItems];
+    [self addToolbarItems];
     
     // 防欺诈层级要比共享位置低
     [self setupFraudPreventionTipsView];
     
-    /*******************实时位置共享***************/
+    //sealTalk 专用，开发者不要调用此方法
     [self enableRealTimeLocationIfNeeded];
+    
+    /*******************实时位置共享***************/
     [self registerRealTimeLocationCell];
     [self getRealTimeLocationProxy];
     /******************实时位置共享**************/
@@ -166,7 +176,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     //    [self.chatSessionInputBarControl updateStatus:self.chatSessionInputBarControl.currentBottomBarStatus
     //    animated:NO];
     [self showDynamicPhrasesIfNeed]; 
-
 }
 
 
@@ -228,6 +237,26 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self.conversationMessageCollectionView removeObserver:self forKeyPath:@"frame"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+//sealTalk 专用，开发者不要调用此方法
+- (void)enableRealTimeLocationIfNeeded {
+    id obj = [NSClassFromString(@"RCRealTimeLocationService") performSelector:NSSelectorFromString(@"sharedService")];
+    NSArray *types = [obj performSelector:NSSelectorFromString(@"allowedConversationTypes")];
+    if ([DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation]) {
+        if (![types containsObject:@(3) ]) {
+            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types?:@[]];
+            [allowTypes addObject:@(3)];
+            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
+        }
+    } else {
+        if ([types containsObject:@(3) ]) {
+            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types];
+            [allowTypes removeObject:@(3)];
+            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
+        }
+    }
+}
+//sealTalk 专用，开发者不要调用此方法
 
 #pragma mark - 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status {
@@ -344,6 +373,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDGroupNotificationMessage.class];
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDChatNotificationMessage.class];
     [self registerClass:RCDPokeMessageCell.class forMessageClass:RCDPokeMessage.class];
+    [self registerClass:[RCDCombineV2MessageCell class] forMessageClass:[RCCombineV2Message class]];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *value = [userDefault valueForKey:RCDDebugTextAsyncDrawEnable];
     self.drawAsyncEnable = [value boolValue];
@@ -358,6 +388,24 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         RCDUserInfo *user =
             [[RCDUserInfo alloc] initWithUserId:cardMSg.userId name:cardMSg.name portrait:cardMSg.portraitUri];
         [self pushPersonDetailVC:user];
+        return;
+    } else if ([model.content isKindOfClass:[RCCombineV2Message class]]) {
+        RCDCombineV2PreviewController *combineV2PreviewVC = [[RCDCombineV2PreviewController alloc] initWithMessage:model];
+        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:combineV2PreviewVC];
+        navi.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        [self presentViewController:navi animated:YES completion:nil];
+        return;
+    }
+    BOOL enablePauseDownloadTest = [DEFAULTS boolForKey:RCDDebugEnablePauseDownloadTest];
+    if (enablePauseDownloadTest &&
+        ([model.content isKindOfClass:[RCSightMessage class]] ||
+         [model.content isKindOfClass:[RCFileMessage class]])) {
+        RCDDebugSliceResumeDownloadVC *vc = [[RCDDebugSliceResumeDownloadVC alloc] init];
+        vc.messageModel = model;
+        vc.playAction = ^(RCMessageModel * _Nonnull model) {
+            [super didTapMessageCell:model];
+        };
+        [self.navigationController pushViewController:vc animated:YES];
         return;
     }
     [super didTapMessageCell:model];
@@ -424,6 +472,28 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         // RCTextMessage *textMsg = (RCTextMessage *)messageContent;
         // textMsg.extra = @"";
     }
+    
+    // 啫喱单聊审核增加测试信息
+    if ([messageContent isMemberOfClass:[RCTextMessage class]] ||
+        [messageContent isMemberOfClass:[RCVoiceMessage class]] ||
+        [messageContent isMemberOfClass:[RCHQVoiceMessage class]] ||
+        [messageContent isMemberOfClass:[RCImageMessage class]] ||
+        [messageContent isMemberOfClass:[RCGIFMessage class]] ||
+        [messageContent isMemberOfClass:[RCSightMessage class]] ||
+        [messageContent isMemberOfClass:[RCReferenceMessage class]]) {
+        
+        BOOL enableAudit = [DEFAULTS boolForKey:RCDDebugMessageAuditTypeKey];
+        NSString *auditProject = [DEFAULTS stringForKey:RCDDebugMessageAuditProjectKey];
+        NSString *auditStrategy = [DEFAULTS stringForKey:RCDDebugMessageAuditStrategyKey];
+        
+        RCMessageAuditInfo *auditInfo = [[RCMessageAuditInfo alloc] init];
+        auditInfo.auditType = enableAudit ? RCMessageAuditTypeAllow : RCMessageAuditTypeDisallow;
+        auditInfo.project = auditProject;
+        auditInfo.strategy = auditStrategy;
+        messageContent.auditInfo = auditInfo;
+    }
+
+    
     if (messageContent.mentionedInfo && messageContent.mentionedInfo.userIdList) {
         for (int i = 0; i < messageContent.mentionedInfo.userIdList.count; i++) {
             NSString *userId = messageContent.mentionedInfo.userIdList[i];
@@ -619,6 +689,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
     [super willDisplayMessageCell:cell atIndexPath:indexPath];
 }
+
+- (BOOL)didTapCommonPhrasesButton {
+    [self showToastMsg:@"常用语按钮监听"];
+    return [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
+}
+
 #pragma mark - target action
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
@@ -1105,32 +1181,41 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [[RCDIMService sharedService] saveInputStatus:self.conversationType targetId:self.targetId inputType:inputType];
 }
 
+- (void)showToastMsg:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:msg];
+    });
+}
+
 #pragma mark - *************消息多选功能:转发、删除*************
 /******************消息多选功能:转发、删除**********************/
 - (void)addToolbarItems {
-    //转发按钮
+    if (![DEFAULTS boolForKey:RCDDebugCombineV2EnableKey]) return;
+
     UIButton *forwardBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
     [forwardBtn setImage:[UIImage imageNamed:@"forward_message"] forState:UIControlStateNormal];
-    [forwardBtn addTarget:self action:@selector(forwardMessage) forControlEvents:UIControlEventTouchUpInside];
+    [forwardBtn addTarget:self action:@selector(combineV2forwardMessage) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *forwardBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:forwardBtn];
-    //删除按钮
-    UIButton *deleteBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
-    [deleteBtn setImage:RCResourceImage(@"delete_message")
-               forState:UIControlStateNormal];
-    [deleteBtn addTarget:self action:@selector(deleteMessages) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *deleteBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
-    //按钮间 space
+    
+    NSMutableArray *array = [NSMutableArray arrayWithArray:self.messageSelectionToolbar.items];
+    [array addObject:forwardBarButtonItem];
+    
     UIBarButtonItem *spaceItem =
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self.messageSelectionToolbar
-        setItems:@[ spaceItem, forwardBarButtonItem, spaceItem, deleteBarButtonItem, spaceItem ]
-        animated:YES];
+    [array addObject:spaceItem];
+    [self.messageSelectionToolbar setItems:array animated:YES];
 }
 
-- (void)forwardMessage {
+- (void)combineV2forwardMessage {
     [RCDForwardManager sharedInstance].selectedMessages = self.selectedMessages;
     if ([[RCDForwardManager sharedInstance] allSelectedMessagesAreLegal]) {
         [RCDForwardManager sharedInstance].isForward = YES;
+        [RCDForwardManager sharedInstance].selectedMessages = self.selectedMessages;
+        [RCDForwardManager sharedInstance].selectConversationCompleted =
+        ^(NSArray<RCConversation *> *_Nonnull conversationList) {
+            [RCDCombineV2Utility forwardCombineV2MessageForConversations:conversationList withMessages:self.selectedMessages];
+            [self onEndForwardMessage:nil];
+        };
         RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
         UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
         navi.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -1151,9 +1236,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     [RCDForwardManager sharedInstance].selectedMessages = self.selectedMessages;
     [RCDForwardManager sharedInstance].isForward = YES;
     [RCDForwardManager sharedInstance].selectConversationCompleted =
-        ^(NSArray<RCConversation *> *_Nonnull conversationList) {
-            completedBlock(conversationList);
-        };
+    ^(NSArray<RCConversation *> *_Nonnull conversationList) {
+        completedBlock(conversationList);
+    };
     RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
     UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
     navi.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -1212,24 +1297,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         error:^(RCRealTimeLocationErrorCode status) {
             NSLog(@"get location share failure with code %d", (int)status);
         }];
-}
-
-- (void)enableRealTimeLocationIfNeeded {
-    id obj = [NSClassFromString(@"RCRealTimeLocationService") performSelector:NSSelectorFromString(@"sharedService")];
-    NSArray *types = [obj performSelector:NSSelectorFromString(@"allowedConversationTypes")];
-    if ([DEFAULTS boolForKey:RCDDebugEnableRealTimeLocation]) {
-        if (![types containsObject:@(3) ]) {
-            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types?:@[]];
-            [allowTypes addObject:@(3)];
-            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
-        }
-    } else {
-        if ([types containsObject:@(3) ]) {
-            NSMutableArray *allowTypes = [NSMutableArray arrayWithArray:types];
-            [allowTypes removeObject:@(3)];
-            [obj performSelector:NSSelectorFromString(@"setAllowedConversationTypes:") withObject:allowTypes];
-        }
-    }
 }
 
 //弹出实时位置共享页面

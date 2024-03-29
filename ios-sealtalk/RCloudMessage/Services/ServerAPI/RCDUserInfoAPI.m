@@ -255,7 +255,11 @@
                                    @"message" : message
                                }
                                  response:^(RCDHTTPResult *result) {
-                                     NSString *action = result.content[@"action"];
+                                    NSString *action = @"";
+                                    if ([result.content isKindOfClass:[NSDictionary class]]) {
+                                        action = result.content[@"action"];
+                                    }
+            
                                      if (completeBlock) {
                                          completeBlock(result.success, action);
                                      }

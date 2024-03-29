@@ -271,10 +271,9 @@
         //《注册条款》点击事件
         RCDRegistrationAgreementController *vc = [[RCDRegistrationAgreementController alloc] init];
         // 创建URL
-        NSURL * url = [NSURL URLWithString:@"https://cdn.ronghub.com/agreement_zh.html"];
+        NSURL * url = [NSURL URLWithString:@"https://www.rongcloud.cn/chuangqiyi/terms_of_service"];
         vc.url = url;
         vc.webViewTitle = RCDLocalizedString(@"Registration_Terms");
-        vc.needInjectJSFontSize = YES;
         [self.navigationController pushViewController:vc animated:YES];
         return NO;
     }
@@ -282,7 +281,7 @@
         //《隐私政策》点击事件
         RCDRegistrationAgreementController *vc = [[RCDRegistrationAgreementController alloc] init];
         // 创建URL
-        NSURL * url = [NSURL URLWithString:@"https://www.rongcloud.cn/rc-im-privacy"];
+        NSURL * url = [NSURL URLWithString:@"https://www.rongcloud.cn/chuangqiyi/privacy_policy"];
         vc.url = url;
         vc.webViewTitle = RCDLocalizedString(@"Privacy_Policy");
         [self.navigationController pushViewController:vc animated:YES];

@@ -15,8 +15,6 @@
 #import "RCDRCIMDataSource.h"
 #import "RCDTestMessage.h"
 #import "RCDUtilities.h"
-#import "RCWKNotifier.h"
-#import "RCWKRequestHandler.h"
 #import "UIColor+RCColor.h"
 #import "RCDBuglyManager.h"
 #import "RCDLoginManager.h"
@@ -64,9 +62,9 @@
 #import <RongRTCLib/RongRTCLib.h>
 
 #if RCDTranslationEnable
-@interface AppDelegate () <RCWKAppInfoProvider, RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
+@interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
 #else
-@interface AppDelegate () <RCWKAppInfoProvider, RCUltraGroupConversationDelegate>
+@interface AppDelegate () <RCUltraGroupConversationDelegate>
 #endif
 
 @property (nonatomic, assign) BOOL allowAutorotate;
@@ -118,6 +116,10 @@
     }
 
     RCInitOption *initOption = [[RCInitOption alloc] init];
+    BOOL disable_crash_monitor = [[[NSUserDefaults standardUserDefaults] valueForKey:RCDDebugDISABLE_CRASH_MONITOR] boolValue];
+    if (disable_crash_monitor) {
+        initOption.crashMonitorEnable = NO;
+    }
     initOption.naviServer = [RCDEnvironmentContext navServer];
     initOption.fileServer = [RCDEnvironmentContext fileServer];
     initOption.statisticServer = [RCDEnvironmentContext statsServer];
@@ -133,6 +135,9 @@
     //关闭消息排重
     [self disableCheckDupMessageIfNeed];
     
+    //开启 enableMessageAttachUserInfo
+    [self enableMessageAttachUserInfoIfNeed];
+    
     [DEFAULTS setObject:appKey forKey:RCDAppKeyKey];
 
     // 注册自定义测试消息
@@ -145,8 +150,9 @@
     [[RCIM sharedRCIM] registerMessageType:[RCDClearMessage class]];
     [[RCIM sharedRCIM] registerMessageType:[RCDUltraGroupNotificationMessage class]];
 
-
-    [RCCoreClient sharedCoreClient].voiceMsgType = RCVoiceMessageTypeHighQuality;
+    // 默认为高清语音
+    BOOL enableNormalVoiceMessage = [[DEFAULTS valueForKey:RCDDebugEnableNormalVoiceMessage] boolValue];
+    [RCIMClient sharedRCIMClient].voiceMsgType = enableNormalVoiceMessage ? RCVoiceMessageTypeOrdinary : RCVoiceMessageTypeHighQuality;
     
     [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Info;
     // 超级群会话同步状态监听代理 要在初始化之后, 连接之前设置
@@ -307,6 +313,9 @@
                 NSLog(@"Token无效");
             } else if (status == RC_CONN_USER_BLOCKED) {
                 [self fraudPreventionByUserBlocked] ;
+            } else {
+                NSString *reason = [NSString stringWithFormat:@"连接失败 %@", @(status)];
+                [self gotoLoginViewAndDisplayReasonInfo:reason];
             }
         }];
     } else {
@@ -512,18 +521,6 @@
 
 - (void)didLoginCookieExpiredNotification:(NSNotification *)notification{
     [self gotoLoginViewAndDisplayReasonInfo:@"未登录或登录凭证失效"];
-}
-
-- (void)application:(UIApplication *)application
-    handleWatchKitExtensionRequest:(NSDictionary *)userInfo
-                             reply:(void (^)(NSDictionary *))reply {
-    RCWKRequestHandler *handler =
-        [[RCWKRequestHandler alloc] initHelperWithUserInfo:userInfo provider:self reply:reply];
-    if (![handler handleWatchKitRequest]) {
-        // can not handled!
-        // app should handle it here
-        NSLog(@"not handled the request: %@", userInfo);
-    }
 }
 
 #pragma mark - RCIMConnectionStatusDelegate
@@ -922,7 +919,14 @@
     NSLog(@"SealTalk setCheckDuplicateMessage %@", @(!enable));
 }
 
-#pragma mark -- RCTranslationClientDelegate
+- (void)enableMessageAttachUserInfoIfNeed {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    BOOL enable = [[userDefault valueForKey:RCDDebugEnableMessageAttachUserInfoKey] boolValue];
+    [RCIM sharedRCIM].enableMessageAttachUserInfo = enable;
+    NSLog(@"SealTalk enableMessageAttachUserInfoIfNeed %@", @(enable));
+}
+
+#pragma mark - RCTranslationClientDelegate
 #if RCDTranslationEnable
 /// 翻译结束
 /// @param translation model

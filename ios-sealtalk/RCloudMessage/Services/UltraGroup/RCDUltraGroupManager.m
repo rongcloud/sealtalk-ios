@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, RCDUtralGroupChannelType) {
                 NSString *groupId = result.content[@"groupId"];
                 RCInformationNotificationMessage *info = [RCInformationNotificationMessage notificationWithMessage:[NSString stringWithFormat:@"%@ 创建了频道",[RCIM sharedRCIM].currentUserInfo.name] extra:nil];
                 RCMessage *message = [[RCMessage alloc] initWithType:ConversationType_ULTRAGROUP targetId:groupId direction:MessageDirection_SEND messageId:-1 content:info];
-                message.channelId = @"";
+                message.channelId = channelId;
                 [[RCIM sharedRCIM] sendMessage:message pushContent:nil pushData:nil successBlock:^(RCMessage *successMessage) {
                     
                 } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {

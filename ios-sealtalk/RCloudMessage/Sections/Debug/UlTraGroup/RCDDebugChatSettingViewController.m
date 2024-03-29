@@ -23,6 +23,10 @@
 #import "RCDNavigationViewController.h"
 #import "RCDDebugUltraGroupChatSearchViewController.h"
 
+#import "RCDDebugUltraGroupListSelectController.h"
+
+#import "RCDUltraGroupManager.h"
+
 @interface RCDDebugChatSettingViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSString *groupId;
@@ -66,7 +70,10 @@
                     @"搜索超级群当前频道的消息记录", //27
                     @"搜索超级群所有频道的消息记录", //28
                     @"修改超级群当前频道第一条消息", //29
-                    @"批量获取超级群未读数" //30
+                    @"批量获取超级群未读数", //30
+                    @"搜索此超级群下多个指定频道的消息记录", //31
+                    @"根据用户 ID 搜索此超级群下指定频道的消息记录", //32
+                    @"根据用户 ID 搜索此超级群下所有频道的消息记录" //33
     ];
     [self setupSubviews];
     [self setNavi];
@@ -306,6 +313,15 @@
             break;
         case 30:
             [self getUnreadCountWithBatchTargetId];
+            break;
+        case 31:
+            [self showUltraGroupChatSearchChannels];
+            break;
+        case 32:
+            [self showUltraGroupChatSearchByUserIdForChannels];
+            break;
+        case 33:
+            [self showUltraGroupChatSearchByUserIdForAllChannel];
             break;
         default:
             break;
@@ -687,6 +703,84 @@
     RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
     navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:navigationController animated:NO completion:nil];
+}
+
+- (void)showUltraGroupChatSearchChannels {
+    
+    RCDDebugUltraGroupListSelectController *controller = [[RCDDebugUltraGroupListSelectController alloc] init];
+    controller.targetId = self.targetId;
+    controller.selectedChannelIdsResult = ^(NSArray<NSString *> * _Nonnull channelIds) {
+        RCDDebugUltraGroupChatSearchViewController *controller = [[RCDDebugUltraGroupChatSearchViewController alloc] init];
+        controller.targetId = self.targetId;
+        controller.channelIds = channelIds;
+        RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
+        navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:navigationController animated:NO completion:nil];
+    };
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)showUltraGroupChatSearchByUserIdForChannels {
+    
+    void (^complete)(NSArray<NSString *> *memberIdList) = ^(NSArray<NSString *> *memberIdList){
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        for (NSInteger i = 0; i < memberIdList.count; i++) {
+            UIAlertAction *action = [UIAlertAction actionWithTitle:memberIdList[i] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                RCDDebugUltraGroupListSelectController *controller = [[RCDDebugUltraGroupListSelectController alloc] init];
+                controller.targetId = self.targetId;
+                controller.selectedChannelIdsResult = ^(NSArray<NSString *> * _Nonnull channelIds) {
+                    RCDDebugUltraGroupChatSearchViewController *controller = [[RCDDebugUltraGroupChatSearchViewController alloc] init];
+                    controller.targetId = self.targetId;
+                    controller.userId = memberIdList[i];
+                    controller.channelIds = channelIds;
+                    RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
+                    navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+                    [self presentViewController:navigationController animated:NO completion:nil];
+                };
+                [self.navigationController pushViewController:controller animated:YES];
+            }];
+            [alertController addAction:action];
+        }
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    };
+    
+    [RCDUltraGroupManager getUltraGroupMemberList:self.targetId
+                                            count:100
+                                         complete:^(NSArray<NSString *> *memberIdList) {
+        dispatch_main_async_safe(^{
+            complete(memberIdList);
+        })
+    }];
+}
+
+- (void)showUltraGroupChatSearchByUserIdForAllChannel {
+    void (^complete)(NSArray<NSString *> *memberIdList) = ^(NSArray<NSString *> *memberIdList){
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        for (NSInteger i = 0; i < memberIdList.count; i++) {
+            UIAlertAction *action = [UIAlertAction actionWithTitle:memberIdList[i] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                RCDDebugUltraGroupChatSearchViewController *controller = [[RCDDebugUltraGroupChatSearchViewController alloc] init];
+                controller.targetId = self.targetId;
+                controller.userId = memberIdList[i];
+                RCDNavigationViewController *navigationController = [[RCDNavigationViewController alloc] initWithRootViewController:controller];
+                navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+                [self presentViewController:navigationController animated:NO completion:nil];
+            }];
+            [alertController addAction:action];
+        }
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    };
+    
+    [RCDUltraGroupManager getUltraGroupMemberList:self.targetId
+                                            count:100
+                                         complete:^(NSArray<NSString *> *memberIdList) {
+        dispatch_main_async_safe(^{
+            complete(memberIdList);
+        })
+    }];
 }
 
 - (void)modifyFirstMessage {

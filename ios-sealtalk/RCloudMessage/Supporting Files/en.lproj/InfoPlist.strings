@@ -7,5 +7,5 @@
 */
 
 //替换系统获取通讯录权限的弹窗，通讯录加好友->邀请手机联系人
-"NSContactsUsageDescription"="请允许 RC IM 获取您的通讯录，完成手机通讯录至服务器匹配朋友，RC IM 不会保存您的通讯录";
-"CFBundleDisplayName"="RC IM";
+"NSContactsUsageDescription"="请允许 SealChat 获取您的通讯录，完成手机通讯录至服务器匹配朋友，SealChat 不会保存您的通讯录";
+"CFBundleDisplayName"="SealChat";

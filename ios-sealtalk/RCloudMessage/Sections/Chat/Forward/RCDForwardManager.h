@@ -23,8 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) NSInteger friendCount;
 @property (nonatomic, assign, readonly) NSInteger groupCount;
 
-@property (nonatomic, copy) void (^willForwardMessageBlock)(RCConversationType type, NSString *targetId);
-@property (nonatomic, copy) void (^selectConversationCompleted)(NSArray<RCConversation *> *conversationList);
+@property (nonatomic, copy, nullable) void (^willForwardMessageBlock)(RCConversationType type, NSString *targetId);
+@property (nonatomic, copy, nullable) void (^selectConversationCompleted)(NSArray<RCConversation *> *conversationList);
 
 - (void)showForwardAlertViewInViewController:(UIViewController *)viewController;
 - (BOOL)allSelectedMessagesAreLegal;

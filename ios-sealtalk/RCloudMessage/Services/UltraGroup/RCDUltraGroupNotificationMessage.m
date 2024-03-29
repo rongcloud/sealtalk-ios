@@ -8,6 +8,8 @@
 
 #import "RCDUltraGroupNotificationMessage.h"
 
+NSString * const RCDUltraGroupDismiss = @"Dismiss";
+
 @implementation RCDUltraGroupNotificationMessage
 + (RCMessagePersistent)persistentFlag {
     return MessagePersistent_ISPERSISTED;

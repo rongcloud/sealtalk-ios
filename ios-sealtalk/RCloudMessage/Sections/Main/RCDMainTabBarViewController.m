@@ -148,26 +148,13 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
             if ([[RCCoreClient sharedCoreClient] getTotalUnreadCount] > 0) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"GotoNextConversation" object:nil];
             }
-            self.previousIndex = index;
         }
-        self.previousIndex = index;
     } break;
-
-    case 1:
-        self.previousIndex = index;
-        break;
-
-    case 2:
-        self.previousIndex = index;
-        break;
-
-    case 3:
-        self.previousIndex = index;
-        break;
 
     default:
         break;
     }
+    self.previousIndex = index;
     if(self.ultraGroupEnable) {
         self.navigationController.navigationBarHidden = (index == 1);
     }
