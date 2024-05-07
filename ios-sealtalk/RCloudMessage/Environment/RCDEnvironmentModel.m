@@ -10,7 +10,6 @@
 #import "RCDCommonDefine.h"
 #import "RCDCommonString.h"
 NSString* const RCDEnvironmentCategoryKey = @"RCDEnvironmentCategoryKey";
-NSString* const RCDEnvironmentOverseaBundleID = @"cn.rongcloud.im.sg";
 NSString* const RCDDefaultRegionNameKey = @"RegionNameDefault";
 
 NSString* const RCDSigaporeAppKey = @"";

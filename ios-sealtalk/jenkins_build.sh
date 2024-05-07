@@ -39,9 +39,6 @@ RELEASE_FLAG=$PPARAM
 elif [ $PFLAG == "-time" ]
 then
 CUR_TIME=$PPARAM
-elif [ $PFLAG == "-profile" ]
-then
-PROFILE_FLAG=$PPARAM
 elif [ $PFLAG == "-appkey" ]
 then
 DEMO_APPKEY=$PPARAM
@@ -183,7 +180,7 @@ echo "***开始build iphoneos文件***"
   echo "sealtalk archive times: $(($(date +%s) - $TEMP_TIME))"
   TEMP_TIME=$(date +%s)
   
-  xcodebuild -exportArchive -archivePath "./${BUILD_DIR}/${targetName}.xcarchive" -exportOptionsPlist "archive.plist" -exportPath "./${BIN_DIR}" -allowProvisioningUpdates
+  xcodebuild -exportArchive -archivePath "./${BUILD_DIR}/${targetName}.xcarchive" -exportOptionsPlist "adHocArchive.plist" -exportPath "./${BIN_DIR}" -allowProvisioningUpdates
   
   echo "sealtalk export times: $(($(date +%s) - $TEMP_TIME))"
   TEMP_TIME=$(date +%s)

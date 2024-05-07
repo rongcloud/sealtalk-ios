@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>ad-hoc</string>
+	<key>compileBitcode</key>
+	<false/>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>cn.rongcloud.rcim</key>
+		<string>adhoc_rcim</string>
+		<key>cn.rongcloud.rcim.shareextension</key>
+		<string>adhoc_rcim_shareextension</string>
+		<key>cn.rongcloud.rcim.notificationservice</key>
+		<string>adhoc_rcim_notificationservice</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>Apple Distribution: Beijing Chuangqiyi Technology Co.,Ltd (T7DYH4JM86)</string>
+</dict>
+</plist>

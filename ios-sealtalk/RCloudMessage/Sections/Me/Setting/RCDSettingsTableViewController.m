@@ -158,7 +158,7 @@
 
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
         NSString *naviCachePath = [[[paths objectAtIndex:0] stringByAppendingPathComponent:@"Preferences"]
-            stringByAppendingPathComponent:@"cn.rongcloud.im.plist"];
+            stringByAppendingPathComponent:@"cn.rongcloud.rcim.plist"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:naviCachePath]) {
             [[NSFileManager defaultManager] removeItemAtPath:naviCachePath error:nil];
         }

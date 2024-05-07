@@ -714,7 +714,7 @@
 }
 
 - (NSString *)getAppGroups {
-    return @"group.cn.rongcloud.im.WKShare";
+    return @"group.cn.rongcloud.rcim.WKShare";
 }
 
 - (NSArray *)getAllGroupInfo {

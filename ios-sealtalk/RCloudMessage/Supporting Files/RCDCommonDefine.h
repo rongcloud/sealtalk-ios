@@ -62,5 +62,5 @@
 // 是否禁用反黑产功能
 #define RCDDebugFraundPreventionDisable 1
 
-#define RCDNotificationServiceGroup @"group.cn.rongcloud.im.notificationservice"
+#define RCDNotificationServiceGroup @"group.cn.rongcloud.rcim.notificationservice"
 #define RCDNotificationServiceDefaults [[NSUserDefaults alloc] initWithSuiteName:RCDNotificationServiceGroup]
