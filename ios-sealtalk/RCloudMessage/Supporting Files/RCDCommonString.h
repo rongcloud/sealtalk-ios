@@ -78,6 +78,5 @@
 #define RCDDebugMessageAuditTypeKey @"RCDDebugMessageAuditTypeKey"
 #define RCDDebugMessageAuditProjectKey @"RCDDebugMessageAuditProjectKey"
 #define RCDDebugMessageAuditStrategyKey @"RCDDebugMessageAuditStrategyKey"
-#define RCDDebugEnableSearchByMessageTypes @"RCDDebugEnableSearchByMessageTypes"
 
 #endif /* RCDCommonString_h */
