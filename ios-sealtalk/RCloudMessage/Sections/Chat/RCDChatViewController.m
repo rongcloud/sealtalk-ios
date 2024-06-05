@@ -695,6 +695,13 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     return [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
 }
 
+- (void)noMoreMessageToFetch {
+    BOOL debugModeSearch = [[NSUserDefaults standardUserDefaults] boolForKey:RCDDebugEnableNoMoreMessageToFetchKey];
+    if (debugModeSearch) {
+        [self showToastMsg:@"没有更多历史消息"];
+    }
+}
+
 #pragma mark - target action
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
