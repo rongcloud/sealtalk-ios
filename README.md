@@ -4,7 +4,8 @@ iOS App of SealTalk powered by RongCloud.
 
 基于融云 IM SDK 应用程序 - 嗨豹。
 
-我们提供的 demo 源码旨在供您参考学习，它不包含完整的功能体验或用于开发测试。如果您在使用过程中遇到任何问题或需要进一步的技术支持，请随时提交[工单](https://console.rongcloud.cn/agile/formwork/ticket/create?_=1719221853901)，我们的专业团队将乐于为您提供帮助。
+<span style="background-color: yellow; color: black">我们提供的 demo 源码旨在供您参考学习，它不包含完整的功能体验或用于开发测试。如果您在使用过程中遇到任何问题或需要进一步的技术支持，请随时提交[工单](https://console.rongcloud.cn/agile/formwork/ticket/create?_=1719221853901)，我们的专业团队将乐于为您提供帮助。</span>
+
 
 ## 运行 SealTalk-iOS
 
