@@ -69,6 +69,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 @interface RCConversationViewController ()
 // 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
+- (void)didSendingMessageNotification:(NSNotification *)notification;
 @end
 
 @interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate>
@@ -1232,6 +1233,20 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
 }
 
+- (void)didSendingMessageNotification:(NSNotification *)notification {
+    [super didSendingMessageNotification:notification];
+    NSDictionary *statusDic = notification.userInfo;
+    NSNumber *error = statusDic[@"error"];
+    if (error) {
+        RCErrorCode errorCode = [error intValue];
+        if (errorCode == RC_FILE_SIZE_EXCEED_LIMIT) {
+            [self showToastMsg:RCDLocalizedString(@"media_file_size_limit")];
+        }  else if (errorCode == INVALID_PARAMETER_SIZE_NOT_FOUND) {
+            [self showToastMsg:@"开启限制未传 size 参数"];
+        }
+    }
+
+}
 - (void)onEndForwardMessage:(NSNotification *)notification {
     //置为 NO,将消息 cell 重置为初始状态
     self.allowsMessageCellSelection = NO;
