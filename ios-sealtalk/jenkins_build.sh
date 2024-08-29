@@ -83,9 +83,9 @@ fi
 #demo 服务器
 if [ -n "${DEMO_SERVER_URL}" ]; then
     if [[ $DEMO_SERVER_URL =~ ^http ]]; then
-        sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+        sed -i '' -e 's?https://sealtalk.rongcloud.cn/server-api?'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
     else
-        sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?http://'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+        sed -i '' -e 's?https://sealtalk.rongcloud.cn/server-api?http://'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
     fi
 fi
 
