@@ -562,3 +562,8 @@
 "refresh"="Refresh";
 "picture_code_expired"="The image verification code is expired,please try again";
 "media_file_size_limit"="Upload file exceeds the maximum limit";
+"new_friend_cell"="New Friends";
+"Just"="Just";
+"OneDay"="One day";
+"LastThreeDay"="Last three days";
+"ThreeDaysAgo"="Three days ago";

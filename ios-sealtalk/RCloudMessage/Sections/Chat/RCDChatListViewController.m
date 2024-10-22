@@ -434,7 +434,7 @@
     CGRect targetFrame = CGRectMake(self.view.frame.size.width - 30, navigationBarRect.origin.y-navigationBarRect.size.height-24, 100, 80);
     [KxMenu setTintColor:HEXCOLOR(0x000000)];
     [KxMenu setTitleFont:[UIFont systemFontOfSize:17]];
-    [KxMenu showMenuInView:self.tabBarController.navigationController.navigationBar.superview
+    [KxMenu showMenuInView:self.tabBarController.tabBar.superview
                   fromRect:targetFrame
                  menuItems:menuItems];
 }
@@ -693,8 +693,8 @@
 
 - (void)setNaviItem {
     RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"add"] target:self action:@selector(showMenu)];
-    self.tabBarController.navigationItem.rightBarButtonItems = @[ rightBtn ];
-    self.tabBarController.navigationItem.title = RCDLocalizedString(@"Messages");
+    self.navigationItem.rightBarButtonItems = @[ rightBtn ];
+    self.navigationItem.title = RCDLocalizedString(@"Messages");
 }
 #pragma mark - RCIMClientReceiveMessageDelegate
 

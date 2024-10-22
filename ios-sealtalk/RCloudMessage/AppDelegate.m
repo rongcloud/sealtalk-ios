@@ -60,6 +60,7 @@
 #import "RCDAlertBuilder.h"
 #import "RCDSemanticContext.h"
 #import <RongRTCLib/RongRTCLib.h>
+#import "RCUViewModelManager.h"
 
 #if RCDTranslationEnable
 @interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
@@ -167,7 +168,6 @@
     [RCIM sharedRCIM].groupMemberDataSource = RCDDataSource;
     [RCContactCardKit shareInstance].contactsDataSource = RCDDataSource;
     [RCContactCardKit shareInstance].groupDataSource = RCDDataSource;
-    
     RCKitConfigCenter.message.enableTypingStatus = YES;
     RCKitConfigCenter.message.enableSyncReadStatus = YES;
     RCKitConfigCenter.message.showUnkownMessage = YES;
@@ -184,6 +184,8 @@
     //  设置头像为圆形
     RCKitConfigCenter.ui.globalMessageAvatarStyle = RC_USER_AVATAR_CYCLE;
     RCKitConfigCenter.ui.globalConversationAvatarStyle = RC_USER_AVATAR_CYCLE;
+    
+    [RCUViewModelManager registerViewModel];
     
     //   设置优先使用WebView打开URL
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
@@ -290,10 +292,8 @@
     }
     if (token.length && userId.length) {
         [RCDLoginManager openDB:userId];
-        RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
-        RCDNavigationViewController *rootNavi =
-            [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
-        self.window.rootViewController = rootNavi;
+        RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
+        self.window.rootViewController = mainTabBarVC;
 
         RCUserInfo *_currentUserInfo =
             [[RCUserInfo alloc] initWithUserId:userId name:userNickName portrait:userPortraitUri];

@@ -299,9 +299,9 @@
 
 - (void)setupNavi {
     self.navigationController.navigationBar.translucent = NO;
-    self.tabBarController.navigationItem.title = RCDLocalizedString(@"contacts");
+    self.navigationItem.title = RCDLocalizedString(@"contacts");
     RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"add_friend"] target:self action:@selector(pushAddFriendVC:)];
-    self.tabBarController.navigationItem.rightBarButtonItems = [rightBtn setTranslation:rightBtn translation:-6];
+    self.navigationItem.rightBarButtonItems = [rightBtn setTranslation:rightBtn translation:-6];
 }
 
 - (void)initData {

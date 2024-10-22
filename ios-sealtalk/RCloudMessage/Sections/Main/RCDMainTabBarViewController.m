@@ -16,7 +16,10 @@
 #import "RCDUtilities.h"
 #import "RCDCommonDefine.h"
 #import "RCTransationPersistModel.h"
+#import "RCDNavigationViewController.h"
+#import "RCUMainTabBarViewController.h"
 
+extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
 static NSInteger RCD_MAIN_TAB_INDEX = 0;
 
 @interface RCDMainTabBarViewController ()
@@ -35,6 +38,17 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 @end
 
 @implementation RCDMainTabBarViewController
+
++ (id)mainTabBarViewController {
+   bool ret = [[[NSUserDefaults standardUserDefaults] valueForKey:RCDDebugMessageEnableUserInfoEntrust] boolValue];
+    if (ret) {
+        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoManagement;
+        return [[RCUMainTabBarViewController alloc] init];
+    } else {
+        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoProvider;
+        return [[[self class] alloc] init];
+    }
+}
 
 - (instancetype)init {
     self = [super init];
@@ -91,17 +105,32 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     [super viewWillLayoutSubviews];
     [self setTabBarItems];
 }
+- (RCDNavigationViewController *)navigationControllerWithRootView:(UIViewController *)vc {
+    RCDNavigationViewController *navi = [[RCDNavigationViewController alloc] initWithRootViewController:vc];
+    return navi;
+}
 
 - (void)setControllers {
     RCDChatListViewController *chatVC = [[RCDChatListViewController alloc] init];
+    RCDNavigationViewController *naviChatVC = [self navigationControllerWithRootView:chatVC];
+    
     RCDContactViewController *contactVC = [[RCDContactViewController alloc] init];
+    RCDNavigationViewController *naviContactVC = [self navigationControllerWithRootView:contactVC];
+    
     RCDSquareTableViewController *discoveryVC = [[RCDSquareTableViewController alloc] init];
+    RCDNavigationViewController *naviDiscoveryVC = [self navigationControllerWithRootView:discoveryVC];
+
     RCDMeTableViewController *meVC = [[RCDMeTableViewController alloc] init];
+    RCDNavigationViewController *naviMeVC = [self navigationControllerWithRootView:meVC];
+
+    
     if (self.ultraGroupEnable) {
         RCDUltraGroupController *ultraGroupVC = [[RCDUltraGroupController alloc] init];
-        self.viewControllers = @[chatVC, ultraGroupVC, contactVC, discoveryVC, meVC ];
+        RCDNavigationViewController *naviUltraGroupVC = [self navigationControllerWithRootView:ultraGroupVC];
+
+        self.viewControllers = @[naviChatVC, naviUltraGroupVC, naviContactVC, naviDiscoveryVC, naviMeVC ];
     } else {
-        self.viewControllers = @[chatVC, contactVC, discoveryVC, meVC ];
+        self.viewControllers = @[naviChatVC, naviContactVC, naviDiscoveryVC, naviMeVC ];
     }
 }
 
@@ -117,14 +146,19 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 }
 
 - (void)setTabBarItems {
+    
     [self.viewControllers
-        enumerateObjectsUsingBlock:^(__kindof UIViewController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-
+        enumerateObjectsUsingBlock:^(__kindof UIViewController *_Nonnull objNavi, NSUInteger idx, BOOL *_Nonnull stop) {
+        UIViewController *obj = nil;
+        if([objNavi isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navi = (UINavigationController *)objNavi;
+            obj = [navi.childViewControllers firstObject];
+        }
             if ([obj isKindOfClass:[RCDChatListViewController class]] || [obj isKindOfClass:[RCDContactViewController class]] || [obj isKindOfClass:[RCDSquareTableViewController class]] || [obj isKindOfClass:[RCDMeTableViewController class]] || [obj isKindOfClass:[RCDUltraGroupController class]]) {
-                obj.tabBarItem.title = self.tabTitleArr[idx];
-                obj.tabBarItem.image =
+                objNavi.tabBarItem.title = self.tabTitleArr[idx];
+                objNavi.tabBarItem.image =
                     [[UIImage imageNamed:self.imageArr[idx]]  imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-                obj.tabBarItem.selectedImage =
+                objNavi.tabBarItem.selectedImage =
                     [[UIImage imageNamed:self.selectImageArr[idx]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
             } else {
                 NSLog(@"Unknown TabBarController");

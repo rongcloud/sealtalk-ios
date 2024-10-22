@@ -11,7 +11,7 @@
 @interface RCDMainTabBarViewController : UITabBarController <UITabBarControllerDelegate>
 
 + (NSInteger)currentTabBarItemIndex;
-
++ (id)mainTabBarViewController;
 @property (nonatomic, assign) NSUInteger selectedTabBarIndex;
 
 @end

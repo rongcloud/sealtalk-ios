@@ -68,6 +68,7 @@
 #define ENABLE_SEARCH_MESSAGETYPES 127
 #define ENABLE_DISPLAY_NOMORE_MESSAGE_HUD 128
 #define DISABLE_CHECK_CHATROOM_DUP_MESSAGE 129
+#define ENABLE_USER_INFO_ENTRUST 130
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
@@ -75,7 +76,7 @@
 NSString *const RCDDebugCombineV2EnableString = @"合并转发V2";
 NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带userinfo";
 #define Title_Display_NoMore_Message_HUD @"消息无更多 Toast"
-
+NSString *const RCDDebugMessageEnableUserInfoEntrust = @"用户信息托管";
 @interface RCCoreClient()
 - (void)refetchNavidataSuccess:(void (^)(void))success
                        failure:(void (^)(NSInteger errorCode, NSString *responseData, NSString *errorDescription))failure;
@@ -247,6 +248,10 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
     if ([title isEqualToString:Title_Display_NoMore_Message_HUD]) {
         [self setSwitchButtonCell:cell tag:ENABLE_DISPLAY_NOMORE_MESSAGE_HUD];
     }
+    if ([title isEqualToString:RCDDebugMessageEnableUserInfoEntrust]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_USER_INFO_ENTRUST];
+    }
+    
     
     return cell;
 }
@@ -376,7 +381,8 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         RCDDebugCombineV2EnableString,
         RCDDebugMessageAttachUserInfoEnableString,
         Title_Display_Search_MessageTypes,
-        Title_Display_NoMore_Message_HUD
+        Title_Display_NoMore_Message_HUD,
+        RCDDebugMessageEnableUserInfoEntrust
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -534,6 +540,10 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         }
         case DISABLE_CHECK_CHATROOM_DUP_MESSAGE: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableCheckChatroomDupMessage];
+            break;
+        }
+        case ENABLE_USER_INFO_ENTRUST: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugMessageEnableUserInfoEntrust];
             break;
         }
         default:
@@ -716,7 +726,12 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
             [DEFAULTS synchronize];
             break;
         }
-
+        case ENABLE_USER_INFO_ENTRUST: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugMessageEnableUserInfoEntrust];
+            [DEFAULTS synchronize];
+            [self switchRootViewController];
+            break;
+        }
         default:
             break;
     }
@@ -1175,15 +1190,24 @@ typedef struct Test
         RCKitConfigCenter.ui.layoutDirection = index;
         [[NSUserDefaults standardUserDefaults] setValue:@(RCKitConfigCenter.ui.layoutDirection) forKey:@"layoutDirection"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
-        RCDNavigationViewController *nav = [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
+        RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
         mainTabBarVC.selectedIndex = 3;
         AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        app.window.rootViewController = nav;
+        app.window.rootViewController = mainTabBarVC;
     } cancelBlock:^{
     }];
 
 }
+
+- (void)switchRootViewController {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
+        mainTabBarVC.selectedIndex = 1;
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        app.window.rootViewController = mainTabBarVC;
+    });
+    [self.navigationController popToRootViewControllerAnimated:YES];
+ }
 
 - (void)showCustomFileIcon {
     RCDDebugFileIconViewController *controller = [[RCDDebugFileIconViewController alloc] init];
