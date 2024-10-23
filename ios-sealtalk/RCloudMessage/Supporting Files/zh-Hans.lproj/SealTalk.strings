@@ -562,4 +562,3 @@
 "delete_account_fail"="删除失败";
 "refresh"="刷新";
 "picture_code_expired"="图片验证码已过期，请重新输入";
-"media_file_size_limit"="上传文件超过最大限制";
