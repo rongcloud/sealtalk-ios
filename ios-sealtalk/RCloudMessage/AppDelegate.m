@@ -917,6 +917,12 @@
         [[RCCoreClient sharedCoreClient] setCheckDuplicateMessage:!enable];
     }
     NSLog(@"SealTalk setCheckDuplicateMessage %@", @(!enable));
+    
+    enable = [[userDefault valueForKey:RCDDebugDisableCheckChatroomDupMessage] boolValue];
+    if (enable) {
+        [[RCChatRoomClient sharedChatRoomClient] setCheckChatRoomDuplicateMessage:!enable];
+    }
+    NSLog(@"SealTalk setCheckChatRoomDuplicateMessage %@", @(!enable));
 }
 
 - (void)enableMessageAttachUserInfoIfNeed {

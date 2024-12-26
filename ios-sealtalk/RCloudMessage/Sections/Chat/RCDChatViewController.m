@@ -69,6 +69,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 @interface RCConversationViewController ()
 // 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
+- (void)didSendingMessageNotification:(NSNotification *)notification;
+- (void)deleteMessages;
 @end
 
 @interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate>
@@ -695,6 +697,13 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     return [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
 }
 
+- (void)noMoreMessageToFetch {
+    BOOL debugModeSearch = [[NSUserDefaults standardUserDefaults] boolForKey:RCDDebugEnableNoMoreMessageToFetchKey];
+    if (debugModeSearch) {
+        [self showToastMsg:@"没有更多历史消息"];
+    }
+}
+
 #pragma mark - target action
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
@@ -1190,6 +1199,15 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 #pragma mark - *************消息多选功能:转发、删除*************
 /******************消息多选功能:转发、删除**********************/
 - (void)addToolbarItems {
+    if (self.conversationType == ConversationType_CHATROOM) {
+        RCButton *deleteBtn = [[RCButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+        [deleteBtn setImage:RCResourceImage(@"delete_message") forState:UIControlStateNormal];
+        [deleteBtn addTarget:self action:@selector(deleteMessages) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *deleteBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
+        [self.messageSelectionToolbar setItems:@[deleteBarButtonItem] animated:YES];
+        return;
+    }
+    
     if (![DEFAULTS boolForKey:RCDDebugCombineV2EnableKey]) return;
 
     UIButton *forwardBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
@@ -1225,6 +1243,20 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
 }
 
+- (void)didSendingMessageNotification:(NSNotification *)notification {
+    [super didSendingMessageNotification:notification];
+    NSDictionary *statusDic = notification.userInfo;
+    NSNumber *error = statusDic[@"error"];
+    if (error) {
+        RCErrorCode errorCode = [error intValue];
+        if (errorCode == RC_FILE_SIZE_EXCEED_LIMIT) {
+            [self showToastMsg:RCDLocalizedString(@"media_file_size_limit")];
+        }  else if (errorCode == INVALID_PARAMETER_SIZE_NOT_FOUND) {
+            [self showToastMsg:@"开启限制未传 size 参数"];
+        }
+    }
+
+}
 - (void)onEndForwardMessage:(NSNotification *)notification {
     //置为 NO,将消息 cell 重置为初始状态
     self.allowsMessageCellSelection = NO;
