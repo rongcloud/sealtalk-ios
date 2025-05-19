@@ -26,6 +26,21 @@
 		003A90A4289A10C4000AC1FE /* RCDUGMentionedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A3289A10C4000AC1FE /* RCDUGMentionedViewController.m */; };
 		003A90A7289A10EB000AC1FE /* RCDMentionedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A6289A10EB000AC1FE /* RCDMentionedView.m */; };
 		003A90AA289A167C000AC1FE /* RCDMentionedQueryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 003A90A9289A167C000AC1FE /* RCDMentionedQueryView.m */; };
+		00700DBA2DA8BCD400863074 /* RCDAgentContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DB92DA8BCD400863074 /* RCDAgentContext.m */; };
+		00700DC72DA8EF7A00863074 /* RCDAgentSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DC12DA8EF7A00863074 /* RCDAgentSettingViewController.m */; };
+		00700DC82DA8EF7A00863074 /* RCAIConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DBF2DA8EF7A00863074 /* RCAIConversationViewController.m */; };
+		00700DC92DA8EF7A00863074 /* RCDAgentUnavailableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DC42DA8EF7A00863074 /* RCDAgentUnavailableView.m */; };
+		00700DCC2DA8EF9700863074 /* RCDAgentSettingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DCB2DA8EF9700863074 /* RCDAgentSettingView.m */; };
+		00700DCF2DA8F19E00863074 /* RCDAgentSettingViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DCE2DA8F19E00863074 /* RCDAgentSettingViewCell.m */; };
+		00700DD22DA8F28000863074 /* RCDAgentTagCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DD12DA8F28000863074 /* RCDAgentTagCollectionView.m */; };
+		00700DD52DA8F29E00863074 /* RCDAgentTagViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DD42DA8F29E00863074 /* RCDAgentTagViewCell.m */; };
+		00700DD82DA8F71F00863074 /* RCDAgentTagCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DD72DA8F71F00863074 /* RCDAgentTagCollectionViewCell.m */; };
+		00700DDF2DA8F98F00863074 /* RCDAgentTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DDE2DA8F98F00863074 /* RCDAgentTag.m */; };
+		00700DE22DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DE12DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.m */; };
+		00700DF82DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DF72DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.m */; };
+		00700DFB2DACAD2700863074 /* RCDAgentSettingViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DFA2DACAD2700863074 /* RCDAgentSettingViewModel.m */; };
+		00700DFE2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700DFD2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.m */; };
+		00700E012DACAF0400863074 /* RCDAgentSettingCellViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00700E002DACAF0400863074 /* RCDAgentSettingCellViewModel.m */; };
 		007322A82858625A00B51977 /* RCDChatViewController+Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 007322A72858625A00B51977 /* RCDChatViewController+Alert.m */; };
 		007558A8285C65CF0082F0EB /* RCDUGChannelSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558A7285C65CF0082F0EB /* RCDUGChannelSettingViewController.m */; };
 		007558AB285C66970082F0EB /* RCDChannelSettingHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007558AA285C66970082F0EB /* RCDChannelSettingHeaderView.m */; };
@@ -570,6 +585,36 @@
 		003A90A6289A10EB000AC1FE /* RCDMentionedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMentionedView.m; sourceTree = "<group>"; };
 		003A90A8289A167C000AC1FE /* RCDMentionedQueryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDMentionedQueryView.h; sourceTree = "<group>"; };
 		003A90A9289A167C000AC1FE /* RCDMentionedQueryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMentionedQueryView.m; sourceTree = "<group>"; };
+		00700DB82DA8BCD400863074 /* RCDAgentContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentContext.h; sourceTree = "<group>"; };
+		00700DB92DA8BCD400863074 /* RCDAgentContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentContext.m; sourceTree = "<group>"; };
+		00700DBE2DA8EF7A00863074 /* RCAIConversationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAIConversationViewController.h; sourceTree = "<group>"; };
+		00700DBF2DA8EF7A00863074 /* RCAIConversationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAIConversationViewController.m; sourceTree = "<group>"; };
+		00700DC02DA8EF7A00863074 /* RCDAgentSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentSettingViewController.h; sourceTree = "<group>"; };
+		00700DC12DA8EF7A00863074 /* RCDAgentSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentSettingViewController.m; sourceTree = "<group>"; };
+		00700DC32DA8EF7A00863074 /* RCDAgentUnavailableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentUnavailableView.h; sourceTree = "<group>"; };
+		00700DC42DA8EF7A00863074 /* RCDAgentUnavailableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentUnavailableView.m; sourceTree = "<group>"; };
+		00700DCA2DA8EF9700863074 /* RCDAgentSettingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentSettingView.h; sourceTree = "<group>"; };
+		00700DCB2DA8EF9700863074 /* RCDAgentSettingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentSettingView.m; sourceTree = "<group>"; };
+		00700DCD2DA8F19E00863074 /* RCDAgentSettingViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentSettingViewCell.h; sourceTree = "<group>"; };
+		00700DCE2DA8F19E00863074 /* RCDAgentSettingViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentSettingViewCell.m; sourceTree = "<group>"; };
+		00700DD02DA8F28000863074 /* RCDAgentTagCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentTagCollectionView.h; sourceTree = "<group>"; };
+		00700DD12DA8F28000863074 /* RCDAgentTagCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentTagCollectionView.m; sourceTree = "<group>"; };
+		00700DD32DA8F29E00863074 /* RCDAgentTagViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentTagViewCell.h; sourceTree = "<group>"; };
+		00700DD42DA8F29E00863074 /* RCDAgentTagViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentTagViewCell.m; sourceTree = "<group>"; };
+		00700DD62DA8F71F00863074 /* RCDAgentTagCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentTagCollectionViewCell.h; sourceTree = "<group>"; };
+		00700DD72DA8F71F00863074 /* RCDAgentTagCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentTagCollectionViewCell.m; sourceTree = "<group>"; };
+		00700DDD2DA8F98F00863074 /* RCDAgentTag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentTag.h; sourceTree = "<group>"; };
+		00700DDE2DA8F98F00863074 /* RCDAgentTag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentTag.m; sourceTree = "<group>"; };
+		00700DE02DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentTagCollectionViewModel.h; sourceTree = "<group>"; };
+		00700DE12DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentTagCollectionViewModel.m; sourceTree = "<group>"; };
+		00700DF62DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentTagCollectionCellViewModel.h; sourceTree = "<group>"; };
+		00700DF72DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentTagCollectionCellViewModel.m; sourceTree = "<group>"; };
+		00700DF92DACAD2700863074 /* RCDAgentSettingViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentSettingViewModel.h; sourceTree = "<group>"; };
+		00700DFA2DACAD2700863074 /* RCDAgentSettingViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentSettingViewModel.m; sourceTree = "<group>"; };
+		00700DFC2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentSettingSwitchCellViewModel.h; sourceTree = "<group>"; };
+		00700DFD2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentSettingSwitchCellViewModel.m; sourceTree = "<group>"; };
+		00700DFF2DACAF0400863074 /* RCDAgentSettingCellViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDAgentSettingCellViewModel.h; sourceTree = "<group>"; };
+		00700E002DACAF0400863074 /* RCDAgentSettingCellViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDAgentSettingCellViewModel.m; sourceTree = "<group>"; };
 		007322A62858625A00B51977 /* RCDChatViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCDChatViewController+Alert.h"; sourceTree = "<group>"; };
 		007322A72858625A00B51977 /* RCDChatViewController+Alert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCDChatViewController+Alert.m"; sourceTree = "<group>"; };
 		007558A6285C65CF0082F0EB /* RCDUGChannelSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDUGChannelSettingViewController.h; sourceTree = "<group>"; };
@@ -1453,6 +1498,75 @@
 				00A5AA8728DDABD800C051B1 /* RCDLocalMessagesViewController.m */,
 			);
 			path = Setting;
+			sourceTree = "<group>";
+		};
+		00700DB12DA8B4AD00863074 /* Agent */ = {
+			isa = PBXGroup;
+			children = (
+				00700DDC2DA8F97700863074 /* Model */,
+				00700DC22DA8EF7A00863074 /* VC */,
+				00700DC52DA8EF7A00863074 /* View */,
+				00700DC62DA8EF7A00863074 /* ViewModel */,
+				00700DB82DA8BCD400863074 /* RCDAgentContext.h */,
+				00700DB92DA8BCD400863074 /* RCDAgentContext.m */,
+			);
+			path = Agent;
+			sourceTree = "<group>";
+		};
+		00700DC22DA8EF7A00863074 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				00700DBE2DA8EF7A00863074 /* RCAIConversationViewController.h */,
+				00700DBF2DA8EF7A00863074 /* RCAIConversationViewController.m */,
+				00700DC02DA8EF7A00863074 /* RCDAgentSettingViewController.h */,
+				00700DC12DA8EF7A00863074 /* RCDAgentSettingViewController.m */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		00700DC52DA8EF7A00863074 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				00700DC32DA8EF7A00863074 /* RCDAgentUnavailableView.h */,
+				00700DC42DA8EF7A00863074 /* RCDAgentUnavailableView.m */,
+				00700DCA2DA8EF9700863074 /* RCDAgentSettingView.h */,
+				00700DCB2DA8EF9700863074 /* RCDAgentSettingView.m */,
+				00700DCD2DA8F19E00863074 /* RCDAgentSettingViewCell.h */,
+				00700DCE2DA8F19E00863074 /* RCDAgentSettingViewCell.m */,
+				00700DD02DA8F28000863074 /* RCDAgentTagCollectionView.h */,
+				00700DD12DA8F28000863074 /* RCDAgentTagCollectionView.m */,
+				00700DD32DA8F29E00863074 /* RCDAgentTagViewCell.h */,
+				00700DD42DA8F29E00863074 /* RCDAgentTagViewCell.m */,
+				00700DD62DA8F71F00863074 /* RCDAgentTagCollectionViewCell.h */,
+				00700DD72DA8F71F00863074 /* RCDAgentTagCollectionViewCell.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		00700DC62DA8EF7A00863074 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				00700DE02DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.h */,
+				00700DE12DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.m */,
+				00700DF62DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.h */,
+				00700DF72DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.m */,
+				00700DF92DACAD2700863074 /* RCDAgentSettingViewModel.h */,
+				00700DFA2DACAD2700863074 /* RCDAgentSettingViewModel.m */,
+				00700DFC2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.h */,
+				00700DFD2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.m */,
+				00700DFF2DACAF0400863074 /* RCDAgentSettingCellViewModel.h */,
+				00700E002DACAF0400863074 /* RCDAgentSettingCellViewModel.m */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		00700DDC2DA8F97700863074 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				00700DDD2DA8F98F00863074 /* RCDAgentTag.h */,
+				00700DDE2DA8F98F00863074 /* RCDAgentTag.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		007322962858623000B51977 /* Category */ = {
@@ -2839,6 +2953,7 @@
 		A290703F229E7F61006BDAC7 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				00700DB12DA8B4AD00863074 /* Agent */,
 				A2907058229E7F61006BDAC7 /* RCDChatListViewController.h */,
 				A2907061229E7F61006BDAC7 /* RCDChatListViewController.m */,
 				A2907059229E7F61006BDAC7 /* RCDChatViewController.h */,
@@ -3446,6 +3561,7 @@
 				A27AD725265C96C0008D35F7 /* Sources */,
 				A27AD726265C96C0008D35F7 /* Frameworks */,
 				A27AD727265C96C0008D35F7 /* Resources */,
+				5C86FD096D1BA9EBA91EDA1A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3461,14 +3577,13 @@
 			buildConfigurationList = E4D40F4E1A031F460045097C /* Build configuration list for PBXNativeTarget "SealTalk" */;
 			buildPhases = (
 				A9A81101CCA7835E3636010D /* [CP] Check Pods Manifest.lock */,
-				2E29FF1D1DC1BBAA00AF2DF0 /* ShellScript */,
 				E4D40F241A031F460045097C /* Sources */,
 				E4D40F251A031F460045097C /* Frameworks */,
 				E4D40F261A031F460045097C /* Resources */,
 				17D7D1E91D534F56000AEC54 /* Embed App Extensions */,
 				C5058288BDE887CC6D4836AD /* [CP] Embed Pods Frameworks */,
 				3B118042256CFF10001E5105 /* Embed Frameworks */,
-				3B446BB1257E297D00E8B0C3 /* ShellScript */,
+				44770AC85561D7BF5ADA222B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -3689,6 +3804,77 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		44770AC85561D7BF5ADA222B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongCallKit.bundle",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/en.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/ar.lproj",
+				"${PODS_ROOT}/RongCloudRTC/RongCloudRTC/RongRTCLib.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCallKit.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongRTCLib.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalk/Pods-SealTalk-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5C86FD096D1BA9EBA91EDA1A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService-resources.sh",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongCloud.bundle",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/en.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/zh-Hans.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/ar.lproj",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/Emoji.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCColor.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RCConfig.plist",
+				"${PODS_ROOT}/RongCloudIM/RongCloudIM/RongSticker.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongCloud.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/en.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zh-Hans.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ar.lproj",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Emoji.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCColor.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCConfig.plist",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RongSticker.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A5B3AF25F49B279150DF10A6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3752,6 +3938,21 @@
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
 				"${BUILT_PRODUCTS_DIR}/ZXingObjC/ZXingObjC.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/ChatRoom/RongChatRoom.framework/RongChatRoom",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/ContactCard/RongContactCard.framework/RongContactCard",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/CustomerService/RongCustomerService.framework/RongCustomerService",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Discussion/RongDiscussion.framework/RongDiscussion",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMKit/RongIMKit.framework/RongIMKit",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMLib/RongIMLib.framework/RongIMLib",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/IMLibCore/RongIMLibCore.framework/RongIMLibCore",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Location/RongLocation.framework/RongLocation",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/LocationKit/RongLocationKit.framework/RongLocationKit",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/PublicService/RongPublicService.framework/RongPublicService",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/RongSticker/RongSticker.framework/RongSticker",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudIM/Sight/RongSight.framework/RongSight",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongCallKit/RongCallKit.framework/RongCallKit",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongCallLib/RongCallLib.framework/RongCallLib",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/RongCloudRTC/RongRTCLib/RongRTCLib.framework/RongRTCLib",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -3767,6 +3968,21 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SSZipArchive.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZXingObjC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongChatRoom.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongContactCard.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCustomerService.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongDiscussion.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMLib.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongIMLibCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongLocation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongLocationKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongPublicService.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongSticker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongSight.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCallKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongCallLib.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RongRTCLib.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3820,6 +4036,7 @@
 				3BEB4F7322C380A7003923CC /* RCDContactNotificationMessage.m in Sources */,
 				00055E75292CB66F0037DDCB /* RCEmojiBoardView+Ext.m in Sources */,
 				27AD3025229E721F003C2680 /* RCDTableView.m in Sources */,
+				00700E012DACAF0400863074 /* RCDAgentSettingCellViewModel.m in Sources */,
 				1C98D4D8281005E10082C70C /* RCDChatTitleAlertView.m in Sources */,
 				27AD303C229E721F003C2680 /* RCDTabBarBtn.m in Sources */,
 				3BC0C7DE229E79490079234F /* RCDGroupTableViewCell.m in Sources */,
@@ -3855,6 +4072,10 @@
 				00850C29296EAC380066E25C /* RCDUserGroupDetailView.m in Sources */,
 				A29070AF229E7F61006BDAC7 /* HeadCollectionView.m in Sources */,
 				A221948822BB5F1B00274D4D /* RCDChooseUserController.m in Sources */,
+				00700DC72DA8EF7A00863074 /* RCDAgentSettingViewController.m in Sources */,
+				00700DC82DA8EF7A00863074 /* RCAIConversationViewController.m in Sources */,
+				00700DC92DA8EF7A00863074 /* RCDAgentUnavailableView.m in Sources */,
+				00700DE22DA8FE4D00863074 /* RCDAgentTagCollectionViewModel.m in Sources */,
 				A2402F9922B2381C00BF8F6A /* RCDChatRoomAPI.m in Sources */,
 				27AD303E229E721F003C2680 /* UITabBar+badge.m in Sources */,
 				007558AE285C68200082F0EB /* RCDUGChannelSettingViewModel.m in Sources */,
@@ -3864,6 +4085,7 @@
 				27AD302D229E721F003C2680 /* RCDSquareCell.m in Sources */,
 				F1E2A7782B47EBA500E78CBB /* RCDCombineV2PreviewController.m in Sources */,
 				270C242322A4C88E000F22A2 /* RCDSearchResultViewCell.m in Sources */,
+				00700DDF2DA8F98F00863074 /* RCDAgentTag.m in Sources */,
 				27F0E3C522A0E3E300C8B0B8 /* RCDEditUserNameViewController.m in Sources */,
 				00850C1D296E62590066E25C /* RCDUserGroupUserSelectorView.m in Sources */,
 				A29070AE229E7F61006BDAC7 /* RealTimeLocationStartCell.m in Sources */,
@@ -3904,6 +4126,7 @@
 				A29070AD229E7F61006BDAC7 /* RealTimeLocationViewController.m in Sources */,
 				9C226CF9229FB1D400F49FC5 /* RCDHTTPResult.m in Sources */,
 				27AD303D229E721F003C2680 /* RCDNavigationBar.m in Sources */,
+				00700DBA2DA8BCD400863074 /* RCDAgentContext.m in Sources */,
 				27F0E3C622A0E3E300C8B0B8 /* RCDLanguageSettingViewController.m in Sources */,
 				27AD3024229E721F003C2680 /* RCDBaseSettingTableViewCell.m in Sources */,
 				A2AD03A522D34F8D00F8E64D /* RCDQRInfoHandle.m in Sources */,
@@ -3916,6 +4139,7 @@
 				3B27F27E2577972F00916241 /* RCDDebugChatViewController.m in Sources */,
 				27AD303A229E721F003C2680 /* RCDMainTabBarViewController.m in Sources */,
 				00850BF8296D7C790066E25C /* RCDUserGroupBaseView.m in Sources */,
+				00700DD82DA8F71F00863074 /* RCDAgentTagCollectionViewCell.m in Sources */,
 				A2F0A99222FAA4C600422802 /* RCDGroupLeftMember.m in Sources */,
 				27AD300F229E721F003C2680 /* RCDSearchFriendController.m in Sources */,
 				274E2BFF22BB8C770016EE65 /* KxMenu.m in Sources */,
@@ -3992,6 +4216,7 @@
 				A2A5256D22B8899C008188A1 /* RCDGroupManagerListController.m in Sources */,
 				3B054E5722F43C7C009A3C72 /* RCDTextView.m in Sources */,
 				27AD3035229E721F003C2680 /* RCDLoginViewController.m in Sources */,
+				00700DFB2DACAD2700863074 /* RCDAgentSettingViewModel.m in Sources */,
 				A2A7EDF92612F76200EAA2D5 /* RCDRegistrationAgreementController.m in Sources */,
 				A2A5255C22B7944D008188A1 /* RCDGroupJoinController.m in Sources */,
 				007558CC28607C170082F0EB /* RCDChannelUserInfoCell.m in Sources */,
@@ -4010,6 +4235,7 @@
 				3B16DA4822FACDCB00AD2770 /* RCDCleanChatHistoryViewController.m in Sources */,
 				1C836A60283F3329007FABD2 /* RCDAlertView.m in Sources */,
 				3BC0C7DC229E79490079234F /* RCDContactTableViewCell.m in Sources */,
+				00700DF82DACA96A00863074 /* RCDAgentTagCollectionCellViewModel.m in Sources */,
 				17D7D2021D5355A0000AEC54 /* pinyin.c in Sources */,
 				A2C92F9B27994CEF0011C3F3 /* RCDUltraGroupManager.m in Sources */,
 				A28F1E2F22E15E37007C5814 /* RCDGroupConversationCell.m in Sources */,
@@ -4025,6 +4251,7 @@
 				00A5AA8B28DDAC7F00C051B1 /* RCDLocalMessagesView.m in Sources */,
 				3BB6CDFD22D723460007FFFB /* RCDUserInfo.m in Sources */,
 				A2F0A97522F9579500422802 /* RCDGroupMemberDetailCell.m in Sources */,
+				00700DD22DA8F28000863074 /* RCDAgentTagCollectionView.m in Sources */,
 				3B47891722B7A11100D33F10 /* RCDForwardSelectedCell.m in Sources */,
 				A251674A2796D0FE00BA4BFD /* RCDUltraGroupChannelListController.m in Sources */,
 				27AD301D229E721F003C2680 /* RCUnderlineTextField.m in Sources */,
@@ -4044,7 +4271,10 @@
 				27AD302B229E721F003C2680 /* RCDGroupInfo.m in Sources */,
 				00850C23296E926C0066E25C /* RCDUserGroupMemberCell.m in Sources */,
 				D5A18A0027C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.m in Sources */,
+				00700DCC2DA8EF9700863074 /* RCDAgentSettingView.m in Sources */,
 				3B27F26A2577971400916241 /* RCDDebugChatListViewController.m in Sources */,
+				00700DD52DA8F29E00863074 /* RCDAgentTagViewCell.m in Sources */,
+				00700DFE2DACAD9100863074 /* RCDAgentSettingSwitchCellViewModel.m in Sources */,
 				27F0E3D922A0E3E300C8B0B8 /* RCDBlackListViewController.m in Sources */,
 				3B16DA1422F8181600AD2770 /* RCDPictureView.m in Sources */,
 				00850C03296D80940066E25C /* RCDUserGroupInfo.m in Sources */,
@@ -4098,6 +4328,7 @@
 				007558D2286198630082F0EB /* RCDUGChannelSettingCell.m in Sources */,
 				3BD65C3A274F2BE00035F190 /* RCDDebugUltraGroupListController.m in Sources */,
 				3B7D8F2B223266B8009E1417 /* RCDBuglyManager.m in Sources */,
+				00700DCF2DA8F19E00863074 /* RCDAgentSettingViewCell.m in Sources */,
 				A2C92F9E279968A60011C3F3 /* RCDUltraGroupSettingController.m in Sources */,
 				27F0E3CB22A0E3E300C8B0B8 /* RCDAboutRongCloudTableViewController.m in Sources */,
 				A2074359253E958E003BD64D /* RCDDebugChatroomViewController.m in Sources */,

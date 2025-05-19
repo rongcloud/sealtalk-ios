@@ -30,6 +30,7 @@
 #import "RCDUtilities.h"
 #import "RCDNavigationViewController.h"
 #import "RCDGroupManager.h"
+#import "RCAIConversationViewController.h"
 
 @interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate, RCIMClientReceiveMessageDelegate>
 @property (nonatomic, strong) RCDNavigationViewController *searchNavigationController;
@@ -600,7 +601,20 @@
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
     
-    RCDChatViewController *chatVC = [[RCDChatViewController alloc] init];
+    RCConversationViewController *chatVC = nil;
+    if (model.conversationType == ConversationType_PRIVATE) {
+        RCAIConversationViewController *vc = [[RCAIConversationViewController alloc] init];
+        RCConversationIdentifier *identifier = [[RCConversationIdentifier alloc] init];
+        identifier.targetId = model.targetId;
+        identifier.channelId = model.channelId;
+        identifier.type = model.conversationType;
+        RCAgentFacadeModel *agent = [[RCAgentFacadeModel alloc] initWithIdentifier:identifier delegate:vc];
+        vc.agent = agent;
+        chatVC = vc;
+    } else {
+        chatVC = [[RCDChatViewController alloc] init];
+    }
+    
     chatVC.conversationType = model.conversationType;
     chatVC.targetId = model.targetId;
     chatVC.title = model.conversationTitle;
@@ -620,6 +634,8 @@
     }
 
     chatVC.disableSystemEmoji = enable;
+  
+    
     [self.navigationController pushViewController:chatVC animated:YES];
 }
 

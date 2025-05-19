@@ -561,3 +561,13 @@
 "refresh"="Refresh";
 "picture_code_expired"="The image verification code is expired,please try again";
 "media_file_size_limit"="Upload file exceeds the maximum limit";
+
+// AI
+"agent_enable_btn_title"="打开功能";
+"agent_unavailable_title"="功能未开启，点击立即启用";
+"agent_style"="对话风格";
+"agent_message_access_auth"="授权访问聊天记录";
+"agent_message_access_auth_tips"="授权后，可结合上下文进行智能回复推荐";
+"agent_switch"="功能开关";
+"agent_switch_tips"="开启后，将在聊天过程中提供聊天建议";
+"agent_setting_title"="AI 聊天助手设置";
