@@ -361,31 +361,6 @@ static NSString *debugChatRoomCellIdentifier = @"RCDDebugChatRoomCellIdentifier"
     [self addStringToDataSource:targetString];
 }
 
-- (void)chatRoomKVDidChange:(NSString *)roomId changeInfos:(NSArray<RCChatroomKVChangeInfo *> *)changeInfos {
-    NSMutableArray *infos = [NSMutableArray array];
-    for (RCChatroomKVChangeInfo *info in changeInfos) {
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        [dict setValue:info.roomId?:@"" forKey:@"roomId"];
-        [dict setValue:info.key?:@"" forKey:@"key"];
-        [dict setValue:info.value?:@"" forKey:@"value"];
-        [dict setValue:@(info.isDelete) forKey:@"isDelete"];
-        [infos addObject:dict];
-    }
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:infos
-                                                       options:NSJSONWritingPrettyPrinted
-                                                         error:&error];
-    NSString *jsonString;
-    if (error) {
-        jsonString = [changeInfos description];
-    } else {
-        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    }
-    NSString *targetString = [NSString stringWithFormat:@"chatRoomKVDidChanged：共 %lu 个，\n roomId：%@，entry：%@",
-    (unsigned long)changeInfos.count, roomId, jsonString];
-    [self addStringToDataSource:targetString];
-}
-
 #pragma mark - RCChatRoomNotifyEventDelegate
 
 - (void)chatRoomNotifyMultiLoginSync:(RCChatRoomSyncEvent *)event {
