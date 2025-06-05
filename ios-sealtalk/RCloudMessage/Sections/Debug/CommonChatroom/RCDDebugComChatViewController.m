@@ -217,8 +217,6 @@
     pushConfig.androidConfig.hwImageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hwImageUrl"];
     pushConfig.androidConfig.miLargeIconUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-miLargeIconUrl"];
     pushConfig.androidConfig.fcmChannelId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-fcmChannelId"];
-    pushConfig.hmosConfig.category = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-HarmonyOS-category"];
-    pushConfig.hmosConfig.imageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-HarmonyOS-imageUrl"];
     return pushConfig;
 }
 
