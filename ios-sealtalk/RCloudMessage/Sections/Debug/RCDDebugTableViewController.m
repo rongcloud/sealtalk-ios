@@ -68,13 +68,12 @@
 #define ENABLE_SEARCH_MESSAGETYPES 127
 #define ENABLE_DISPLAY_NOMORE_MESSAGE_HUD 128
 #define DISABLE_CHECK_CHATROOM_DUP_MESSAGE 129
+#define ENABLE_BATCH_INSERT 130
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
-#define Title_Display_Search_MessageTypes @"消息类型搜索"
 NSString *const RCDDebugCombineV2EnableString = @"合并转发V2";
 NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带userinfo";
-#define Title_Display_NoMore_Message_HUD @"消息无更多 Toast"
 
 @interface RCCoreClient()
 - (void)refetchNavidataSuccess:(void (^)(void))success
@@ -202,14 +201,14 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
     if ([title isEqualToString:@"关闭消息排重并杀死APP"]) {
         [self setSwitchButtonCell:cell tag:DISABLE_CHECK_DUP_MESSAGE];
     }
-    if ([title isEqualToString:@"关闭聊天室消息排重"]) {
-        [self setSwitchButtonCell:cell tag:DISABLE_CHECK_CHATROOM_DUP_MESSAGE];
-    }
     if ([title isEqualToString:@"开启群组实时位置共享"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_GROUP_REAL_TIME_LOCATION];
     }
     if ([title isEqualToString:@"开启合并转发拦截"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_INTERCEPT_WILLSEND_COMBINE];
+    }
+    if ([title isEqualToString:@"开启拦截批量插入"]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_BATCH_INSERT];
     }
     if ([title isEqualToString:@"私聊显示用户名及会话置顶优先"]) {
         [self setSwitchButtonCell:cell tag:ENABLE_CONVERSATION_DISPLAY_NAME];
@@ -235,19 +234,12 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
     if ([title isEqualToString:RCDDebugMessageAttachUserInfoEnableString]) {
         [self setSwitchButtonCell:cell tag:ENABLE_MESSAGE_ATTACH_USERINFO_TAG];
     }
-    if ([title isEqualToString:Title_Display_Search_MessageTypes]) {
-        [self setSwitchButtonCell:cell tag:ENABLE_SEARCH_MESSAGETYPES];
-    }
     if ([title isEqualToString:RCDLocalizedString(@"Set_offline_message_compensation_time")] ||
         [title isEqualToString:RCDLocalizedString(@"Set_global_DND_time")]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     if([title isEqualToString:@"友盟设备识别信息"]){
     }
-    if ([title isEqualToString:Title_Display_NoMore_Message_HUD]) {
-        [self setSwitchButtonCell:cell tag:ENABLE_DISPLAY_NOMORE_MESSAGE_HUD];
-    }
-    
     return cell;
 }
 
@@ -363,9 +355,9 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         @"自定义表情",
         @"隐藏表情按钮",
         @"关闭消息排重并杀死APP",
-        @"关闭聊天室消息排重",
         @"开启群组实时位置共享",
         @"开启合并转发拦截",
+        @"开启拦截批量插入",
         @"自定义文件图标",
         @"私聊显示用户名及会话置顶优先",
         @"是否拦截常用语按钮点击",
@@ -374,9 +366,7 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         @"暂停下载功能测试",
         @"是否禁用崩溃收集",
         RCDDebugCombineV2EnableString,
-        RCDDebugMessageAttachUserInfoEnableString,
-        Title_Display_Search_MessageTypes,
-        Title_Display_NoMore_Message_HUD
+        RCDDebugMessageAttachUserInfoEnableString
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -488,13 +478,14 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
             isButtonOn = [DEFAULTS boolForKey:RCDDebugInterceptWillSendCombineFuntion];
             break;
         }
+        case ENABLE_BATCH_INSERT: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugInterceptAndBatchInsertKey];
+            break;
+        }
         case ENABLE_CONVERSATION_DISPLAY_NAME: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisplayUserName];
             break;
-        }
-        case ENABLE_SEARCH_MESSAGETYPES: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableSearchByMessageTypes];
-            break;
+            
         }
         case BLOCKED_COMMON_PHRASES_BUTTON_ACTION: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
@@ -528,14 +519,6 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
             isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableMessageAttachUserInfoKey];
             break;
         }
-        case ENABLE_DISPLAY_NOMORE_MESSAGE_HUD: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableNoMoreMessageToFetchKey];
-            break;
-        }
-        case DISABLE_CHECK_CHATROOM_DUP_MESSAGE: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableCheckChatroomDupMessage];
-            break;
-        }
         default:
             break;
 
@@ -564,35 +547,35 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
     UISwitch *switchButton = (UISwitch *)sender;
     BOOL isButtonOn = [switchButton isOn];
     switch (switchButton.tag) {
-        case DISPLAY_ID_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDisplayIDKey];
-            [DEFAULTS synchronize];
-        } break;
+    case DISPLAY_ID_TAG: {
+        [DEFAULTS setBool:isButtonOn forKey:RCDDisplayIDKey];
+        [DEFAULTS synchronize];
+    } break;
 
-        case DISPLAY_ONLINE_STATUS_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDisplayOnlineStatusKey];
-            [DEFAULTS synchronize];
-        } break;
-            
-        case JOIN_CHATROOM_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDStayAfterJoinChatRoomFailedKey];
-            [DEFAULTS synchronize];
-        } break;
-        case DATA_STATISTICS_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDataStatisticsKey];
-            [DEFAULTS synchronize];
-            [[RCDDataStatistics sharedInstance] notify];
-        } break;
-        case BURN_MESSAGE_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugBurnMessageKey];
-            [DEFAULTS synchronize];
-            RCKitConfigCenter.message.enableDestructMessage = isButtonOn;
-        } break;
-        case SEND_COMBINE_MESSAGE_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugSendCombineMessageKey];
-            [DEFAULTS synchronize];
-            [RCIM sharedRCIM].enableSendCombineMessage = isButtonOn;
-        } break;
+    case DISPLAY_ONLINE_STATUS_TAG: {
+        [DEFAULTS setBool:isButtonOn forKey:RCDDisplayOnlineStatusKey];
+        [DEFAULTS synchronize];
+    } break;
+
+    case JOIN_CHATROOM_TAG: {
+        [DEFAULTS setBool:isButtonOn forKey:RCDStayAfterJoinChatRoomFailedKey];
+        [DEFAULTS synchronize];
+    } break;
+    case DATA_STATISTICS_TAG: {
+        [DEFAULTS setBool:isButtonOn forKey:RCDDebugDataStatisticsKey];
+        [DEFAULTS synchronize];
+        [[RCDDataStatistics sharedInstance] notify];
+    } break;
+    case BURN_MESSAGE_TAG: {
+        [DEFAULTS setBool:isButtonOn forKey:RCDDebugBurnMessageKey];
+        [DEFAULTS synchronize];
+        RCKitConfigCenter.message.enableDestructMessage = isButtonOn;
+    } break;
+    case SEND_COMBINE_MESSAGE_TAG: {
+        [DEFAULTS setBool:isButtonOn forKey:RCDDebugSendCombineMessageKey];
+        [DEFAULTS synchronize];
+        [RCIM sharedRCIM].enableSendCombineMessage = isButtonOn;
+    } break;
         case DISABLE_SYSTEM_EMOJI_TAG:{
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableSystemEmoji];
             [DEFAULTS synchronize];
@@ -643,11 +626,6 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
             [DEFAULTS synchronize];
             break;
         }
-        case DISABLE_CHECK_CHATROOM_DUP_MESSAGE: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableCheckChatroomDupMessage];
-            [DEFAULTS synchronize];
-            break;
-        }
         case ENABLE_GROUP_REAL_TIME_LOCATION: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableRealTimeLocation];
             [DEFAULTS synchronize];
@@ -655,6 +633,11 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         }
         case ENABLE_INTERCEPT_WILLSEND_COMBINE: {
             [DEFAULTS setBool:isButtonOn forKey:RCDDebugInterceptWillSendCombineFuntion];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case ENABLE_BATCH_INSERT: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugInterceptAndBatchInsertKey];
             [DEFAULTS synchronize];
             break;
         }
@@ -706,17 +689,6 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
             exit(0);
             break;
         }
-        case ENABLE_SEARCH_MESSAGETYPES: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableSearchByMessageTypes];
-            [DEFAULTS synchronize];
-            break;
-        }
-        case ENABLE_DISPLAY_NOMORE_MESSAGE_HUD: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableNoMoreMessageToFetchKey];
-            [DEFAULTS synchronize];
-            break;
-        }
-
         default:
             break;
     }
