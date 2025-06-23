@@ -17,6 +17,7 @@
 #import "RCDDBManager.h"
 #import "UIColor+RCColor.h"
 #import "RCDLanguageManager.h"
+#import "RCDCommonString.h"
 
 @interface RCDSearchHistoryMessageController () <UISearchBarDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSArray *resultArray;
@@ -114,6 +115,39 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     self.resultArray = nil;
+    if (0 == searchText.length) {
+        [self refreshSearchView:searchText];
+        return;
+    }
+    BOOL debugModeSearch = [[NSUserDefaults standardUserDefaults] boolForKey:RCDDebugEnableSearchByMessageTypes];
+    if (debugModeSearch) {
+        RCConversationIdentifier *cider = [[RCConversationIdentifier alloc] initWithConversationIdentifier:self.conversationType targetId:self.targetId channelId:@""];
+        NSArray *objnamelist = @[
+            [RCTextMessage getObjectName],
+            [RCRichContentMessage getObjectName],
+            [RCFileMessage getObjectName]
+        ];
+        [[RCCoreClient sharedCoreClient] searchMessages:cider keyword:searchText objectNameList:objnamelist limit:50 startTime:0 success:^(NSArray<RCMessage *> * _Nonnull messages) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSMutableArray *resultArray = [NSMutableArray array];
+                for (RCMessage *message in messages) {
+                    RCDSearchResultModel *messegeModel = [RCDSearchResultModel modelForMessage:message];
+                    messegeModel.searchType = RCDSearchChatHistory;
+                    [resultArray addObject:messegeModel];
+                }
+                self.resultArray = resultArray;
+                [self refreshSearchView:searchText];
+                self.isLoading = NO;
+            });
+            
+        } error:^(RCErrorCode status) {
+            NSLog(@"%s searchMessages failed: %@", __func__, @(status));
+        }];
+        
+        
+        return;
+    }
+    
     NSArray *array = [[RCCoreClient sharedCoreClient] searchMessages:self.conversationType
                                                           targetId:self.targetId
                                                            keyword:searchText

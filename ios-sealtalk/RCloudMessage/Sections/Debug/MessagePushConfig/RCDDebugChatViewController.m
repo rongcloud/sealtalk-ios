@@ -212,6 +212,11 @@
     // honor
     pushConfig.androidConfig.importanceHonor = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-importanceHonor"];
     pushConfig.androidConfig.imageUrlHonor = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-imageUrlHonor"];
+    
+    // HMOS
+    pushConfig.hmosConfig.imageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-HarmonyOS-imageUrl"];
+
+    pushConfig.hmosConfig.category = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-HarmonyOS-category"];
     return pushConfig;
 }
 
