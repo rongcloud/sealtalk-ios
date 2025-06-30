@@ -190,7 +190,6 @@
     [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:YES];
     
     [RCIM sharedRCIM].messageInterceptor = self;
-    [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Verbose;
 }
 
 #pragma mark - RCUltraGroupConversationDelegate

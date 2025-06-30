@@ -9,10 +9,10 @@
 #ifndef RCloudMessage_RCDCommonDefine_h
 #define RCloudMessage_RCDCommonDefine_h
 
-#define RONGCLOUD_IM_APPKEY @"p5tvi9dst25b4" // online key
+#define RONGCLOUD_IM_APPKEY @"n19jmcy59f1q9" // online key
 #define SERVICE_ID @"service"
-#define DEMO_SERVER @"http://sealtalk-server-java.rongcloud.net:8085"
-#define RONGCLOUD_NAVI_SERVER @"http://nav.cn.ronghub.com"
+#define DEMO_SERVER @"https://sealtalk.rongcloud.cn/server-api/"
+#define RONGCLOUD_NAVI_SERVER @""
 #define RONGCLOUD_FILE_SERVER @""
 #define RONGCLOUD_STATS_SERVER @""
 
