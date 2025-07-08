@@ -68,6 +68,7 @@
 		00CEE56428045AA90079C6AE /* RCDebugPushLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE56328045AA90079C6AE /* RCDebugPushLevelViewController.m */; };
 		00CEE567280516DC0079C6AE /* RCDebugComBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE566280516DC0079C6AE /* RCDebugComBaseViewController.m */; };
 		00D31183289A686600FCC908 /* RCDMessageDigestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D31182289A686600FCC908 /* RCDMessageDigestCell.m */; };
+		178998221F6244FA00FC44D3 /* sms-received.caf in Resources */ = {isa = PBXBuildFile; fileRef = 178998211F6244FA00FC44D3 /* sms-received.caf */; };
 		17B181851D587A1C0061E02B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A6EFABA01BB0EDAC007E9D67 /* libxml2.tbd */; };
 		17BE51CF1D5828EC0001418D /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 17BE51CE1D5828EC0001418D /* check.png */; };
 		17D7D1DC1D534F56000AEC54 /* RCDShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D7D1DB1D534F56000AEC54 /* RCDShareViewController.m */; };
@@ -1758,20 +1759,20 @@
 		276599A2229E87B20074FAB2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3BC0C810229F8F3B0079234F /* AFNetworking.framework */,
-				3BACB0072500CED50001A92C /* DoraemonKit.framework */,
-				3BACB0092500CED50001A92C /* DoraemonKit.bundle */,
-				1BF9FE42293762AB007AB335 /* DQAlertView.framework */,
-				3BC0C812229F8F3B0079234F /* FMDB.framework */,
-				9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */,
-				276599A7229E87B20074FAB2 /* Masonry.framework */,
-				A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */,
-				1BF9FE44293762AB007AB335 /* MMWormhole.framework */,
-				276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */,
-				1BF9FE46293762AB007AB335 /* Pods_SealTalkNotificationService.framework */,
-				279C1E8D22BB724D009FD15C /* SDWebImage.framework */,
-				279C1E8F22BB724D009FD15C /* SSZipArchive.framework */,
-				3B47890322B78F1C00D33F10 /* ZXingObjC.framework */,
+				3BC0C810229F8F3B0079234F /* AFNetworking */,
+				3BACB0072500CED50001A92C /* DoraemonKit */,
+				3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */,
+				1BF9FE42293762AB007AB335 /* DQAlertView */,
+				3BC0C812229F8F3B0079234F /* FMDB */,
+				9C226D0F229FD5C800F49FC5 /* GCDWebServer */,
+				276599A7229E87B20074FAB2 /* Masonry */,
+				A2E705C622BA1D1E0047DF47 /* MBProgressHUD */,
+				1BF9FE44293762AB007AB335 /* MMWormhole */,
+				276599A9229E87B20074FAB2 /* Pods-SealTalk */,
+				1BF9FE46293762AB007AB335 /* Pods-SealTalkNotificationService */,
+				279C1E8D22BB724D009FD15C /* SDWebImage */,
+				279C1E8F22BB724D009FD15C /* SSZipArchive */,
+				3B47890322B78F1C00D33F10 /* ZXingObjC */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3549,100 +3550,114 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1BF9FE42293762AB007AB335 /* DQAlertView.framework */ = {
+		1BF9FE42293762AB007AB335 /* DQAlertView */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = DQAlertView;
 			path = DQAlertView.framework;
 			remoteRef = 1BF9FE41293762AB007AB335 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1BF9FE44293762AB007AB335 /* MMWormhole.framework */ = {
+		1BF9FE44293762AB007AB335 /* MMWormhole */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MMWormhole;
 			path = MMWormhole.framework;
 			remoteRef = 1BF9FE43293762AB007AB335 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1BF9FE46293762AB007AB335 /* Pods_SealTalkNotificationService.framework */ = {
+		1BF9FE46293762AB007AB335 /* Pods-SealTalkNotificationService */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = "Pods-SealTalkNotificationService";
 			path = Pods_SealTalkNotificationService.framework;
 			remoteRef = 1BF9FE45293762AB007AB335 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		276599A7229E87B20074FAB2 /* Masonry.framework */ = {
+		276599A7229E87B20074FAB2 /* Masonry */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = Masonry;
 			path = Masonry.framework;
 			remoteRef = 276599A6229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */ = {
+		276599A9229E87B20074FAB2 /* Pods-SealTalk */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = "Pods-SealTalk";
 			path = Pods_SealTalk.framework;
 			remoteRef = 276599A8229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		279C1E8D22BB724D009FD15C /* SDWebImage.framework */ = {
+		279C1E8D22BB724D009FD15C /* SDWebImage */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SDWebImage;
 			path = SDWebImage.framework;
 			remoteRef = 279C1E8C22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		279C1E8F22BB724D009FD15C /* SSZipArchive.framework */ = {
+		279C1E8F22BB724D009FD15C /* SSZipArchive */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SSZipArchive;
 			path = SSZipArchive.framework;
 			remoteRef = 279C1E8E22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3B47890322B78F1C00D33F10 /* ZXingObjC.framework */ = {
+		3B47890322B78F1C00D33F10 /* ZXingObjC */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = ZXingObjC;
 			path = ZXingObjC.framework;
 			remoteRef = 3B47890222B78F1C00D33F10 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BACB0072500CED50001A92C /* DoraemonKit.framework */ = {
+		3BACB0072500CED50001A92C /* DoraemonKit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = DoraemonKit;
 			path = DoraemonKit.framework;
 			remoteRef = 3BACB0062500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BACB0092500CED50001A92C /* DoraemonKit.bundle */ = {
+		3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
+			name = "DoraemonKit-DoraemonKit";
 			path = DoraemonKit.bundle;
 			remoteRef = 3BACB0082500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BC0C810229F8F3B0079234F /* AFNetworking.framework */ = {
+		3BC0C810229F8F3B0079234F /* AFNetworking */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = AFNetworking;
 			path = AFNetworking.framework;
 			remoteRef = 3BC0C80F229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BC0C812229F8F3B0079234F /* FMDB.framework */ = {
+		3BC0C812229F8F3B0079234F /* FMDB */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = FMDB;
 			path = FMDB.framework;
 			remoteRef = 3BC0C811229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */ = {
+		9C226D0F229FD5C800F49FC5 /* GCDWebServer */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = GCDWebServer;
 			path = GCDWebServer.framework;
 			remoteRef = 9C226D0E229FD5C800F49FC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */ = {
+		A2E705C622BA1D1E0047DF47 /* MBProgressHUD */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MBProgressHUD;
 			path = MBProgressHUD.framework;
 			remoteRef = A2E705C522BA1D1E0047DF47 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3672,6 +3687,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				178998221F6244FA00FC44D3 /* sms-received.caf in Resources */,
 				9B8BBA0024065F2F007CF839 /* RealTimeLocation.xcassets in Resources */,
 				A27AF90C2480F3E800686890 /* before_build.sh in Resources */,
 				9B49C53D23C421720058D19F /* RealTimeLocation.strings in Resources */,

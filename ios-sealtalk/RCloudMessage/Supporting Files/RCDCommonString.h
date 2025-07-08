@@ -62,7 +62,6 @@
 #define RCDDebugEnableCustomEmoji @"RCDDebugEnableCustomEmoji"
 #define RCDDebugDisableEmojiBtn @"RCDDebugDisableEmojiBtn"
 #define RCDDebugDisableCheckDupMessage @"RCDDebugDisableCheckDupMessage"
-#define RCDDebugDisableCheckChatroomDupMessage @"RCDDebugDisableCheckChatroomDupMessage"
 #define RCDDebugEnableRealTimeLocation @"RCDDebugEnableRealTimeLocation"
 #define RCDDebugInterceptWillSendCombineFuntion @"RCDDebugInterceptWillSendCombineFuntion"
 #define RCDDebugDisplayUserName @"RCDDebugDisplayUserName"
@@ -74,15 +73,12 @@
 #define RCDDebugEnableNormalVoiceMessage @"RCDDebugEnableNormalVoiceMessage"
 #define RCDDebugCombineV2EnableKey @"RCDDebugCombineV2EnableKey"
 #define RCDDebugEnableMessageAttachUserInfoKey @"RCDDebugEnableMessageAttachUserInfoKey"
-#define RCDDebugEnableNoMoreMessageToFetchKey @"RCDDebugEnableNoMoreMessageToFetchKey"
-#define RCDDebugDisableUnknownMessage @"RCDDebugDisableUnknownMessage"
-#define RCDDebugShowUnkownMessageNotification @"RCDDebugShowUnkownMessageNotification"
-#define RCDDebugHideSenderName @"RCDDebugHideSenderName"
 
 // audit
 #define RCDDebugMessageAuditTypeKey @"RCDDebugMessageAuditTypeKey"
 #define RCDDebugMessageAuditProjectKey @"RCDDebugMessageAuditProjectKey"
 #define RCDDebugMessageAuditStrategyKey @"RCDDebugMessageAuditStrategyKey"
-#define RCDDebugEnableSearchByMessageTypes @"RCDDebugEnableSearchByMessageTypes"
+
+#define RCDDebugInterceptAndBatchInsertKey @"RCDDebugInterceptAndBatchInsertKey"
 
 #endif /* RCDCommonString_h */
