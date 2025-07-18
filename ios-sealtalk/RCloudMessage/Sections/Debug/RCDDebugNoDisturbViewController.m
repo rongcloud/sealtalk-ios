@@ -67,7 +67,7 @@
 
     // start time label
     UILabel *startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 100, 130, 44)];
-    startTimeLabel.text = RCDLocalizedString(@"Start_time");
+    startTimeLabel.text = RCDLocalizedString(@"Start_time1");
     [self.view addSubview:startTimeLabel];
 
     // start text field

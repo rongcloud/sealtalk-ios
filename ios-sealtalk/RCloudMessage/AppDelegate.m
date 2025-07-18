@@ -190,7 +190,6 @@
     [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:YES];
     
     [RCIM sharedRCIM].messageInterceptor = self;
-    [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Verbose;
 }
 
 #pragma mark - RCUltraGroupConversationDelegate
@@ -918,12 +917,6 @@
         [[RCCoreClient sharedCoreClient] setCheckDuplicateMessage:!enable];
     }
     NSLog(@"SealTalk setCheckDuplicateMessage %@", @(!enable));
-    
-    enable = [[userDefault valueForKey:RCDDebugDisableCheckChatroomDupMessage] boolValue];
-    if (enable) {
-        [[RCChatRoomClient sharedChatRoomClient] setCheckChatRoomDuplicateMessage:!enable];
-    }
-    NSLog(@"SealTalk setCheckChatRoomDuplicateMessage %@", @(!enable));
 }
 
 - (void)enableMessageAttachUserInfoIfNeed {
@@ -956,42 +949,84 @@
     if (!openIntercept) {
         return NO;
     }
-
-    if ([message.content isKindOfClass:[RCCombineMessage class]]) {
-        // 只拦截合并转发消息
-        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:nil pushData:nil uploadPrepare:^(RCUploadMediaStatusListener *uploadListener) {
-
-            RCCombineMessage *msgContent = (RCCombineMessage *)uploadListener.currentMessage.content;
-            msgContent.remoteUrl = @"https://html-aws-or.ronghub.com/VA5SSVUES1xcVVsAXXJheU1hfVtORggOAAQBDQAPCTc3OTg=.html";
-            uploadListener.successBlock(msgContent);
-
-        } progress:nil successBlock:nil errorBlock:nil cancel:nil];
+    
+    if ([message.content isKindOfClass:RCMediaMessageContent.class]) {
+        message = [[RCMessage alloc] initWithType:message.conversationType targetId:message.targetId direction:MessageDirection_SEND content:message.content];
+        BOOL batchOpen = [[userDefault valueForKey:RCDDebugInterceptAndBatchInsertKey] boolValue];
+        if (batchOpen) {
+            [[RCCoreClient sharedCoreClient] batchInsertMessage:@[message] completion:^(BOOL ret) {
+                [[RCCoreClient sharedCoreClient] getLatestMessages:message.conversationType targetId:message.targetId count:1 completion:^(NSArray<RCMessage *> * _Nullable messages) {
+                    [[RCCoreClient sharedCoreClient] sendMediaMessage:messages.firstObject pushContent:nil pushData:nil progress:nil successBlock:^(RCMessage *successMessage) {
+                        
+                    } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+                        
+                    } cancel:^(RCMessage *cancelMessage) {
+                        
+                    }];
+                }];
+            }];
+        } else {
+            [[RCChannelClient sharedChannelManager] insertOutgoingMessage:message.conversationType targetId:message.targetId channelId:@"" canIncludeExpansion:YES sentStatus:SentStatus_SENT content:message.content sentTime:0 completion:^(RCMessage * _Nullable msg) {
+                [[RCCoreClient sharedCoreClient] getLatestMessages:message.conversationType targetId:message.targetId count:1 completion:^(NSArray<RCMessage *> * _Nullable messages) {
+                    [[RCCoreClient sharedCoreClient] sendMediaMessage:messages.firstObject pushContent:nil pushData:nil progress:nil successBlock:^(RCMessage *successMessage) {
+                        
+                    } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+                        
+                    } cancel:^(RCMessage *cancelMessage) {
+                        
+                    }];
+                }];
+            }];
+        }
         return YES;
     }
-    else if ([message.content isKindOfClass:[RCImageMessage class]]) {
-        // 只拦截合并转发消息
-//        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:nil pushData:nil uploadPrepare:^(RCUploadMediaStatusListener *uploadListener) {
-//
-//            RCImageMessage *msgContent = (RCImageMessage *)uploadListener.currentMessage.content;
-//            msgContent.remoteUrl = @"http://image-aws-or.ronghub.com/VAtfRFUBRlFcUFYNXXdsdE1kcFZOQwUDAAENBwUBAjcyNDU=.jpg";
-//            uploadListener.successBlock(msgContent);
-//
-//        } progress:nil successBlock:nil errorBlock:nil cancel:nil];
-//        return YES;
-        
-        
-        // 拦截更换一下内容, 会继续使用SDK进行发送
-        RCImageMessage *msgContent = (RCImageMessage *)message.content;
-        msgContent.remoteUrl = @"http://image-aws-or.ronghub.com/VAtfRFUBRlFcUFYNXXdsdE1kcFZOQwUDAAENBwUBAjcyNDU=.jpg";
-        return NO;
-    }
     
-    else if ([message.content isKindOfClass:[RCTextMessage class]]) {
-        // 不拦截继续使用SDK 方法发送，只更新文本消息内容
-        RCTextMessage *msgContent = (RCTextMessage *)message.content;
-        msgContent.content = @"拦截并替换了，SDK发送";
-        return NO;
-    }
+//    if ([message.content isKindOfClass:[RCCombineMessage class]]){} {
+////        // 只拦截合并转发消息
+////        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:nil pushData:nil uploadPrepare:^(RCUploadMediaStatusListener *uploadListener) {
+////
+////            RCCombineMessage *msgContent = (RCCombineMessage *)uploadListener.currentMessage.content;
+////            msgContent.remoteUrl = @"https://html-aws-or.ronghub.com/VA5SSVUES1xcVVsAXXJheU1hfVtORggOAAQBDQAPCTc3OTg=.html";
+////            uploadListener.successBlock(msgContent);
+////
+////        } progress:nil successBlock:nil errorBlock:nil cancel:nil];
+//        [[RCChannelClient sharedChannelManager] insertOutgoingMessage:message.conversationType targetId:message.targetId channelId:@"" canIncludeExpansion:YES sentStatus:SentStatus_SENT content:message.content sentTime:0 completion:^(RCMessage * _Nullable msg) {
+//            [[RCCoreClient sharedCoreClient] getMessage:msg.messageId completion:^(RCMessage * _Nullable tempMsg) {
+//                [[RCCoreClient sharedCoreClient] sendMediaMessage:tempMsg pushContent:nil pushData:nil progress:nil successBlock:^(RCMessage *successMessage) {
+//                                
+//                            } errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
+//                                
+//                            } cancel:^(RCMessage *cancelMessage) {
+//                                
+//                            }];
+//            }];
+//        }];
+//        return YES;
+//    }
+//    else if ([message.content isKindOfClass:[RCImageMessage class]]) {
+//        // 只拦截合并转发消息
+////        [[RCIM sharedRCIM] sendMediaMessage:message pushContent:nil pushData:nil uploadPrepare:^(RCUploadMediaStatusListener *uploadListener) {
+////
+////            RCImageMessage *msgContent = (RCImageMessage *)uploadListener.currentMessage.content;
+////            msgContent.remoteUrl = @"http://image-aws-or.ronghub.com/VAtfRFUBRlFcUFYNXXdsdE1kcFZOQwUDAAENBwUBAjcyNDU=.jpg";
+////            uploadListener.successBlock(msgContent);
+////
+////        } progress:nil successBlock:nil errorBlock:nil cancel:nil];
+////        return YES;
+//        
+//        
+//        // 拦截更换一下内容, 会继续使用SDK进行发送
+//        RCImageMessage *msgContent = (RCImageMessage *)message.content;
+//        msgContent.remoteUrl = @"http://image-aws-or.ronghub.com/VAtfRFUBRlFcUFYNXXdsdE1kcFZOQwUDAAENBwUBAjcyNDU=.jpg";
+//        return NO;
+//    }
+//    
+//    else if ([message.content isKindOfClass:[RCTextMessage class]]) {
+//        // 不拦截继续使用SDK 方法发送，只更新文本消息内容
+//        RCTextMessage *msgContent = (RCTextMessage *)message.content;
+//        msgContent.content = @"拦截并替换了，SDK发送";
+//        return NO;
+//    }
     
     
     return NO;
