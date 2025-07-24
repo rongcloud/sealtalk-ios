@@ -3,13 +3,13 @@ platform :ios, '9.0'
 inhibit_all_warnings!
 
 def im
-  pod 'RongCloudIM/IMLibCore', '5.7.9'
-  pod 'RongCloudIM/IMLib', '5.7.9'
-  pod 'RongCloudIM/IMKit', '5.7.9'
-  pod 'RongCloudIM/RongSticker', '5.7.9'
-  pod 'RongCloudIM/Sight', '5.7.9'
-  pod 'RongCloudIM/ContactCard', '5.7.9'
-  pod 'RongCloudIM/LocationKit', '5.7.9'
+  pod 'RongCloudIM/IMLibCore', '5.24.0'
+  pod 'RongCloudIM/IMLib', '5.24.0'
+  pod 'RongCloudIM/IMKit', '5.24.0'
+  pod 'RongCloudIM/RongSticker', '5.24.0'
+  pod 'RongCloudIM/Sight', '5.24.0'
+  pod 'RongCloudIM/ContactCard', '5.24.0'
+  pod 'RongCloudIM/LocationKit', '5.24.0'
 end
 
 target 'SealTalk' do

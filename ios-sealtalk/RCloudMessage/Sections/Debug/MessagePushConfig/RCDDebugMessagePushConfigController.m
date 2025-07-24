@@ -77,6 +77,12 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
 
 @property (nonatomic, strong) UITextField *imageUrlHonorTF;
 
+// HMOS
+@property (nonatomic, strong) UITextField *imageUrlHMOSTF;
+
+@property (nonatomic, strong) UITextField *categoryHMOSTF;
+
+
 @property (nonatomic, strong) RCMessagePushConfig *pushConfig;
 
 @property (nonatomic, strong) RCMessageConfig *config;
@@ -131,6 +137,9 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     [self.contentView addSubview:self.importanceHonorTF];
     [self.contentView addSubview:self.imageUrlHonorTF];
 
+    [self.contentView addSubview:self.imageUrlHMOSTF];
+    [self.contentView addSubview:self.categoryHMOSTF];
+    
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.bottom.equalTo(self.view);
     }];
@@ -278,6 +287,18 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     [self.imageUrlHonorTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.importanceHonorTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
+//        make.bottom.equalTo(self.contentView);
+    }];
+    
+    [self.imageUrlHMOSTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.imageUrlHonorTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+//        make.bottom.equalTo(self.contentView);
+    }];
+    
+    [self.categoryHMOSTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.imageUrlHMOSTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
         make.bottom.equalTo(self.contentView);
     }];
 }
@@ -412,6 +433,9 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     pushConfig.androidConfig.importanceHonor = self.importanceHonorTF.text;
     pushConfig.androidConfig.imageUrlHonor = self.imageUrlHonorTF.text;
     
+    // HMOS
+    pushConfig.hmosConfig.imageUrl = self.imageUrlHMOSTF.text;
+    pushConfig.hmosConfig.category = self.categoryHMOSTF.text;
     [self saveToUserDefaults:pushConfig];
     
     RCMessageConfig *config = [[RCMessageConfig alloc] init];
@@ -454,6 +478,10 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     // honor
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.importanceHonor forKey:@"pushConfig-android-importanceHonor"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.imageUrlHonor forKey:@"pushConfig-android-imageUrlHonor"];
+    
+    // HMOS
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.hmosConfig.category forKey:@"pushConfig-HarmonyOS-category"];
+    [[NSUserDefaults standardUserDefaults] setObject:pushConfig.hmosConfig.imageUrl forKey:@"pushConfig-HarmonyOS-imageUrl"];
 }
 
 - (void)saveConfigToUserDefaults:(RCMessageConfig *)config {
@@ -499,6 +527,10 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
         self.pushConfig.androidConfig.importanceHonor = RCImportanceHonorNormal;
     }
     self.pushConfig.androidConfig.imageUrlHonor = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-imageUrlHonor"];
+// HMOS
+    self.pushConfig.hmosConfig.imageUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-HarmonyOS-imageUrl"];
+
+    self.pushConfig.hmosConfig.category = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-HarmonyOS-category"];
 
     self.config = [[RCMessageConfig alloc] init];
     self.config.disableNotification = [[[NSUserDefaults standardUserDefaults] objectForKey:@"config-disableNotification"] boolValue];
@@ -806,5 +838,22 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     return _imageUrlHonorTF;
 }
 
+- (UITextField *)imageUrlHMOSTF {
+    if (!_imageUrlHMOSTF) {
+        _imageUrlHMOSTF = [[UITextField alloc] init];
+        _imageUrlHMOSTF.placeholder = @"HarmonyOS 图片地址";
+        _imageUrlHMOSTF.layer.borderWidth = 1;
+    }
+    return _imageUrlHMOSTF;
+}
+
+- (UITextField *)categoryHMOSTF {
+    if (!_categoryHMOSTF) {
+        _categoryHMOSTF = [[UITextField alloc] init];
+        _categoryHMOSTF.placeholder = @"HarmonyOS 类别";
+        _categoryHMOSTF.layer.borderWidth = 1;
+    }
+    return _categoryHMOSTF;
+}
 
 @end
