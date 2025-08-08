@@ -177,6 +177,7 @@
     RCKitConfigCenter.message.isMediaSelectorContainVideo = YES;
     RCKitConfigCenter.message.enableSendCombineMessage = YES;
     RCKitConfigCenter.message.reeditDuration = 60;
+    RCKitConfigCenter.message.enableEditMessage = YES;
 
     RCKitConfigCenter.ui.enableDarkMode = YES;
     RCKitConfigCenter.ui.globalConversationPortraitSize = CGSizeMake(48, 48);
@@ -190,6 +191,7 @@
     [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:YES];
     
     [RCIM sharedRCIM].messageInterceptor = self;
+    [RCCoreClient sharedCoreClient].logLevel = RC_Log_Level_Verbose;
 }
 
 #pragma mark - RCUltraGroupConversationDelegate
