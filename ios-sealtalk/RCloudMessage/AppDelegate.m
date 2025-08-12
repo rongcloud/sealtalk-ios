@@ -178,6 +178,7 @@
     RCKitConfigCenter.message.enableSendCombineMessage = YES;
     RCKitConfigCenter.message.reeditDuration = 60;
     RCKitConfigCenter.message.enableEditMessage = YES;
+    RCKitConfigCenter.message.editedTextColor = RCDYCOLOR(0x4679FF, 0x4679FF);
 
     RCKitConfigCenter.ui.enableDarkMode = YES;
     RCKitConfigCenter.ui.globalConversationPortraitSize = CGSizeMake(48, 48);
