@@ -537,7 +537,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if (memberDetail.groupNickname.length > 0) {
         userInfo.name = memberDetail.groupNickname;
     }
-    [self addMentionedUserToCurrentInput:userInfo];
+    [self.chatSessionInputBarControl addMentionedUser:userInfo];
+    [self.chatSessionInputBarControl.inputTextView becomeFirstResponder];
 }
 
 - (RCMessage *)willAppendAndDisplayMessage:(RCMessage *)message {
