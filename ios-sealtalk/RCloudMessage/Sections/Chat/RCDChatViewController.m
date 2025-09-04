@@ -118,6 +118,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     self.disableSystemEmoji = enable;
     
     self.needDeleteRemoteMessage = ![DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
+    self.hidesBottomBarWhenPushed = YES; 
+
 }
 
 - (void)viewDidLoad {
@@ -161,6 +163,19 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *hidePortrait = [userDefault valueForKey:RCDDebugHidePortraitEnable];
     self.hidePortrait = [hidePortrait boolValue];
+    [self clearMiddleViewControllers];
+}
+
+- (void)clearMiddleViewControllers {
+    if (!self.needPopToRootView) {
+        return;
+    }
+    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+    // 如果导航控制器中的视图控制器数量大于2（包含根视图控制器和当前视图控制器），移除中间的视图控制器
+    if (viewControllers.count > 2) {
+        NSMutableArray *newViewControllers = [NSMutableArray arrayWithObjects:viewControllers.firstObject, viewControllers.lastObject, nil]; // 保留根视图控制器和当前视图控制器
+        self.navigationController.viewControllers = newViewControllers;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -537,8 +552,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if (memberDetail.groupNickname.length > 0) {
         userInfo.name = memberDetail.groupNickname;
     }
-    [self.chatSessionInputBarControl addMentionedUser:userInfo];
-    [self.chatSessionInputBarControl.inputTextView becomeFirstResponder];
+    [self addMentionedUserToCurrentInput:userInfo];
 }
 
 - (RCMessage *)willAppendAndDisplayMessage:(RCMessage *)message {
@@ -695,6 +709,13 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (BOOL)didTapCommonPhrasesButton {
     [self showToastMsg:@"常用语按钮监听"];
     return [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
+}
+
+- (void)noMoreMessageToFetch {
+    BOOL debugModeSearch = [[NSUserDefaults standardUserDefaults] boolForKey:RCDDebugEnableNoMoreMessageToFetchKey];
+    if (debugModeSearch) {
+        [self showToastMsg:@"没有更多历史消息"];
+    }
 }
 
 #pragma mark - target action
@@ -1079,7 +1100,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         }
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];
     } else if (self.conversationType == ConversationType_CHATROOM) {
-        [self setRightNavigationItem:nil];
+        self.navigationItem.rightBarButtonItem = nil;;
     } else {
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];
     }
@@ -1236,6 +1257,20 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
 }
 
+- (void)didSendingMessageNotification:(NSNotification *)notification {
+    [super didSendingMessageNotification:notification];
+    NSDictionary *statusDic = notification.userInfo;
+    NSNumber *error = statusDic[@"error"];
+    if (error) {
+        RCErrorCode errorCode = [error intValue];
+        if (errorCode == RC_FILE_SIZE_EXCEED_LIMIT) {
+            [self showToastMsg:RCDLocalizedString(@"media_file_size_limit")];
+        }  else if (errorCode == INVALID_PARAMETER_SIZE_NOT_FOUND) {
+            [self showToastMsg:@"开启限制未传 size 参数"];
+        }
+    }
+
+}
 - (void)onEndForwardMessage:(NSNotification *)notification {
     //置为 NO,将消息 cell 重置为初始状态
     self.allowsMessageCellSelection = NO;

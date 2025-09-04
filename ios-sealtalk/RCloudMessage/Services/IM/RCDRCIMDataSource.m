@@ -11,7 +11,6 @@
 #import "RCDUtilities.h"
 #import "RCDGroupManager.h"
 #import "RCDCommonString.h"
-
 @interface RCDRCIMDataSource ()
 
 @end

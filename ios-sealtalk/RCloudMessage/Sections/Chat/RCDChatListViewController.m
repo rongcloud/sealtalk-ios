@@ -108,6 +108,13 @@
     [self setNaviItem];
     RCUserInfo *groupNotify = [[RCUserInfo alloc] initWithUserId:@"__system__" name:@"" portrait:nil];
     [[RCIM sharedRCIM] refreshUserInfoCache:groupNotify withUserId:@"__system__"];
+    NSUserDefaults *std = [NSUserDefaults standardUserDefaults];
+    
+    BOOL disableUnkownMessage = [std boolForKey:RCDDebugDisableUnknownMessage];
+    RCKitConfigCenter.message.showUnkownMessage = !disableUnkownMessage;
+    
+    BOOL showUnkownMessageNotification = [std boolForKey:RCDDebugShowUnkownMessageNotification];
+    RCKitConfigCenter.message.showUnkownMessageNotificaiton = showUnkownMessageNotification;
 }
 
 - (void)dealloc {
@@ -430,11 +437,12 @@
                       target:self
                       action:@selector(pushToQRScan)]
     ];
+    UIWindow *window = [RCKitUtility getKeyWindow];
     CGRect navigationBarRect = self.navigationController.navigationBar.frame;
     CGRect targetFrame = CGRectMake(self.view.frame.size.width - 30, navigationBarRect.origin.y-navigationBarRect.size.height-24, 100, 80);
     [KxMenu setTintColor:HEXCOLOR(0x000000)];
     [KxMenu setTitleFont:[UIFont systemFontOfSize:17]];
-    [KxMenu showMenuInView:self.tabBarController.navigationController.navigationBar.superview
+    [KxMenu showMenuInView:window
                   fromRect:targetFrame
                  menuItems:menuItems];
 }
@@ -693,8 +701,8 @@
 
 - (void)setNaviItem {
     RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"add"] target:self action:@selector(showMenu)];
-    self.tabBarController.navigationItem.rightBarButtonItems = @[ rightBtn ];
-    self.tabBarController.navigationItem.title = RCDLocalizedString(@"Messages");
+    self.navigationItem.rightBarButtonItems = @[ rightBtn ];
+    self.navigationItem.title = RCDLocalizedString(@"Messages");
 }
 #pragma mark - RCIMClientReceiveMessageDelegate
 

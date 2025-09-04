@@ -559,3 +559,8 @@
 "delete_account_fail"="delete fail";
 "refresh"="Refresh";
 "picture_code_expired"="The image verification code is expired,please try again";
+"media_file_size_limit"="ترفيع الملف يتجاوز الحد الأقصى";
+"Just"="Just";
+"OneDay"="One day";
+"LastThreeDay"="Last three days";
+"ThreeDaysAgo"="Three days ago";
