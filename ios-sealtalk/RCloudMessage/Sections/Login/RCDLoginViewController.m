@@ -360,8 +360,10 @@
                     [weakSelf logoutWithFraudPrevention] ;
                     [RCDAlertBuilder showFraudPreventionRejectAlert] ;
                 } else {
-                    RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
-                    [UIApplication sharedApplication].delegate.window.rootViewController = mainTabBarVC;
+                    RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
+                    RCDNavigationViewController *rootNavi =
+                    [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
+                    [UIApplication sharedApplication].delegate.window.rootViewController = rootNavi;
                 }
             });
         }];

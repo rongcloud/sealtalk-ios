@@ -19,7 +19,7 @@
 #import "RCDLanguageManager.h"
 
 @interface RCDSearchMoreController () <UISearchBarDelegate>
-@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) RCDSearchBar *searchBar;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIView *searchView;
 @property (nonatomic, strong) UIView *headerView;
@@ -239,9 +239,9 @@
 }
 
 #pragma mark - getter
-- (UISearchBar *)searchBar {
+- (RCDSearchBar *)searchBar {
     if (!_searchBar) {
-        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.searchView.frame.size.width - 100, 44)];
+        _searchBar = [[RCDSearchBar alloc] initWithFrame:CGRectMake(-17, 0, self.searchView.frame.size.width - 75, 44)];
         _searchBar.delegate = self;
         _searchBar.placeholder = nil;
         _searchBar.tintColor = [UIColor blueColor];

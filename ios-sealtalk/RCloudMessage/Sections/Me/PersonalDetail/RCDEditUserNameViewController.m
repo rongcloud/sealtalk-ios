@@ -70,7 +70,7 @@
 - (BOOL)checkUserName {
     NSString *errorMsg = @"";
     if (self.userNameTextField.text.length == 0) {
-        errorMsg = RCDLocalizedString(@"nickname_can_not_nil");
+        errorMsg = RCDLocalizedString(@"username_can_not_nil");
     } else if (self.userNameTextField.text.length > 32) {
         errorMsg = RCDLocalizedString(@"Username_cannot_be_greater_than_32_digits");
     }

@@ -294,7 +294,6 @@
                barButtonItem:self.rightBtn];
     }
     [self.rightBtn.button setTitle:titleStr forState:UIControlStateNormal];
-    [self.rightBtn.button sizeToFit];
 }
 
 - (void)dealWithSelectUserIdListWithUser:(RCDFriendInfo *)user {
@@ -830,6 +829,8 @@
                                                              target:self
                                                              action:@selector(clickedDone:)];
         _rightBtn.button.titleLabel.font = [UIFont systemFontOfSize:16];
+        [_rightBtn.button setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, -10)];
+        _rightBtn.button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
         [_rightBtn buttonIsCanClick:NO
                         buttonColor:[RCDUtilities generateDynamicColor:HEXCOLOR(0xa0a5ab)
                                                              darkColor:[HEXCOLOR(0xA8A8A8) colorWithAlphaComponent:0.4]]
