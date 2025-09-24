@@ -10,7 +10,6 @@ TEMP_TIME=$(date +%s)
 CONFIGURATION="Release"
 BIN_DIR="bin"
 BUILD_DIR="build"
-ENABLE_COVERAGE="No"
 export Need_Extract_Arch="true"
 
 CUR_PATH=$(pwd)
@@ -61,9 +60,6 @@ CUSTOMER_SERVICE_ID=$PPARAM
 elif [ $PFLAG == "-fraudmode" ]
 then
 ENABLE_FRAUD_PREVENTION=$PPARAM
-elif [ $PFLAG == "-coverage" ]
-then
-ENABLE_COVERAGE=$PPARAM
 fi
 done
 
@@ -87,9 +83,9 @@ fi
 #demo 服务器
 if [ -n "${DEMO_SERVER_URL}" ]; then
     if [[ $DEMO_SERVER_URL =~ ^http ]]; then
-        sed -i '' -e 's?https://sealtalk.rongcloud.cn/server-api?'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+        sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
     else
-        sed -i '' -e 's?https://sealtalk.rongcloud.cn/server-api?http://'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+        sed -i '' -e 's?http://api-sealtalk.rongcloud.cn?http://'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
     fi
 fi
 
@@ -177,16 +173,10 @@ xcodebuild clean -alltargets
 echo "sealtalk clean env times: $(($(date +%s) - $TEMP_TIME))"
 TEMP_TIME=$(date +%s)
 
-sh coverage.sh -coverage ${ENABLE_COVERAGE}
-
 echo "***开始build iphoneos文件***"
 [ -d "framework" ] && rm -rf framework
-  if [ ${ENABLE_COVERAGE} == "Yes" ]; then
-  xcodebuild -scheme "${targetName}" archive -archivePath "./${BUILD_DIR}/${targetName}.xcarchive" -configuration ${CONFIGURATION} APP_PROFILE="${BUILD_APP_PROFILE}" SHARE_PROFILE="${BUILD_SHARE_PROFILE}" GCC_GENERATE_TEST_COVERAGE_FILES=YES GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES
-  else
   xcodebuild -scheme "${targetName}" archive -archivePath "./${BUILD_DIR}/${targetName}.xcarchive" -configuration ${CONFIGURATION} APP_PROFILE="${BUILD_APP_PROFILE}" SHARE_PROFILE="${BUILD_SHARE_PROFILE}"
-  fi
-
+  
   echo "sealtalk archive times: $(($(date +%s) - $TEMP_TIME))"
   TEMP_TIME=$(date +%s)
   

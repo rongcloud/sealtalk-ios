@@ -85,6 +85,9 @@
         cell = [[RCDSquareCell alloc]
             initWithIconName:[NSString stringWithFormat:@"%@", chatroomIcons[indexPath.row % chatroomIcons.count]]
                    TitleName:room.name];
+        // 添加长按手势
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleCellLongPress:)];
+        [cell addGestureRecognizer:longPress];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
@@ -123,6 +126,80 @@
         break;
     }
     return sectionHeaderView;
+}
+
+- (void)handleCellLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
+    CGPoint point = [gestureRecognizer locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
+    if (!indexPath || self.chatRoomList.count <= indexPath.row) {
+        return;
+    }
+    RCDChatRoom *room = self.chatRoomList[indexPath.row];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *muteJoinAction = [UIAlertAction actionWithTitle:@"加入聊天室，但不进入页面"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * _Nonnull action) {
+        [[RCChatRoomClient sharedChatRoomClient] joinChatRoom:room.targetId
+                                                 messageCount:0
+                                                      success:^{
+            RCLogI(@"join chatroom:%@ success.", room.targetId);
+        } error:^(RCErrorCode status) {
+            RCLogI(@"join chatroom:%@ failed:%@.", room.targetId, @(status));
+        }];
+    }];
+    [alert addAction:muteJoinAction];
+    
+    UIAlertAction *sendMessageAction = [UIAlertAction actionWithTitle:@"发消息"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * _Nonnull action) {
+        [self handleSendMessageAction:action room:room];
+    }];
+    [alert addAction:sendMessageAction];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)handleSendMessageAction:(UIAlertAction *)action room:(RCDChatRoom *)room {
+    NSString *message = [NSString stringWithFormat:@"发消息(%@)", room.name];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示"
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"发送"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * _Nonnull action) {
+        NSString *content = alert.textFields.firstObject.text;
+        if (content.length == 0) {
+            return;
+        }
+        RCTextMessage *textMessage = [RCTextMessage messageWithContent:content];
+        [[RCCoreClient sharedCoreClient] sendMessage:ConversationType_CHATROOM
+                                            targetId:room.targetId
+                                             content:textMessage
+                                         pushContent:nil
+                                            pushData:nil
+                                            attached:nil
+                                             success:^(long messageId) {
+            NSLog(@"sendMessage success.");
+        } error:^(RCErrorCode nErrorCode, long messageId) {
+            NSLog(@"sendMessage fail %@.", @(nErrorCode));
+        }];
+    }];
+    [alert addAction:sureAction];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancelAction];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"发送的内容";
+        textField.text = @"Hello";
+    }];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - private method

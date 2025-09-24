@@ -70,7 +70,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 // 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
 - (void)didSendingMessageNotification:(NSNotification *)notification;
-- (void)deleteMessages;
 @end
 
 @interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate>
@@ -1199,15 +1198,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 #pragma mark - *************消息多选功能:转发、删除*************
 /******************消息多选功能:转发、删除**********************/
 - (void)addToolbarItems {
-    if (self.conversationType == ConversationType_CHATROOM) {
-        RCButton *deleteBtn = [[RCButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
-        [deleteBtn setImage:RCResourceImage(@"delete_message") forState:UIControlStateNormal];
-        [deleteBtn addTarget:self action:@selector(deleteMessages) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *deleteBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
-        [self.messageSelectionToolbar setItems:@[deleteBarButtonItem] animated:YES];
-        return;
-    }
-    
     if (![DEFAULTS boolForKey:RCDDebugCombineV2EnableKey]) return;
 
     UIButton *forwardBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];

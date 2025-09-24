@@ -226,9 +226,10 @@
 "mute_notifications_prompt"="Once enabled,it will not ring or vibrate when a new message is received within the set time period.";
 "alert"="Prompt";
 "Turn_on_message_do_not_disturb"="Turn on mute notification";
-"Start_time"="Start Time:";
+"Start_time"="Start Time";
+"Start_time1"="Start Time:";
 "continue_times"="Spent Time (mins)：";
-"end_time"="End Time:";
+"end_time"="End Time：";
 "shut_down_failed"="Shut down failed";
 "Receive_new_message_notifications"="New Message Notification";
 "show_ID"="Shows ID";

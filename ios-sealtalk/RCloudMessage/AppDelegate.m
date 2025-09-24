@@ -531,52 +531,54 @@
  *  @param status 网络状态。
  */
 - (void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status {
-    if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
-        [self showAlert:RCDLocalizedString(@"alert")
-                   message:RCDLocalizedString(@"accout_kicked")
-            cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = _navi;
-    } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
-        [RCDLoginManager getToken:^(BOOL success, NSString *_Nonnull token, NSString *_Nonnull userId) {
-            if (success) {
-                [[RCDIMService sharedService] connectWithToken:token
-                    dbOpened:^(RCDBErrorCode code) {
-                        NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
-                    }
-                    success:^(NSString *userId) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
+            [self showAlert:RCDLocalizedString(@"alert")
+                       message:RCDLocalizedString(@"accout_kicked")
+                cancelBtnTitle:RCDLocalizedString(@"i_know")];
+            RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+            RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+            self.window.rootViewController = _navi;
+        } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
+            [RCDLoginManager getToken:^(BOOL success, NSString *_Nonnull token, NSString *_Nonnull userId) {
+                if (success) {
+                    [[RCDIMService sharedService] connectWithToken:token
+                        dbOpened:^(RCDBErrorCode code) {
+                            NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
+                        }
+                        success:^(NSString *userId) {
 
-                    }
-                    error:^(RCConnectErrorCode status){
+                        }
+                        error:^(RCConnectErrorCode status){
 
-                    }];
-            }
-        }];
-    } else if (status == ConnectionStatus_DISCONN_EXCEPTION) {
-        /* 原本处理
-        [self showAlert:RCDLocalizedString(@"alert")
-                   message:RCDLocalizedString(@"Your_account_has_been_banned")
-            cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        */
-        
-        [[RCCoreClient sharedCoreClient] disconnect];
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = _navi;
-        // 添加逻辑，退出登录
-        [self fraudPreventionByUserBlocked] ;
-        // 修改后提示框提示
-        [RCDAlertBuilder showFraudPreventionRejectAlert] ;
-    } else if (status == ConnectionStatus_USER_ABANDON) {
-        [self showAlert:RCDLocalizedString(@"alert")
-                   message:RCDLocalizedString(@"Your_account_has_been_logout")
-            cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        [[RCCoreClient sharedCoreClient] disconnect];
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = _navi;
-    }
+                        }];
+                }
+            }];
+        } else if (status == ConnectionStatus_DISCONN_EXCEPTION) {
+            /* 原本处理
+            [self showAlert:RCDLocalizedString(@"alert")
+                       message:RCDLocalizedString(@"Your_account_has_been_banned")
+                cancelBtnTitle:RCDLocalizedString(@"i_know")];
+            */
+            
+            [[RCCoreClient sharedCoreClient] disconnect];
+            RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+            RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+            self.window.rootViewController = _navi;
+            // 添加逻辑，退出登录
+            [self fraudPreventionByUserBlocked] ;
+            // 修改后提示框提示
+            [RCDAlertBuilder showFraudPreventionRejectAlert] ;
+        } else if (status == ConnectionStatus_USER_ABANDON) {
+            [self showAlert:RCDLocalizedString(@"alert")
+                       message:RCDLocalizedString(@"Your_account_has_been_logout")
+                cancelBtnTitle:RCDLocalizedString(@"i_know")];
+            [[RCCoreClient sharedCoreClient] disconnect];
+            RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+            RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+            self.window.rootViewController = _navi;
+        }
+    });
 }
 
 - (BOOL)onRCIMCustomLocalNotification:(RCMessage *)message withSenderName:(NSString *)senderName {
