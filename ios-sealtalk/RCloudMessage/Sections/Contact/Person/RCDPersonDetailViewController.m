@@ -397,7 +397,9 @@ typedef NS_ENUM(NSInteger, RCDFriendDescriptionType) {
     chatVC.title = title;
     chatVC.needPopToRootView = YES;
     chatVC.displayUserNameInCell = NO;
-    [self.navigationController pushViewController:chatVC animated:YES];
+    UINavigationController *vc = self.tabBarController.viewControllers[0];
+    [vc popToRootViewControllerAnimated:NO];
+    [vc pushViewController:chatVC animated:YES];
 }
 
 - (void)audioCall:(UIButton *)sender {

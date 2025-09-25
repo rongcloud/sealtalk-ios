@@ -11,14 +11,14 @@
 
 #define RONGCLOUD_IM_APPKEY @"n19jmcy59f1q9" // online key
 #define SERVICE_ID @"service"
-#define DEMO_SERVER @"http://api-sealtalk.rongcloud.cn/"
+#define DEMO_SERVER @"https://sealtalk.rongcloud.cn/server-api/"
 #define RONGCLOUD_NAVI_SERVER @""
 #define RONGCLOUD_FILE_SERVER @""
 #define RONGCLOUD_STATS_SERVER @""
 
 #define RCDGroupNoticeTargetId @"__group_apply__"
 #define RCDOpenQRCodeUrlNotification @"RCDOpenQRCodeUrlNotification"
-#define RCDQRCodeContentInfoUrl @"http://sealtalk.rongcloud.cn/download"
+#define RCDQRCodeContentInfoUrl @"https://sealtalk.rongcloud.cn/download"
 
 #define RCDLoginCookieExpiredNotification @"RCDLoginCookieExpiredNotification"
 

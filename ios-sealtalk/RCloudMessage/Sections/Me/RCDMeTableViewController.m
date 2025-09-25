@@ -45,8 +45,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.tabBarController.navigationItem.title = RCDLocalizedString(@"me");
-    self.tabBarController.navigationItem.rightBarButtonItems = nil;
+    self.navigationItem.title = RCDLocalizedString(@"me");
     [self.tableView reloadData];
 }
 
@@ -246,7 +245,6 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationController.navigationBar.translucent = NO;
     self.tableView.tableFooterView = [UIView new];
-    self.tabBarController.navigationItem.rightBarButtonItem = nil;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 48, 0, 0);
 }
 
