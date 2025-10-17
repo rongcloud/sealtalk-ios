@@ -163,19 +163,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *hidePortrait = [userDefault valueForKey:RCDDebugHidePortraitEnable];
     self.hidePortrait = [hidePortrait boolValue];
-    [self clearMiddleViewControllers];
-}
-
-- (void)clearMiddleViewControllers {
-    if (!self.needPopToRootView) {
-        return;
-    }
-    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
-    // 如果导航控制器中的视图控制器数量大于2（包含根视图控制器和当前视图控制器），移除中间的视图控制器
-    if (viewControllers.count > 2) {
-        NSMutableArray *newViewControllers = [NSMutableArray arrayWithObjects:viewControllers.firstObject, viewControllers.lastObject, nil]; // 保留根视图控制器和当前视图控制器
-        self.navigationController.viewControllers = newViewControllers;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -552,7 +539,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if (memberDetail.groupNickname.length > 0) {
         userInfo.name = memberDetail.groupNickname;
     }
-    [self addMentionedUserToCurrentInput:userInfo];
+    [self.chatSessionInputBarControl addMentionedUser:userInfo];
+    [self.chatSessionInputBarControl.inputTextView becomeFirstResponder];
 }
 
 - (RCMessage *)willAppendAndDisplayMessage:(RCMessage *)message {

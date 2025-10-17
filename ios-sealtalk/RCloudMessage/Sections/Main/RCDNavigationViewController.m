@@ -48,9 +48,7 @@
     if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)] && animated == YES) {
         self.interactivePopGestureRecognizer.enabled = NO;
     }
-    if (self.childViewControllers.count==1) {
-            viewController.hidesBottomBarWhenPushed = YES; //viewController是将要被push的控制器
-        }
+
     [super pushViewController:viewController animated:animated];
 }
 

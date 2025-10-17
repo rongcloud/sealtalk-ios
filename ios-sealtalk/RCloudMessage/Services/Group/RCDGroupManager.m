@@ -286,14 +286,13 @@
         complete:^(NSArray<RCDGroupMember *> *_Nonnull memberList) {
             if (memberList) {
                 NSMutableArray *memberIdList = [NSMutableArray array];
-                
-                [RCDDBManager clearGroupMembers:groupId];
-                if (memberList) {
-                    [RCDDBManager saveGroupMembers:memberList inGroup:groupId];
-                }
                 for (RCDGroupMember *user in memberList) {
                     [memberIdList addObject:user.userId];
                     [self refreshGroupMemberInfo:user.userId groupId:groupId];
+                }
+                [RCDDBManager clearGroupMembers:groupId];
+                if (memberList) {
+                    [RCDDBManager saveGroupMembers:memberList inGroup:groupId];
                 }
                 if (complete) {
                     complete([RCDDBManager getGroupMembers:groupId]);

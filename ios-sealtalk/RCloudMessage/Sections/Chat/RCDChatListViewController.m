@@ -108,14 +108,6 @@
     [self setNaviItem];
     RCUserInfo *groupNotify = [[RCUserInfo alloc] initWithUserId:@"__system__" name:@"" portrait:nil];
     [[RCIM sharedRCIM] refreshUserInfoCache:groupNotify withUserId:@"__system__"];
-    NSUserDefaults *std = [NSUserDefaults standardUserDefaults];
-    
-    BOOL disableUnkownMessage = [std boolForKey:RCDDebugDisableUnknownMessage];
-    RCKitConfigCenter.message.showUnkownMessage = !disableUnkownMessage;
-    
-    BOOL showUnkownMessageNotification = [std boolForKey:RCDDebugShowUnkownMessageNotification];
-    RCKitConfigCenter.message.showUnkownMessageNotificaiton = showUnkownMessageNotification;
-    [self updateBadgeValueForTabBarItem];
 }
 
 - (void)dealloc {
@@ -702,8 +694,8 @@
 
 - (void)setNaviItem {
     RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"add"] target:self action:@selector(showMenu)];
-    self.navigationItem.rightBarButtonItems = @[ rightBtn ];
-    self.navigationItem.title = RCDLocalizedString(@"Messages");
+    self.tabBarController.navigationItem.rightBarButtonItems = @[ rightBtn ];
+    self.tabBarController.navigationItem.title = RCDLocalizedString(@"Messages");
 }
 #pragma mark - RCIMClientReceiveMessageDelegate
 
