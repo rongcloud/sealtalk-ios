@@ -102,7 +102,7 @@
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100002) {
         // 图文消息
-        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:@"图文消息标题" digest:@"图文消息内容详情" imageURL:@"www.rongcloud.cn" url:@"www.rongcloud.cn" extra:@""];
+        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:@"图文消息标题" digest:@"图文消息内容详情" imageURL:@"www.wegenmi.com" url:@"www.wegenmi.com" extra:@""];
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100003) {
         RCTextMessage *textMessage = [RCTextMessage messageWithContent:@"这是一条插入的消息"];

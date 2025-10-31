@@ -68,13 +68,23 @@
 #define ENABLE_SEARCH_MESSAGETYPES 127
 #define ENABLE_DISPLAY_NOMORE_MESSAGE_HUD 128
 #define DISABLE_CHECK_CHATROOM_DUP_MESSAGE 129
+#define DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY 130
+#define SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION 131
+#define HIDE_IMKIT_SENDER_NAME 132
+#define ENABLE_USER_INFO_ENTRUST 1300
+#define DISABLE_EDIT_MESSAGE 1301
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
 #define Title_Display_Search_MessageTypes @"消息类型搜索"
+NSString *const RCDDebugDisableUnknownMessageString = @"禁用未知消息显示";
+NSString *const RCDDebugShowUnknownMessageNotificationString = @"开启未知消息通知";
+NSString *const RCDDebugHideSenderNameString = @"会话列表群和讨论组隐藏发送名";
 NSString *const RCDDebugCombineV2EnableString = @"合并转发V2";
 NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带userinfo";
 #define Title_Display_NoMore_Message_HUD @"消息无更多 Toast"
+NSString *const RCDDebugMessageEnableUserInfoEntrust = @"用户信息托管";
+NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
 
 @interface RCCoreClient()
 - (void)refetchNavidataSuccess:(void (^)(void))success
@@ -247,6 +257,21 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
     if ([title isEqualToString:Title_Display_NoMore_Message_HUD]) {
         [self setSwitchButtonCell:cell tag:ENABLE_DISPLAY_NOMORE_MESSAGE_HUD];
     }
+    if ([title isEqualToString:RCDDebugDisableUnknownMessageString]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY];
+    }
+    if ([title isEqualToString:RCDDebugShowUnknownMessageNotificationString]) {
+        [self setSwitchButtonCell:cell tag:SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION];
+    }
+    if ([title isEqualToString:RCDDebugHideSenderNameString]) {
+        [self setSwitchButtonCell:cell tag:HIDE_IMKIT_SENDER_NAME];
+    }
+    if ([title isEqualToString:RCDDebugMessageEnableUserInfoEntrust]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_USER_INFO_ENTRUST];
+    }
+    if ([title isEqualToString:RCDDebugDisableEditMessageString]) {
+        [self setSwitchButtonCell:cell tag:DISABLE_EDIT_MESSAGE];
+    }
     
     return cell;
 }
@@ -376,7 +401,12 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         RCDDebugCombineV2EnableString,
         RCDDebugMessageAttachUserInfoEnableString,
         Title_Display_Search_MessageTypes,
-        Title_Display_NoMore_Message_HUD
+        Title_Display_NoMore_Message_HUD,
+        RCDDebugDisableUnknownMessageString,
+        RCDDebugShowUnknownMessageNotificationString,
+        RCDDebugHideSenderNameString,
+        RCDDebugMessageEnableUserInfoEntrust,
+        RCDDebugDisableEditMessageString,
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -534,6 +564,27 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
         }
         case DISABLE_CHECK_CHATROOM_DUP_MESSAGE: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableCheckChatroomDupMessage];
+            break;
+        }
+        case DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableUnknownMessage];
+            break;
+        }
+        case SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugShowUnkownMessageNotification];
+            break;
+        }
+        case HIDE_IMKIT_SENDER_NAME: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugHideSenderName];
+            break;
+        }
+            
+        case ENABLE_USER_INFO_ENTRUST: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugMessageEnableUserInfoEntrust];
+            break;
+        }
+        case DISABLE_EDIT_MESSAGE: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableEditMessageKey];
             break;
         }
         default:
@@ -716,7 +767,33 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
             [DEFAULTS synchronize];
             break;
         }
-
+        case DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableUnknownMessage];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugShowUnkownMessageNotification];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case HIDE_IMKIT_SENDER_NAME: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugHideSenderName];
+            [DEFAULTS synchronize];
+            break;
+        }
+        case ENABLE_USER_INFO_ENTRUST: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugMessageEnableUserInfoEntrust];
+            [DEFAULTS synchronize];
+            [self switchRootViewController:isButtonOn];
+            break;
+        }
+        case DISABLE_EDIT_MESSAGE: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableEditMessageKey];
+            [DEFAULTS synchronize];
+            [self switchRootViewController:isButtonOn];
+            break;
+        }
         default:
             break;
     }
@@ -1175,15 +1252,29 @@ typedef struct Test
         RCKitConfigCenter.ui.layoutDirection = index;
         [[NSUserDefaults standardUserDefaults] setValue:@(RCKitConfigCenter.ui.layoutDirection) forKey:@"layoutDirection"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
-        RCDNavigationViewController *nav = [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
+        RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
         mainTabBarVC.selectedIndex = 3;
         AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        app.window.rootViewController = nav;
+        app.window.rootViewController = mainTabBarVC;
     } cancelBlock:^{
     }];
 
 }
+
+- (void)switchRootViewController:(BOOL)isBtnOn {
+    if (isBtnOn) {
+        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoManagement;
+    } else {
+        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoProvider;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
+        mainTabBarVC.selectedIndex = 1;
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        app.window.rootViewController = mainTabBarVC;
+    });
+    [self.navigationController popToRootViewControllerAnimated:YES];
+ }
 
 - (void)showCustomFileIcon {
     RCDDebugFileIconViewController *controller = [[RCDDebugFileIconViewController alloc] init];
