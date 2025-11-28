@@ -212,6 +212,8 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     RCKitConfigCenter.ui.globalConversationAvatarStyle = RC_USER_AVATAR_CYCLE;
     // 关闭已读回执功能
     // RCKitConfigCenter.message.enabledReadReceiptConversationTypeList = @[];
+    // 开启在线状态显示
+    RCKitConfigCenter.ui.enableUserOnlineStatus = YES;
     
     [RCUViewModelManager registerViewModel];
     

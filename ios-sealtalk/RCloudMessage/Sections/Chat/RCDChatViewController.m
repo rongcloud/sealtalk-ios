@@ -1085,7 +1085,10 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     } else if(self.conversationType == ConversationType_PRIVATE){
         RCUserInfo *userInfo = [[RCIM sharedRCIM] getUserInfoCache:self.targetId];
         if (userInfo) {
-            self.title = [RCKitUtility getDisplayName:userInfo];
+            NSString *name = [RCKitUtility getDisplayName:userInfo];
+            if (name.length > 0) {
+                self.title = name;
+            }
         }
     }
     else if(self.conversationType == ConversationType_CHATROOM){
