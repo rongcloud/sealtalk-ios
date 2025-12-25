@@ -337,8 +337,6 @@
                                         completeBlock(success, action);
                                     }
                                 }];
-                            } else {
-                                completeBlock(success, action);
                             }
                         }];
 }

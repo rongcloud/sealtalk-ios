@@ -75,10 +75,6 @@
 #define RCDDebugCombineV2EnableKey @"RCDDebugCombineV2EnableKey"
 #define RCDDebugEnableMessageAttachUserInfoKey @"RCDDebugEnableMessageAttachUserInfoKey"
 #define RCDDebugEnableNoMoreMessageToFetchKey @"RCDDebugEnableNoMoreMessageToFetchKey"
-#define RCDDebugDisableUnknownMessage @"RCDDebugDisableUnknownMessage"
-#define RCDDebugShowUnkownMessageNotification @"RCDDebugShowUnkownMessageNotification"
-#define RCDDebugHideSenderName @"RCDDebugHideSenderName"
-#define RCDDebugDisableEditMessageKey @"RCDDebugDisableEditMessageKey"
 
 // audit
 #define RCDDebugMessageAuditTypeKey @"RCDDebugMessageAuditTypeKey"

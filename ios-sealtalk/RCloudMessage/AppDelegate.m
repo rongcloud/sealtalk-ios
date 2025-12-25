@@ -36,7 +36,6 @@
 #import <UMAPM/UMAPMConfig.h>
 #import "RCDHTTPUtility.h"
 #import "RCDUltraGroupNotificationMessage.h"
-#import "RCUGroupNotificationMessage.h"
 //#import <RongiFlyKit/RongiFlyKit.h>
 #ifdef DEBUG
 #import <DoraemonKit/DoraemonManager.h>
@@ -61,14 +60,9 @@
 #import "RCDAlertBuilder.h"
 #import "RCDSemanticContext.h"
 #import <RongRTCLib/RongRTCLib.h>
-#import "RCUViewModelManager.h"
-#import <RongIMKit/RCIMKitThemeManager.h>
-#import "RCDThemesContext.h"
-
-extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
 
 #if RCDTranslationEnable
-@interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate,RCIMKitThemeDelegate >
+@interface AppDelegate () <RCTranslationClientDelegate, RCUltraGroupConversationDelegate>
 #else
 @interface AppDelegate () <RCUltraGroupConversationDelegate>
 #endif
@@ -77,7 +71,6 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
 @end
 
 @implementation AppDelegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -88,9 +81,7 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
    
     [self configSealTalkWithApp:application andOptions:launchOptions];
     [self configDoraemon];
-    [self configThemes];
     [self configureIMAndEnterHomeIfNeed];
-
     return YES;
 }
 
@@ -103,15 +94,6 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
         [self loginAndEnterMainPage];
     } else {
         [self loginAndEnterMainPage];
-    }
-}
-
-- (void)resetKitDataSourceType {
-    bool ret = [[[NSUserDefaults standardUserDefaults] valueForKey:RCDDebugMessageEnableUserInfoEntrust] boolValue];
-    if (ret) {
-        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoManagement;
-    } else {
-        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoProvider;
     }
 }
 
@@ -157,16 +139,10 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     [self enableMessageAttachUserInfoIfNeed];
     
     [DEFAULTS setObject:appKey forKey:RCDAppKeyKey];
-    
-    [self resetKitDataSourceType];
 
     // 注册自定义测试消息
     [[RCIM sharedRCIM] registerMessageType:[RCDTestMessage class]];
-    if ([RCIM sharedRCIM].currentDataSourceType == RCDataSourceTypeInfoManagement) {
-        [[RCIM sharedRCIM] registerMessageType:[RCUGroupNotificationMessage class]];
-    } else {
-        [[RCIM sharedRCIM] registerMessageType:[RCDGroupNotificationMessage class]];
-    }
+    [[RCIM sharedRCIM] registerMessageType:[RCDGroupNotificationMessage class]];
     [[RCIM sharedRCIM] registerMessageType:[RCDGroupNoticeUpdateMessage class]];
     [[RCIM sharedRCIM] registerMessageType:[RCDContactNotificationMessage class]];
     [[RCIM sharedRCIM] registerMessageType:[RCDChatNotificationMessage class]];
@@ -191,6 +167,7 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     [RCIM sharedRCIM].groupMemberDataSource = RCDDataSource;
     [RCContactCardKit shareInstance].contactsDataSource = RCDDataSource;
     [RCContactCardKit shareInstance].groupDataSource = RCDDataSource;
+    
     RCKitConfigCenter.message.enableTypingStatus = YES;
     RCKitConfigCenter.message.enableSyncReadStatus = YES;
     RCKitConfigCenter.message.showUnkownMessage = YES;
@@ -200,9 +177,6 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     RCKitConfigCenter.message.isMediaSelectorContainVideo = YES;
     RCKitConfigCenter.message.enableSendCombineMessage = YES;
     RCKitConfigCenter.message.reeditDuration = 60;
-    RCKitConfigCenter.message.enableEditMessage = ![DEFAULTS boolForKey:RCDDebugDisableEditMessageKey];
-    // 配置已编辑文字的颜色
-    // RCKitConfigCenter.message.editedTextColor = RCDYCOLOR(0x4679FF, 0x4679FF);
 
     RCKitConfigCenter.ui.enableDarkMode = YES;
     RCKitConfigCenter.ui.globalConversationPortraitSize = CGSizeMake(48, 48);
@@ -210,12 +184,6 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     //  设置头像为圆形
     RCKitConfigCenter.ui.globalMessageAvatarStyle = RC_USER_AVATAR_CYCLE;
     RCKitConfigCenter.ui.globalConversationAvatarStyle = RC_USER_AVATAR_CYCLE;
-    // 关闭已读回执功能
-    // RCKitConfigCenter.message.enabledReadReceiptConversationTypeList = @[];
-    // 开启在线状态显示
-    RCKitConfigCenter.ui.enableUserOnlineStatus = YES;
-    
-    [RCUViewModelManager registerViewModel];
     
     //   设置优先使用WebView打开URL
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
@@ -322,8 +290,10 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     }
     if (token.length && userId.length) {
         [RCDLoginManager openDB:userId];
-        RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
-        self.window.rootViewController = mainTabBarVC;
+        RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
+        RCDNavigationViewController *rootNavi =
+            [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
+        self.window.rootViewController = rootNavi;
 
         RCUserInfo *_currentUserInfo =
             [[RCUserInfo alloc] initWithUserId:userId name:userNickName portrait:userPortraitUri];
@@ -336,7 +306,6 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
             NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
         }success:^(NSString *userId) {
             [self requestFraudPreventionRejectWithPhone:phone withRegion:regionCode] ;
-            [mainTabBarVC updateBadgeValueForTabBarItem];
         }error:^(RCConnectErrorCode status) {
             NSLog(@"connectWithToken error: %@", @(status));
             if (status == RC_CONN_TOKEN_INCORRECT) {
@@ -562,52 +531,54 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
  *  @param status 网络状态。
  */
 - (void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status {
-    if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
-        [self showAlert:RCDLocalizedString(@"alert")
-                   message:RCDLocalizedString(@"accout_kicked")
-            cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = _navi;
-    } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
-        [RCDLoginManager getToken:^(BOOL success, NSString *_Nonnull token, NSString *_Nonnull userId) {
-            if (success) {
-                [[RCDIMService sharedService] connectWithToken:token
-                    dbOpened:^(RCDBErrorCode code) {
-                        NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
-                    }
-                    success:^(NSString *userId) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
+            [self showAlert:RCDLocalizedString(@"alert")
+                       message:RCDLocalizedString(@"accout_kicked")
+                cancelBtnTitle:RCDLocalizedString(@"i_know")];
+            RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+            RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+            self.window.rootViewController = _navi;
+        } else if (status == ConnectionStatus_TOKEN_INCORRECT) {
+            [RCDLoginManager getToken:^(BOOL success, NSString *_Nonnull token, NSString *_Nonnull userId) {
+                if (success) {
+                    [[RCDIMService sharedService] connectWithToken:token
+                        dbOpened:^(RCDBErrorCode code) {
+                            NSLog(@"RCDBOpened %@", code ? @"failed" : @"success");
+                        }
+                        success:^(NSString *userId) {
 
-                    }
-                    error:^(RCConnectErrorCode status){
+                        }
+                        error:^(RCConnectErrorCode status){
 
-                    }];
-            }
-        }];
-    } else if (status == ConnectionStatus_DISCONN_EXCEPTION) {
-        /* 原本处理
-        [self showAlert:RCDLocalizedString(@"alert")
-                   message:RCDLocalizedString(@"Your_account_has_been_banned")
-            cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        */
-        
-        [[RCCoreClient sharedCoreClient] disconnect];
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = _navi;
-        // 添加逻辑，退出登录
-        [self fraudPreventionByUserBlocked] ;
-        // 修改后提示框提示
-        [RCDAlertBuilder showFraudPreventionRejectAlert] ;
-    } else if (status == ConnectionStatus_USER_ABANDON) {
-        [self showAlert:RCDLocalizedString(@"alert")
-                   message:RCDLocalizedString(@"Your_account_has_been_logout")
-            cancelBtnTitle:RCDLocalizedString(@"i_know")];
-        [[RCCoreClient sharedCoreClient] disconnect];
-        RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
-        RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
-        self.window.rootViewController = _navi;
-    }
+                        }];
+                }
+            }];
+        } else if (status == ConnectionStatus_DISCONN_EXCEPTION) {
+            /* 原本处理
+            [self showAlert:RCDLocalizedString(@"alert")
+                       message:RCDLocalizedString(@"Your_account_has_been_banned")
+                cancelBtnTitle:RCDLocalizedString(@"i_know")];
+            */
+            
+            [[RCCoreClient sharedCoreClient] disconnect];
+            RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+            RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+            self.window.rootViewController = _navi;
+            // 添加逻辑，退出登录
+            [self fraudPreventionByUserBlocked] ;
+            // 修改后提示框提示
+            [RCDAlertBuilder showFraudPreventionRejectAlert] ;
+        } else if (status == ConnectionStatus_USER_ABANDON) {
+            [self showAlert:RCDLocalizedString(@"alert")
+                       message:RCDLocalizedString(@"Your_account_has_been_logout")
+                cancelBtnTitle:RCDLocalizedString(@"i_know")];
+            [[RCCoreClient sharedCoreClient] disconnect];
+            RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
+            RCDNavigationViewController *_navi = [[RCDNavigationViewController alloc] initWithRootViewController:loginVC];
+            self.window.rootViewController = _navi;
+        }
+    });
 }
 
 - (BOOL)onRCIMCustomLocalNotification:(RCMessage *)message withSenderName:(NSString *)senderName {
@@ -1031,21 +1002,5 @@ extern NSString *const RCDDebugMessageEnableUserInfoEntrust;
     NSString *statusStr = (SentStatus_SENT == message.sentStatus ? @"完成" : @"失败");
     DebugLog(@"interceptDidSendMessage 发送%@", statusStr);
 }
-
-#pragma mark - RCIMKitThemeDelegate
-
-- (void)configThemes {
-    [RCDThemesContext applyThemes];
-    [RCIMKitThemeManager addThemeDelegate:self];
-}
-
-- (void)themeDidChanged:(RCIMKitTheme *)customTheme
-       baseOnTheme:(RCIMKitInnerThemesType)type {
-    RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
-    self.window.rootViewController = mainTabBarVC;
-    [self.window makeKeyAndVisible];
-}
-
-
 
 @end

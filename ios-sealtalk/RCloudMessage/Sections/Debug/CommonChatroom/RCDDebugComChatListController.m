@@ -9,6 +9,8 @@
 #import "RCDDebugComChatListController.h"
 #import "RCDDebugComChatViewController.h"
 #import "RCDebugHeader.h"
+#import "RCDUIBarButtonItem.h"
+#import "UIView+MBProgressHUD.h"
 
 @interface RCloudImageView : UIImageView
 - (void)setPlaceholderImage:(UIImage *)__placeholderImage;
@@ -21,7 +23,7 @@
                atIndexPath:(NSIndexPath *)indexPath ;
 @end
 
-@interface RCDDebugComChatListController ()
+@interface RCDDebugComChatListController ()<RCConversationDelegate>
 
 @end
 
@@ -56,6 +58,18 @@
         RCKitConfigCenter.ui.globalConversationCollectionTitleDic = nil;
         RCKitConfigCenter.ui.globalConversationCollectionAvatarDic = nil;
     }
+    
+    [[RCCoreClient sharedCoreClient] setRCConversationDelegate:self];
+    [self setRightNaviItem];
+}
+
+- (void)setRightNaviItem {
+    RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initWithbuttonTitle:@"远端会话"
+                                             titleColor:UIColor.blueColor
+                                            buttonFrame:CGRectMake(0, 0, 50, 30)
+                                                 target:self
+                                                 action:@selector(getRemoteConversationList)];
+    self.navigationItem.rightBarButtonItem = rightBtn;
 }
 
 - (void)willDisplayConversationTableCell:(RCConversationBaseCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -142,4 +156,33 @@
     [lab sizeToFit];
     return lab;
 }
+
+- (void)getRemoteConversationList {
+    [[RCCoreClient sharedCoreClient] getRemoteConversationListWithSuccess:^{
+        [self showToastMsg:@"拉取远端会话成功，请等待同步"];
+    } error:^(RCErrorCode errorCode) {
+        [self showToastMsg:[NSString stringWithFormat:@"拉取远端会话失败，错误码：%@", @(errorCode)]];
+    }];
+}
+
+- (void)showToastMsg:(NSString *)msg {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.view showHUDMessage:msg];
+    });
+}
+
+#pragma mark - RCConversationDelegate
+
+- (void)conversationDidSync {}
+
+- (void)remoteConversationListDidSync:(RCErrorCode)code {
+    BOOL isSuccess = 0 == code;
+    NSString *description = isSuccess ? @"同步远端会话成功" : [NSString stringWithFormat:@"同步远端会话失败，错误码：%@", @(code)];
+    [self showToastMsg:description];
+    
+    if (isSuccess) {
+        [self refreshConversationTableViewIfNeeded];
+    }
+}
+
 @end

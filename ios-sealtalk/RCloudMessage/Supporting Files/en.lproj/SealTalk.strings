@@ -226,9 +226,10 @@
 "mute_notifications_prompt"="Once enabled,it will not ring or vibrate when a new message is received within the set time period.";
 "alert"="Prompt";
 "Turn_on_message_do_not_disturb"="Turn on mute notification";
-"Start_time"="Start Time:";
+"Start_time"="Start Time";
+"Start_time1"="Start Time:";
 "continue_times"="Spent Time (mins)：";
-"end_time"="End Time:";
+"end_time"="End Time：";
 "shut_down_failed"="Shut down failed";
 "Receive_new_message_notifications"="New Message Notification";
 "show_ID"="Shows ID";
@@ -402,7 +403,7 @@
 "ToSettingContactsPermissions"="Please go to \"Settings - Privacy - Contacts\" to allow this app to get contacts";
 "ToSetting"="Enter settings";
 "DeviceNotSupportedSMS"="The device does not support SMS";
-"SMSBody"="Hi~ I am using SealChat now, a chat app tailored for the best, come and try it! download it from:https://apps.apple.com/cn/app/sealchat/id1597073797";
+"SMSBody"="Hi~ I am using SealChat now, a chat app tailored for the best, come and try it! download it from:https://www.rongcloud.cn/downloads/demo";
 "AddressBookMatching"="mobile phonebook matching";
 "SetFailure"="Setting failed";
 "Add"="Add";
@@ -534,8 +535,7 @@
 "Registration_Terms" ="the Registration Terms";
 "Privacy_Policy_Format" ="《%@》";
 "Privacy_Policy" ="Privacy Policy";
-"Privacy_Policy_URL_Format" ="%@/privacy-en";
-"RegionNameSingapore"="Singapore";
+"RegionNameSigapore"="Sigapore";
 "RegionNameNorthAmerican"="North American";
 "RegionNameDefault"="Beijing";
 
@@ -562,16 +562,3 @@
 "refresh"="Refresh";
 "picture_code_expired"="The image verification code is expired,please try again";
 "media_file_size_limit"="Upload file exceeds the maximum limit";
-"new_friend_cell"="New Friends";
-"Just"="Just";
-"OneDay"="One day";
-"LastThreeDay"="Last three days";
-"ThreeDaysAgo"="Three days ago";
-
-"Themes"="Themes";
-"TraditionThemes"="Traditional Themes";
-"LivelyThemes"="Lively Themes";
-"ThemeBaseOnTradition"="Theme base on traditional themes";
-"ThemeBaseOnLively"="Theme base on lively themes";
-
-"MessageTypeOthers"="Other Message";

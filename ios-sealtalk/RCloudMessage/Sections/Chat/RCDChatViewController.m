@@ -60,8 +60,6 @@
 
 #import "RCDDebugSliceResumeDownloadVC.h"
 
-#import "RCDReceiptDetailsMessageView.h"
-
 static const NSInteger kRealTimeMaxParticipants = 5; // 实时位置支持的最大共享人数
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
 static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusViewKey";
@@ -72,10 +70,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 // 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
 - (void)didSendingMessageNotification:(NSNotification *)notification;
-- (void)deleteMessages;
 @end
 
-@interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate, RCMessageReadDetailViewControllerDataSource>
+@interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate>
 @property (nonatomic, strong) RCDGroupInfo *groupInfo;
 @property (nonatomic, assign) BOOL isShow;
 @property (nonatomic, assign) BOOL loading;
@@ -120,8 +117,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     self.disableSystemEmoji = enable;
     
     self.needDeleteRemoteMessage = ![DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
-    self.hidesBottomBarWhenPushed = YES; 
-
 }
 
 - (void)viewDidLoad {
@@ -165,19 +160,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *hidePortrait = [userDefault valueForKey:RCDDebugHidePortraitEnable];
     self.hidePortrait = [hidePortrait boolValue];
-    [self clearMiddleViewControllers];
-}
-
-- (void)clearMiddleViewControllers {
-    if (!self.needPopToRootView) {
-        return;
-    }
-    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
-    // 如果导航控制器中的视图控制器数量大于2（包含根视图控制器和当前视图控制器），移除中间的视图控制器
-    if (viewControllers.count > 2) {
-        NSMutableArray *newViewControllers = [NSMutableArray arrayWithObjects:viewControllers.firstObject, viewControllers.lastObject, nil]; // 保留根视图控制器和当前视图控制器
-        self.navigationController.viewControllers = newViewControllers;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -362,14 +344,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     [self resetQucilySendView];
     return YES;
-}
-
-#pragma mark - RCMessageReadDetailViewControllerDataSource
-
-- (UIView *)viewController:(RCMessageReadDetailViewController *)viewController headerViewWithMessage:(RCMessageModel *)messageModel {
-    RCDReceiptDetailsMessageView *view = [[RCDReceiptDetailsMessageView alloc] init];
-    view.message = messageModel;
-    return view;
 }
 
 #pragma mark - over methods
@@ -562,7 +536,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if (memberDetail.groupNickname.length > 0) {
         userInfo.name = memberDetail.groupNickname;
     }
-    [self addMentionedUserToCurrentInput:userInfo];
+    [self.chatSessionInputBarControl addMentionedUser:userInfo];
+    [self.chatSessionInputBarControl.inputTextView becomeFirstResponder];
 }
 
 - (RCMessage *)willAppendAndDisplayMessage:(RCMessage *)message {
@@ -726,13 +701,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     if (debugModeSearch) {
         [self showToastMsg:@"没有更多历史消息"];
     }
-}
-
-- (void)didTapReceiptStatusView:(RCMessageModel *)model {
-    RCMessageReadDetailViewModel *viewModel = [[RCMessageReadDetailViewModel alloc] initWithMessageModel:model config:nil];
-    RCMessageReadDetailViewController *vc = [[RCMessageReadDetailViewController alloc] initWithViewModel:viewModel];
-    vc.dataSource = self;
-    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - target action
@@ -944,8 +912,8 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         self.conversationType != ConversationType_PUBLICSERVICE) {
         //加号区域增加发送文件功能，Kit中已经默认实现了该功能，但是为了SDK向后兼容性，目前SDK默认不开启该入口，可以参考以下代码在加号区域中增加发送文件功能。
         RCPluginBoardView *pluginBoardView = self.chatSessionInputBarControl.pluginBoardView;
-        [pluginBoardView insertItem:RCDynamicImage(@"conversation_plugin_item_file_img",@"plugin_item_file")
-                   highlightedImage:RCDynamicImage(@"conversation_plugin_item_file_highlighted_img",@"plugin_item_file_highlighted")
+        [pluginBoardView insertItem:RCResourceImage(@"plugin_item_file")
+                   highlightedImage:RCResourceImage(@"plugin_item_file_highlighted")
                               title:RCLocalizedString(@"File")
                             atIndex:3
                                 tag:PLUGIN_BOARD_ITEM_FILE_TAG];
@@ -1085,10 +1053,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     } else if(self.conversationType == ConversationType_PRIVATE){
         RCUserInfo *userInfo = [[RCIM sharedRCIM] getUserInfoCache:self.targetId];
         if (userInfo) {
-            NSString *name = [RCKitUtility getDisplayName:userInfo];
-            if (name.length > 0) {
-                self.title = name;
-            }
+            self.title = [RCKitUtility getDisplayName:userInfo];
         }
     }
     else if(self.conversationType == ConversationType_CHATROOM){
@@ -1120,7 +1085,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         }
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];
     } else if (self.conversationType == ConversationType_CHATROOM) {
-        self.navigationItem.rightBarButtonItem = nil;;
+        [self setRightNavigationItem:nil];
     } else {
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];
     }
@@ -1233,15 +1198,6 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 #pragma mark - *************消息多选功能:转发、删除*************
 /******************消息多选功能:转发、删除**********************/
 - (void)addToolbarItems {
-    if (self.conversationType == ConversationType_CHATROOM) {
-        RCButton *deleteBtn = [[RCButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
-        [deleteBtn setImage:RCResourceImage(@"delete_message") forState:UIControlStateNormal];
-        [deleteBtn addTarget:self action:@selector(deleteMessages) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *deleteBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
-        [self.messageSelectionToolbar setItems:@[deleteBarButtonItem] animated:YES];
-        return;
-    }
-    
     if (![DEFAULTS boolForKey:RCDDebugCombineV2EnableKey]) return;
 
     UIButton *forwardBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 40)];
