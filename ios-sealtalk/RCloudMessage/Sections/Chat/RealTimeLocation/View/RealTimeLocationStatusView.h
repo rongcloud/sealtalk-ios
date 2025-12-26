@@ -7,7 +7,7 @@
 //
 
 #import <RongLocation/RongLocation.h>
-#import <UIKit/UIKit.h>
+#import <RongIMKit/RongIMKit.h>
 
 @protocol RealTimeLocationStatusViewDelegate <NSObject>
 
@@ -16,7 +16,7 @@
 - (RCRealTimeLocationStatus)getStatus;
 @end
 
-@interface RealTimeLocationStatusView : UIView
+@interface RealTimeLocationStatusView : RCBaseView
 @property (nonatomic, weak) id<RealTimeLocationStatusViewDelegate> delegate;
 - (void)updateText:(NSString *)statusText;
 - (void)updateRealTimeLocationStatus;

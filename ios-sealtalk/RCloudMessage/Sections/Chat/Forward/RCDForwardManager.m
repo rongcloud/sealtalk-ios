@@ -27,6 +27,19 @@
     return instance;
 }
 
+- (void)showForwardAlertViewWith:(RCNDQRForwardSelectCellViewModel *)viewModel
+                 inViewController:(UIViewController *)viewController {
+    self.viewController = viewController;
+    RCConversation *model = [RCConversation new];
+    model.targetId = viewModel.targetID;
+    model.conversationType = viewModel.conversationType;
+    self.toConversation = model;
+    RCDForwardAlertView *alertView = [RCDForwardAlertView alertViewWithForwardViewModel:viewModel];
+    alertView.messageArray = self.selectedMessages;
+    alertView.delegate = self;
+    [alertView show];
+}
+
 - (void)showForwardAlertViewInViewController:(UIViewController *)viewController {
     self.viewController = viewController;
     if (self.isMultiSelect) {

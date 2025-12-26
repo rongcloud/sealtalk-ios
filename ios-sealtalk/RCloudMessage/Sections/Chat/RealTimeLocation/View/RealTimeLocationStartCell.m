@@ -51,9 +51,9 @@
     NSString *content = RTLLocalizedString(@"i_start_location_share");
     [self.textLabel setText:content dataDetectorEnabled:NO];
     if(self.model.messageDirection == MessageDirection_RECEIVE){
-        [self.textLabel setTextColor:[RCKitUtility generateDynamicColor:HEXCOLOR(0x262626) darkColor:RCMASKCOLOR(0xffffff, 0.8)]];
+        [self.textLabel setTextColor:RCDynamicColor(@"text_primary_color", @"0x262626", @"0xFFFFFFCC")];
     }else{
-        [self.textLabel setTextColor:RCDYCOLOR(0x262626, 0x040A0F)];
+        [self.textLabel setTextColor:RCDynamicColor(@"text_primary_color", @"0x262626", @"0x040A0F")];
     }
     CGSize __textSize =
         [content boundingRectWithSize:CGSizeMake(self.baseContentView.bounds.size.width -

@@ -1,0 +1,17 @@
+//
+//  RCNDPreinstallPhotoView.h
+//  SealTalk
+//
+//  Created by RobinCui on 2025/11/21.
+//  Copyright © 2025 RongCloud. All rights reserved.
+//
+
+#import "RCNDBaseView.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface RCNDPreinstallPhotoView : RCNDBaseView
+@property (nonatomic, strong) UICollectionView *collectionView;
+@end
+
+NS_ASSUME_NONNULL_END

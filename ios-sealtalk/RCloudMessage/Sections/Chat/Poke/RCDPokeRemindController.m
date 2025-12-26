@@ -14,8 +14,11 @@
 #import "RCDGroupManager.h"
 #import "RCDPokeMessage.h"
 #import <AVFoundation/AVFoundation.h>
-#import "RCDChatViewController.h"
+#import "RCUChatViewController.h"
 #import "RCDUtilities.h"
+#import "RCNDMainTabBarViewController.h"
+#import "RCUChatListViewController.h"
+
 @interface RCDPokeRemindController ()
 @property (nonatomic, strong) UIImageView *headerView;
 @property (nonatomic, strong) UILabel *userNameLabel;
@@ -67,14 +70,23 @@
 - (void)didClickJoinChatButton {
     [self dismiss];
     UIViewController *rootVC = [self getCurrentVC];
-    RCDChatViewController *chatVC = [[RCDChatViewController alloc] init];
+    RCUChatViewController *chatVC = [[RCUChatViewController alloc] init];
     chatVC.targetId = self.message.targetId;
     chatVC.conversationType = self.message.conversationType;
-    if ([rootVC isKindOfClass:[UINavigationController class]]) {
-        if ([rootVC.presentedViewController isKindOfClass:[UINavigationController class]]) {
-            [(UINavigationController *)rootVC.presentedViewController pushViewController:chatVC animated:YES];
+    if ([rootVC isKindOfClass:[RCNDMainTabBarViewController class]]) {
+        RCNDMainTabBarViewController *tab = (RCNDMainTabBarViewController *)rootVC;
+        UIViewController *controller = tab.selectedViewController;
+        if ([controller isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navi = (UINavigationController *)controller;
+            [navi popToRootViewControllerAnimated:NO];
+        }
+        tab.selectedIndex = 0;
+        UINavigationController *nav = tab.selectedViewController;
+       
+        if ([nav.viewControllers.firstObject isKindOfClass:[RCUChatListViewController class]]) {
+            RCUChatListViewController *list = (RCUChatListViewController *)nav.viewControllers.firstObject;
+            [list.navigationController pushViewController:chatVC animated:YES];
         } else {
-            [(UINavigationController *)rootVC pushViewController:chatVC animated:YES];
         }
     } else {
         UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:rootVC];

@@ -150,9 +150,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.searchBar resignFirstResponder];
     NSString *type = self.groupTypeArray[indexPath.section];
     NSArray *array = self.resultDictionary[type];
+    [self.searchBar resignFirstResponder];
+
     if (indexPath.row == 3) {
         [self pushToSearchMoreVC:type result:array];
     } else {

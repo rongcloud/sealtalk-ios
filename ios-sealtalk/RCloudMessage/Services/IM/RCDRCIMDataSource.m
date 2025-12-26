@@ -11,7 +11,6 @@
 #import "RCDUtilities.h"
 #import "RCDGroupManager.h"
 #import "RCDCommonString.h"
-
 @interface RCDRCIMDataSource ()
 
 @end
@@ -23,7 +22,7 @@
     static dispatch_once_t predicate;
     dispatch_once(&predicate, ^{
         instance = [[[self class] alloc] init];
-
+        
     });
     return instance;
 }
@@ -41,14 +40,14 @@
         for (RCDGroupInfo *group in groupList) {
             [RCDGroupManager getGroupMembersFromServer:group.groupId
                                               complete:^(NSArray<NSString *> *_Nonnull memberIdList){
-                                              }];
+            }];
         }
     }];
 }
 
 - (void)syncGroupNoticeList {
     [RCDGroupManager getGroupNoticeListFromServer:^(BOOL success, NSArray<RCDGroupNotice *> *noticeList){
-
+        
     }];
 }
 
@@ -65,41 +64,41 @@
 - (void)getGroupInfoWithGroupId:(NSString *)groupId completion:(void (^)(RCGroup *))completion {
     if ([groupId length] == 0)
         return;
-
+    
     //开发者调自己的服务器接口根据userID异步请求数据
     [RCDGroupManager getGroupInfoFromServer:groupId
                                    complete:^(RCDGroupInfo *_Nonnull groupInfo) {
-                                       completion(groupInfo);
-                                       [RCDGroupManager
-                                           getGroupMembersFromServer:groupId
-                                                            complete:^(NSArray<NSString *> *_Nonnull memberIdList){
-                                                            }];
-                                   }];
+        completion(groupInfo);
+        [RCDGroupManager
+         getGroupMembersFromServer:groupId
+         complete:^(NSArray<NSString *> *_Nonnull memberIdList){
+        }];
+    }];
 }
 #pragma mark - RCIMUserInfoDataSource
 - (void)getUserInfoWithUserId:(NSString *)userId completion:(void (^)(RCUserInfo *))completion {
     NSLog(@"getUserInfoWithUserId ----- %@", userId);
     if ([userId isEqualToString:RCDGroupNoticeTargetId]) { //群通知的用户信息直接在自定义的 RCDGroupConversationCell
-                                                           //里面处理了
+        //里面处理了
         return;
     }
     //开发者调自己的服务器接口根据userID异步请求数据
     [RCDUserInfoManager
-        getUserInfoFromServer:userId
-                     complete:^(RCUserInfo *userInfo) {
-                         if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
-                             completion(userInfo);
-                         } else {
-                             [RCDUserInfoManager
-                                 getFriendInfoFromServer:userId
-                                                complete:^(RCDFriendInfo *friendInfo) {
-                                                    if (friendInfo && friendInfo.displayName.length > 0) {
-                                                        userInfo.name = friendInfo.displayName;
-                                                    }
-                                                    completion(userInfo);
-                                                }];
-                         }
-                     }];
+     getUserInfoFromServer:userId
+     complete:^(RCUserInfo *userInfo) {
+        if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
+            completion(userInfo);
+        } else {
+            [RCDUserInfoManager
+             getFriendInfoFromServer:userId
+             complete:^(RCDFriendInfo *friendInfo) {
+                if (friendInfo && friendInfo.displayName.length > 0) {
+                    userInfo.name = friendInfo.displayName;
+                }
+                completion(userInfo);
+            }];
+        }
+    }];
     return;
 }
 
@@ -140,38 +139,93 @@
 - (void)getAllMembersOfGroup:(NSString *)groupId result:(void (^)(NSArray<NSString *> *))resultBlock {
     [RCDGroupManager getGroupMembersFromServer:groupId
                                       complete:^(NSArray<NSString *> *_Nonnull memberIdList) {
-                                          if (resultBlock) {
-                                              resultBlock(memberIdList);
-                                          }
-                                      }];
+        if (resultBlock) {
+            resultBlock(memberIdList);
+        }
+    }];
 }
 
 #pragma mark - 名片消息
 - (void)getAllContacts:(void (^)(NSArray<RCCCUserInfo *> *contactsInfoList))resultBlock {
     NSMutableArray *contacts = [NSMutableArray new];
-    NSArray *allFriends = [RCDUserInfoManager getAllFriends];
-    for (RCDFriendInfo *friend in allFriends) {
-        RCCCUserInfo *contact = [RCCCUserInfo new];
-        contact.userId = friend.userId;
-        contact.name = friend.name;
-        if (friend.portraitUri.length <= 0) {
-            friend.portraitUri = [RCDUtilities defaultUserPortrait:friend];
+    if ([[RCIM sharedRCIM] currentDataSourceType] == RCDataSourceTypeInfoManagement) {
+        [[RCCoreClient sharedCoreClient] getFriends:RCQueryFriendsDirectionTypeBoth success:^(NSArray<RCFriendInfo *> * _Nonnull friendInfos) {
+            for (RCFriendInfo *info in friendInfos) {
+                RCUserInfo *friend =  [RCUserInfo new];
+                friend.userId = info.userId;
+                friend.portraitUri = info.portraitUri;
+                friend.name = info.remark.length > 0 ? info.remark : info.name;
+                
+                RCCCUserInfo *contact = [RCCCUserInfo new];
+                contact.userId = friend.userId;
+                contact.name = friend.name;
+                
+                if (friend.portraitUri.length <= 0) {
+                    friend.portraitUri = [RCDUtilities defaultUserPortrait:friend];
+                }
+                contact.portraitUri = friend.portraitUri;
+                contact.displayName = info.remark;
+                [contacts addObject:contact];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                resultBlock(contacts);
+            });
+        } error:^(RCErrorCode errorCode) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                resultBlock(@[]);
+            });
+        }];
+    } else {
+        NSArray *allFriends = [RCDUserInfoManager getAllFriends];
+        for (RCDFriendInfo *friend in allFriends) {
+            RCCCUserInfo *contact = [RCCCUserInfo new];
+            contact.userId = friend.userId;
+            contact.name = friend.name;
+            if (friend.portraitUri.length <= 0) {
+                friend.portraitUri = [RCDUtilities defaultUserPortrait:friend];
+            }
+            contact.portraitUri = friend.portraitUri;
+            contact.displayName = friend.displayName;
+            [contacts addObject:contact];
         }
-        contact.portraitUri = friend.portraitUri;
-        contact.displayName = friend.displayName;
-        [contacts addObject:contact];
+        resultBlock(contacts);
     }
-    resultBlock(contacts);
+    
 }
 
 - (void)getGroupInfoByGroupId:(NSString *)groupId result:(void (^)(RCCCGroupInfo *groupInfo))resultBlock {
-    RCDGroupInfo *group = [RCDGroupManager getGroupInfo:groupId];
-    RCCCGroupInfo *groupInfo = [RCCCGroupInfo new];
-    groupInfo.groupId = groupId;
-    groupInfo.groupName = group.groupName;
-    groupInfo.portraitUri = group.portraitUri;
-    groupInfo.number = group.number;
-    resultBlock(groupInfo);
+    if ([[RCIM sharedRCIM] currentDataSourceType] == RCDataSourceTypeInfoManagement) {
+        RCCCGroupInfo *groupInfo = [RCCCGroupInfo new];
+        groupInfo.groupId = groupId;
+        [[RCCoreClient sharedCoreClient] getGroupsInfo:@[groupId] success:^(NSArray<RCGroupInfo *> * _Nonnull groupInfos) {
+                    if (groupInfos.count) {
+                        RCGroupInfo *info = groupInfos.firstObject;
+                      
+                        groupInfo.groupName = info.groupName;
+                        groupInfo.portraitUri = info.portraitUri;
+                        groupInfo.number = [@(info.membersCount) stringValue];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            resultBlock(groupInfo);
+                        });
+                    }
+                } error:^(RCErrorCode errorCode) {
+                    groupInfo.number =@"0";
+                    groupInfo.groupName = @"";
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        resultBlock(groupInfo);
+                    });
+                }];
+       
+    } else {
+        RCDGroupInfo *group = [RCDGroupManager getGroupInfo:groupId];
+        RCCCGroupInfo *groupInfo = [RCCCGroupInfo new];
+        groupInfo.groupId = groupId;
+        groupInfo.groupName = group.groupName;
+        groupInfo.portraitUri = group.portraitUri;
+        groupInfo.number = group.number;
+        resultBlock(groupInfo);
+    }
+  
 }
 
 @end

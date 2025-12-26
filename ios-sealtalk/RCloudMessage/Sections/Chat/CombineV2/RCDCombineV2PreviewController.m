@@ -308,6 +308,9 @@
     RCCombineV2Message *combineMsg =  (RCCombineV2Message *)self.messageModel.content;
     NSMutableArray *tempList = [NSMutableArray array];
     for (NSDictionary *dic in msgList) {
+        if (![dic isKindOfClass:[NSDictionary class]]) {
+            continue;
+        }
         RCMessage *message = [[RCMessage alloc] init];
         message.senderUserId = dic[@"fromUserId"];
         message.targetId = dic[@"targetId"];
@@ -437,7 +440,7 @@
         self.tipVStackView.hidden = NO;
     }
     [self.view bringSubviewToFront:self.tipVStackView];
-    self.tipIcon.image = RCResourceImage(@"combine_loading");
+    self.tipIcon.image = RCDynamicImage(@"conversation_msg_combine_loading_img", @"combine_loading");
     self.tipLabel.text = RCLocalizedString(@"CombineMessageLoading");
 }
 
@@ -447,7 +450,7 @@
         self.tipVStackView.hidden = NO;
     }
     [self rc_stopAnimation];
-    self.tipIcon.image = RCResourceImage(@"combine_loading");
+    self.tipIcon.image = RCDynamicImage(@"conversation_msg_combine_loading_img", @"combine_loading");
     self.tipLabel.text = RCLocalizedString(@"CombineMessageLoading");
 }
 

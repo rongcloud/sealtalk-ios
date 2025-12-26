@@ -50,10 +50,10 @@
 
 - (void)setAutoLayout {
     if(self.model.messageDirection == MessageDirection_RECEIVE){
-        [self.contentLabel setTextColor:[RCKitUtility generateDynamicColor:HEXCOLOR(0x333333) darkColor:RCMASKCOLOR(0xffffff, 0.8)]];
+        [self.contentLabel setTextColor:RCDynamicColor(@"text_primary_color", @"0x333333", @"0x9f9f9f")];
         self.pokeIcon.image = [UIImage imageNamed:@"poke_from_msg"];
     }else{
-        [self.contentLabel setTextColor:RCDYCOLOR(0x333333, 0x040A0F)];
+        [self.contentLabel setTextColor:RCDynamicColor(@"text_primary_color", @"0x333333", @"0x040A0F")];
         self.pokeIcon.image = [UIImage imageNamed:@"poke_to_msg"];
     }
     self.contentLabel.attributedText = [[self class] getDisplayContent:self.model];
@@ -82,12 +82,12 @@
         if (model && model.messageDirection == MessageDirection_SEND) {
             [attributedString
                 addAttribute:NSForegroundColorAttributeName
-                       value:[RCKitUtility generateDynamicColor:HEXCOLOR(0x0099ff) darkColor:HEXCOLOR(0x005F9E)]
+                       value:RCDynamicColor(@"primary_color", @"0x0099ff", @"0x005F9E")
                        range:range];
         } else {
             [attributedString
                 addAttribute:NSForegroundColorAttributeName
-                       value:[RCKitUtility generateDynamicColor:HEXCOLOR(0x0099ff) darkColor:HEXCOLOR(0x1290e2)]
+                       value: RCDynamicColor(@"primary_color", @"0x0099ff", @"0x1290e2")
                        range:range];
         }
     }

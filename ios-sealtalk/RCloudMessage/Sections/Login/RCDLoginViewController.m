@@ -271,7 +271,7 @@
         //《注册条款》点击事件
         RCDRegistrationAgreementController *vc = [[RCDRegistrationAgreementController alloc] init];
         // 创建URL
-        NSURL * url = [NSURL URLWithString:@"https://www.rongcloud.cn/chuangqiyi/terms_of_service"];
+        NSURL * url = [NSURL URLWithString:@"https://www.wegenmi.com/terms-of-service"];
         vc.url = url;
         vc.webViewTitle = RCDLocalizedString(@"Registration_Terms");
         [self.navigationController pushViewController:vc animated:YES];
@@ -281,8 +281,8 @@
         //《隐私政策》点击事件
         RCDRegistrationAgreementController *vc = [[RCDRegistrationAgreementController alloc] init];
         // 创建URL
-        NSURL * url = [NSURL URLWithString:@"https://www.rongcloud.cn/chuangqiyi/privacy_policy"];
-        vc.url = url;
+        NSString *urlStr = [NSString stringWithFormat:RCDLocalizedString(@"Privacy_Policy_URL_Format"), @"https://www.wegenmi.com"];
+        vc.url = [NSURL URLWithString:urlStr];
         vc.webViewTitle = RCDLocalizedString(@"Privacy_Policy");
         [self.navigationController pushViewController:vc animated:YES];
         return NO;
@@ -360,10 +360,8 @@
                     [weakSelf logoutWithFraudPrevention] ;
                     [RCDAlertBuilder showFraudPreventionRejectAlert] ;
                 } else {
-                    RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
-                    RCDNavigationViewController *rootNavi =
-                    [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
-                    [UIApplication sharedApplication].delegate.window.rootViewController = rootNavi;
+                    RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
+                    [UIApplication sharedApplication].delegate.window.rootViewController = mainTabBarVC;
                 }
             });
         }];

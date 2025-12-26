@@ -10,9 +10,12 @@
 #import "RCDQRInfoHandle.h"
 #import "RCDQRCodeManager.h"
 #import "RCDUtilities.h"
+#import "RCNDScannerViewModel.h"
+#import "RCUChatViewController.h"
+#import "RCNDJoinGroupViewController.h"
 
-@interface RCDImageSlideController ()
-
+@interface RCDImageSlideController ()<RCNDScannerViewModelDelegate>
+@property (nonatomic, strong) RCNDScannerViewModel *scannerViewModel;
 @end
 
 @implementation RCDImageSlideController
@@ -55,7 +58,11 @@
             if (index == 0) {
                 [self saveImage];
             }else{
-                [[RCDQRInfoHandle alloc] identifyQRCode:info base:self];
+                if ([[RCIM sharedRCIM] currentDataSourceType] == RCDataSourceTypeInfoManagement) {
+                    [self.scannerViewModel identifyQRCode:info];
+                } else {
+                    [[RCDQRInfoHandle alloc] identifyQRCode:info base:self];
+                }
             }
         } cancelBlock:^{
             
@@ -100,5 +107,38 @@
         imageData = [RCKitUtility getImageDataForURLString:self.currentPreviewImage.imageUrl];
     }
     return imageData;
+}
+
+#pragma mark - RCNDScannerViewModelDelegate
+- (RCNDScannerViewModel *)scannerViewModel {
+    if (!_scannerViewModel) {
+        _scannerViewModel = [RCNDScannerViewModel new];
+        _scannerViewModel.viewController = self;
+        _scannerViewModel.delegate = self;
+    }
+    return _scannerViewModel;
+}
+
+- (void)openURLInQRCode:(NSString *)urlString {
+    [RCKitUtility openURLInSafariViewOrWebView:urlString base:self];
+}
+
+- (void)showUserProfileInQRCode:(NSString *)userID {
+    RCUserProfileViewModel *vm = [RCUserProfileViewModel viewModelWithUserId:userID];
+    RCProfileViewController *vc = [[RCProfileViewController alloc] initWithViewModel:vm];
+    [self.navigationController pushViewController:vc animated:NO];
+}
+
+- (void)showGroupConversationInQRCode:(NSString *)groupId title:(NSString *)title {
+    RCUChatViewController *chatVC = [[RCUChatViewController alloc] init];
+    chatVC.targetId = groupId;
+    chatVC.title = title;
+    chatVC.conversationType = ConversationType_GROUP;
+    [self.navigationController pushViewController:chatVC animated:YES];
+}
+
+- (void)showGroupJoinViewInQRCode:(RCGroupInfo *)info {
+    RCNDJoinGroupViewController *vc = [[RCNDJoinGroupViewController alloc] initWithGroupInfo:info];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 @end

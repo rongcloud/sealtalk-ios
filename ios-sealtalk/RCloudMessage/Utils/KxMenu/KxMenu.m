@@ -37,11 +37,13 @@
 */
 
 #import "KxMenu.h"
+#import <RongIMKit/RongIMKit.h>
 
 #pragma GCC diagnostic ignored "-Wundeclared-selector"
 #import "UIColor+RCColor.h"
 #import "UIImage+RCImage.h"
 #import "RCDUtilities.h"
+#import "RCDSemanticContext.h"
 const CGFloat kArrowSize = 8.f;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -340,7 +342,7 @@ typedef enum {
     if (!_menuItems.count)
         return nil;
 
-    const CGFloat kMinMenuItemHeight = 56.f;
+    const CGFloat kMinMenuItemHeight = 40.f;
     const CGFloat kMinMenuItemWidth = 32.f;
     const CGFloat kMarginX = 24.f;
     const CGFloat kMarginY = 0.f;
@@ -380,8 +382,13 @@ typedef enum {
     maxItemWidth = MAX(maxItemWidth, kMinMenuItemWidth);
     maxItemHeight = MAX(maxItemHeight, kMinMenuItemHeight);
 
-    const CGFloat titleX = kMarginX + (maxImageWidth > 0 ? maxImageWidth + imageAndTitleSpace: 0);
-    const CGFloat titleWidth = maxItemWidth - titleX - kMarginX;
+     CGFloat titleX = kMarginX + (maxImageWidth > 0 ? maxImageWidth + imageAndTitleSpace: 0);
+    CGFloat titleWidth = maxItemWidth - titleX - kMarginX;
+
+    if ([RCKitUtility isRTL]) {
+        titleX = kMarginX;
+        titleWidth = maxItemWidth - titleX - kMarginX -imageAndTitleSpace- maxImageWidth;
+    }
 
     UIImage *gradientLine = [KxMenuView gradientLine:(CGSize){maxItemWidth - kMarginX * 4, 1}];
 
@@ -414,13 +421,15 @@ typedef enum {
             button.autoresizingMask = UIViewAutoresizingNone;
 
             [button addTarget:self action:@selector(performAction:) forControlEvents:UIControlEventTouchUpInside];
-
-            [button setImage:[self imageWithColor:RCDDYCOLOR(0xffffff, 0x404040) size:(CGSize){maxItemWidth, maxItemHeight + 2}] forState:(UIControlStateNormal)];
-            [button setImage:[self imageWithColor:RCDDYCOLOR(0xf2f9ff, 0x4a4a4a) size:(CGSize){maxItemWidth, maxItemHeight + 2}] forState:(UIControlStateHighlighted)];
+            UIColor *normalColor = RCDynamicColor(@"common_background_color", @"0xffffff", @"0x404040");
+            [button setImage:[self imageWithColor:normalColor size:(CGSize){maxItemWidth, maxItemHeight + 2}] forState:(UIControlStateNormal)];
+            
+            UIColor *highlightColor = RCDynamicColor(@"selected_background_color", @"0xf2f9ff", @"0x4a4a4a");
+            [button setImage:[self imageWithColor:highlightColor size:(CGSize){maxItemWidth, maxItemHeight + 2}] forState:(UIControlStateHighlighted)];
 
             [itemView addSubview:button];
         }
-
+        UILabel *titleLabel ;
         if (menuItem.title.length) {
 
             CGRect titleFrame;
@@ -433,14 +442,18 @@ typedef enum {
             } else {
 
                 titleFrame = (CGRect){titleX, kMarginY, titleWidth, maxItemHeight - kMarginY * 2};
+                
             }
-
-            UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
+            titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
+           
             titleLabel.text = menuItem.title;
             titleLabel.font = titleFont;
             titleLabel.textAlignment = menuItem.alignment;
+            if ([RCKitUtility isRTL]) {
+                titleLabel.textAlignment = NSTextAlignmentRight;
+            }
             //设置字体颜色
-            titleLabel.textColor = menuItem.foreColor ? menuItem.foreColor : RCDDYCOLOR(0x000000, 0xffffff);
+            titleLabel.textColor = menuItem.foreColor ? menuItem.foreColor :RCDynamicColor(@"text_primary_color", @"0x000000", @"0xffffff");
             titleLabel.backgroundColor = [UIColor clearColor];
             titleLabel.autoresizingMask = UIViewAutoresizingNone;
             // titleLabel.backgroundColor = [UIColor greenColor];
@@ -451,13 +464,17 @@ typedef enum {
 
             //            const CGRect imageFrame = {kMarginX * 2, kMarginY,
             //            maxImageWidth, maxItemHeight - kMarginY * 2};
-            const CGRect imageFrame = {kMarginX , kMarginY, maxImageWidth, maxItemHeight - kMarginY * 2};
+             CGRect imageFrame = (CGRect){kMarginX , kMarginY, maxImageWidth, maxItemHeight - kMarginY * 2};
+            if ( [RCKitUtility isRTL]) {
+                imageFrame = (CGRect){maxItemWidth - kMarginX- maxImageWidth, kMarginY, maxImageWidth, maxItemHeight - kMarginY * 2};
+            }
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:imageFrame];
             imageView.image = menuItem.image;
             imageView.clipsToBounds = YES;
             imageView.contentMode = UIViewContentModeCenter;
             imageView.autoresizingMask = UIViewAutoresizingNone;
             [itemView addSubview:imageView];
+            
         }
 
         if (itemNum < _menuItems.count - 1) {
@@ -594,8 +611,8 @@ typedef enum {
         [arrowPath addLineToPoint:(CGPoint){arrowX0, arrowY1}];
         [arrowPath addLineToPoint:(CGPoint){arrowXM, arrowY0}];
 
-        [[RCDDYCOLOR(0xffffff, 0x404040) colorWithAlphaComponent:1.0f] set];
-
+        UIColor *bgColor = RCDynamicColor(@"common_background_color", @"0xffffff", @"0x404040");
+        [bgColor set];
         Y0 += kArrowSize;
 
     } else if (_arrowDirection == KxMenuViewArrowDirectionDown) {
@@ -610,8 +627,8 @@ typedef enum {
         [arrowPath addLineToPoint:(CGPoint){arrowX1, arrowY0}];
         [arrowPath addLineToPoint:(CGPoint){arrowX0, arrowY0}];
         [arrowPath addLineToPoint:(CGPoint){arrowXM, arrowY1}];
-
-        [[RCDDYCOLOR(0xffffff, 0x404040) colorWithAlphaComponent:1.0f] set];
+        UIColor *bgColor = RCDynamicColor(@"common_background_color", @"0xffffff", @"0x404040");
+        [bgColor set];
 
         Y1 -= kArrowSize;
 
@@ -628,8 +645,8 @@ typedef enum {
         [arrowPath addLineToPoint:(CGPoint){arrowX1, arrowY0}];
         [arrowPath addLineToPoint:(CGPoint){arrowX1, arrowY1}];
         [arrowPath addLineToPoint:(CGPoint){arrowX0, arrowYM}];
-
-        [[RCDDYCOLOR(0xffffff, 0x404040) colorWithAlphaComponent:1.0f] set];
+        UIColor *bgColor = RCDynamicColor(@"common_background_color", @"0xffffff", @"0x404040");
+        [bgColor set];
 
         X0 += kArrowSize;
 
@@ -647,8 +664,8 @@ typedef enum {
         [arrowPath addLineToPoint:(CGPoint){arrowX1, arrowY1}];
         [arrowPath addLineToPoint:(CGPoint){arrowX0, arrowYM}];
 
-        [[RCDDYCOLOR(0xffffff, 0x404040) colorWithAlphaComponent:1.0f] set];
-
+        UIColor *bgColor = RCDynamicColor(@"common_background_color", @"0xffffff", @"0x404040");
+        [bgColor set];
         X1 -= kArrowSize;
     }
 
