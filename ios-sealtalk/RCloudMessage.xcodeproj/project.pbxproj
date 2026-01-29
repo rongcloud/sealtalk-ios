@@ -540,13 +540,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0050347C2ED5C9D400727457 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 98527D7196957AAB07B79E2E2AFDE23E;
-			remoteInfo = IQKeyboardManager;
-		};
 		009F41642EE025410005E868 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 276599A1229E87B20074FAB2 /* Pods.xcodeproj */;
@@ -3104,7 +3097,6 @@
 				1BF9FE42293762AB007AB335 /* DQAlertView.framework */,
 				3BC0C812229F8F3B0079234F /* FMDB.framework */,
 				9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */,
-				0050347D2ED5C9D400727457 /* IQKeyboardManager.framework */,
 				276599A7229E87B20074FAB2 /* Masonry.framework */,
 				A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */,
 				009F41652EE025410005E868 /* MJRefresh.framework */,
@@ -4905,13 +4897,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		0050347D2ED5C9D400727457 /* IQKeyboardManager.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = IQKeyboardManager.framework;
-			remoteRef = 0050347C2ED5C9D400727457 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		009F41652EE025410005E868 /* MJRefresh.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5118,7 +5103,6 @@
 				"${PODS_ROOT}/DoraemonKit/iOS/DoraemonKit/Framework/DoraemonLoadAnalyze.framework",
 				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
 				"${BUILT_PRODUCTS_DIR}/GCDWebServer/GCDWebServer.framework",
-				"${BUILT_PRODUCTS_DIR}/IQKeyboardManager/IQKeyboardManager.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
 				"${BUILT_PRODUCTS_DIR}/MMWormhole/MMWormhole.framework",
@@ -5135,7 +5119,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DoraemonLoadAnalyze.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GCDWebServer.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManager.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMWormhole.framework",

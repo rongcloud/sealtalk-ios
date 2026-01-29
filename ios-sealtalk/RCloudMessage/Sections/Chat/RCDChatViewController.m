@@ -896,6 +896,13 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
         [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_VOIP_TAG];
         [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_VIDEO_VOIP_TAG];
     }
+    if ([RCIMKitThemeManager currentInnerThemesType] == RCIMKitInnerThemesTypeLively) {
+        RCPluginBoardView *pluginBoardView = self.chatSessionInputBarControl.pluginBoardView;
+        [pluginBoardView updateItemWithTag:PLUGIN_BOARD_ITEM_VOICE_INPUT_TAG
+                               normalImage:[UIImage imageNamed:@"conversation_plugin_ifly"]
+                          highlightedImage:[UIImage imageNamed:@"conversation_plugin_ifly_highlight"]
+                                     title:nil];
+    }
 }
 
 - (void)insertMessageDemo {

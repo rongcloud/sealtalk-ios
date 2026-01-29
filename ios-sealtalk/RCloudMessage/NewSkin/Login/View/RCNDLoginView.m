@@ -8,6 +8,11 @@
 
 #import "RCNDLoginView.h"
 
+@interface RCNDLoginView ()
+@property (nonatomic, assign) CGFloat keyboardOffset;
+@property (nonatomic, assign) BOOL isKeyboardVisible;
+@end
+
 @implementation RCNDLoginView
 
 - (void)setupView {
@@ -28,6 +33,9 @@
     [NSLayoutConstraint activateConstraints:@[
           [placeholder.heightAnchor constraintGreaterThanOrEqualToConstant:40]
       ]];
+    
+    // 设置键盘避让
+    [self setupKeyboardAvoidance];
 }
 
 - (void)setupConstraints {
@@ -329,6 +337,116 @@
     return _contentStackView;
 }
 
+#pragma mark - Keyboard Avoidance
 
+- (void)setupKeyboardAvoidance {
+    self.isKeyboardVisible = NO;
+    self.keyboardOffset = 0;
+    
+    // 注册键盘通知
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+}
+
+- (void)removeKeyboardAvoidance {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    // 获取键盘信息
+    NSDictionary *userInfo = notification.userInfo;
+    CGRect keyboardFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIViewAnimationOptions animationCurve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    
+    // 找到当前活跃的 UITextField
+    UITextField *activeTextField = nil;
+    if ([self.txtPhoneNum isFirstResponder]) {
+        activeTextField = self.txtPhoneNum;
+    } else if ([self.txtPhotoVerifyCode isFirstResponder]) {
+        activeTextField = self.txtPhotoVerifyCode;
+    } else if ([self.txtVerifyCode isFirstResponder]) {
+        activeTextField = self.txtVerifyCode;
+    }
+    
+    if (!activeTextField) {
+        return;
+    }
+    
+    // 将 textField 的 frame 转换到 window 坐标系
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    if (!window) {
+        return;
+    }
+    
+    CGRect textFieldFrame = [activeTextField convertRect:activeTextField.bounds toView:window];
+    CGFloat textFieldBottom = CGRectGetMaxY(textFieldFrame);
+    
+    // 计算键盘顶部位置（相对于 window）
+    CGFloat keyboardTop = CGRectGetMinY(keyboardFrame);
+    
+    // 如果 textField 会被键盘遮挡
+    if (textFieldBottom > keyboardTop) {
+        // 计算需要上移的距离（添加一些额外的间距）
+        CGFloat offset = textFieldBottom - keyboardTop + 20;
+        
+        // 更新偏移量
+        self.keyboardOffset = offset;
+        
+        // 使用 transform 上移视图（不会影响 Auto Layout）
+        [UIView animateWithDuration:animationDuration
+                              delay:0
+                            options:animationCurve
+                         animations:^{
+            self.transform = CGAffineTransformMakeTranslation(0, -offset);
+        } completion:nil];
+        
+        self.isKeyboardVisible = YES;
+    } else {
+        // 如果不会被遮挡，确保视图在原始位置
+        if (self.isKeyboardVisible && self.keyboardOffset > 0) {
+            [UIView animateWithDuration:animationDuration
+                                  delay:0
+                                options:animationCurve
+                             animations:^{
+                self.transform = CGAffineTransformIdentity;
+            } completion:^(BOOL finished) {
+                self.keyboardOffset = 0;
+            }];
+        }
+    }
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    if (!self.isKeyboardVisible) {
+        return;
+    }
+    
+    NSDictionary *userInfo = notification.userInfo;
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIViewAnimationOptions animationCurve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    
+    // 恢复视图位置
+    [UIView animateWithDuration:animationDuration
+                          delay:0
+                        options:animationCurve
+                     animations:^{
+        self.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished) {
+        self.keyboardOffset = 0;
+        self.isKeyboardVisible = NO;
+    }];
+}
+
+- (void)dealloc {
+    [self removeKeyboardAvoidance];
+}
 
 @end

@@ -220,11 +220,30 @@ extern NSString *const RCDDebugMessageDisableUserInfoEntrust;
     RCKitConfigCenter.font.assistantLevel = 14;
     [RCUViewModelManager registerViewModel];
     
+    // 设置手动设置的语言
+    NSString *language = [RCDLanguageManager sharedRCDLanguageManager].selectedLanguage;
+    if (language) {
+        // 这个方法内部调用了 RCKitConfigCenter.ui.preferredLanguage 设置 Kit 指定语言
+        [[RCDLanguageManager sharedRCDLanguageManager] setLocalizableLanguage:language];
+        [self applyRTLForLanguage:language];
+    }
+    
     //   设置优先使用WebView打开URL
     //  [RCIM sharedRCIM].embeddedWebViewPreferred = YES;
     [[RCCoreClient sharedCoreClient] configApplicationGroupIdentifier:RCDNotificationServiceGroup isMainApp:YES];
     
     [RCIM sharedRCIM].messageInterceptor = self;
+}
+
+- (void)applyRTLForLanguage:(NSString *)language {
+    BOOL isArabic = [language hasPrefix:@"ar"];
+    UISemanticContentAttribute attribute = isArabic ? UISemanticContentAttributeForceRightToLeft
+    : UISemanticContentAttributeForceLeftToRight;
+    
+    [UIView appearance].semanticContentAttribute = attribute;
+    [UISearchBar appearance].semanticContentAttribute = attribute;
+    [UICollectionView appearance].semanticContentAttribute = attribute;
+    [UISwitch appearance].semanticContentAttribute = attribute;
 }
 
 #pragma mark - RCUltraGroupConversationDelegate

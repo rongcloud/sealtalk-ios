@@ -77,7 +77,7 @@
 }
 
 + (NSString *)currentLanguage {
-    NSString * language = [RCDLanguageManager sharedRCDLanguageManager].currentLanguage;
+    NSString *language = [RCDLanguageManager sharedRCDLanguageManager].currentLanguage;
     return language;
 }
 

@@ -25,6 +25,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIButton *buttonLogin;
 
 @property (nonatomic, strong) UITextView *textViewPrivacy;
+
+// 键盘避让相关
+- (void)setupKeyboardAvoidance;
+- (void)removeKeyboardAvoidance;
 @end
 
 NS_ASSUME_NONNULL_END

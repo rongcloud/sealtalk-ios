@@ -108,6 +108,20 @@ extern NSString * const RCUChatViewControllerCleanMessage;
     [super viewWillLayoutSubviews];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    // 检查主题是否发生变化
+    if (@available(iOS 13.0, *)) {
+        if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]) {
+            // 主题切换时，更新所有 tabBarItem 的图片
+            [self updateTabBarItemImages];
+            // 同时更新 tabBar 的外观配置
+            [self configureTabBarAppearance];
+        }
+    }
+}
+
 
 - (NSArray *)createViewControllers:(BOOL)enableInfoManage {
     NSArray *viewControllers = nil;
@@ -276,6 +290,37 @@ extern NSString * const RCUChatViewControllerCleanMessage;
     navi.tabBarItem.selectedImage =
     [[UIImage imageNamed:selectImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     return navi;
+}
+
+- (void)updateTabBarItemImages {
+    // 遍历所有 viewControllers，更新 tabBarItem 图片
+    [self.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[RCDNavigationViewController class]]) {
+            RCDNavigationViewController *navi = (RCDNavigationViewController *)obj;
+            UIViewController *rootVC = navi.viewControllers.firstObject;
+            
+            // 根据不同的 rootVC 类型，设置对应的图片
+            if ([rootVC isKindOfClass:[RCUChatListViewController class]] || 
+                [rootVC isKindOfClass:[RCDChatListViewController class]]) {
+                navi.tabBarItem.image = [[UIImage imageNamed:@"chat_list_unselect"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                navi.tabBarItem.selectedImage = [[UIImage imageNamed:@"chat_list_select"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            } else if ([rootVC isKindOfClass:[RCNDFriendListViewController class]] || 
+                       [rootVC isKindOfClass:[RCDContactViewController class]] ||
+                       [rootVC isKindOfClass:NSClassFromString(@"RCFriendListViewController")]) {
+                navi.tabBarItem.image = [[UIImage imageNamed:@"contact_unselect"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                navi.tabBarItem.selectedImage = [[UIImage imageNamed:@"contact_select"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            } else if ([rootVC isKindOfClass:[RCNDChatroomViewController class]]) {
+                navi.tabBarItem.image = [[UIImage imageNamed:@"chatroom_unselect"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                navi.tabBarItem.selectedImage = [[UIImage imageNamed:@"chatroom_select"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            } else if ([rootVC isKindOfClass:[RCNDMeViewController class]]) {
+                navi.tabBarItem.image = [[UIImage imageNamed:@"me_unselect"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                navi.tabBarItem.selectedImage = [[UIImage imageNamed:@"me_select"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            } else if ([rootVC isKindOfClass:[RCDUltraGroupController class]]) {
+                navi.tabBarItem.image = [[UIImage imageNamed:@"ultra_unselect"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                navi.tabBarItem.selectedImage = [[UIImage imageNamed:@"ultra_select"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            }
+        }
+    }];
 }
 
 #pragma mark - RCUFriendListViewModelDelegate

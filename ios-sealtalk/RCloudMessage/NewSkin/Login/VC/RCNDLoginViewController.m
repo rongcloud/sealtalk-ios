@@ -44,6 +44,13 @@
     [self refreshPictureVerificationCode];
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+}
+
+
 - (void)loadView {
     self.view = self.loginView;
 }

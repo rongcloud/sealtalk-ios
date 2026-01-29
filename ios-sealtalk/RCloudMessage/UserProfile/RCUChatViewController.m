@@ -51,10 +51,6 @@ NSString * const RCUChatViewControllerCleanMessage = @"RCUChatViewControllerClea
 - (void)updatePluginItemImageIfNeed {
     if ([RCIMKitThemeManager currentInnerThemesType] == RCIMKitInnerThemesTypeLively) {
         RCPluginBoardView *pluginBoardView = self.chatSessionInputBarControl.pluginBoardView;
-        [pluginBoardView updateItemWithTag:PLUGIN_BOARD_ITEM_VOICE_INPUT_TAG
-                               normalImage:[UIImage imageNamed:@"conversation_plugin_ifly"]
-                          highlightedImage:[UIImage imageNamed:@"conversation_plugin_ifly_highlight"]
-                                     title:nil];
         [pluginBoardView updateItemWithTag:PLUGIN_BOARD_ITEM_VOIP_TAG
                                normalImage:[UIImage imageNamed:@"conversation_plugin_voice"]
                           highlightedImage:[UIImage imageNamed:@"conversation_plugin_voice_highlight"]
