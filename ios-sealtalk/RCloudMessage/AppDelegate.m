@@ -82,6 +82,9 @@ extern NSString *const RCDDebugMessageDisableUserInfoEntrust;
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{
+        RCDDebugEnableQuoteV2Key : @NO
+    }];
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
@@ -204,6 +207,11 @@ extern NSString *const RCDDebugMessageDisableUserInfoEntrust;
     RCKitConfigCenter.message.enableSendCombineMessage = YES;
     RCKitConfigCenter.message.reeditDuration = 60;
     RCKitConfigCenter.message.enableEditMessage = ![DEFAULTS boolForKey:RCDDebugDisableEditMessageKey];
+    RCKitConfigCenter.message.enableQuoteV2 = [DEFAULTS boolForKey:RCDDebugEnableQuoteV2Key];
+    id quoteWhiteList = [DEFAULTS objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    if ([quoteWhiteList isKindOfClass:[NSArray class]]) {
+        RCKitConfigCenter.message.quoteMessageTypeWhiteList = [quoteWhiteList copy];
+    }
     // 配置已编辑文字的颜色
     // RCKitConfigCenter.message.editedTextColor = RCDYCOLOR(0x4679FF, 0x4679FF);
 

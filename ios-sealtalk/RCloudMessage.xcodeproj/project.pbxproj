@@ -208,6 +208,8 @@
 		00CEE567280516DC0079C6AE /* RCDebugComBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CEE566280516DC0079C6AE /* RCDebugComBaseViewController.m */; };
 		00D31183289A686600FCC908 /* RCDMessageDigestCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D31182289A686600FCC908 /* RCDMessageDigestCell.m */; };
 		00F70D492C844F390072B2F6 /* RCDChatViewController+Profile.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F70D472C844F390072B2F6 /* RCDChatViewController+Profile.m */; };
+		112A16EA806810C91443510F /* RCDOpenClawBotSelectViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B4485E22377DEF6C20B592 /* RCDOpenClawBotSelectViewModel.m */; };
+		1743174072BCC8681BD09F8B /* RCDOpenClawCreateBotViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C93D6E1068D9D3A3AABE9F /* RCDOpenClawCreateBotViewModel.m */; };
 		17B181851D587A1C0061E02B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A6EFABA01BB0EDAC007E9D67 /* libxml2.tbd */; };
 		17BE51CF1D5828EC0001418D /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 17BE51CE1D5828EC0001418D /* check.png */; };
 		17D7D1DC1D534F56000AEC54 /* RCDShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D7D1DB1D534F56000AEC54 /* RCDShareViewController.m */; };
@@ -304,6 +306,8 @@
 		27F0E3DC22A0E3E300C8B0B8 /* RCDPrivacyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F0E3C022A0E3E200C8B0B8 /* RCDPrivacyTableViewController.m */; };
 		27F0E3DD22A0E3E300C8B0B8 /* RCDLogoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F0E3C122A0E3E300C8B0B8 /* RCDLogoTableViewCell.m */; };
 		27F0E3DE22A0E3E300C8B0B8 /* RCDMeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F0E3C222A0E3E300C8B0B8 /* RCDMeCell.m */; };
+		2CF0E1E57E9A4AE494E9024C /* RCDOpenClawGroupBotListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F5B65AC30CF492225DBFE53 /* RCDOpenClawGroupBotListViewModel.m */; };
+		30422BE365457A8CB1675675 /* RCDOpenClawGroupBotListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320665B9B774802ABDD320C /* RCDOpenClawGroupBotListViewController.m */; };
 		3B054E3422F2DCFC009A3C72 /* RCDRecentPictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B054E3322F2DCFC009A3C72 /* RCDRecentPictureViewController.m */; };
 		3B054E4922F439C6009A3C72 /* RCDSetupRemarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B054E4822F439C6009A3C72 /* RCDSetupRemarkView.m */; };
 		3B054E5722F43C7C009A3C72 /* RCDTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B054E5622F43C7C009A3C72 /* RCDTextView.m */; };
@@ -377,12 +381,21 @@
 		3CA2F0652AA99B8200223321 /* RCDDebugSliceResumeDownloadVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA2F0632AA99B8200223321 /* RCDDebugSliceResumeDownloadVC.m */; };
 		3CF199D72B146D860009E699 /* RCDDebugMessageAuditInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CF199D52B146D860009E699 /* RCDDebugMessageAuditInfoViewController.m */; };
 		466684361B5DF36E000B7504 /* RCDUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 466684351B5DF36E000B7504 /* RCDUtilities.m */; };
+		6AAB408B0AE6FB981D0172C2 /* RCDOpenClawBotAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE0D515DEBB1DF49669F60C /* RCDOpenClawBotAPI.m */; };
 		6E1C98201F39C90C008F96D8 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E1C981F1F39C90C008F96D8 /* libresolv.tbd */; };
+		6FFF761A0E5962A70CD083E8 /* RCDOpenClawBotListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 753EC9FC489E529A11B07042 /* RCDOpenClawBotListViewController.m */; };
+		F963F40A0C754C1A9A188BDA /* RCDOpenClawBotActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 699EE3ADBE614AC4AFE76848 /* RCDOpenClawBotActionCell.m */; };
+		BFFEB323D1794028823DD4F4 /* RCDOpenClawBotListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB25C3768FDE443E8C2AEB9E /* RCDOpenClawBotListCell.m */; };
+		E01F2A3B4C5D6E7F8091A2B3 /* RCDOpenClawSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = B4C5D6E7F8091A2B3C4D5E6F /* RCDOpenClawSearchView.m */; };
+		AA55AA55AA55AA55AA55AA55 /* RCDOpenClawGroupBotAddCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA22AA22AA22AA22AA22AA22 /* RCDOpenClawGroupBotAddCell.m */; };
+		AA66AA66AA66AA66AA66AA66 /* RCDOpenClawBotSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA44AA44AA44AA44AA44AA44 /* RCDOpenClawBotSelectCell.m */; };
 		79B029F622D5FE920062CBA5 /* RCDChatConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B029EA22D5FE8E0062CBA5 /* RCDChatConfig.m */; };
 		79B029FE22D5FEAD0062CBA5 /* RCDTipFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B029FD22D5FEAD0062CBA5 /* RCDTipFooterView.m */; };
 		79B02A0E22D72FE70062CBA5 /* RCDUserSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B02A0D22D72FE70062CBA5 /* RCDUserSetting.m */; };
+		85F8E8E49E88AF46D4F8824C /* RCDOpenClawBotTokenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012841150D39EBABCEA47617 /* RCDOpenClawBotTokenViewController.m */; };
 		9870725020A17AC3008EE653 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9870724F20A17AC2008EE653 /* GLKit.framework */; };
 		987653631D796C5B008A6BF0 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 987653621D796C5B008A6BF0 /* Launch Screen.storyboard */; };
+		988D255E2D59FD255B10E3E6 /* RCDOpenClawBotListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3294BC14B11EE1EDD2B90000 /* RCDOpenClawBotListViewModel.m */; };
 		9B49C53D23C421720058D19F /* RealTimeLocation.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9B49C53F23C421720058D19F /* RealTimeLocation.strings */; };
 		9B49C54A23C438180058D19F /* RTLUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B49C54923C438180058D19F /* RTLUtilities.m */; };
 		9B8BBA0024065F2F007CF839 /* RealTimeLocation.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B8BB9FF24065F2E007CF839 /* RealTimeLocation.xcassets */; };
@@ -400,6 +413,7 @@
 		9C226D1D229FFD1600F49FC5 /* RCDUserInfoAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C226D1C229FFD1600F49FC5 /* RCDUserInfoAPI.m */; };
 		9C27480F22A0E3E4001A4413 /* RCDDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C27480E22A0E3E4001A4413 /* RCDDBManager.m */; };
 		9C6B9630229E8A8900442B5B /* RCDDBHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6B962F229E8A8900442B5B /* RCDDBHelper.m */; };
+		9CD3911B4816819FA7BA7A15 /* RCDOpenClawBotManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9736A0862413BAC45A4779 /* RCDOpenClawBotManager.m */; };
 		9F7614A02779B81800131616 /* RCDDebugUlTraGroupDefine.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */; };
 		9FCF7DB1277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */; };
 		A20131ED22F28C1200C24160 /* RCDPokeAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A20131EC22F28C1200C24160 /* RCDPokeAlertView.m */; };
@@ -515,16 +529,21 @@
 		A2F0A99222FAA4C600422802 /* RCDGroupLeftMember.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F0A99122FAA4C600422802 /* RCDGroupLeftMember.m */; };
 		A2F0A99622FACE9300422802 /* RCDGroupMemberDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F0A99522FACE9300422802 /* RCDGroupMemberDetailInfo.m */; };
 		A2FF706D22B0EE2900962AB3 /* RCDGroupAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FF706C22B0EE2900962AB3 /* RCDGroupAPI.m */; };
+		B25452DC805ECB07415B461D /* RCDOpenClawBotSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E075DB66458835334A7ECA61 /* RCDOpenClawBotSelectViewController.m */; };
+		B6D2FAD8AF36D9F7005479AD /* RCDOpenClawIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1343F93664B270E51321C6D6 /* RCDOpenClawIntroViewController.m */; };
 		C103C2F45F9E52E181915548 /* Pods_SealTalkNotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A4D0467FA1DCB2099870924 /* Pods_SealTalkNotificationService.framework */; };
+		C582815D357144699B3073D4 /* RCDOpenClawBot.m in Sources */ = {isa = PBXBuildFile; fileRef = 353197913BD2C87230403694 /* RCDOpenClawBot.m */; };
 		C9D3DDAD295BEEAC0057F6E1 /* RCDDebugFileIconViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D3DDAC295BEEAC0057F6E1 /* RCDDebugFileIconViewController.m */; };
 		C9D3DDB5295C16620057F6E1 /* RCDDebugUltraGroupSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D3DDB4295C16620057F6E1 /* RCDDebugUltraGroupSearchViewController.m */; };
 		C9D3DDCA295C23390057F6E1 /* RCDDebugUltraGroupChatSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D3DDC9295C23390057F6E1 /* RCDDebugUltraGroupChatSearchViewController.m */; };
+		D31D5761F74C65846485E351 /* RCDOpenClawCreateBotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1A12EF8648C0D951D56085 /* RCDOpenClawCreateBotViewController.m */; };
 		D33961AB215BE7B5935B4FF0 /* Pods_SealTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26E3AE2A7C034EA93099FC3F /* Pods_SealTalk.framework */; };
 		D5A18A0027C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A189FF27C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.m */; };
 		D5A18A1327C8DA0C0088BA7E /* RCDDebugConversationChannelNotificationLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5A18A1227C8DA0C0088BA7E /* RCDDebugConversationChannelNotificationLevelViewController.m */; };
 		DD67603C26A6A356004CF458 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C497221A2484DB00098C8A /* MapKit.framework */; };
 		DD67605026A6A35D004CF458 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C330F31A0C722300E31B9A /* AudioToolbox.framework */; };
 		E4BFAE251A121839007165B1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4BFAE221A121839007165B1 /* Images.xcassets */; };
+		F140ACA5B3F14C1781284168 /* RCDOpenClawBotTokenViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 57EDCF7C1B15942C9CE807D0 /* RCDOpenClawBotTokenViewModel.m */; };
 		F1A62C812C89966400D567E6 /* RCUViewModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A62C802C89966400D567E6 /* RCUViewModelManager.m */; };
 		F1B7585C2CFD54B500877983 /* RCUGroupNotificationMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F1B758592CFD54B500877983 /* RCUGroupNotificationMessage.m */; };
 		F1B7585D2CFD54B500877983 /* RCUTipMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F1B7585B2CFD54B500877983 /* RCUTipMessageCell.m */; };
@@ -1081,10 +1100,13 @@
 		00D31182289A686600FCC908 /* RCDMessageDigestCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDMessageDigestCell.m; sourceTree = "<group>"; };
 		00F70D462C844F390072B2F6 /* RCDChatViewController+Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCDChatViewController+Profile.h"; sourceTree = "<group>"; };
 		00F70D472C844F390072B2F6 /* RCDChatViewController+Profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCDChatViewController+Profile.m"; sourceTree = "<group>"; };
+		012841150D39EBABCEA47617 /* RCDOpenClawBotTokenViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotTokenViewController.m; sourceTree = "<group>"; };
 		043C14692DA457F90545CDF5 /* Pods-SealTalk.appstorerelease.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.appstorerelease.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.appstorerelease.xcconfig"; sourceTree = "<group>"; };
 		0A1DDD9F22169D7300A9FE21 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = "RCloudMessage/Supporting Files/PrefixHeader.pch"; sourceTree = SOURCE_ROOT; };
 		0A4D0467FA1DCB2099870924 /* Pods_SealTalkNotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SealTalkNotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9DC748C02994D01D7E4DEB /* Pods-SealTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.debug.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.debug.xcconfig"; sourceTree = "<group>"; };
+		11C93D6E1068D9D3A3AABE9F /* RCDOpenClawCreateBotViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawCreateBotViewModel.m; sourceTree = "<group>"; };
+		1343F93664B270E51321C6D6 /* RCDOpenClawIntroViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawIntroViewController.m; sourceTree = "<group>"; };
 		178998211F6244FA00FC44D3 /* sms-received.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "sms-received.caf"; path = "RCloudMessage/Supporting Files/sms-received.caf"; sourceTree = SOURCE_ROOT; };
 		17B181861D587B0F0061E02B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		17BE51CE1D5828EC0001418D /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
@@ -1153,6 +1175,7 @@
 		1C98D4D7281005E00082C70C /* RCDChatTitleAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDChatTitleAlertView.h; sourceTree = "<group>"; };
 		1CDABB1E285C71C3008ADE46 /* RCDStringObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDStringObject.h; sourceTree = "<group>"; };
 		1CDABB1F285C71C3008ADE46 /* RCDStringObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDStringObject.m; sourceTree = "<group>"; };
+		1FBB0E757FB23B5E63DE75D9 /* RCDOpenClawBotListViewModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotListViewModel.h; sourceTree = "<group>"; };
 		2359B6D5C0819E0CDD84DEF7 /* Pods-SealTalk.autorelease.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.autorelease.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.autorelease.xcconfig"; sourceTree = "<group>"; };
 		26E3AE2A7C034EA93099FC3F /* Pods_SealTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SealTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		270C241622A4C88E000F22A2 /* RCDSearchMoreViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDSearchMoreViewCell.m; sourceTree = "<group>"; };
@@ -1288,6 +1311,10 @@
 		27F0E3C122A0E3E300C8B0B8 /* RCDLogoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDLogoTableViewCell.m; sourceTree = "<group>"; };
 		27F0E3C222A0E3E300C8B0B8 /* RCDMeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDMeCell.m; sourceTree = "<group>"; };
 		27F0E3DF22A104A600C8B0B8 /* RCDMessageNoDisturbSettingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDMessageNoDisturbSettingController.h; sourceTree = "<group>"; };
+		2B3A2154774312090F4539D6 /* RCDOpenClawGroupBotListViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawGroupBotListViewController.h; sourceTree = "<group>"; };
+		2C83D4322C9F169BB10A3626 /* RCDOpenClawViewModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawViewModel.h; sourceTree = "<group>"; };
+		3294BC14B11EE1EDD2B90000 /* RCDOpenClawBotListViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotListViewModel.m; sourceTree = "<group>"; };
+		353197913BD2C87230403694 /* RCDOpenClawBot.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBot.m; sourceTree = "<group>"; };
 		3B054E3222F2DCFC009A3C72 /* RCDRecentPictureViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDRecentPictureViewController.h; sourceTree = "<group>"; };
 		3B054E3322F2DCFC009A3C72 /* RCDRecentPictureViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDRecentPictureViewController.m; sourceTree = "<group>"; };
 		3B054E4722F439C6009A3C72 /* RCDSetupRemarkView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDSetupRemarkView.h; sourceTree = "<group>"; };
@@ -1434,19 +1461,30 @@
 		3DAA0CEE69F9B4D2CCE06AFF /* Pods-SealTalk.autodebug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.autodebug.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.autodebug.xcconfig"; sourceTree = "<group>"; };
 		420D8C790AB11CC9223AE165 /* Pods-SealTalkNotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalkNotificationService.release.xcconfig"; path = "Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService.release.xcconfig"; sourceTree = "<group>"; };
 		4429823F8B58E7D306F71C21 /* Pods-SealTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.release.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.release.xcconfig"; sourceTree = "<group>"; };
+		44DC58B8E1753D386F694DA9 /* RCDOpenClawBotTokenViewModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotTokenViewModel.h; sourceTree = "<group>"; };
 		466684341B5DF36E000B7504 /* RCDUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = RCDUtilities.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		466684351B5DF36E000B7504 /* RCDUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RCDUtilities.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		46FE30FCD5C567AD6F782447 /* RCDOpenClawCreateBotViewModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawCreateBotViewModel.h; sourceTree = "<group>"; };
 		477883CB7614259E033B6D65 /* Pods-SealTalk.appstoredebug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalk.appstoredebug.xcconfig"; path = "Target Support Files/Pods-SealTalk/Pods-SealTalk.appstoredebug.xcconfig"; sourceTree = "<group>"; };
+		56CCB0731BB8DEDE3A454072 /* RCDOpenClawBot.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBot.h; sourceTree = "<group>"; };
+		57EDCF7C1B15942C9CE807D0 /* RCDOpenClawBotTokenViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotTokenViewModel.m; sourceTree = "<group>"; };
+		5839893ABB4DF84FF8A69890 /* RCDOpenClawBotManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotManager.h; sourceTree = "<group>"; };
+		5C099B8C4FFD0175432FD0E8 /* RCDOpenClawBotTokenViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotTokenViewController.h; sourceTree = "<group>"; };
+		6320665B9B774802ABDD320C /* RCDOpenClawGroupBotListViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawGroupBotListViewController.m; sourceTree = "<group>"; };
 		67B903B4667E1EF664C22606 /* Pods-SealTalkNotificationService.appstorerelease.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalkNotificationService.appstorerelease.xcconfig"; path = "Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService.appstorerelease.xcconfig"; sourceTree = "<group>"; };
+		6B7E8F257EB7B3CA35EAD128 /* RCDOpenClawBotAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotAPI.h; sourceTree = "<group>"; };
 		6E1C981F1F39C90C008F96D8 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		753EC9FC489E529A11B07042 /* RCDOpenClawBotListViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotListViewController.m; sourceTree = "<group>"; };
 		79B029EA22D5FE8E0062CBA5 /* RCDChatConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDChatConfig.m; sourceTree = "<group>"; };
 		79B029EB22D5FE8E0062CBA5 /* RCDChatConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDChatConfig.h; sourceTree = "<group>"; };
 		79B029FC22D5FEAD0062CBA5 /* RCDTipFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDTipFooterView.h; sourceTree = "<group>"; };
 		79B029FD22D5FEAD0062CBA5 /* RCDTipFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDTipFooterView.m; sourceTree = "<group>"; };
 		79B02A0C22D72FE60062CBA5 /* RCDUserSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCDUserSetting.h; path = RCloudMessage/Services/UserInfo/RCDUserSetting.h; sourceTree = SOURCE_ROOT; };
 		79B02A0D22D72FE70062CBA5 /* RCDUserSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCDUserSetting.m; path = RCloudMessage/Services/UserInfo/RCDUserSetting.m; sourceTree = SOURCE_ROOT; };
+		7A8484EABD928ECF043BC1D4 /* RCDOpenClawBotSelectViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotSelectViewController.h; sourceTree = "<group>"; };
 		7D3A20E90695BBC5670D3348 /* Pods-SealTalkNotificationService.appstoredebug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalkNotificationService.appstoredebug.xcconfig"; path = "Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService.appstoredebug.xcconfig"; sourceTree = "<group>"; };
 		8CCBC9861AEDDF8600BA1135 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		90476CD8B85EA6272DC2DF1E /* RCDOpenClawBotListViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotListViewController.h; sourceTree = "<group>"; };
 		9870724F20A17AC2008EE653 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		987653621D796C5B008A6BF0 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "RCloudMessage/Supporting Files/Launch Screen.storyboard"; sourceTree = SOURCE_ROOT; };
 		9B49C53E23C421720058D19F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/RealTimeLocation.strings; sourceTree = "<group>"; };
@@ -1483,8 +1521,10 @@
 		9C226D1C229FFD1600F49FC5 /* RCDUserInfoAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDUserInfoAPI.m; sourceTree = "<group>"; };
 		9C27480D22A0E3E4001A4413 /* RCDDBManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDBManager.h; sourceTree = "<group>"; };
 		9C27480E22A0E3E4001A4413 /* RCDDBManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDBManager.m; sourceTree = "<group>"; };
+		9C49D21A711E18EDFD0BF128 /* RCDOpenClawCreateBotViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawCreateBotViewController.h; sourceTree = "<group>"; };
 		9C6B962E229E8A8900442B5B /* RCDDBHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDBHelper.h; sourceTree = "<group>"; };
 		9C6B962F229E8A8900442B5B /* RCDDBHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDBHelper.m; sourceTree = "<group>"; };
+		9F5B65AC30CF492225DBFE53 /* RCDOpenClawGroupBotListViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawGroupBotListViewModel.m; sourceTree = "<group>"; };
 		9F76149E2779B81600131616 /* RCDDebugUltraGroupDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupDefine.h; sourceTree = "<group>"; };
 		9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUlTraGroupDefine.m; sourceTree = "<group>"; };
 		9FCF7DAF277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupSendMessage.h; sourceTree = "<group>"; };
@@ -1718,22 +1758,37 @@
 		A2F0A99522FACE9300422802 /* RCDGroupMemberDetailInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDGroupMemberDetailInfo.m; sourceTree = "<group>"; };
 		A2FF706B22B0EE2900962AB3 /* RCDGroupAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDGroupAPI.h; sourceTree = "<group>"; };
 		A2FF706C22B0EE2900962AB3 /* RCDGroupAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDGroupAPI.m; sourceTree = "<group>"; };
+		A6E463459886237778F32C55 /* RCDOpenClawBotSelectViewModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotSelectViewModel.h; sourceTree = "<group>"; };
 		A6EFAB9E1BB0ED94007E9D67 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		A6EFABA01BB0EDAC007E9D67 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		A6EFABA41BB0EDE1007E9D67 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		A6EFABA61BB0EDFB007E9D67 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		AC32923B3A07479E2C6B5607 /* RCDOpenClawIntroViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawIntroViewController.h; sourceTree = "<group>"; };
+		AE9736A0862413BAC45A4779 /* RCDOpenClawBotManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotManager.m; sourceTree = "<group>"; };
+		A73C451AC3D1480285E7D86C /* RCDOpenClawBotListCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotListCell.h; sourceTree = "<group>"; };
+		B522702D3AB4425183AB6509 /* RCDOpenClawBotActionCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotActionCell.h; sourceTree = "<group>"; };
+		AA11AA11AA11AA11AA11AA11 /* RCDOpenClawGroupBotAddCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawGroupBotAddCell.h; sourceTree = "<group>"; };
+		AA22AA22AA22AA22AA22AA22 /* RCDOpenClawGroupBotAddCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawGroupBotAddCell.m; sourceTree = "<group>"; };
+		AA33AA33AA33AA33AA33AA33 /* RCDOpenClawBotSelectCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotSelectCell.h; sourceTree = "<group>"; };
+		AA44AA44AA44AA44AA44AA44 /* RCDOpenClawBotSelectCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotSelectCell.m; sourceTree = "<group>"; };
+		A3B4C5D6E7F8091A2B3C4D5E /* RCDOpenClawSearchView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawSearchView.h; sourceTree = "<group>"; };
+		B3B4485E22377DEF6C20B592 /* RCDOpenClawBotSelectViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotSelectViewModel.m; sourceTree = "<group>"; };
+		B4C5D6E7F8091A2B3C4D5E6F /* RCDOpenClawSearchView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawSearchView.m; sourceTree = "<group>"; };
 		C9D3DDAB295BEEAC0057F6E1 /* RCDDebugFileIconViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugFileIconViewController.h; sourceTree = "<group>"; };
 		C9D3DDAC295BEEAC0057F6E1 /* RCDDebugFileIconViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugFileIconViewController.m; sourceTree = "<group>"; };
 		C9D3DDB3295C16620057F6E1 /* RCDDebugUltraGroupSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupSearchViewController.h; sourceTree = "<group>"; };
 		C9D3DDB4295C16620057F6E1 /* RCDDebugUltraGroupSearchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupSearchViewController.m; sourceTree = "<group>"; };
 		C9D3DDC8295C23390057F6E1 /* RCDDebugUltraGroupChatSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupChatSearchViewController.h; sourceTree = "<group>"; };
 		C9D3DDC9295C23390057F6E1 /* RCDDebugUltraGroupChatSearchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupChatSearchViewController.m; sourceTree = "<group>"; };
+		CBA09010B034757E9BC7E457 /* RCDOpenClawGroupBotListViewModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawGroupBotListViewModel.h; sourceTree = "<group>"; };
 		CDB247EFC168A7F299EFBF85 /* Pods-SealTalkNotificationService.autorelease.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalkNotificationService.autorelease.xcconfig"; path = "Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService.autorelease.xcconfig"; sourceTree = "<group>"; };
 		CFA8A9EBEDCF77396AB231D8 /* Pods-SealTalkNotificationService.autodebug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalkNotificationService.autodebug.xcconfig"; path = "Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService.autodebug.xcconfig"; sourceTree = "<group>"; };
 		D5A189FE27C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugNotificationQuietHoursSettingViewController.h; sourceTree = "<group>"; };
 		D5A189FF27C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugNotificationQuietHoursSettingViewController.m; sourceTree = "<group>"; };
 		D5A18A1127C8DA0C0088BA7E /* RCDDebugConversationChannelNotificationLevelViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugConversationChannelNotificationLevelViewController.h; sourceTree = "<group>"; };
 		D5A18A1227C8DA0C0088BA7E /* RCDDebugConversationChannelNotificationLevelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugConversationChannelNotificationLevelViewController.m; sourceTree = "<group>"; };
+		DB1A12EF8648C0D951D56085 /* RCDOpenClawCreateBotViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawCreateBotViewController.m; sourceTree = "<group>"; };
+		E075DB66458835334A7ECA61 /* RCDOpenClawBotSelectViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotSelectViewController.m; sourceTree = "<group>"; };
 		E34043FC24BC7F854CA56D9A /* Pods-SealTalkNotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SealTalkNotificationService.debug.xcconfig"; path = "Target Support Files/Pods-SealTalkNotificationService/Pods-SealTalkNotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		E4BFAE221A121839007165B1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "RCloudMessage/Supporting Files/Images.xcassets"; sourceTree = SOURCE_ROOT; };
 		E4C330F11A0C721D00E31B9A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1778,6 +1833,9 @@
 		F8AD4A561CAE5702006C1CBB /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		F8AD4A581CAE5766006C1CBB /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F8AD4A5A1CAE5782006C1CBB /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		FB25C3768FDE443E8C2AEB9E /* RCDOpenClawBotListCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotListCell.m; sourceTree = "<group>"; };
+		699EE3ADBE614AC4AFE76848 /* RCDOpenClawBotActionCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotActionCell.m; sourceTree = "<group>"; };
+		FDE0D515DEBB1DF49669F60C /* RCDOpenClawBotAPI.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotAPI.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3091,21 +3149,21 @@
 		276599A2229E87B20074FAB2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3BC0C810229F8F3B0079234F /* AFNetworking.framework */,
-				3BACB0072500CED50001A92C /* DoraemonKit.framework */,
-				3BACB0092500CED50001A92C /* DoraemonKit.bundle */,
-				1BF9FE42293762AB007AB335 /* DQAlertView.framework */,
-				3BC0C812229F8F3B0079234F /* FMDB.framework */,
-				9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */,
-				276599A7229E87B20074FAB2 /* Masonry.framework */,
-				A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */,
-				009F41652EE025410005E868 /* MJRefresh.framework */,
-				1BF9FE44293762AB007AB335 /* MMWormhole.framework */,
-				276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */,
-				1BF9FE46293762AB007AB335 /* Pods_SealTalkNotificationService.framework */,
-				279C1E8D22BB724D009FD15C /* SDWebImage.framework */,
-				279C1E8F22BB724D009FD15C /* SSZipArchive.framework */,
-				3B47890322B78F1C00D33F10 /* ZXingObjC.framework */,
+				3BC0C810229F8F3B0079234F /* AFNetworking */,
+				3BACB0072500CED50001A92C /* DoraemonKit */,
+				3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */,
+				1BF9FE42293762AB007AB335 /* DQAlertView */,
+				3BC0C812229F8F3B0079234F /* FMDB */,
+				9C226D0F229FD5C800F49FC5 /* GCDWebServer */,
+				276599A7229E87B20074FAB2 /* Masonry */,
+				A2E705C622BA1D1E0047DF47 /* MBProgressHUD */,
+				009F41652EE025410005E868 /* MJRefresh */,
+				1BF9FE44293762AB007AB335 /* MMWormhole */,
+				276599A9229E87B20074FAB2 /* Pods-SealTalk */,
+				1BF9FE46293762AB007AB335 /* Pods-SealTalkNotificationService */,
+				279C1E8D22BB724D009FD15C /* SDWebImage */,
+				279C1E8F22BB724D009FD15C /* SSZipArchive */,
+				3B47890322B78F1C00D33F10 /* ZXingObjC */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3124,6 +3182,7 @@
 				27AD2F69229E721D003C2680 /* Debug */,
 				A29070B1229E8045006BDAC7 /* Demo */,
 				27AD2F70229E721D003C2680 /* Base */,
+				70E047809B72AC56658FA6C2 /* OpenClaw */,
 			);
 			name = Sections;
 			path = RCloudMessage/Sections;
@@ -3672,6 +3731,74 @@
 			path = MessageAuditInfo;
 			sourceTree = "<group>";
 		};
+		70E047809B72AC56658FA6C2 /* OpenClaw */ = {
+			isa = PBXGroup;
+			children = (
+				9E115B8DEC0D4616BEEC0C09 /* VC */,
+				99CB855E156A4F3483ABC098 /* ViewModel */,
+				BCB98F8E31D44962B09ACB69 /* View */,
+			);
+			name = OpenClaw;
+			path = OpenClaw;
+			sourceTree = "<group>";
+		};
+		9E115B8DEC0D4616BEEC0C09 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				AC32923B3A07479E2C6B5607 /* RCDOpenClawIntroViewController.h */,
+				1343F93664B270E51321C6D6 /* RCDOpenClawIntroViewController.m */,
+				9C49D21A711E18EDFD0BF128 /* RCDOpenClawCreateBotViewController.h */,
+				DB1A12EF8648C0D951D56085 /* RCDOpenClawCreateBotViewController.m */,
+				5C099B8C4FFD0175432FD0E8 /* RCDOpenClawBotTokenViewController.h */,
+				012841150D39EBABCEA47617 /* RCDOpenClawBotTokenViewController.m */,
+				90476CD8B85EA6272DC2DF1E /* RCDOpenClawBotListViewController.h */,
+				753EC9FC489E529A11B07042 /* RCDOpenClawBotListViewController.m */,
+				2B3A2154774312090F4539D6 /* RCDOpenClawGroupBotListViewController.h */,
+				6320665B9B774802ABDD320C /* RCDOpenClawGroupBotListViewController.m */,
+				7A8484EABD928ECF043BC1D4 /* RCDOpenClawBotSelectViewController.h */,
+				E075DB66458835334A7ECA61 /* RCDOpenClawBotSelectViewController.m */,
+			);
+			name = VC;
+			path = VC;
+			sourceTree = "<group>";
+		};
+		99CB855E156A4F3483ABC098 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				46FE30FCD5C567AD6F782447 /* RCDOpenClawCreateBotViewModel.h */,
+				11C93D6E1068D9D3A3AABE9F /* RCDOpenClawCreateBotViewModel.m */,
+				1FBB0E757FB23B5E63DE75D9 /* RCDOpenClawBotListViewModel.h */,
+				3294BC14B11EE1EDD2B90000 /* RCDOpenClawBotListViewModel.m */,
+				44DC58B8E1753D386F694DA9 /* RCDOpenClawBotTokenViewModel.h */,
+				57EDCF7C1B15942C9CE807D0 /* RCDOpenClawBotTokenViewModel.m */,
+				CBA09010B034757E9BC7E457 /* RCDOpenClawGroupBotListViewModel.h */,
+				9F5B65AC30CF492225DBFE53 /* RCDOpenClawGroupBotListViewModel.m */,
+				A6E463459886237778F32C55 /* RCDOpenClawBotSelectViewModel.h */,
+				B3B4485E22377DEF6C20B592 /* RCDOpenClawBotSelectViewModel.m */,
+				2C83D4322C9F169BB10A3626 /* RCDOpenClawViewModel.h */,
+			);
+			name = ViewModel;
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		BCB98F8E31D44962B09ACB69 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A73C451AC3D1480285E7D86C /* RCDOpenClawBotListCell.h */,
+				FB25C3768FDE443E8C2AEB9E /* RCDOpenClawBotListCell.m */,
+				B522702D3AB4425183AB6509 /* RCDOpenClawBotActionCell.h */,
+				699EE3ADBE614AC4AFE76848 /* RCDOpenClawBotActionCell.m */,
+				AA11AA11AA11AA11AA11AA11 /* RCDOpenClawGroupBotAddCell.h */,
+				AA22AA22AA22AA22AA22AA22 /* RCDOpenClawGroupBotAddCell.m */,
+				AA33AA33AA33AA33AA33AA33 /* RCDOpenClawBotSelectCell.h */,
+				AA44AA44AA44AA44AA44AA44 /* RCDOpenClawBotSelectCell.m */,
+				A3B4C5D6E7F8091A2B3C4D5E /* RCDOpenClawSearchView.h */,
+				B4C5D6E7F8091A2B3C4D5E6F /* RCDOpenClawSearchView.m */,
+			);
+			name = View;
+			path = View;
+			sourceTree = "<group>";
+		};
 		79B029E922D5FE8E0062CBA5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -3688,6 +3815,20 @@
 				79B029FD22D5FEAD0062CBA5 /* RCDTipFooterView.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		8D971EC7D4DDB667F8CAF6E1 /* OpenClaw */ = {
+			isa = PBXGroup;
+			children = (
+				56CCB0731BB8DEDE3A454072 /* RCDOpenClawBot.h */,
+				353197913BD2C87230403694 /* RCDOpenClawBot.m */,
+				6B7E8F257EB7B3CA35EAD128 /* RCDOpenClawBotAPI.h */,
+				FDE0D515DEBB1DF49669F60C /* RCDOpenClawBotAPI.m */,
+				5839893ABB4DF84FF8A69890 /* RCDOpenClawBotManager.h */,
+				AE9736A0862413BAC45A4779 /* RCDOpenClawBotManager.m */,
+			);
+			name = OpenClaw;
+			path = OpenClaw;
 			sourceTree = "<group>";
 		};
 		91077AEAEADD4FA6B829E6BF /* Pods */ = {
@@ -3744,6 +3885,7 @@
 				9C226D08229FD5C700F49FC5 /* DB */,
 				1C836A63283F3371007FABD2 /* FraudPrevention */,
 				9C226CFB229FB7D000F49FC5 /* ServerAPI */,
+				8D971EC7D4DDB667F8CAF6E1 /* OpenClaw */,
 			);
 			name = Services;
 			path = RCloudMessage/Services;
@@ -4897,107 +5039,122 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		009F41652EE025410005E868 /* MJRefresh.framework */ = {
+		009F41652EE025410005E868 /* MJRefresh */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MJRefresh;
 			path = MJRefresh.framework;
 			remoteRef = 009F41642EE025410005E868 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1BF9FE42293762AB007AB335 /* DQAlertView.framework */ = {
+		1BF9FE42293762AB007AB335 /* DQAlertView */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = DQAlertView;
 			path = DQAlertView.framework;
 			remoteRef = 1BF9FE41293762AB007AB335 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1BF9FE44293762AB007AB335 /* MMWormhole.framework */ = {
+		1BF9FE44293762AB007AB335 /* MMWormhole */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MMWormhole;
 			path = MMWormhole.framework;
 			remoteRef = 1BF9FE43293762AB007AB335 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1BF9FE46293762AB007AB335 /* Pods_SealTalkNotificationService.framework */ = {
+		1BF9FE46293762AB007AB335 /* Pods-SealTalkNotificationService */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = "Pods-SealTalkNotificationService";
 			path = Pods_SealTalkNotificationService.framework;
 			remoteRef = 1BF9FE45293762AB007AB335 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		276599A7229E87B20074FAB2 /* Masonry.framework */ = {
+		276599A7229E87B20074FAB2 /* Masonry */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = Masonry;
 			path = Masonry.framework;
 			remoteRef = 276599A6229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		276599A9229E87B20074FAB2 /* Pods_SealTalk.framework */ = {
+		276599A9229E87B20074FAB2 /* Pods-SealTalk */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = "Pods-SealTalk";
 			path = Pods_SealTalk.framework;
 			remoteRef = 276599A8229E87B20074FAB2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		279C1E8D22BB724D009FD15C /* SDWebImage.framework */ = {
+		279C1E8D22BB724D009FD15C /* SDWebImage */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SDWebImage;
 			path = SDWebImage.framework;
 			remoteRef = 279C1E8C22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		279C1E8F22BB724D009FD15C /* SSZipArchive.framework */ = {
+		279C1E8F22BB724D009FD15C /* SSZipArchive */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = SSZipArchive;
 			path = SSZipArchive.framework;
 			remoteRef = 279C1E8E22BB724D009FD15C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3B47890322B78F1C00D33F10 /* ZXingObjC.framework */ = {
+		3B47890322B78F1C00D33F10 /* ZXingObjC */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = ZXingObjC;
 			path = ZXingObjC.framework;
 			remoteRef = 3B47890222B78F1C00D33F10 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BACB0072500CED50001A92C /* DoraemonKit.framework */ = {
+		3BACB0072500CED50001A92C /* DoraemonKit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = DoraemonKit;
 			path = DoraemonKit.framework;
 			remoteRef = 3BACB0062500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BACB0092500CED50001A92C /* DoraemonKit.bundle */ = {
+		3BACB0092500CED50001A92C /* DoraemonKit-DoraemonKit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
+			name = "DoraemonKit-DoraemonKit";
 			path = DoraemonKit.bundle;
 			remoteRef = 3BACB0082500CED50001A92C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BC0C810229F8F3B0079234F /* AFNetworking.framework */ = {
+		3BC0C810229F8F3B0079234F /* AFNetworking */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = AFNetworking;
 			path = AFNetworking.framework;
 			remoteRef = 3BC0C80F229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3BC0C812229F8F3B0079234F /* FMDB.framework */ = {
+		3BC0C812229F8F3B0079234F /* FMDB */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = FMDB;
 			path = FMDB.framework;
 			remoteRef = 3BC0C811229F8F3B0079234F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		9C226D0F229FD5C800F49FC5 /* GCDWebServer.framework */ = {
+		9C226D0F229FD5C800F49FC5 /* GCDWebServer */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = GCDWebServer;
 			path = GCDWebServer.framework;
 			remoteRef = 9C226D0E229FD5C800F49FC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A2E705C622BA1D1E0047DF47 /* MBProgressHUD.framework */ = {
+		A2E705C622BA1D1E0047DF47 /* MBProgressHUD */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
+			name = MBProgressHUD;
 			path = MBProgressHUD.framework;
 			remoteRef = A2E705C522BA1D1E0047DF47 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -5641,6 +5798,25 @@
 				0009647B2EF542AB000C090E /* RCNDContactViewModel.m in Sources */,
 				009F418F2EE15A6E0005E868 /* RCNDQRForwardGroupsViewController.m in Sources */,
 				3BB6CE1A22D743720007FFFB /* RCDContactsInfo.m in Sources */,
+				C582815D357144699B3073D4 /* RCDOpenClawBot.m in Sources */,
+				6AAB408B0AE6FB981D0172C2 /* RCDOpenClawBotAPI.m in Sources */,
+				9CD3911B4816819FA7BA7A15 /* RCDOpenClawBotManager.m in Sources */,
+				B6D2FAD8AF36D9F7005479AD /* RCDOpenClawIntroViewController.m in Sources */,
+				D31D5761F74C65846485E351 /* RCDOpenClawCreateBotViewController.m in Sources */,
+				85F8E8E49E88AF46D4F8824C /* RCDOpenClawBotTokenViewController.m in Sources */,
+				6FFF761A0E5962A70CD083E8 /* RCDOpenClawBotListViewController.m in Sources */,
+				F963F40A0C754C1A9A188BDA /* RCDOpenClawBotActionCell.m in Sources */,
+				BFFEB323D1794028823DD4F4 /* RCDOpenClawBotListCell.m in Sources */,
+				E01F2A3B4C5D6E7F8091A2B3 /* RCDOpenClawSearchView.m in Sources */,
+				AA55AA55AA55AA55AA55AA55 /* RCDOpenClawGroupBotAddCell.m in Sources */,
+				AA66AA66AA66AA66AA66AA66 /* RCDOpenClawBotSelectCell.m in Sources */,
+				30422BE365457A8CB1675675 /* RCDOpenClawGroupBotListViewController.m in Sources */,
+				B25452DC805ECB07415B461D /* RCDOpenClawBotSelectViewController.m in Sources */,
+				1743174072BCC8681BD09F8B /* RCDOpenClawCreateBotViewModel.m in Sources */,
+				988D255E2D59FD255B10E3E6 /* RCDOpenClawBotListViewModel.m in Sources */,
+				F140ACA5B3F14C1781284168 /* RCDOpenClawBotTokenViewModel.m in Sources */,
+				2CF0E1E57E9A4AE494E9024C /* RCDOpenClawGroupBotListViewModel.m in Sources */,
+				112A16EA806810C91443510F /* RCDOpenClawBotSelectViewModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

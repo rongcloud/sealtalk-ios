@@ -24,6 +24,7 @@
 #import "RCDContactNotificationMessage.h"
 #import "RCDScanQRCodeController.h"
 #import "RCDAddFriendListViewController.h"
+#import "RCDOpenClawIntroViewController.h"
 #import "RCDGroupNoticeListController.h"
 #import "RCDGroupConversationCell.h"
 #import "RCDChatNotificationMessage.h"
@@ -117,6 +118,11 @@
     
     BOOL showUnkownMessageNotification = [std boolForKey:RCDDebugShowUnkownMessageNotification];
     RCKitConfigCenter.message.showUnkownMessageNotificaiton = showUnkownMessageNotification;
+    RCKitConfigCenter.message.enableQuoteV2 = [std boolForKey:RCDDebugEnableQuoteV2Key];
+    id quoteWhiteList = [std objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    if ([quoteWhiteList isKindOfClass:[NSArray class]]) {
+        RCKitConfigCenter.message.quoteMessageTypeWhiteList = [quoteWhiteList copy];
+    }
     [self updateBadgeValueForTabBarItem];
 }
 
@@ -323,7 +329,7 @@
             groupId = cell.model.targetId;
         }
         ((RCConversationCell *)cell).hideSenderName = YES;
-        if ([cell.model.lastestMessage isMemberOfClass:[RCDGroupNotificationMessage class]]) {
+        if ([cell.model.lastestMessage isKindOfClass:[RCDGroupNotificationMessage class]]) {
             RCDGroupNotificationMessage *message = (RCDGroupNotificationMessage *)cell.model.lastestMessage;
             ((RCConversationCell *)cell).messageContentLabel.text = [message getDigest:groupId];
         } else if ([cell.model.lastestMessage isMemberOfClass:RCDChatNotificationMessage.class]) {
@@ -344,7 +350,7 @@
                 groupId = cell.model.targetId;
             }
             ((RCConversationCell *)cell).hideSenderName = YES;
-            if ([cell.model.lastestMessage isMemberOfClass:[RCDGroupNotificationMessage class]]) {
+            if ([cell.model.lastestMessage isKindOfClass:[RCDGroupNotificationMessage class]]) {
                 RCDGroupNotificationMessage *message = (RCDGroupNotificationMessage *)cell.model.lastestMessage;
                 ((RCConversationCell *)cell).messageContentLabel.text = [message getDigest:groupId];
             } else if ([cell.model.lastestMessage isMemberOfClass:RCDChatNotificationMessage.class]) {
@@ -459,6 +465,11 @@
                       target:self
                       action:@selector(pushAddFriend:)],
 
+        [KxMenuItem menuItem:RCDLocalizedString(@"OpenClawMenuTitle")
+                       image:[UIImage imageNamed:@"config"]
+                      target:self
+                      action:@selector(showOpenClawAssistant)],
+
         [KxMenuItem menuItem:RCDLocalizedString(@"qr_scan")
                        image:[UIImage imageNamed:@"scan"]
                       target:self
@@ -472,6 +483,11 @@
     [KxMenu showMenuInView:window
                   fromRect:targetFrame
                  menuItems:menuItems];
+}
+
+- (void)showOpenClawAssistant {
+    RCDOpenClawIntroViewController *vc = [[RCDOpenClawIntroViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)gotoNextConversation {

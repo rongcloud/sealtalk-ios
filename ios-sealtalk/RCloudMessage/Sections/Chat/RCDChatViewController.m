@@ -9,6 +9,9 @@
 #import "RCDChatViewController.h"
 #import "RCDAddFriendViewController.h"
 #import "RCDGroupSettingsTableViewController.h"
+#import "RCDOpenClawBot.h"
+#import "RCDOpenClawBotManager.h"
+#import "RCDOpenClawBotTokenViewController.h"
 #import "RCDPersonDetailViewController.h"
 #import "RCDPrivateSettingsTableViewController.h"
 #import "RCDReceiptDetailsTableViewController.h"
@@ -74,6 +77,7 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
 - (void)didSendingMessageNotification:(NSNotification *)notification;
 - (void)deleteMessages;
+- (BOOL)isDisplayOnlineStatus;
 @end
 
 @interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate, RCMessageReadDetailViewControllerDataSource>
@@ -124,6 +128,13 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     self.needDeleteRemoteMessage = ![DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
     self.hidesBottomBarWhenPushed = YES; 
 
+}
+
+- (BOOL)isDisplayOnlineStatus {
+    if (self.conversationType == ConversationType_PRIVATE && [RCDOpenClawBotManager isOpenClawBotId:self.targetId]) {
+        return NO;
+    }
+    return [super isDisplayOnlineStatus];
 }
 
 - (void)viewDidLoad {
@@ -480,6 +491,9 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
 }
 
 - (void)didTapCellPortrait:(NSString *)userId {
+    if ([self pushOpenClawBotDetailIfNeededForUserId:userId]) {
+        return;
+    }
     if (self.conversationType == ConversationType_GROUP || self.conversationType == ConversationType_PRIVATE ||
         self.conversationType == ConversationType_CHATROOM) {
         __weak typeof(self) weakSelf = self;
@@ -490,6 +504,19 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
                                              });
                                          }];
     }
+}
+
+- (BOOL)pushOpenClawBotDetailIfNeededForUserId:(NSString *)userId {
+    if (self.conversationType != ConversationType_PRIVATE || ![userId isEqualToString:self.targetId]) {
+        return NO;
+    }
+    RCDOpenClawBot *bot = [RCDOpenClawBotManager botWithBotId:self.targetId];
+    if (!bot) {
+        return NO;
+    }
+    RCDOpenClawBotTokenViewController *vc = [[RCDOpenClawBotTokenViewController alloc] initWithBot:bot created:NO];
+    [self.navigationController pushViewController:vc animated:YES];
+    return YES;
 }
 
 - (void)resendMessageWithModel:(RCMessageModel *)model {
@@ -753,6 +780,12 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
  */
 - (void)rightBarButtonItemClicked:(id)sender {
     if (self.conversationType == ConversationType_PRIVATE) {
+        RCDOpenClawBot *bot = [RCDOpenClawBotManager botWithBotId:self.targetId];
+        if (bot) {
+            RCDOpenClawBotTokenViewController *vc = [[RCDOpenClawBotTokenViewController alloc] initWithBot:bot created:NO];
+            [self.navigationController pushViewController:vc animated:YES];
+            return;
+        }
         RCDFriendInfo *friendInfo = [RCDUserInfoManager getFriendInfo:self.targetId];
         if (friendInfo && friendInfo.status != RCDFriendStatusAgree && friendInfo.status != RCDFriendStatusBlock) {
             [self pushFriendVC:friendInfo];
@@ -1061,6 +1094,11 @@ static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusView
     }
     //打开单聊强制从demo server 获取用户信息更新本地数据库
     if (self.conversationType == ConversationType_PRIVATE) {
+        RCDOpenClawBot *bot = [RCDOpenClawBotManager botWithBotId:self.targetId];
+        if (bot) {
+            self.navigationItem.title = bot.name.length > 0 ? bot.name : [RCDOpenClawBotManager defaultBotName];
+            return;
+        }
         if (![self.targetId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
             __weak typeof(self) weakSelf = self;
             [RCDUserInfoManager

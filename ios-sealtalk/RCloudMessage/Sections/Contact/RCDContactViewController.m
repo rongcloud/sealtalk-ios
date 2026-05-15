@@ -23,6 +23,7 @@
 #import "RCDCommonString.h"
 #import "RCDSelectContactViewController.h"
 #import "RCDSearchBar.h"
+#import "RCDOpenClawBotListViewController.h"
 @interface RCDContactViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate,
                                         UISearchControllerDelegate>
 @property (nonatomic, strong) RCDTableView *friendsTabelView;
@@ -97,7 +98,7 @@
         if (_isBeginSearch == YES) {
             rows = 0;
         } else {
-            rows = 4;
+            rows = self.defaultCellsTitle.count + 1;
         }
     } else {
         NSString *letter = self.resultKeys[section - 1];
@@ -149,7 +150,7 @@
         cell = [[RCDContactTableViewCell alloc] init];
     }
     if (indexPath.section == 0) {
-        if (indexPath.row == 3) {
+        if (indexPath.row == self.defaultCellsTitle.count) {
             [cell setModel:[RCIM sharedRCIM].currentUserInfo];
         } else {
             cell.nicknameLabel.text = [_defaultCellsTitle objectAtIndex:indexPath.row];
@@ -203,10 +204,14 @@
             [self.navigationController pushViewController:groupVC animated:YES];
         } break;
         case 2: {
+            RCDOpenClawBotListViewController *botListVC = [[RCDOpenClawBotListViewController alloc] init];
+            [self.navigationController pushViewController:botListVC animated:YES];
+        } break;
+        case 3: {
             RCDPublicServiceListViewController *publicServiceVC = [[RCDPublicServiceListViewController alloc] init];
             [self.navigationController pushViewController:publicServiceVC animated:YES];
         } break;
-        case 3: {
+        case 4: {
             [self pushUserDetailVC:[RCIM sharedRCIM].currentUserInfo.userId];
         } break;
         default:
@@ -308,8 +313,8 @@
     self.matchFriendList = [[NSMutableArray alloc] init];
     self.resultSectionDict = [[NSDictionary alloc] init];
     self.defaultCellsTitle = [NSArray arrayWithObjects:RCDLocalizedString(@"new_friend"), RCDLocalizedString(@"group"),
-                                                       RCDLocalizedString(@"public_account"), nil];
-    self.defaultCellsPortrait = [NSArray arrayWithObjects:@"newFriend", @"defaultGroup", @"publicNumber", nil];
+                                                       RCDLocalizedString(@"OpenClawMyAIRobot"), RCDLocalizedString(@"public_account"), nil];
+    self.defaultCellsPortrait = [NSArray arrayWithObjects:@"newFriend", @"defaultGroup", @"openclaw_assistant_logo", @"publicNumber", nil];
     self.isBeginSearch = NO;
     self.queue = dispatch_queue_create("sealtalksearch", DISPATCH_QUEUE_SERIAL);
     self.allFriendArray = [self getAllFriendList];

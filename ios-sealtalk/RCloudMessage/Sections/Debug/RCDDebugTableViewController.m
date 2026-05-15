@@ -33,6 +33,7 @@
 #import "RCNDMainTabBarViewController.h"
 #import "RCDNavigationViewController.h"
 #import <RongSight/RongSight.h>
+#import <RongLocation/RongLocation.h>
 #import <RongLocationKit/RongLocationKit.h>
 #import <RongSticker/RongSticker.h>
 #import <RongContactCard/RongContactCard.h>
@@ -73,6 +74,7 @@
 #define HIDE_IMKIT_SENDER_NAME 132
 #define ENABLE_USER_INFO_ENTRUST 1300
 #define DISABLE_EDIT_MESSAGE 1301
+#define ENABLE_QUOTE_V2_TAG 1302
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
@@ -85,6 +87,142 @@ NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带use
 #define Title_Display_NoMore_Message_HUD @"消息无更多 Toast"
 NSString *const RCDDebugMessageDisableUserInfoEntrust = @"关闭用户信息托管";
 NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
+NSString *const RCDDebugEnableQuoteV2String = @"引用回复V2";
+NSString *const RCDDebugQuoteWhiteListString = @"引用白名单";
+
+static NSArray<NSDictionary<NSString *, NSString *> *> *RCDDebugQuoteBuiltInOptions(void) {
+    return @[
+        @{ @"title": @"文本", @"objectName": [RCTextMessage getObjectName] },
+        @{ @"title": @"图片", @"objectName": [RCImageMessage getObjectName] },
+        @{ @"title": @"GIF", @"objectName": [RCGIFMessage getObjectName] },
+        @{ @"title": @"语音", @"objectName": [RCVoiceMessage getObjectName] },
+        @{ @"title": @"高清语音", @"objectName": [RCHQVoiceMessage getObjectName] },
+        @{ @"title": @"视频", @"objectName": [RCSightMessage getObjectName] },
+        @{ @"title": @"文件", @"objectName": [RCFileMessage getObjectName] },
+        @{ @"title": @"位置", @"objectName": [RCLocationMessage getObjectName] }
+    ];
+}
+
+static NSArray<NSString *> *RCDDebugQuoteDefaultObjectNames(void) {
+    NSMutableArray<NSString *> *objectNames = [NSMutableArray array];
+    for (NSDictionary<NSString *, NSString *> *option in RCDDebugQuoteBuiltInOptions()) {
+        NSString *objectName = option[@"objectName"];
+        if (objectName.length > 0) {
+            [objectNames addObject:objectName];
+        }
+    }
+    return [objectNames copy];
+}
+
+static BOOL RCDDebugQuoteWhiteListMatchesObjectNames(NSArray<NSString *> *whiteList, NSArray<NSString *> *objectNames) {
+    if (whiteList.count != objectNames.count) {
+        return NO;
+    }
+    NSSet<NSString *> *current = [NSSet setWithArray:whiteList];
+    return current.count == objectNames.count && [current isEqualToSet:[NSSet setWithArray:objectNames]];
+}
+
+static BOOL RCDDebugQuoteIsLegacyDefaultWhiteList(NSArray<NSString *> *whiteList) {
+    NSArray<NSArray<NSString *> *> *legacyDefaults = @[
+        @[
+            [RCTextMessage getObjectName],
+            [RCImageMessage getObjectName],
+            [RCVoiceMessage getObjectName],
+            [RCHQVoiceMessage getObjectName],
+            [RCSightMessage getObjectName],
+            [RCFileMessage getObjectName],
+            [RCLocationMessage getObjectName]
+        ],
+        @[
+            [RCTextMessage getObjectName],
+            [RCImageMessage getObjectName],
+            [RCVoiceMessage getObjectName],
+            [RCSightMessage getObjectName],
+            [RCFileMessage getObjectName],
+            [RCLocationMessage getObjectName]
+        ]
+    ];
+    for (NSArray<NSString *> *legacyDefault in legacyDefaults) {
+        if (RCDDebugQuoteWhiteListMatchesObjectNames(whiteList, legacyDefault)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+static NSArray<NSString *> *RCDDebugNormalizeQuoteWhiteList(NSArray<NSString *> *whiteList) {
+    if (RCDDebugQuoteIsLegacyDefaultWhiteList(whiteList)) {
+        return RCDDebugQuoteDefaultObjectNames();
+    }
+    return whiteList ?: @[];
+}
+
+static NSArray<NSString *> *RCDDebugQuoteWhiteListFromDefaults(void) {
+    id value = [DEFAULTS objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    if ([value isKindOfClass:[NSArray class]]) {
+        return RCDDebugNormalizeQuoteWhiteList(value);
+    }
+    return RCDDebugNormalizeQuoteWhiteList(RCKitConfigCenter.message.quoteMessageTypeWhiteList);
+}
+
+static void RCDApplyDebugQuoteConfig(void) {
+    RCKitConfigCenter.message.enableQuoteV2 = [DEFAULTS boolForKey:RCDDebugEnableQuoteV2Key];
+    id value = [DEFAULTS objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    if ([value isKindOfClass:[NSArray class]]) {
+        RCKitConfigCenter.message.quoteMessageTypeWhiteList = RCDDebugNormalizeQuoteWhiteList(value);
+    }
+}
+
+@interface RCDDebugQuoteWhiteListViewController : UITableViewController
+@property (nonatomic, strong) NSArray<NSDictionary<NSString *, NSString *> *> *options;
+@property (nonatomic, strong) NSMutableOrderedSet<NSString *> *selectedTypes;
+@end
+
+@implementation RCDDebugQuoteWhiteListViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title = RCDDebugQuoteWhiteListString;
+    self.options = RCDDebugQuoteBuiltInOptions();
+    self.selectedTypes = [NSMutableOrderedSet orderedSetWithArray:RCDDebugQuoteWhiteListFromDefaults()];
+    self.tableView.tableFooterView = [UIView new];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.options.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellIdentifier = @"RCDDebugQuoteWhiteListCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    NSDictionary<NSString *, NSString *> *option = self.options[indexPath.row];
+    NSString *objectName = option[@"objectName"];
+    cell.textLabel.text = option[@"title"];
+    cell.accessoryType = [self.selectedTypes containsObject:objectName] ?
+        UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary<NSString *, NSString *> *option = self.options[indexPath.row];
+    NSString *objectName = option[@"objectName"];
+    if ([self.selectedTypes containsObject:objectName]) {
+        [self.selectedTypes removeObject:objectName];
+    } else {
+        [self.selectedTypes addObject:objectName];
+    }
+    NSArray<NSString *> *quoteWhiteList = self.selectedTypes.array;
+    [DEFAULTS setObject:quoteWhiteList forKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    [DEFAULTS synchronize];
+    RCKitConfigCenter.message.quoteMessageTypeWhiteList = quoteWhiteList;
+    [tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+@end
 
 @interface RCCoreClient()
 - (void)refetchNavidataSuccess:(void (^)(void))success
@@ -111,7 +249,13 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    RCDApplyDebugQuoteConfig();
     [self initdata];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -160,6 +304,8 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
                                                     darkColor:[HEXCOLOR(0x1c1c1e) colorWithAlphaComponent:0.4]];
     cell.detailTextLabel.text = @"";
     cell.textLabel.textColor = RCDDYCOLOR(0x000000, 0x9f9f9f);
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     if ([title isEqualToString:RCDLocalizedString(@"show_ID")]) {
         [self setSwitchButtonCell:cell tag:DISPLAY_ID_TAG];
     }
@@ -272,6 +418,14 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
     if ([title isEqualToString:RCDDebugDisableEditMessageString]) {
         [self setSwitchButtonCell:cell tag:DISABLE_EDIT_MESSAGE];
     }
+    if ([title isEqualToString:RCDDebugEnableQuoteV2String]) {
+        [self setSwitchButtonCell:cell tag:ENABLE_QUOTE_V2_TAG];
+    }
+    if ([title isEqualToString:RCDDebugQuoteWhiteListString]) {
+        NSArray<NSString *> *quoteWhiteList = RCDDebugQuoteWhiteListFromDefaults();
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"已选%@", @(quoteWhiteList.count)];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
     
     return cell;
 }
@@ -355,6 +509,8 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
         [self refreshNaviData];
     } else if ([title isEqualToString:@"自定义文件图标"]) {
         [self showCustomFileIcon];
+    } else if ([title isEqualToString:RCDDebugQuoteWhiteListString]) {
+        [self pushQuoteWhiteListVC];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -407,6 +563,8 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
         RCDDebugHideSenderNameString,
         RCDDebugMessageDisableUserInfoEntrust,
         RCDDebugDisableEditMessageString,
+        RCDDebugEnableQuoteV2String,
+        RCDDebugQuoteWhiteListString,
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -585,6 +743,10 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
         }
         case DISABLE_EDIT_MESSAGE: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableEditMessageKey];
+            break;
+        }
+        case ENABLE_QUOTE_V2_TAG: {
+            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableQuoteV2Key];
             break;
         }
         default:
@@ -799,6 +961,12 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
             [self switchRootViewController:isButtonOn];
             break;
         }
+        case ENABLE_QUOTE_V2_TAG: {
+            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableQuoteV2Key];
+            [DEFAULTS synchronize];
+            RCKitConfigCenter.message.enableQuoteV2 = isButtonOn;
+            break;
+        }
         default:
             break;
     }
@@ -808,6 +976,11 @@ NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
     cell.tag = tag;
     [self addSwitchToCell:cell];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+}
+
+- (void)pushQuoteWhiteListVC {
+    RCDDebugQuoteWhiteListViewController *vc = [[RCDDebugQuoteWhiteListViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)showUltraGroupAlert:(UISwitch *)btnSwitch {

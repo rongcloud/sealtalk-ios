@@ -7,6 +7,9 @@
 //
 
 #import "RCDRCIMDataSource.h"
+#import "RCDOpenClawBot.h"
+#import "RCDOpenClawBotAPI.h"
+#import "RCDOpenClawBotManager.h"
 #import "RCDUserInfoManager.h"
 #import "RCDUtilities.h"
 #import "RCDGroupManager.h"
@@ -32,6 +35,10 @@
     [RCDDataSource syncGroups];
     [RCDDataSource syncGroupNoticeList];
     [RCDDataSource syncFriendList];
+    [RCDOpenClawBotAPI getMyBotsWithSuccess:^(NSArray<RCDOpenClawBot *> *bots) {
+        [RCDOpenClawBotManager cacheBots:bots];
+    } error:^(NSError *error) {
+    }];
 }
 
 - (void)syncGroups {
@@ -82,6 +89,11 @@
         //里面处理了
         return;
     }
+    RCUserInfo *botInfo = [RCDOpenClawBotManager userInfoForBotId:userId];
+    if (botInfo) {
+        completion(botInfo);
+        return;
+    }
     //开发者调自己的服务器接口根据userID异步请求数据
     [RCDUserInfoManager
      getUserInfoFromServer:userId
@@ -114,6 +126,11 @@
                       inGroup:(NSString *)groupId
                    completion:(void (^)(RCUserInfo *userInfo))completion {
     if (userId.length == 0 || groupId.length == 0) return;
+    RCUserInfo *botInfo = [RCDOpenClawBotManager userInfoForBotId:userId];
+    if (botInfo) {
+        completion(botInfo);
+        return;
+    }
     //在这里查询该group内的群名片信息，如果能查到，调用completion返回。如果查询不到也一定要调用completion(nil)
     if ([groupId isEqualToString:@"22"] && [userId isEqualToString:@"30806"]) {
         completion([[RCUserInfo alloc] initWithUserId:@"30806" name:@"我在22群中的名片" portrait:nil]);
@@ -139,9 +156,24 @@
 - (void)getAllMembersOfGroup:(NSString *)groupId result:(void (^)(NSArray<NSString *> *))resultBlock {
     [RCDGroupManager getGroupMembersFromServer:groupId
                                       complete:^(NSArray<NSString *> *_Nonnull memberIdList) {
-        if (resultBlock) {
-            resultBlock(memberIdList);
-        }
+        [RCDOpenClawBotAPI getGroupBotsWithGroupId:groupId
+                                           success:^(NSArray<RCDOpenClawBot *> *bots) {
+                                               NSMutableArray *allMembers = [NSMutableArray arrayWithArray:memberIdList ?: @[]];
+                                               for (RCDOpenClawBot *bot in bots) {
+                                                   if (bot.botId.length > 0 && ![allMembers containsObject:bot.botId]) {
+                                                       [allMembers addObject:bot.botId];
+                                                   }
+                                               }
+                                               [RCDOpenClawBotManager cacheBots:bots];
+                                               if (resultBlock) {
+                                                   resultBlock(allMembers.copy);
+                                               }
+                                           }
+                                             error:^(NSError *error) {
+                                                 if (resultBlock) {
+                                                     resultBlock(memberIdList ?: @[]);
+                                                 }
+                                             }];
     }];
 }
 

@@ -324,8 +324,21 @@
 }
 
 + (BOOL)currentUserIsGroupCreatorOrManager:(NSString *)groupId {
-    RCDGroupMember *member = [self getGroupMember:[RCIM sharedRCIM].currentUserInfo.userId groupId:groupId];
-    if (member.role != RCDGroupMemberRoleMember) {
+    NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
+    if (currentUserId.length == 0 || groupId.length == 0) {
+        return NO;
+    }
+    RCDGroupInfo *groupInfo = [self getGroupInfo:groupId];
+    if ([groupInfo.creatorId isEqualToString:currentUserId]) {
+        return YES;
+    }
+    RCDGroupMember *member = [self getGroupMember:currentUserId groupId:groupId];
+    if (member && member.role != RCDGroupMemberRoleMember) {
+        return YES;
+    }
+    NSString *groupOwnerId = [self getGroupOwner:groupId];
+    NSArray<NSString *> *groupManagers = [self getGroupManagers:groupId];
+    if ([groupOwnerId isEqualToString:currentUserId] || [groupManagers containsObject:currentUserId]) {
         return YES;
     }
     return NO;

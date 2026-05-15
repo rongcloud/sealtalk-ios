@@ -79,6 +79,8 @@
 #define RCDDebugShowUnkownMessageNotification @"RCDDebugShowUnkownMessageNotification"
 #define RCDDebugHideSenderName @"RCDDebugHideSenderName"
 #define RCDDebugDisableEditMessageKey @"RCDDebugDisableEditMessageKey"
+#define RCDDebugEnableQuoteV2Key @"RCDDebugEnableQuoteV2Key"
+#define RCDDebugQuoteMessageTypeWhiteListKey @"RCDDebugQuoteMessageTypeWhiteListKey"
 
 // audit
 #define RCDDebugMessageAuditTypeKey @"RCDDebugMessageAuditTypeKey"

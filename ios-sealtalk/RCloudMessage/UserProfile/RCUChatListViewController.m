@@ -15,6 +15,7 @@
 #import "RCDNavigationViewController.h"
 #import "RCNDJoinGroupViewController.h"
 #import "RCNDCollectionConversationsViewController.h"
+#import "RCDOpenClawIntroViewController.h"
 
 @interface RCDChatListViewController ()<RCNDScannerViewModelDelegate>
 - (void)pushChat:(id)sender;
@@ -49,6 +50,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.restoreNaviBar = YES;
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    RCKitConfigCenter.message.enableQuoteV2 = [userDefault boolForKey:RCDDebugEnableQuoteV2Key];
+    id quoteWhiteList = [userDefault objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    if ([quoteWhiteList isKindOfClass:[NSArray class]]) {
+        RCKitConfigCenter.message.quoteMessageTypeWhiteList = [quoteWhiteList copy];
+    }
     [self rcn_configureTransparentNavigationBar];
 }
 
@@ -140,6 +147,10 @@
                        image:[UIImage imageNamed:@"add_new_friend"]
                       target:self
                       action:@selector(pushAddFriend:)],
+        [KxMenuItem menuItem:RCDLocalizedString(@"OpenClawMenuTitle")
+                       image:[UIImage imageNamed:@"openclaw_bot_menu_icon"]
+                      target:self
+                      action:@selector(showOpenClawAssistant)],
         [KxMenuItem menuItem:RCDLocalizedString(@"qr_scan")
                        image:[UIImage imageNamed:@"scan_qr"]
                       target:self
@@ -165,6 +176,11 @@
     [self presentViewController:navi animated:YES completion:^{
         
     }];
+}
+
+- (void)showOpenClawAssistant {
+    RCDOpenClawIntroViewController *vc = [[RCDOpenClawIntroViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - RCNDScannerViewModelDelegate

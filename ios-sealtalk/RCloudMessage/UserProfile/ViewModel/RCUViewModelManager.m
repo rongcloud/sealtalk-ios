@@ -12,6 +12,7 @@
 #import "RCDSearchHistoryMessageController.h"
 #import "RCUChatViewController.h"
 #import "RCUGroupNotificationMessage.h"
+#import "RCDOpenClawBotManager.h"
 
 @interface RCDGroupNotificationMessage ()
 @property (nonatomic, copy) NSString *targetGroupName;
@@ -69,6 +70,9 @@
 #pragma mark -- RCProfileFooterViewModelDelegate
 
 - (NSArray<RCButtonItem *> *)profileFooterViewModel:(RCProfileFooterViewModel *)viewModel willLoadButtonItemsViewModels:(NSArray<RCButtonItem *> *)models {
+    if (viewModel.type == RCProfileFooterViewTypeAddFriend && [RCDOpenClawBotManager botWithBotId:viewModel.targetId]) {
+        return @[];
+    }
     if (viewModel.type == RCProfileFooterViewTypeChat) {
         NSMutableArray *list = models.mutableCopy;
         if (viewModel.type == RCProfileFooterViewTypeChat) {

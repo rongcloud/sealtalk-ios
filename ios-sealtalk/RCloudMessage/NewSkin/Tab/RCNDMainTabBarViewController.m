@@ -30,6 +30,10 @@
 #import "RCNDSearchMoreMessagesViewModel.h"
 #import "RCDIMService.h"
 #import "NormalAlertView.h"
+#import "RCDOpenClawBotListViewController.h"
+#import "RCDOpenClawGroupBotListViewController.h"
+#import "RCDOpenClawBot.h"
+#import "RCDGroupManager.h"
 
 extern NSString *const RCDDebugMessageDisableUserInfoEntrust;
 static NSInteger RCD_MAIN_TAB_INDEX = 0;
@@ -47,6 +51,8 @@ extern NSString * const RCUChatViewControllerCleanMessage;
 @property (nonatomic, strong) NSArray *animationImages;
 
 @property (nonatomic, assign) BOOL ultraGroupEnable;
+
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *openClawGroupManagePermissions;
 @end
 
 @implementation RCNDMainTabBarViewController
@@ -354,7 +360,16 @@ extern NSString * const RCUChatViewControllerCleanMessage;
                                                                                                           portrait:[UIImage imageNamed:@"contact_public"] touchBlock:^(UIViewController * vc) {
         [weakSelf showMyGroupNotificationsWithController:vc];
     }];
-    return @[newFriend,myGroup,notificationVC,me];
+    RCFriendListPermanentCellViewModel *aiBot = [[RCFriendListPermanentCellViewModel alloc] initWithTitle:RCDLocalizedString(@"OpenClawMyAIRobot")
+                                                                                                 portrait:[UIImage imageNamed:@"openclaw_assistant_logo"] touchBlock:^(UIViewController * vc) {
+        [weakSelf showOpenClawBotListWithController:vc];
+    }];
+    return @[newFriend,myGroup,aiBot,notificationVC,me];
+}
+
+- (void)showOpenClawBotListWithController:(UIViewController *)controller {
+    RCDOpenClawBotListViewController *vc = [[RCDOpenClawBotListViewController alloc] init];
+    [controller.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)showMyGroupsWithController:(UIViewController *)controller {
@@ -521,24 +536,46 @@ extern NSString * const RCUChatViewControllerCleanMessage;
     if ([viewModel isKindOfClass:[RCGroupProfileViewModel class]]) {
         RCGroupProfileViewModel *groupVM = (RCGroupProfileViewModel *)viewModel;
         NSMutableArray *array = [NSMutableArray array];
+        NSInteger groupManageSectionIndex = NSNotFound;
         for (int i = 0; i< profileList.count; i++) {
             NSArray *tmp = profileList[i];
+            NSMutableArray *items = [NSMutableArray arrayWithArray:tmp];
             if (i == 1) {
-                NSMutableArray *items = [NSMutableArray arrayWithArray:tmp];
                 RCGroupQRCellViewModel *vm = [RCGroupQRCellViewModel viewModelWithGroupId:groupVM.groupId];
                 [items insertObject:vm atIndex:2];
+            }
+            if (groupManageSectionIndex == NSNotFound) {
+                for (NSInteger index = 0; index < items.count; index++) {
+                    RCProfileCellViewModel *cellVM = items[index];
+                    if (![cellVM isKindOfClass:[RCProfileCommonCellViewModel class]]) {
+                        continue;
+                    }
+                    RCProfileCommonCellViewModel *commonVM = (RCProfileCommonCellViewModel *)cellVM;
+                    if ([commonVM.title isEqualToString:RCDLocalizedString(@"GroupManage")]) {
+                        groupManageSectionIndex = array.count;
+                        break;
+                    }
+                }
+            }
+            if (i == 1) {
                 [array addObject:items];
             } else if(i == 2) {
-                [array addObject:tmp];
+                [array addObject:items];
                 NSMutableArray *items = [NSMutableArray array];
                 RCProfileCommonCellViewModel *historyVM = [[RCProfileCommonCellViewModel alloc] initWithCellType:RCUProfileCellTypeText title:RCDLocalizedString(@"search_chat_history") detail:nil];
                 [items addObject:historyVM];
                 [array addObject:items];
                 
             } else {
-                [array addObject:tmp];
+                [array addObject:items];
             }
         }
+        RCProfileCommonCellViewModel *botVM = [[RCProfileCommonCellViewModel alloc] initWithCellType:RCUProfileCellTypeText title:RCDLocalizedString(@"OpenClawGroupBot") detail:nil];
+        if (groupVM.groupId.length > 0) {
+            self.openClawGroupManagePermissions[groupVM.groupId] = @(groupManageSectionIndex != NSNotFound);
+        }
+        NSUInteger botSectionIndex = groupManageSectionIndex == NSNotFound ? MIN(2, array.count) : groupManageSectionIndex + 1;
+        [array insertObject:@[ botVM ] atIndex:botSectionIndex];
         NSMutableArray *items = [NSMutableArray array];
         RCProfileCommonCellViewModel *clearVM = [[RCProfileCommonCellViewModel alloc] initWithCellType:RCUProfileCellTypeText title:RCDLocalizedString(@"clear_chat_history") detail:nil];
         [items addObject:clearVM];
@@ -584,6 +621,31 @@ extern NSString * const RCUChatViewControllerCleanMessage;
             }];
             return YES;
         }
+        if ([vm.title isEqualToString:RCDLocalizedString(@"OpenClawGroupBot")]) {
+            void (^pushGroupBotList)(BOOL) = ^(BOOL canManage) {
+                RCDOpenClawGroupBotListViewController *vc = [[RCDOpenClawGroupBotListViewController alloc] initWithGroupId:groupVM.groupId];
+                vc.canManage = canManage;
+                vc.botAddedBlock = ^(__unused RCDOpenClawBot *bot) {
+                    for (UIViewController *controller in viewController.navigationController.viewControllers) {
+                        if ([controller isKindOfClass:[RCUChatViewController class]]) {
+                            RCUChatViewController *chatVC = (RCUChatViewController *)controller;
+                            if (chatVC.conversationType == ConversationType_GROUP && [chatVC.targetId isEqualToString:groupVM.groupId]) {
+                                [viewController.navigationController popToViewController:chatVC animated:YES];
+                                break;
+                            }
+                        }
+                    }
+                };
+                [viewController.navigationController pushViewController:vc animated:YES];
+            };
+            if ([RCIM sharedRCIM].currentDataSourceType == RCDataSourceTypeInfoManagement) {
+                NSNumber *canManage = self.openClawGroupManagePermissions[groupVM.groupId];
+                pushGroupBotList(canManage.boolValue);
+            } else {
+                pushGroupBotList([RCDGroupManager currentUserIsGroupCreatorOrManager:groupVM.groupId]);
+            }
+            return YES;
+        }
     }
     
     return NO;
@@ -613,5 +675,11 @@ extern NSString * const RCUChatViewControllerCleanMessage;
         }];
     }];
 }
-@end
 
+- (NSMutableDictionary<NSString *,NSNumber *> *)openClawGroupManagePermissions {
+    if (!_openClawGroupManagePermissions) {
+        _openClawGroupManagePermissions = [NSMutableDictionary dictionary];
+    }
+    return _openClawGroupManagePermissions;
+}
+@end
