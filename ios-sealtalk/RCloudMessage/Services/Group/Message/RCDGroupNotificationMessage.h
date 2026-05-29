@@ -18,7 +18,6 @@ extern NSString *const RCDGroupDismiss;
 extern NSString *const RCDGroupMemberJoin;
 extern NSString *const RCDGroupMemberManagerSet;
 extern NSString *const RCDGroupMemberManagerRemove;
-extern NSString *const RCDGroupMemberManagerRemoveDisplay;
 extern NSString *const RCDGroupMemberProtectionOpen;
 extern NSString *const RCDGroupMemberProtectionClose;
 #define RCDGroupNotificationMessageIdentifier @"ST:GrpNtf"

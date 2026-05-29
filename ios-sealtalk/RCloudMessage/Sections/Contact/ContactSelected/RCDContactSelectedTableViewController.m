@@ -322,7 +322,6 @@
     chat.title = [RCKitUtility getDisplayName:userInfo];
     chat.needPopToRootView = YES;
     chat.displayUserNameInCell = NO;
-    chat.enableNewComingMessageIcon = YES;
     [self.navigationController pushViewController:chat animated:YES];
 }
 

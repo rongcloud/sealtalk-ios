@@ -337,8 +337,6 @@
                                         completeBlock(success, action);
                                     }
                                 }];
-                            } else {
-                                completeBlock(success, action);
                             }
                         }];
 }
@@ -540,9 +538,6 @@
 + (void)getReceivePokeMessageStatusFromServer:(void (^)(BOOL))success error:(void (^)())error {
     [RCDUserInfoAPI getReceivePokeMessageStatus:^(BOOL allowReceive) {
         [[NSUserDefaults standardUserDefaults] setObject:@(!allowReceive) forKey:RCDReceivePokeKey];
-        if (success) {
-            success(allowReceive);
-        }
     }
                                           error:error];
 }

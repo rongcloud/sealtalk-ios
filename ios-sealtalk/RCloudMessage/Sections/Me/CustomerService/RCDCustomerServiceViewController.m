@@ -28,7 +28,6 @@
 // key为星级；value为RCDCSEvaluateModel对象
 @property (nonatomic, strong) NSMutableDictionary *evaStarDic;
 @property (nonatomic, strong) RCDCSAnnounceView *announceView;
-@property (nonatomic, strong) UIImageView *imageViewBG;
 @end
 
 @implementation RCDCustomerServiceViewController
@@ -37,10 +36,6 @@
     BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
     self.disableSystemEmoji = enable;
     [super viewDidLoad];
-    [self.view insertSubview:self.imageViewBG atIndex:0];
-    CGRect frame = self.view.bounds;
-    frame.origin = self.conversationMessageCollectionView.frame.origin;
-    self.imageViewBG.frame = frame;
     // Do any additional setup after loading the view.
     [self hideEmojiButtonIfNeed];
     [self addEmoticonTabDemo];
@@ -57,24 +52,8 @@
             }
         });
     }];
-    [self setupChatBackground];
 }
 
-- (void)setupChatBackground {
-    NSString *imageName = [DEFAULTS objectForKey:RCDChatBackgroundKey];
-    UIImage *image = [UIImage imageNamed:imageName];
-    if ([imageName isEqualToString:RCDChatBackgroundFromAlbum]) {
-        NSData *imageData = [DEFAULTS objectForKey:RCDChatBackgroundImageDataKey];
-        image = [UIImage imageWithData:imageData];
-    }
-    if (image) {
-        self.conversationMessageCollectionView.backgroundColor = [UIColor clearColor];
-        image = [RCKitUtility fixOrientation:image];
-//        self.view.layer.contents = (id)image.CGImage;
-    }
-    self.imageViewBG.image = image;
-
-}
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self createNavLeftBarButtonItem];
@@ -254,12 +233,4 @@
     self.navigationItem.leftBarButtonItems = [RCDUIBarButtonItem getLeftBarButton:RCDLocalizedString(@"back") target:self action:@selector(clickLeftBarButtonItem:)];
 }
 
-
-
-- (UIImageView *)imageViewBG {
-    if (!_imageViewBG) {
-        _imageViewBG = [UIImageView new];
-    }
-    return _imageViewBG;
-}
 @end

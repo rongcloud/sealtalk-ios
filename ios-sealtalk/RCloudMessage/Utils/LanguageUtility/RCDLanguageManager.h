@@ -15,9 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 // 当前的国际化语言
 @property (nonatomic, copy, readonly) NSString *currentLanguage;
 
-/// 手动设置的语言，未设置会返回 nil
-@property (nonatomic, copy, readonly) NSString *selectedLanguage;
-
 /**
  单例方法
 

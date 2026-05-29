@@ -30,10 +30,9 @@
 #import "RCDDebugComChatListController.h"
 #import "RCDDebugFileIconViewController.h"
 #import "AppDelegate.h"
-#import "RCNDMainTabBarViewController.h"
+#import "RCDMainTabBarViewController.h"
 #import "RCDNavigationViewController.h"
 #import <RongSight/RongSight.h>
-#import <RongLocation/RongLocation.h>
 #import <RongLocationKit/RongLocationKit.h>
 #import <RongSticker/RongSticker.h>
 #import <RongContactCard/RongContactCard.h>
@@ -69,160 +68,13 @@
 #define ENABLE_SEARCH_MESSAGETYPES 127
 #define ENABLE_DISPLAY_NOMORE_MESSAGE_HUD 128
 #define DISABLE_CHECK_CHATROOM_DUP_MESSAGE 129
-#define DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY 130
-#define SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION 131
-#define HIDE_IMKIT_SENDER_NAME 132
-#define ENABLE_USER_INFO_ENTRUST 1300
-#define DISABLE_EDIT_MESSAGE 1301
-#define ENABLE_QUOTE_V2_TAG 1302
 
 #define FILEMANAGER [NSFileManager defaultManager]
 
 #define Title_Display_Search_MessageTypes @"消息类型搜索"
-NSString *const RCDDebugDisableUnknownMessageString = @"禁用未知消息显示";
-NSString *const RCDDebugShowUnknownMessageNotificationString = @"开启未知消息通知";
-NSString *const RCDDebugHideSenderNameString = @"会话列表群和讨论组隐藏发送名";
 NSString *const RCDDebugCombineV2EnableString = @"合并转发V2";
 NSString *const RCDDebugMessageAttachUserInfoEnableString = @"发消息携带userinfo";
 #define Title_Display_NoMore_Message_HUD @"消息无更多 Toast"
-NSString *const RCDDebugMessageDisableUserInfoEntrust = @"关闭用户信息托管";
-NSString *const RCDDebugDisableEditMessageString = @"关闭编辑消息";
-NSString *const RCDDebugEnableQuoteV2String = @"引用回复V2";
-NSString *const RCDDebugQuoteWhiteListString = @"引用白名单";
-
-static NSArray<NSDictionary<NSString *, NSString *> *> *RCDDebugQuoteBuiltInOptions(void) {
-    return @[
-        @{ @"title": @"文本", @"objectName": [RCTextMessage getObjectName] },
-        @{ @"title": @"图片", @"objectName": [RCImageMessage getObjectName] },
-        @{ @"title": @"GIF", @"objectName": [RCGIFMessage getObjectName] },
-        @{ @"title": @"语音", @"objectName": [RCVoiceMessage getObjectName] },
-        @{ @"title": @"高清语音", @"objectName": [RCHQVoiceMessage getObjectName] },
-        @{ @"title": @"视频", @"objectName": [RCSightMessage getObjectName] },
-        @{ @"title": @"文件", @"objectName": [RCFileMessage getObjectName] },
-        @{ @"title": @"位置", @"objectName": [RCLocationMessage getObjectName] }
-    ];
-}
-
-static NSArray<NSString *> *RCDDebugQuoteDefaultObjectNames(void) {
-    NSMutableArray<NSString *> *objectNames = [NSMutableArray array];
-    for (NSDictionary<NSString *, NSString *> *option in RCDDebugQuoteBuiltInOptions()) {
-        NSString *objectName = option[@"objectName"];
-        if (objectName.length > 0) {
-            [objectNames addObject:objectName];
-        }
-    }
-    return [objectNames copy];
-}
-
-static BOOL RCDDebugQuoteWhiteListMatchesObjectNames(NSArray<NSString *> *whiteList, NSArray<NSString *> *objectNames) {
-    if (whiteList.count != objectNames.count) {
-        return NO;
-    }
-    NSSet<NSString *> *current = [NSSet setWithArray:whiteList];
-    return current.count == objectNames.count && [current isEqualToSet:[NSSet setWithArray:objectNames]];
-}
-
-static BOOL RCDDebugQuoteIsLegacyDefaultWhiteList(NSArray<NSString *> *whiteList) {
-    NSArray<NSArray<NSString *> *> *legacyDefaults = @[
-        @[
-            [RCTextMessage getObjectName],
-            [RCImageMessage getObjectName],
-            [RCVoiceMessage getObjectName],
-            [RCHQVoiceMessage getObjectName],
-            [RCSightMessage getObjectName],
-            [RCFileMessage getObjectName],
-            [RCLocationMessage getObjectName]
-        ],
-        @[
-            [RCTextMessage getObjectName],
-            [RCImageMessage getObjectName],
-            [RCVoiceMessage getObjectName],
-            [RCSightMessage getObjectName],
-            [RCFileMessage getObjectName],
-            [RCLocationMessage getObjectName]
-        ]
-    ];
-    for (NSArray<NSString *> *legacyDefault in legacyDefaults) {
-        if (RCDDebugQuoteWhiteListMatchesObjectNames(whiteList, legacyDefault)) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-static NSArray<NSString *> *RCDDebugNormalizeQuoteWhiteList(NSArray<NSString *> *whiteList) {
-    if (RCDDebugQuoteIsLegacyDefaultWhiteList(whiteList)) {
-        return RCDDebugQuoteDefaultObjectNames();
-    }
-    return whiteList ?: @[];
-}
-
-static NSArray<NSString *> *RCDDebugQuoteWhiteListFromDefaults(void) {
-    id value = [DEFAULTS objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
-    if ([value isKindOfClass:[NSArray class]]) {
-        return RCDDebugNormalizeQuoteWhiteList(value);
-    }
-    return RCDDebugNormalizeQuoteWhiteList(RCKitConfigCenter.message.quoteMessageTypeWhiteList);
-}
-
-static void RCDApplyDebugQuoteConfig(void) {
-    RCKitConfigCenter.message.enableQuoteV2 = [DEFAULTS boolForKey:RCDDebugEnableQuoteV2Key];
-    id value = [DEFAULTS objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
-    if ([value isKindOfClass:[NSArray class]]) {
-        RCKitConfigCenter.message.quoteMessageTypeWhiteList = RCDDebugNormalizeQuoteWhiteList(value);
-    }
-}
-
-@interface RCDDebugQuoteWhiteListViewController : UITableViewController
-@property (nonatomic, strong) NSArray<NSDictionary<NSString *, NSString *> *> *options;
-@property (nonatomic, strong) NSMutableOrderedSet<NSString *> *selectedTypes;
-@end
-
-@implementation RCDDebugQuoteWhiteListViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.title = RCDDebugQuoteWhiteListString;
-    self.options = RCDDebugQuoteBuiltInOptions();
-    self.selectedTypes = [NSMutableOrderedSet orderedSetWithArray:RCDDebugQuoteWhiteListFromDefaults()];
-    self.tableView.tableFooterView = [UIView new];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.options.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"RCDDebugQuoteWhiteListCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    }
-    NSDictionary<NSString *, NSString *> *option = self.options[indexPath.row];
-    NSString *objectName = option[@"objectName"];
-    cell.textLabel.text = option[@"title"];
-    cell.accessoryType = [self.selectedTypes containsObject:objectName] ?
-        UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
-    return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary<NSString *, NSString *> *option = self.options[indexPath.row];
-    NSString *objectName = option[@"objectName"];
-    if ([self.selectedTypes containsObject:objectName]) {
-        [self.selectedTypes removeObject:objectName];
-    } else {
-        [self.selectedTypes addObject:objectName];
-    }
-    NSArray<NSString *> *quoteWhiteList = self.selectedTypes.array;
-    [DEFAULTS setObject:quoteWhiteList forKey:RCDDebugQuoteMessageTypeWhiteListKey];
-    [DEFAULTS synchronize];
-    RCKitConfigCenter.message.quoteMessageTypeWhiteList = quoteWhiteList;
-    [tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-@end
 
 @interface RCCoreClient()
 - (void)refetchNavidataSuccess:(void (^)(void))success
@@ -249,13 +101,7 @@ static void RCDApplyDebugQuoteConfig(void) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    RCDApplyDebugQuoteConfig();
     [self initdata];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self.tableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -304,8 +150,6 @@ static void RCDApplyDebugQuoteConfig(void) {
                                                     darkColor:[HEXCOLOR(0x1c1c1e) colorWithAlphaComponent:0.4]];
     cell.detailTextLabel.text = @"";
     cell.textLabel.textColor = RCDDYCOLOR(0x000000, 0x9f9f9f);
-    cell.accessoryType = UITableViewCellAccessoryNone;
-    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     if ([title isEqualToString:RCDLocalizedString(@"show_ID")]) {
         [self setSwitchButtonCell:cell tag:DISPLAY_ID_TAG];
     }
@@ -403,29 +247,6 @@ static void RCDApplyDebugQuoteConfig(void) {
     if ([title isEqualToString:Title_Display_NoMore_Message_HUD]) {
         [self setSwitchButtonCell:cell tag:ENABLE_DISPLAY_NOMORE_MESSAGE_HUD];
     }
-    if ([title isEqualToString:RCDDebugDisableUnknownMessageString]) {
-        [self setSwitchButtonCell:cell tag:DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY];
-    }
-    if ([title isEqualToString:RCDDebugShowUnknownMessageNotificationString]) {
-        [self setSwitchButtonCell:cell tag:SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION];
-    }
-    if ([title isEqualToString:RCDDebugHideSenderNameString]) {
-        [self setSwitchButtonCell:cell tag:HIDE_IMKIT_SENDER_NAME];
-    }
-    if ([title isEqualToString:RCDDebugMessageDisableUserInfoEntrust]) {
-        [self setSwitchButtonCell:cell tag:ENABLE_USER_INFO_ENTRUST];
-    }
-    if ([title isEqualToString:RCDDebugDisableEditMessageString]) {
-        [self setSwitchButtonCell:cell tag:DISABLE_EDIT_MESSAGE];
-    }
-    if ([title isEqualToString:RCDDebugEnableQuoteV2String]) {
-        [self setSwitchButtonCell:cell tag:ENABLE_QUOTE_V2_TAG];
-    }
-    if ([title isEqualToString:RCDDebugQuoteWhiteListString]) {
-        NSArray<NSString *> *quoteWhiteList = RCDDebugQuoteWhiteListFromDefaults();
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"已选%@", @(quoteWhiteList.count)];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
     
     return cell;
 }
@@ -509,8 +330,6 @@ static void RCDApplyDebugQuoteConfig(void) {
         [self refreshNaviData];
     } else if ([title isEqualToString:@"自定义文件图标"]) {
         [self showCustomFileIcon];
-    } else if ([title isEqualToString:RCDDebugQuoteWhiteListString]) {
-        [self pushQuoteWhiteListVC];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -557,14 +376,7 @@ static void RCDApplyDebugQuoteConfig(void) {
         RCDDebugCombineV2EnableString,
         RCDDebugMessageAttachUserInfoEnableString,
         Title_Display_Search_MessageTypes,
-        Title_Display_NoMore_Message_HUD,
-        RCDDebugDisableUnknownMessageString,
-        RCDDebugShowUnknownMessageNotificationString,
-        RCDDebugHideSenderNameString,
-        RCDDebugMessageDisableUserInfoEntrust,
-        RCDDebugDisableEditMessageString,
-        RCDDebugEnableQuoteV2String,
-        RCDDebugQuoteWhiteListString,
+        Title_Display_NoMore_Message_HUD
     ]
             forKey:RCDLocalizedString(@"custom_setting")];
     [dic setObject:@[ @"进入聊天室存储测试", RCDLocalizedString(@"Set_chatroom_default_history_message"), @"聊天室绑定RTCRoom" ]
@@ -722,31 +534,6 @@ static void RCDApplyDebugQuoteConfig(void) {
         }
         case DISABLE_CHECK_CHATROOM_DUP_MESSAGE: {
             isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableCheckChatroomDupMessage];
-            break;
-        }
-        case DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableUnknownMessage];
-            break;
-        }
-        case SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugShowUnkownMessageNotification];
-            break;
-        }
-        case HIDE_IMKIT_SENDER_NAME: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugHideSenderName];
-            break;
-        }
-            
-        case ENABLE_USER_INFO_ENTRUST: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugMessageDisableUserInfoEntrust];
-            break;
-        }
-        case DISABLE_EDIT_MESSAGE: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugDisableEditMessageKey];
-            break;
-        }
-        case ENABLE_QUOTE_V2_TAG: {
-            isButtonOn = [DEFAULTS boolForKey:RCDDebugEnableQuoteV2Key];
             break;
         }
         default:
@@ -929,44 +716,7 @@ static void RCDApplyDebugQuoteConfig(void) {
             [DEFAULTS synchronize];
             break;
         }
-        case DISABLE_IMKIT_UNKOWN_MESSAGE_DISPLAY: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableUnknownMessage];
-            [DEFAULTS synchronize];
-            break;
-        }
-        case SHOW_IMKIT_UNKOWN_MESSAGE_NOTIFICATION: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugShowUnkownMessageNotification];
-            [DEFAULTS synchronize];
-            break;
-        }
-        case HIDE_IMKIT_SENDER_NAME: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugHideSenderName];
-            [DEFAULTS synchronize];
-            break;
-        }
-        case ENABLE_USER_INFO_ENTRUST: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugMessageDisableUserInfoEntrust];
-            [DEFAULTS synchronize];
-            if (!isButtonOn) {
-                [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoManagement;
-            } else {
-                [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoProvider;
-            }
-            [self switchRootViewController:isButtonOn];
-            break;
-        }
-        case DISABLE_EDIT_MESSAGE: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugDisableEditMessageKey];
-            [DEFAULTS synchronize];
-            [self switchRootViewController:isButtonOn];
-            break;
-        }
-        case ENABLE_QUOTE_V2_TAG: {
-            [DEFAULTS setBool:isButtonOn forKey:RCDDebugEnableQuoteV2Key];
-            [DEFAULTS synchronize];
-            RCKitConfigCenter.message.enableQuoteV2 = isButtonOn;
-            break;
-        }
+
         default:
             break;
     }
@@ -976,11 +726,6 @@ static void RCDApplyDebugQuoteConfig(void) {
     cell.tag = tag;
     [self addSwitchToCell:cell];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-}
-
-- (void)pushQuoteWhiteListVC {
-    RCDDebugQuoteWhiteListViewController *vc = [[RCDDebugQuoteWhiteListViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [self.navigationController pushViewController:vc animated:YES];
 }
 
 -(void)showUltraGroupAlert:(UISwitch *)btnSwitch {
@@ -1430,28 +1175,15 @@ typedef struct Test
         RCKitConfigCenter.ui.layoutDirection = index;
         [[NSUserDefaults standardUserDefaults] setValue:@(RCKitConfigCenter.ui.layoutDirection) forKey:@"layoutDirection"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        RCNDMainTabBarViewController *mainTabBarVC = [[RCNDMainTabBarViewController alloc] init];
+        RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
+        RCDNavigationViewController *nav = [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
         mainTabBarVC.selectedIndex = 3;
         AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        app.window.rootViewController = mainTabBarVC;
+        app.window.rootViewController = nav;
     } cancelBlock:^{
     }];
 
 }
-
-- (void)switchRootViewController:(BOOL)isBtnOn {
-    if (isBtnOn) {
-        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoManagement;
-    } else {
-        [RCIM sharedRCIM].currentDataSourceType = RCDataSourceTypeInfoProvider;
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        RCNDMainTabBarViewController *mainTabBarVC = [[RCNDMainTabBarViewController alloc] init];
-        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        app.window.rootViewController = mainTabBarVC;
-    });
-    [self.navigationController popToRootViewControllerAnimated:YES];
- }
 
 - (void)showCustomFileIcon {
     RCDDebugFileIconViewController *controller = [[RCDDebugFileIconViewController alloc] init];

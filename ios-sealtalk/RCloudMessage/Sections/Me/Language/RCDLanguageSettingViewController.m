@@ -80,9 +80,10 @@
             //设置当前语言
             [[RCDLanguageManager sharedRCDLanguageManager] setLocalizableLanguage:self.language];
            
-            RCDMainTabBarViewController *mainTabBarVC = [RCDMainTabBarViewController mainTabBarViewController];
+            RCDMainTabBarViewController *mainTabBarVC = [[RCDMainTabBarViewController alloc] init];
+            RCDNavigationViewController *nav = [[RCDNavigationViewController alloc] initWithRootViewController:mainTabBarVC];
             mainTabBarVC.selectedIndex = 3;
-            app.window.rootViewController = mainTabBarVC;
+            app.window.rootViewController = nav;
          
         });
     } error:^(RCErrorCode status) {

@@ -18,8 +18,6 @@
 #import "RCDSearchHistoryMessageController.h"
 #import "RCDUserInfoManager.h"
 #import "RCDGroupManager.h"
-#import "RCDOpenClawGroupBotListViewController.h"
-#import "RCDOpenClawBot.h"
 #import "UIColor+RCColor.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "RCDUIBarButtonItem.h"
@@ -39,7 +37,6 @@
 #import "RCDGroupManager.h"
 #import "UIView+MBProgressHUD.h"
 #import "RCDGroupMemberDetailController.h"
-#import "RCDChatViewController.h"
 static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 @interface RCDGroupSettingsTableViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate,
@@ -51,8 +48,6 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 @property (nonatomic, strong) RCDTipFooterView *tipFooterView;
 @property (nonatomic, strong) NSArray *settingTableArr;
 @property (nonatomic, strong) UIActivityIndicatorView *clearLoadingView;
-
-- (RCDGroupSettingsTableViewCell *)cleanupGroupMessagesCell;
 @end
 
 @implementation RCDGroupSettingsTableViewController
@@ -123,10 +118,7 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    NSArray *array = self.settingTableArr[section];
-    NSString *title = array.firstObject;
-    if (section == 0 || [title isEqualToString:RCDLocalizedString(@"CleanUpGroupMessagesRegularly")] ||
-        [title isEqualToString:RCDLocalizedString(@"clear_chat_history")]) {
+    if (section == 0 || section == 5 || section == 6) {
         return CGFLOAT_MIN;
     }
     return 14.f;
@@ -174,8 +166,6 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         [self pushGroupAnnouncementVC];
     } else if ([title isEqualToString:RCDLocalizedString(@"GroupManage")]) {
         [self pushGroupManageVC];
-    } else if ([title isEqualToString:@"群机器人"]) {
-        [self pushOpenClawGroupBotVC];
     } else if ([title isEqualToString:RCDLocalizedString(@"search_chat_history")]) {
         [self pushSearchHistoryVC];
     } else if ([title isEqualToString:RCDLocalizedString(@"CleanUpGroupMessagesRegularly")]) {
@@ -338,35 +328,15 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 }
 
 - (void)pushGroupManageVC {
-    if ([self currentUserCanManageGroup]) {
+    RCDGroupMember *member =
+        [RCDGroupManager getGroupMember:[RCIM sharedRCIM].currentUserInfo.userId groupId:self.group.groupId];
+    if (member.role != RCDGroupMemberRoleMember) {
         RCDGroupManageController *groupManageVC = [[RCDGroupManageController alloc] init];
         groupManageVC.groupId = self.group.groupId;
         [self.navigationController pushViewController:groupManageVC animated:YES];
     } else {
         [self showAlert:RCDLocalizedString(@"Only_group_owner_and_manager_can_manage")];
     }
-}
-
-- (void)pushOpenClawGroupBotVC {
-    RCDOpenClawGroupBotListViewController *vc = [[RCDOpenClawGroupBotListViewController alloc] initWithGroupId:self.group.groupId];
-    vc.canManage = [self currentUserCanManageGroup];
-    __weak typeof(self) weakSelf = self;
-    vc.botAddedBlock = ^(__unused RCDOpenClawBot *bot) {
-        for (UIViewController *controller in weakSelf.navigationController.viewControllers) {
-            if ([controller isKindOfClass:[RCDChatViewController class]]) {
-                RCDChatViewController *chatVC = (RCDChatViewController *)controller;
-                if (chatVC.conversationType == ConversationType_GROUP && [chatVC.targetId isEqualToString:weakSelf.group.groupId]) {
-                    [weakSelf.navigationController popToViewController:chatVC animated:YES];
-                    break;
-                }
-            }
-        }
-    };
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
-- (BOOL)currentUserCanManageGroup {
-    return [RCDGroupManager currentUserIsGroupCreatorOrManager:self.group.groupId];
 }
 
 - (void)pushQRCodeVC {
@@ -549,9 +519,6 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
                                  weakSelf.memberList = [weakSelf resetMemberList:memberIdList];
                                  weakSelf.headerDisplayMembers = [weakSelf getHeaderDisplayMemberData];
                                  [weakSelf setHeaderView];
-                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                     [weakSelf refreshTableViewInfo];
-                                 });
                              }
                          }];
 }
@@ -601,14 +568,15 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         RCDLocalizedString(@"MyInfoInGroup"),
         RCDLocalizedString(@"GroupManage")
     ].mutableCopy;
-    if (![self currentUserCanManageGroup]) {
+    RCDGroupMember *member =
+        [RCDGroupManager getGroupMember:[RCIM sharedRCIM].currentUserInfo.userId groupId:self.group.groupId];
+    if (member.role == RCDGroupMemberRoleMember) {
         [oneSectionArr removeObject:RCDLocalizedString(@"GroupManage")];
     }
-    if ([self currentUserCanManageGroup]) {
+    if ([RCDGroupManager currentUserIsGroupCreatorOrManager:self.group.groupId]) {
         self.settingTableArr = @[
             @[ [NSString stringWithFormat:RCDLocalizedString(@"all_group_member_z"), self.group.number] ],
             oneSectionArr.copy,
-            @[ @"群机器人" ],
             @[ RCDLocalizedString(@"search_chat_history") ],
             @[
                RCDLocalizedString(@"mute_notifications"),
@@ -623,7 +591,6 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         self.settingTableArr = @[
             @[ [NSString stringWithFormat:RCDLocalizedString(@"all_group_member_z"), self.group.number] ],
             oneSectionArr.copy,
-            @[ @"群机器人" ],
             @[ RCDLocalizedString(@"search_chat_history") ],
             @[
                RCDLocalizedString(@"mute_notifications"),
@@ -841,9 +808,11 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
 
 - (void)changeGroupMessageStatus:(RCDGroupMessageClearStatus)status {
     dispatch_async(dispatch_get_main_queue(), ^{
-        RCDGroupSettingsTableViewCell *cell = [self cleanupGroupMessagesCell];
-        if (!cell) {
-            return;
+        RCDGroupSettingsTableViewCell *cell = nil;
+        if ([RCDGroupManager currentUserIsGroupCreatorOrManager:self.group.groupId]) {
+            cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:5]];
+        } else {
+            cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]];
         }
         NSString *content = nil;
         switch (status) {
@@ -866,17 +835,6 @@ static NSString *CellIdentifier = @"RCDBaseSettingTableViewCell";
         }
         cell.rightLabel.text = content;
     });
-}
-
-- (RCDGroupSettingsTableViewCell *)cleanupGroupMessagesCell {
-    for (NSInteger section = 0; section < self.settingTableArr.count; section++) {
-        NSArray *array = self.settingTableArr[section];
-        if (array.count == 1 && [array.firstObject isEqualToString:RCDLocalizedString(@"CleanUpGroupMessagesRegularly")]) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:section];
-            return [self.tableView cellForRowAtIndexPath:indexPath];
-        }
-    }
-    return nil;
 }
 
 - (void)cleanUpGroupMessagesRegularly {

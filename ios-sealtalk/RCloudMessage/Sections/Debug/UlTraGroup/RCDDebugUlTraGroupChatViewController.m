@@ -17,18 +17,8 @@
 #import "RCDChooseUserController.h"
 #import "RCDUGChannelSettingViewController.h"
 
-@protocol RCDDebugConversationQuoteApplying <NSObject>
-- (BOOL)applyQuoteInfoIfActiveToMessage:(RCMessage *)message;
-@end
-
-@protocol RCDDebugConversationEditApplying <NSObject>
-- (void)edit_refreshUIMessagesEditedStatus:(NSArray<RCMessageModel *> *)models;
-@end
-
 @interface RCConversationViewController ()<RCDUGChannelTypeDelegate,RCUserGroupStatusDelegate>
 @property (nonatomic, strong) id dataSource;
-@property (nonatomic, strong, readonly) id<RCDDebugConversationQuoteApplying> util;
-- (BOOL)applyQuoteInfoIfActiveToMessage:(RCMessage *)message;
 - (void)reloadRecalledMessage:(long)recalledMsgId;
 - (void)didReceiveMessageNotification:(NSNotification *)notification;
 @end
@@ -112,17 +102,16 @@
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100002) {
         // 图文消息
-        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:@"图文消息标题" digest:@"图文消息内容详情" imageURL:@"www.wegenmi.com" url:@"www.wegenmi.com" extra:@""];
+        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:@"图文消息标题" digest:@"图文消息内容详情" imageURL:@"www.rongcloud.cn" url:@"www.rongcloud.cn" extra:@""];
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100003) {
         RCTextMessage *textMessage = [RCTextMessage messageWithContent:@"这是一条插入的消息"];
-        long long sentTime = [[NSDate date] timeIntervalSince1970] * 1000;
         RCMessage *message = [[RCChannelClient sharedChannelManager] insertOutgoingMessage:self.conversationType
                                                                                   targetId:self.targetId
                                                                                  channelId:self.channelId
                                                                                 sentStatus:SentStatus_READ
                                                                                    content:textMessage
-                                                                                  sentTime:sentTime];
+                                                                                  sentTime:0];
         [self appendAndDisplayMessage:message];
     } else {
         [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
@@ -229,15 +218,6 @@
 
 
 #pragma mark - 单条消息推送属性设置
-- (void)applyQuoteInfoIfNeededToDebugMessage:(RCMessage *)message {
-    SEL selector = @selector(applyQuoteInfoIfActiveToMessage:);
-    if ([RCConversationViewController instancesRespondToSelector:selector]) {
-        [self applyQuoteInfoIfActiveToMessage:message];
-        return;
-    }
-    [self.util applyQuoteInfoIfActiveToMessage:message];
-}
-
 - (void)sendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
     [[RCChannelClient sharedChannelManager] sendUltraGroupTypingStatus:self.targetId
                                                              channelId:self.channelId
@@ -260,7 +240,6 @@
     message.messagePushConfig = pushConfig;
     message.messageConfig = config;
     message.channelId = self.channelId;
-    [self applyQuoteInfoIfNeededToDebugMessage:message];
     
     if ([messageContent isKindOfClass:[RCMediaMessageContent class]]) {
         [[RCIM sharedRCIM] sendMediaMessage:message pushContent:pushContent pushData:nil progress:nil successBlock:nil errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -853,39 +832,17 @@
     if (!self.conversationDataRepository || self.conversationDataRepository.count == 0) {
         return;
     }
-    NSMutableArray<RCMessageModel *> *models = [NSMutableArray array];
-    for (RCMessage *message in messages) {
-        if (message.conversationType != self.conversationType ||
-            ![message.targetId isEqualToString:self.targetId] ||
-            (self.channelId.length > 0 && ![message.channelId isEqualToString:self.channelId])) {
-            continue;
-        }
-        RCMessageModel *model = [RCMessageModel modelWithMessage:message];
-        if (model) {
-            [models addObject:model];
-        }
-    }
-    if (models.count == 0) {
-        return;
-    }
-    if ([self.dataSource respondsToSelector:@selector(edit_refreshUIMessagesEditedStatus:)]) {
-        [(id<RCDDebugConversationEditApplying>)self.dataSource edit_refreshUIMessagesEditedStatus:models];
-        return;
-    }
-
     NSMutableArray *indexPaths = [NSMutableArray new];
     for (int j = 0; j<self.conversationDataRepository.count; j++) {
         RCMessageModel *model = self.conversationDataRepository[j];
-        for (RCMessageModel *msgModel in models) {
-            BOOL sameMessageUId = model.messageUId.length > 0 && [model.messageUId isEqualToString:msgModel.messageUId];
-            BOOL sameMessageId = model.messageUId.length == 0 && model.messageId == msgModel.messageId;
-            if (sameMessageUId || sameMessageId) {
+        for (int i = 0; i < messages.count; i++) {
+            RCMessage * msg = messages[i];
+            if (model.messageId == msg.messageId) {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:0];
                 [indexPaths addObject:indexPath];
-                if (msgModel.modifyInfo.content) {
-                    msgModel.content = msgModel.modifyInfo.content;
-                }
-                [self.conversationDataRepository replaceObjectAtIndex:j withObject:msgModel];
+                RCMessage *message = [[RCCoreClient sharedCoreClient] getMessage:model.messageId];
+                RCMessageModel *model = [RCMessageModel modelWithMessage:message];
+                [self.conversationDataRepository replaceObjectAtIndex:j withObject:model];
             }
         }
     }

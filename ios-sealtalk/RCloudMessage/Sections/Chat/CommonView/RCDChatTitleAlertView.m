@@ -8,7 +8,6 @@
 
 #import "RCDChatTitleAlertView.h"
 #import <Masonry/Masonry.h>
-#import <RongIMKit/RongIMKit.h>
 
 static int padding = 12 ;
 
@@ -36,7 +35,7 @@ static int padding = 12 ;
     if (message) {
         UILabel *titleAlertLabel = [UILabel new];
         titleAlertLabel.text = message ;
-        titleAlertLabel.textColor =  RCDynamicColor(@"text_primary_color", @"0x020814", @"0xFFFFFF");
+        titleAlertLabel.textColor = [UIColor whiteColor] ;
         titleAlertLabel.font = [UIFont systemFontOfSize:16] ;
         titleAlertLabel.numberOfLines = 0 ;
         [self addSubview:titleAlertLabel] ;
@@ -46,7 +45,7 @@ static int padding = 12 ;
         }];
     }
 
-    self.backgroundColor = RCDynamicColor(@"network_Indicator_view_bg_color", @"0xffdfdf", @"0x7D2C2C");
+    self.backgroundColor = [UIColor colorWithRed:169/255.0 green:56/255.0 blue:56/255.0 alpha:1] ;
     
 }
 

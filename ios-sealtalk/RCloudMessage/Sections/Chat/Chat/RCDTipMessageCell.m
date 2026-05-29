@@ -53,7 +53,6 @@
         self.tipMessageLabel.attributeDictionary = @{};
         [self.baseContentView addSubview:self.tipMessageLabel];
         self.tipMessageLabel.marginInsets = UIEdgeInsetsMake(0.5f, 0.5f, 0.5f, 0.5f);
-        self.clipsToBounds = YES;
     }
     return self;
 }
