@@ -26,7 +26,9 @@
 #import "RCDProxySettingControllerViewController.h"
 #import "RCDHTTPUtility.h"
 #import "UIView+MBProgressHUD.h"
-
+#import <RongIMKit/RongIMKit.h>
+#import "RCDThemesViewController.h"
+#import "RCDThemesContext.h"
 //#define SERVICE_ID @"KEFU146001495753714"
 
 //#define RCD_SHOW_PROXYSETTING
@@ -45,8 +47,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.tabBarController.navigationItem.title = RCDLocalizedString(@"me");
-    self.tabBarController.navigationItem.rightBarButtonItems = nil;
+    self.navigationItem.title = RCDLocalizedString(@"me");
     [self.tableView reloadData];
 }
 
@@ -62,9 +63,9 @@
     } else if (1 == section) {
         rows = 1;
     } else if (2 == section) {
-        rows = 3;
-#ifdef RCD_SHOW_PROXYSETTING
         rows = 4;
+#ifdef RCD_SHOW_PROXYSETTING
+        rows = 5;
 #endif
     } else if (3 == section) {
         rows = 2;
@@ -112,8 +113,13 @@
                              labelName:RCDLocalizedString(@"translationSetting")
                         rightLabelName:@""];
         }
-#ifdef RCD_SHOW_PROXYSETTING
         else if (3 == indexPath.row) {
+            [cell setCellWithImageName:@"icon_ multilingual"
+                             labelName:RCDLocalizedString(@"Themes")
+                        rightLabelName:[RCDThemesContext currentThemeTitle]];
+        }
+#ifdef RCD_SHOW_PROXYSETTING
+        else if (4 == indexPath.row) {
             [cell setCellWithImageName:@"icon_ multilingual"
                              labelName:RCDLocalizedString(@"socks_proxy_setting")
                         rightLabelName:@""];
@@ -162,9 +168,13 @@
             [self.navigationController pushViewController:vc animated:YES];
         } else if (2 == indexPath.row) {
             [self showTranslationSetting];
+        }else if (3 == indexPath.row) {
+            RCDThemesViewController *vc = [[RCDThemesViewController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
         }
+        
 #ifdef RCD_SHOW_PROXYSETTING
-        else if (3 == indexPath.row) {
+        else if (4 == indexPath.row) {
             [self showProxySetting];
         }
 #endif
@@ -246,7 +256,6 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationController.navigationBar.translucent = NO;
     self.tableView.tableFooterView = [UIView new];
-    self.tabBarController.navigationItem.rightBarButtonItem = nil;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 48, 0, 0);
 }
 

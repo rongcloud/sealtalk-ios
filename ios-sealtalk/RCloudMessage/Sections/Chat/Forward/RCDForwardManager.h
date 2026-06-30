@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) void (^selectConversationCompleted)(NSArray<RCConversation *> *conversationList);
 
 - (void)showForwardAlertViewInViewController:(UIViewController *)viewController;
+- (void)showForwardAlertViewWith:(RCNDQRForwardSelectCellViewModel *)viewModel
+                 inViewController:(UIViewController *)viewController;
 - (BOOL)allSelectedMessagesAreLegal;
 - (void)clear;
 - (void)forwardEnd;

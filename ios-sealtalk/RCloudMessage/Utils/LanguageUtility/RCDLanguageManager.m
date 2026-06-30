@@ -7,9 +7,9 @@
 //
 
 #import "RCDLanguageManager.h"
+#import <RongIMKit/RCKitConfig.h>
 
 static NSString *const RCDUserLanguageKey = @"RCDUserLanguageKey";
-static NSString *const RCDAppleLanguagesKey = @"AppleLanguages";
 
 @interface RCDLanguageManager ()
 
@@ -37,7 +37,13 @@ static NSString *const RCDAppleLanguagesKey = @"AppleLanguages";
 
     if (![_currentLanguage isEqualToString:Language]) {
         [DEFAULTS setValue:Language forKey:RCDUserLanguageKey];
-        [DEFAULTS setValue:@[ Language ] forKey:RCDAppleLanguagesKey];
+        
+        if ([Language isEqualToString:@"default"]) {
+            RCKitConfigCenter.ui.preferredLanguage = nil;
+        } else {
+            RCKitConfigCenter.ui.preferredLanguage = Language;
+        }
+        
     }
 }
 
@@ -58,9 +64,13 @@ static NSString *const RCDAppleLanguagesKey = @"AppleLanguages";
 }
 
 - (void)resetLanguage {
-
     [DEFAULTS removeObjectForKey:RCDUserLanguageKey];
-    [DEFAULTS setValue:nil forKey:RCDAppleLanguagesKey];
+    RCKitConfigCenter.ui.preferredLanguage = nil;
+}
+
+- (NSString *)selectedLanguage {
+    NSString *language = [DEFAULTS valueForKey:RCDUserLanguageKey];
+    return language;
 }
 
 @end

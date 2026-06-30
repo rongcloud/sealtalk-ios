@@ -54,7 +54,15 @@
     }
     NSURL *url = [NSURL URLWithString:urlString];
     if (url) {
-        [[UIApplication sharedApplication] openURL:url];
+        UIApplication *app = [UIApplication sharedApplication];
+        if ([app canOpenURL:url]) {
+            if (@available(iOS 10.0, *)) {
+                [app openURL:url options:@{} completionHandler:nil];
+            } else {
+                // 旧系统调用旧方法（不会出现警告）
+                [app openURL:url];
+            }
+        }
     }
 }
 
@@ -198,9 +206,9 @@
 - (NSArray *)urls {
     if (!_urls) {
         _urls = @[
-            @"http://rongcloud.cn/",
-            @"http://rongcloud.cn/features",
-            @"http://rongcloud.cn/"
+            @"http://www.wegenmi.com/",
+            @"https://www.wegenmi.com/demo/introduction",
+            @"http://www.wegenmi.com/"
         ];
     }
     return _urls;

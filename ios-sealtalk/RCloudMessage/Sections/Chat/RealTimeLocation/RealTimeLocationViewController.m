@@ -15,7 +15,7 @@
 #import "RTLUtilities.h"
 
 @interface RealTimeLocationViewController () <RCRealTimeLocationObserver, MKMapViewDelegate,
-                                              HeadCollectionTouchDelegate>
+HeadCollectionTouchDelegate>
 
 @property (nonatomic, strong) MKMapView *mapView;
 @property (nonatomic, strong) UIView *headBackgroundView;
@@ -25,6 +25,7 @@
 @property (nonatomic, assign) BOOL isFirstTimeToLoad;
 @property (nonatomic, strong) HeadCollectionView *headCollectionView;
 @property (nonatomic, assign) MKCoordinateSpan mapRegionSpan;
+@property (nonatomic, assign) BOOL isChangingMapType; // 防止切换 mapType 时触发死循环
 @end
 
 @implementation RealTimeLocationViewController
@@ -152,35 +153,26 @@
             RCAnnotation *ann = [[RCAnnotation alloc] initWithThumbnail:annotatonView];
             [self.mapView addAnnotation:ann];
             [self.userAnnotationDic setObject:ann forKey:userId];
+            [[RCIM sharedRCIM] getUserInfo:userId complete:^(RCUserInfo * _Nonnull user) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                RCUserInfo * userInfo = user;
+                                if (!userInfo) {
+                                    userInfo = [[RCUserInfo alloc]
+                                        initWithUserId:userId
+                                                  name:[NSString stringWithFormat:@"user<%@>", userId]
+                                              portrait:nil];
+                                }
 
-            if ([RCIM sharedRCIM].userInfoDataSource &&
-                [[RCIM sharedRCIM]
-                        .userInfoDataSource respondsToSelector:@selector(getUserInfoWithUserId:completion:)]) {
-                [[RCIM sharedRCIM]
-                        .userInfoDataSource
-                    getUserInfoWithUserId:userId
-                               completion:^(RCUserInfo *user) {
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       RCUserInfo *userInfo = user;
-                                       if (!userInfo) {
-                                           userInfo = [[RCUserInfo alloc]
-                                               initWithUserId:userId
-                                                         name:[NSString stringWithFormat:@"user<%@>", userId]
-                                                     portrait:nil];
-                                       }
-
-                                       RCAnnotation *annotaton =
-                                           [__weakself.userAnnotationDic objectForKey:userInfo.userId];
-                                       annotatonView.isMyLocation = NO;
-                                       if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
-                                           annotatonView.isMyLocation = YES;
-                                       }
-                                       annotaton.thumbnail.imageurl = userInfo.portraitUri;
-                                       [annotaton updateThumbnail:annotaton.thumbnail animated:YES];
-                                   });
-                               }];
-            }
-
+                                RCAnnotation *annotaton =
+                                    [__weakself.userAnnotationDic objectForKey:userInfo.userId];
+                                annotatonView.isMyLocation = NO;
+                                if ([userId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
+                                    annotatonView.isMyLocation = YES;
+                                }
+                                annotaton.thumbnail.imageurl = userInfo.portraitUri;
+                                [annotaton updateThumbnail:annotaton.thumbnail animated:YES];
+                            });
+            }];
         } else {
             if (type == RCRealTimeLocationTypeWGS84) {
                 annotaton.coordinate = [RCLocationConvert wgs84ToGcj02:cll.coordinate];
@@ -200,6 +192,8 @@
     });
 }
 
+
+
 - (void)onParticipantsJoin:(NSString *)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
         RCAnnotation *annotaton = [self.userAnnotationDic objectForKey:userId];
@@ -214,29 +208,22 @@
             }
             [self.mapView addAnnotation:ann];
             [self.userAnnotationDic setObject:ann forKey:userId];
+            [[RCIM sharedRCIM] getUserInfo:userId complete:^(RCUserInfo * _Nonnull user) {
+                RCUserInfo *userInfo = user;
+                if (!userInfo) {
+                    userInfo = [[RCUserInfo alloc]
+                        initWithUserId:userId
+                                  name:[NSString stringWithFormat:@"user<%@>", userId]
+                              portrait:nil];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    RCAnnotation *annotaton =
+                        [__weakself.userAnnotationDic objectForKey:userInfo.userId];
+                    annotaton.thumbnail.imageurl = userInfo.portraitUri;
+                    [annotaton updateThumbnail:annotaton.thumbnail animated:YES];
 
-            if ([RCIM sharedRCIM].userInfoDataSource &&
-                [[RCIM sharedRCIM]
-                        .userInfoDataSource respondsToSelector:@selector(getUserInfoWithUserId:completion:)]) {
-                [[RCIM sharedRCIM]
-                        .userInfoDataSource
-                    getUserInfoWithUserId:userId
-                               completion:^(RCUserInfo *userInfo) {
-                                   if (!userInfo) {
-                                       userInfo = [[RCUserInfo alloc]
-                                           initWithUserId:userId
-                                                     name:[NSString stringWithFormat:@"user<%@>", userId]
-                                                 portrait:nil];
-                                   }
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       RCAnnotation *annotaton =
-                                           [__weakself.userAnnotationDic objectForKey:userInfo.userId];
-                                       annotaton.thumbnail.imageurl = userInfo.portraitUri;
-                                       [annotaton updateThumbnail:annotaton.thumbnail animated:YES];
-
-                                   });
-                               }];
-            }
+                });
+            }];
         }
 
         if (self.headCollectionView) {
@@ -301,6 +288,11 @@
 }
 
 - (void)clearMapViewMemoryIfNeeded {
+    // 防止递归调用导致死循环（iOS 26+ 设置 mapType 会触发 regionDidChangeAnimated:）
+    if (self.isChangingMapType) {
+        return;
+    }
+    
     // 不需要频繁切换mapType（影响体验）， 在zoomLevel达到一定变化范围才执行
     if (self.mapView.region.span.longitudeDelta < 0.005 || self.mapView.region.span.latitudeDelta < 0.005) {
         return;
@@ -309,26 +301,39 @@
     float longitudeDelta = self.mapView.region.span.longitudeDelta - self.mapRegionSpan.longitudeDelta;
     float latitudeDelta = self.mapView.region.span.latitudeDelta - self.mapRegionSpan.latitudeDelta;
     
-    if ( fabs(longitudeDelta) < 0.00005 && fabs(latitudeDelta) <0.00005) {
+    if (fabs(longitudeDelta) < 0.00005 && fabs(latitudeDelta) < 0.00005) {
         return;
     }
 
-    MKMapType mapType = self.mapView.mapType;
-    switch (self.mapView.mapType) {
-        case MKMapTypeHybrid:
-            self.mapView.mapType = MKMapTypeStandard;
-            break;
-        case MKMapTypeStandard:
-            self.mapView.mapType = MKMapTypeHybrid;
-            break;
-
-        default:
-            break;
-    }
-    self.mapView.mapType = mapType;
-    
-    // 暂存
+    // 暂存当前 span
     self.mapRegionSpan = self.mapView.region.span;
+    
+    self.isChangingMapType = YES;
+    
+    // 延迟执行 mapType 切换，避免在 Metal 渲染过程中修改导致 "Failed to acquire drawable" 错误
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf || !strongSelf.mapView) {
+            strongSelf.isChangingMapType = NO;
+            return;
+        }
+        
+        MKMapType mapType = strongSelf.mapView.mapType;
+        switch (strongSelf.mapView.mapType) {
+            case MKMapTypeHybrid:
+                strongSelf.mapView.mapType = MKMapTypeStandard;
+                break;
+            case MKMapTypeStandard:
+                strongSelf.mapView.mapType = MKMapTypeHybrid;
+                break;
+            default:
+                break;
+        }
+        strongSelf.mapView.mapType = mapType;
+        
+        strongSelf.isChangingMapType = NO;
+    });
 }
 
 #pragma mark - target action
@@ -397,4 +402,5 @@
     }
     return _headCollectionView;
 }
+
 @end

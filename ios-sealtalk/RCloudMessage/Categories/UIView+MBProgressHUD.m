@@ -8,6 +8,7 @@
 
 #import "UIView+MBProgressHUD.h"
 #import <objc/runtime.h>
+#import <RongIMKit/RongIMKit.h>
 #define MBPHUD_EXECUTE(...)                                                                                            \
     __weak typeof(self) weakself = self;                                                                               \
     [self hideHUDCompletion:^{                                                                                         \
@@ -73,7 +74,8 @@ CGFloat const MBPHUDShowTime = 2.0f;
     dispatch_async(dispatch_get_main_queue(), ^{
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
         hud.mode = MBProgressHUDModeAnnularDeterminate;
-        hud.labelText = @"Loading...";
+        NSString *loading = [NSString stringWithFormat:@"%@...", RCLocalizedString(@"StreamMessageLoading")];
+        hud.labelText = loading;
         hud.removeFromSuperViewOnHide = YES;
         self.loadingView = hud;
     });

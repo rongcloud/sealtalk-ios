@@ -120,41 +120,25 @@
 #pragma mark - helper
 - (BOOL)addUser:(NSString *)userId showChange:(BOOL)show {
     if (userId && [self getUserIndex:userId] < 0) {
-        if ([RCIM sharedRCIM].userInfoDataSource &&
-            [[RCIM sharedRCIM].userInfoDataSource respondsToSelector:@selector(getUserInfoWithUserId:completion:)]) {
-            [[RCIM sharedRCIM]
-                    .userInfoDataSource
-                getUserInfoWithUserId:userId
-                           completion:^(RCUserInfo *user) {
-                               dispatch_async(dispatch_get_main_queue(), ^{
-                                   RCUserInfo *userInfo = user;
-                                   if (!userInfo) {
-                                       userInfo = [[RCUserInfo alloc]
-                                           initWithUserId:userId
-                                                     name:[NSString stringWithFormat:@"user<%@>", userId]
-                                                 portrait:nil];
-                                   }
-                                   if ([self addUserInfoIfNeed:userInfo]) {
-                                       [self addHeadViewUser:userInfo];
-                                       if (show) {
-                                           [self showUserChangeInfo:[NSString stringWithFormat:RTLLocalizedString(@"join_share_location"), [RCKitUtility getDisplayName:user]]];
-                                       } else {
-                                           self.tipLabel.text = [NSString stringWithFormat:RTLLocalizedString(@"share_location_people_count"), (unsigned long)self.rcUserInfos.count];
-                                       }
-                                   }
-                               });
-                           }];
-        } else {
-            RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:userId name:userId portrait:nil];
-            if ([self addUserInfoIfNeed:userInfo]) {
-                [self addHeadViewUser:userInfo];
-                if (show) {
-                    [self showUserChangeInfo:[NSString stringWithFormat:RTLLocalizedString(@"join_share_location"), [RCKitUtility getDisplayName:userInfo]]];
-                } else {
-                    self.tipLabel.text = [NSString stringWithFormat:RTLLocalizedString(@"share_location_people_count"), (unsigned long)self.rcUserInfos.count];
-                }
-            }
-        }
+        [[RCIM sharedRCIM] getUserInfo:userId complete:^(RCUserInfo * _Nonnull user) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        RCUserInfo *userInfo = user;
+                        if (!userInfo) {
+                            userInfo = [[RCUserInfo alloc]
+                                initWithUserId:userId
+                                          name:[NSString stringWithFormat:@"user<%@>", userId]
+                                      portrait:nil];
+                        }
+                        if ([self addUserInfoIfNeed:userInfo]) {
+                            [self addHeadViewUser:userInfo];
+                            if (show) {
+                                [self showUserChangeInfo:[NSString stringWithFormat:RTLLocalizedString(@"join_share_location"), [RCKitUtility getDisplayName:user]]];
+                            } else {
+                                self.tipLabel.text = [NSString stringWithFormat:RTLLocalizedString(@"share_location_people_count"), (unsigned long)self.rcUserInfos.count];
+                            }
+                        }
+                    });
+        }];
         return YES;
     } else {
         return NO;
@@ -203,7 +187,7 @@
         CGFloat scrollViewWidth = [self getScrollViewWidth];
         UIImageView *userHead = [[UIImageView alloc] init];
         [RTLUtilities setImageWithURL:[NSURL URLWithString:user.portraitUri]
-                     placeholderImage:RCResourceImage(@"default_portrait_msg")
+                     placeholderImage:RCDynamicImage(@"conversation-list_cell_portrait_msg_img",@"default_portrait_msg")
                             imageView:userHead];
         [userHead setFrame:CGRectMake(scrollViewWidth - self.headViewSize, 0, self.headViewSize, self.headViewSize)];
 

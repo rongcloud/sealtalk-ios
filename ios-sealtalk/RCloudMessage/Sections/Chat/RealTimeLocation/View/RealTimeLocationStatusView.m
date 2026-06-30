@@ -13,31 +13,57 @@
 @interface RealTimeLocationStatusView ()
 @property (nonatomic) BOOL isExpended;
 @property (nonatomic, strong) UILabel *statusLabel;
-@property (nonatomic, strong) UIImageView *locationIcon;
 @property (nonatomic, strong) UIImageView *moreIcon;
 
 @property (nonatomic, strong) UILabel *expendLabel;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *joinButton;
+
+@property (nonatomic, strong) UIView *normalContainerView;
 @end
 
-#define RC_REAL_TIME_LOCATION_STATUS_FRAME CGRectMake(0, 62, self.frame.size.width, 38)
-#define RC_REAL_TIME_LOCATION_EXPEND_FRAME CGRectMake(0, 62, self.frame.size.width, 85)
+#define RC_REAL_TIME_LOCATION_STATUS_FRAME CGRectMake(0, 62, self.frame.size.width, 46)
+#define RC_REAL_TIME_LOCATION_EXPEND_FRAME CGRectMake(0, 62, self.frame.size.width, 96)
 
 @implementation RealTimeLocationStatusView
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-         [self setBackgroundColor:UIColorFromRGB(0x000000, 0.6)];
 
-        [self setup];
-    }
-    return self;
+- (void)setupView {
+    [super setupView];
+    self.backgroundColor = RCDynamicColor(@"auxiliary_view_color", @"0x00000099", @"0x00000099");
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTaped:)];
+    [self addGestureRecognizer:tap];
 }
+
+- (void)refreshNormalContainer {
+    [self.statusLabel sizeToFit];
+    [self.moreIcon sizeToFit];
+    CGFloat widthMax = self.bounds.size.width - 80;
+    if (self.statusLabel.frame.size.width > widthMax) {
+        self.statusLabel.bounds = CGRectMake(0, 0, widthMax, CGRectGetHeight(self.statusLabel.frame));
+    }
+    self.normalContainerView.bounds = CGRectMake(0, 0, CGRectGetWidth(self.statusLabel.frame) + CGRectGetWidth(self.moreIcon.frame)+12, CGRectGetHeight(RC_REAL_TIME_LOCATION_STATUS_FRAME));
+    self.statusLabel.center = CGPointMake(CGRectGetWidth(self.statusLabel.bounds)/2, CGRectGetHeight(RC_REAL_TIME_LOCATION_STATUS_FRAME)/2);
+    self.moreIcon.center = CGPointMake(CGRectGetWidth(self.normalContainerView.bounds)-CGRectGetHeight(self.moreIcon.frame)/2, CGRectGetHeight(RC_REAL_TIME_LOCATION_STATUS_FRAME)/2);
+    self.normalContainerView.center = CGPointMake(CGRectGetWidth(RC_REAL_TIME_LOCATION_STATUS_FRAME)/2, CGRectGetHeight(RC_REAL_TIME_LOCATION_STATUS_FRAME)/2);
+}
+
+- (void)configureNormalContainer {
+    if (!self.normalContainerView) {
+        self.normalContainerView = [UIView new];
+        [self.normalContainerView addSubview:self.statusLabel];
+        [self.normalContainerView addSubview:self.moreIcon];
+    }
+    [self addSubview:self.normalContainerView];
+    [self refreshNormalContainer];
+
+}
+
 #pragma mark - public api
 - (void)updateText:(NSString *)statusText {
     self.statusLabel.text = statusText;
+    [self refreshNormalContainer];
 }
 
 - (void)updateRealTimeLocationStatus {
@@ -61,10 +87,6 @@
 }
 
 #pragma mark - helper
-- (void)setup {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTaped:)];
-    [self addGestureRecognizer:tap];
-}
 
 - (void)onTaped:(id)sender {
     if ([self.delegate getStatus] == RC_REAL_TIME_LOCATION_STATUS_INCOMING) {
@@ -125,9 +147,7 @@
     for (UIView *subView in self.subviews) {
         [subView removeFromSuperview];
     }
-    [self addSubview:self.statusLabel];
-    [self addSubview:self.locationIcon];
-    [self addSubview:self.moreIcon];
+    [self configureNormalContainer];
 }
 
 - (void)layoutSubviews {
@@ -135,17 +155,7 @@
 
     // iPad 位置共享提示横竖屏适配
     if (RTLIsIPad && [self.delegate getStatus] != RC_REAL_TIME_LOCATION_STATUS_IDLE) {
-        CGRect statusFrame = self.statusLabel.frame;
-        statusFrame = CGRectMake(30, 0, self.frame.size.width - 60, 40);
-        self.statusLabel.frame = statusFrame;
-
-        CGRect locationFrame = self.locationIcon.frame;
-        locationFrame = CGRectMake(10, 13, 10, 14);
-        self.locationIcon.frame = locationFrame;
-
-        CGRect moreIconFrame = self.moreIcon.frame;
-        moreIconFrame = CGRectMake(self.frame.size.width - 20, 13, 10, 14);
-        self.moreIcon.frame = moreIconFrame;
+        [self refreshNormalContainer];
 
         CGRect expendLabelFrame = self.expendLabel.frame;
         expendLabelFrame = CGRectMake(30, 0, self.frame.size.width - 48, 60);
@@ -177,24 +187,14 @@
     if (!_statusLabel) {
         _statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, self.frame.size.width - 60, 40)];
         _statusLabel.textAlignment = NSTextAlignmentCenter;
-        _statusLabel.textColor = [RCKitUtility generateDynamicColor:UIColorFromRGB(0xffffff, 1) darkColor:UIColorFromRGB(0xffffff, 0.6)];
+        _statusLabel.textColor = RCDynamicColor(@"text_primary_color", @"0xffffff", @"0xffffff99");
     }
     return _statusLabel;
 }
-- (UIImageView *)locationIcon {
-    if (!_locationIcon) {
-        if ([RTLUtilities isRTL]) {
-            _locationIcon = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 20, 13, 10, 14)];
-        } else {
-            _locationIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 13, 10, 14)];
-        }
-        [_locationIcon setImage:[UIImage imageNamed:@"white_location_icon"]];
-    }
-    return _locationIcon;
-}
+
 - (UIImageView *)moreIcon {
     if (!_moreIcon) {
-        UIImage *image = [UIImage imageNamed:@"location_arrow"];
+        UIImage *image = [UIImage imageNamed:@"location_more"];
         if ([RTLUtilities isRTL]) {
             _moreIcon = [[UIImageView alloc] initWithFrame:CGRectMake(10, 13, 10, 14)];
             image = [image imageFlippedForRightToLeftLayoutDirection];
@@ -209,7 +209,7 @@
     if (!_expendLabel) {
         _expendLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.frame.size.width - 40, 60)];
         _expendLabel.textAlignment = NSTextAlignmentLeft;
-        _expendLabel.textColor = [RCKitUtility generateDynamicColor:UIColorFromRGB(0xffffff, 1) darkColor:UIColorFromRGB(0xffffff, 0.6)];
+        _expendLabel.textColor = RCDynamicColor(@"text_primary_color", @"0xffffff", @"0xffffff99");
         [_expendLabel setText:RTLLocalizedString(@"join_share_location_alert")];
         _expendLabel.font = [UIFont systemFontOfSize:14];
         _expendLabel.numberOfLines = 0;
@@ -218,9 +218,12 @@
 }
 - (UIButton *)cancelButton {
     if (!_cancelButton) {
-        _cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(79, 52, 60, 25)];
+        _cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(79, 52, 60, 30)];
         [_cancelButton setTitle:RTLLocalizedString(@"cancel") forState:UIControlStateNormal];
-        _cancelButton.backgroundColor = [RCKitUtility generateDynamicColor:UIColorFromRGB(0x444444, 1) darkColor:UIColorFromRGB(0x52676F,1)];
+        _cancelButton.backgroundColor = RCDynamicColor(@"selected_background_color", @"0x444444", @"0x52676F");
+        [_cancelButton setTitleColor:RCDynamicColor(@"text_primary_color", @"0xffffff", @"0xffffff") forState:UIControlStateNormal];
+        _cancelButton.layer.cornerRadius = 6;
+        _cancelButton.layer.masksToBounds = YES;
         [_cancelButton addTarget:self action:@selector(onCanelPressed:) forControlEvents:UIControlEventTouchUpInside];
         _cancelButton.titleLabel.font = [UIFont systemFontOfSize:13];
     }
@@ -228,12 +231,18 @@
 }
 - (UIButton *)joinButton {
     if (!_joinButton) {
-        _joinButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 60 - 79, 52, 60, 25)];
-        [_joinButton setTitle:RTLLocalizedString(@"join") forState:UIControlStateNormal];
-        _joinButton.backgroundColor = [RCKitUtility generateDynamicColor:UIColorFromRGB(0x444444, 1) darkColor:UIColorFromRGB(0x9fb7bf,1)];
+        _joinButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 60 - 79, 52, 60, 30)];
+        _joinButton.backgroundColor = RCDynamicColor(@"selected_background_color", @"0x444444", @"0x52676F");
+        [_joinButton setTitleColor:RCDynamicColor(@"text_primary_color", @"0xffffff", @"0xffffff") forState:UIControlStateNormal];
+        _joinButton.layer.cornerRadius = 6;
+        _joinButton.layer.masksToBounds = YES;
+        [_joinButton setTitle:RTLLocalizedString(@"join")
+                     forState:UIControlStateNormal];
         [_joinButton addTarget:self action:@selector(onJoinPressed:) forControlEvents:UIControlEventTouchUpInside];
         _joinButton.titleLabel.font = [UIFont systemFontOfSize:13];
     }
     return _joinButton;
 }
+
+
 @end

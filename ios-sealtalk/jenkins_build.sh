@@ -87,10 +87,12 @@ fi
 #demo 服务器
 if [ -n "${DEMO_SERVER_URL}" ]; then
     if [[ $DEMO_SERVER_URL =~ ^http ]]; then
-        sed -i '' -e 's?https://sealtalk.rongcloud.cn/server-api?'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+        NEW_URL="${DEMO_SERVER_URL}"
     else
-        sed -i '' -e 's?https://sealtalk.rongcloud.cn/server-api?http://'$DEMO_SERVER_URL'?g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
+        NEW_URL="http://${DEMO_SERVER_URL}"
     fi
+    # 使用正则匹配 DEMO_SERVER 定义行，替换引号内的任意内容
+    sed -i '' -E 's#(DEMO_SERVER[[:space:]]+@")[^"]*#\1'"${NEW_URL}"'#g' ./RCloudMessage/Supporting\ Files/RCDCommonDefine.h
 fi
 
 #导航服务器

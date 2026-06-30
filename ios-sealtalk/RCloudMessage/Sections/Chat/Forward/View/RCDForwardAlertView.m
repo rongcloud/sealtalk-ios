@@ -49,6 +49,15 @@
     [alertV setModel:model];
     return alertV;
 }
++ (instancetype)alertViewWithForwardViewModel:(RCNDQRForwardSelectCellViewModel *)model {
+    if (!model) {
+        return nil;
+    }
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    RCDForwardAlertView *alertV = [[self alloc] initWithFrame:keyWindow.bounds];
+    [alertV setForwardViewModel:model];
+    return alertV;
+}
 
 + (instancetype)alertViewWithSelectedContacts:(NSArray *)selectedContacts {
     if (selectedContacts.count <= 0) {
@@ -85,8 +94,7 @@
 
 #pragma mark - Private Method
 - (void)loadSubviews {
-    self.backgroundColor = [RCDUtilities generateDynamicColor:[HEXCOLOR(0x000000) colorWithAlphaComponent:0.5]
-                                                    darkColor:[HEXCOLOR(0x6a6a6a) colorWithAlphaComponent:0.6]];
+    self.backgroundColor = RCDynamicColor(@"mask_color", @"0x0000007f", @"0x6a6a6a99");
     [self addSubview:self.contentView];
     [self.contentView addSubview:self.cancelButton];
     [self.contentView addSubview:self.confirmButton];
@@ -109,7 +117,7 @@
         make.height.offset(55);
     }];
     UIView *firstLine = [[UIView alloc] init];
-    firstLine.backgroundColor = RCDDYCOLOR(0xE5E5E5, 0x3a3a3a);
+    firstLine.backgroundColor = RCDynamicColor(@"line_background_color", @"0xE5E5E5", @"0x3a3a3a");
     [self.contentView addSubview:firstLine];
     [firstLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(self.contentView);
@@ -122,7 +130,7 @@
         make.height.offset(44);
     }];
     UIView *secondLine = [[UIView alloc] init];
-    secondLine.backgroundColor = RCDDYCOLOR(0xE5E5E5, 0x3a3a3a);
+    secondLine.backgroundColor = RCDynamicColor(@"line_background_color", @"0xE5E5E5", @"0x3a3a3a");
     [self.contentView addSubview:secondLine];
     [secondLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(self.contentView);
@@ -130,7 +138,7 @@
         make.height.offset(1);
     }];
     UIView *separateLine = [[UIView alloc] init];
-    separateLine.backgroundColor = RCDDYCOLOR(0xE5E5E5, 0x3a3a3a);
+    separateLine.backgroundColor = RCDynamicColor(@"line_background_color", @"0xE5E5E5", @"0x3a3a3a");
     [self.contentView addSubview:separateLine];
     [self.confirmButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.trailing.equalTo(self.contentView);
@@ -185,6 +193,38 @@
     }
 }
 
+
+- (void)setForwardViewModel:(RCNDQRForwardSelectCellViewModel *)viewModel {
+    RCConversation *model = [RCConversation new];
+    model.targetId = viewModel.targetID;
+    model.conversationType = viewModel.conversationType;
+    _model = model;
+    CGFloat originX = 18;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(originX, 7.5, itemHight, itemHight)];
+    RCDForwardCellModel *cellModel = [RCDForwardCellModel createModelWith:model];
+    [self loadImageWithModel:cellModel forImageView:imageView];
+    imageView.layer.cornerRadius = 2;
+    imageView.layer.masksToBounds = YES;
+    [self.scrollView addSubview:imageView];
+    [RCDSemanticContext subViewOfScrollViewFlippedForRTL:imageView];
+    [self.scrollView addSubview:self.nameLabel];
+
+    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(imageView.mas_trailing).offset(10);
+        make.centerY.height.equalTo(imageView);
+        make.trailing.equalTo(self.scrollView).offset(-10);
+    }];
+    self.nameLabel.text = viewModel.title;
+    BOOL ret = viewModel.conversationType == ConversationType_GROUP ;
+    UIImage *placeholderImage = ret ? RCDynamicImage(@"conversation-list_cell_group_portrait_img", @"default_group_portrait") :RCDynamicImage(@"conversation-list_cell_portrait_msg_img",@"default_portrait_msg");
+    if (viewModel.portraitURL.length) {
+        [imageView sd_setImageWithURL:[NSURL URLWithString:viewModel.portraitURL]
+                     placeholderImage:placeholderImage];
+    } else {
+        [imageView setImage:placeholderImage];
+    }
+}
+
 - (void)setContacts:(NSArray *)contacts {
     _selectedContacts = contacts;
 }
@@ -209,16 +249,7 @@
 }
 
 - (NSString *)getDigest:(RCMessageModel *)messageModel {
-    NSString *displayString = @"";
-    if ([messageModel.content respondsToSelector:@selector(conversationDigest)]) {
-        displayString = messageModel.content.conversationDigest;
-    } else if ([messageModel.content isMemberOfClass:RCRichContentMessage.class]) {
-        RCRichContentMessage *richContentMessage = (RCRichContentMessage *)messageModel.content;
-        displayString = richContentMessage.digest;
-    } else {
-        displayString = RCDLocalizedString(@"UnknownMessage");
-    }
-
+    NSString *displayString = [RCKitUtility formatMessage:messageModel.content];;
     return displayString;
 }
 
@@ -272,9 +303,7 @@
 - (UIView *)contentView {
     if (!_contentView) {
         _contentView = [[UIView alloc] init];
-        _contentView.backgroundColor =
-            [RCDUtilities generateDynamicColor:HEXCOLOR(0xffffff)
-                                     darkColor:[HEXCOLOR(0x000000) colorWithAlphaComponent:0.8]];
+        _contentView.backgroundColor = RCDynamicColor(@"common_background_color", @"0xffffff", @"0x000000cc");
         _contentView.layer.cornerRadius = 5;
         _contentView.layer.masksToBounds = YES;
         _contentView.userInteractionEnabled = YES;
@@ -286,7 +315,7 @@
     if (!_cancelButton) {
         _cancelButton = [[UIButton alloc] init];
         [_cancelButton setTitle:RCDLocalizedString(@"cancel") forState:UIControlStateNormal];
-        [_cancelButton setTitleColor:RCDDYCOLOR(0x262626, 0x9f9f9f) forState:UIControlStateNormal];
+        [_cancelButton setTitleColor:RCDynamicColor(@"text_primary_color", @"0x262626", @"0x9f9f9f") forState:UIControlStateNormal];
         _cancelButton.titleLabel.font = [UIFont systemFontOfSize:18];
         [_cancelButton addTarget:self action:@selector(cancelButtonEvent) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -297,7 +326,8 @@
     if (!_confirmButton) {
         _confirmButton = [[UIButton alloc] init];
         [_confirmButton setTitle:RCDLocalizedString(@"send") forState:UIControlStateNormal];
-        [_confirmButton setTitleColor:[UIColor colorWithHexString:@"3A91F3" alpha:1] forState:UIControlStateNormal];
+        [_confirmButton setTitleColor:RCDynamicColor(@"primary_color", @"0x3A91F3", @"0x3A91F3")
+        forState:UIControlStateNormal];
         _confirmButton.titleLabel.font = [UIFont systemFontOfSize:18];
         [_confirmButton addTarget:self
                            action:@selector(confirmButtonEvent)
@@ -319,7 +349,7 @@
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.font = [UIFont systemFontOfSize:18];
-        _titleLabel.textColor = RCDDYCOLOR(0x262626, 0x9f9f9f);
+        _titleLabel.textColor = RCDynamicColor(@"text_primary_color", @"0x262626", @"0x9f9f9f");
     }
     return _titleLabel;
 }
@@ -327,7 +357,7 @@
 - (UILabel *)nameLabel {
     if (!_nameLabel) {
         _nameLabel = [[UILabel alloc] init];
-        _nameLabel.textColor = RCDDYCOLOR(0x262626, 0x9f9f9f);
+        _nameLabel.textColor = RCDynamicColor(@"text_primary_color", @"0x262626", @"0x9f9f9f");
         _nameLabel.font = [UIFont systemFontOfSize:18];
         _nameLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         [self.scrollView addSubview:_nameLabel];
@@ -338,7 +368,7 @@
 - (UILabel *)forwardContentLabel {
     if (!_forwardContentLabel) {
         _forwardContentLabel = [[UILabel alloc] init];
-        _forwardContentLabel.textColor = RCDDYCOLOR(0x262626, 0x9f9f9f);
+        _forwardContentLabel.textColor = RCDynamicColor(@"text_primary_color", @"0x262626", @"0x9f9f9f");
         _forwardContentLabel.font = [UIFont systemFontOfSize:17];
     }
     return _forwardContentLabel;

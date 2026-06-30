@@ -133,13 +133,14 @@
 
 + (NSString *)getFirstUpperLetter:(NSString *)hanzi {
     NSString *pinyin = [self hanZiToPinYinWithString:hanzi];
-    NSString *firstUpperLetter = [[pinyin substringToIndex:1] uppercaseString];
-    if ([firstUpperLetter compare:@"A"] != NSOrderedAscending &&
-        [firstUpperLetter compare:@"Z"] != NSOrderedDescending) {
-        return firstUpperLetter;
-    } else {
-        return @"#";
+    if (pinyin.length != 0) {
+        NSString *firstUpperLetter = [[pinyin substringToIndex:1] uppercaseString];
+        if ([firstUpperLetter compare:@"A"] != NSOrderedAscending &&
+            [firstUpperLetter compare:@"Z"] != NSOrderedDescending) {
+            return firstUpperLetter;
+        }
     }
+    return @"#";
 }
 
 + (NSMutableDictionary *)sortedArrayWithPinYinDic:(NSArray *)userList {
@@ -563,5 +564,35 @@
         });
     }];
 }
+
+
++ (NSMutableDictionary *)sortedWithPinYinArray:(NSArray *)array
+                                    usingBlock:(NSString * (^)(id obj, NSUInteger idx))block {
+    
+    if (!array || array.count == 0)
+        return nil;
+
+    NSMutableDictionary *infoDic = [NSMutableDictionary new];
+    NSMutableArray *allkeyArr = [NSMutableArray new];
+    for (int i = 0; i<array.count; i++) {
+        NSString *firstLetter = @"#";
+        id obj = array[i];
+        NSString *key = block(obj, i);
+        firstLetter = [self getFirstUpperLetter:key];
+        if (![allkeyArr containsObject:firstLetter]) {
+            [allkeyArr addObject:firstLetter];
+        }
+        
+        NSMutableArray *result = [infoDic valueForKey:firstLetter];
+        if (!result) {
+            result = [NSMutableArray new];
+            [infoDic setObject:result forKey:firstLetter];
+        }
+        [result addObject:obj];
+    }
+    return infoDic;
+}
+
+
 
 @end

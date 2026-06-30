@@ -58,6 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 保存图片到相册
 + (void)savePhotosAlbumWithImage:(UIImage *)image authorizationStatusBlock:(nullable dispatch_block_t)authorizationStatusBlock resultBlock:(nullable void (^)(BOOL success))resultBlock;
 
++ (NSMutableDictionary *)sortedWithPinYinArray:(NSArray *)array
+                                    usingBlock:(NSString * (^)(id obj, NSUInteger idx))block;
 @end
 
 NS_ASSUME_NONNULL_END
