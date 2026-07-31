@@ -100,7 +100,6 @@
 		005034B52ED8568600727457 /* RCNDRoomCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 005034B42ED8568600727457 /* RCNDRoomCardView.m */; };
 		005034B82ED856A700727457 /* RCNDPaddingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 005034B72ED856A700727457 /* RCNDPaddingLabel.m */; };
 		005034BB2ED8574200727457 /* RCNDSVGPathGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 005034BA2ED8574200727457 /* RCNDSVGPathGenerator.m */; };
-		0056372F2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.m in Sources */ = {isa = PBXBuildFile; fileRef = 0056372E2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.m */; };
 		006AF3642C7F25C90079B460 /* RCUMainTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 006AF3632C7F25C90079B460 /* RCUMainTabBarViewController.m */; };
 		006AF36E2C805ABC0079B460 /* RCUChatListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 006AF36D2C805ABC0079B460 /* RCUChatListViewController.m */; };
 		006AF3712C806A990079B460 /* RCUMeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 006AF3702C806A990079B460 /* RCUMeTableViewController.m */; };
@@ -887,8 +886,6 @@
 		005034B72ED856A700727457 /* RCNDPaddingLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNDPaddingLabel.m; sourceTree = "<group>"; };
 		005034B92ED8574200727457 /* RCNDSVGPathGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNDSVGPathGenerator.h; sourceTree = "<group>"; };
 		005034BA2ED8574200727457 /* RCNDSVGPathGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNDSVGPathGenerator.m; sourceTree = "<group>"; };
-		0056372D2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCCallKitExtensionModule+Temp.h"; sourceTree = "<group>"; };
-		0056372E2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCCallKitExtensionModule+Temp.m"; sourceTree = "<group>"; };
 		006AF3622C7F25C90079B460 /* RCUMainTabBarViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCUMainTabBarViewController.h; sourceTree = "<group>"; };
 		006AF3632C7F25C90079B460 /* RCUMainTabBarViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCUMainTabBarViewController.m; sourceTree = "<group>"; };
 		006AF36C2C805ABC0079B460 /* RCUChatListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCUChatListViewController.h; sourceTree = "<group>"; };
@@ -1911,8 +1908,6 @@
 				007807E12940735400947E3A /* RCDStickerTest.m */,
 				1B4BD93B2A8DF14A008FC1B1 /* RCURLCenter+Test.h */,
 				1B4BD93C2A8DF14A008FC1B1 /* RCURLCenter+Test.m */,
-				0056372D2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.h */,
-				0056372E2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.m */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -5429,7 +5424,6 @@
 				A29070BB229E8045006BDAC7 /* RCDTestMessage.m in Sources */,
 				3B0F2C6A22DC6D470017979E /* RCDAddressBookFriendCell.m in Sources */,
 				000964812EF5448B000C090E /* RCNDContactCellViewModel.m in Sources */,
-				0056372F2EFA8AA9009E9DE2 /* RCCallKitExtensionModule+Temp.m in Sources */,
 				005033BA2ED010BA00727457 /* RCNDMessageBlockViewModel.m in Sources */,
 				0093A1A12ECEB21400B71D05 /* RCNDBaseCell.m in Sources */,
 				0093A1B62ECEC1A200B71D05 /* RCNDMeViewController.m in Sources */,
@@ -6088,6 +6082,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
 					"$(PROJECT_DIR)/framework",
@@ -6294,6 +6289,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
 					"$(PROJECT_DIR)/framework",
@@ -6717,6 +6713,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
 					"$(PROJECT_DIR)/framework",
@@ -6831,6 +6828,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
 					"$(PROJECT_DIR)/framework",
@@ -6991,6 +6989,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
 					"$(PROJECT_DIR)/framework",
@@ -7062,6 +7061,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = T7DYH4JM86;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/framework",
 					"$(PROJECT_DIR)/framework",

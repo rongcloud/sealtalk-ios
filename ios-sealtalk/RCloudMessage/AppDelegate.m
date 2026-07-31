@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <objc/message.h>
 #import "RCDCommonDefine.h"
 #import "RCNDLoginViewController.h"
 #import "RCNDLoginViewController.h"
@@ -16,6 +17,7 @@
 #import "RCDProxySettingControllerViewController.h"
 #import "RCDRCIMDataSource.h"
 #import "RCDTestMessage.h"
+#import <RongCallKit/RongCallKit.h>
 #import "RCDUtilities.h"
 #import "UIColor+RCColor.h"
 #import "RCDBuglyManager.h"
@@ -153,7 +155,14 @@ extern NSString *const RCDDebugMessageDisableUserInfoEntrust;
     initOption.statisticServer = [RCDEnvironmentContext statsServer];
     NSString *appKey = [RCDEnvironmentContext appKey];
     [[RCIM sharedRCIM] initWithAppKey:appKey option:initOption];
-    
+
+    // 开启通话防诈骗提醒：主叫/被叫弹出通话页面前先提示防诈，用户确认后才继续通话
+    RCCall *call = [RCCall sharedRCCall];
+    SEL antiFraudTipSelector = NSSelectorFromString(@"setAntiFraudTipEnabled:");
+    if ([call respondsToSelector:antiFraudTipSelector]) {
+        ((void (*)(id, SEL, BOOL))objc_msgSend)(call, antiFraudTipSelector, YES);
+    }
+
     // 设置appVersion
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
