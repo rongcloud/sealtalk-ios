@@ -7,6 +7,33 @@
 //
 
 #import "RCDDebugUltraGroupChatViewController.h"
+
+static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults boolForKey:@"pushConfig-android-mi-template-enabled"]) {
+        return;
+    }
+    NSString *templateId = [defaults stringForKey:@"pushConfig-android-mi-template-id"];
+    NSString *templateParam = [defaults stringForKey:@"pushConfig-android-mi-template-param"];
+    if (templateId.length > 0) {
+        pushConfig.androidConfig.templateIdMi = templateId;
+    }
+    if (templateParam.length == 0) {
+        return;
+    }
+    NSData *data = [templateParam dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error || ![object isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    for (id key in (NSDictionary *)object) {
+        if (![key isKindOfClass:[NSString class]] || ![object[key] isKindOfClass:[NSString class]]) {
+            return;
+        }
+    }
+    pushConfig.androidConfig.templateParamMi = object;
+}
 #import "RCDDebugChatSettingViewController.h"
 #import "RCDUIBarButtonItem.h"
 #import "NormalAlertView.h"
@@ -246,7 +273,19 @@
     } error:^(RCErrorCode status) {
         [self showToastMsg:[NSString stringWithFormat:@"发送正在输入的状态失败：%@",@(status)]];
     }];
-    
+
+    [self sendDebugMessage:messageContent pushContent:pushContent];
+}
+
+- (void)onlySendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
+    if (messageContent.destructDuration > 0) {
+        pushContent = RCLocalizedString(@"BurnAfterRead");
+    }
+
+    [self sendDebugMessage:messageContent pushContent:pushContent];
+}
+
+- (void)sendDebugMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
     RCMessagePushConfig *pushConfig = [self getPushConfig];
     RCMessageConfig *config = [self getConfig];
     if (self.targetId == nil) {
@@ -300,6 +339,7 @@
 
     pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
+    RCDApplyMiTemplateConfig(pushConfig);
     pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
     pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
@@ -447,6 +487,7 @@
     message.channelId = self.channelId;
     message.targetId = self.targetId;
     message.conversationType = ConversationType_ULTRAGROUP;
+    [self applyMiTemplateConfigToRecallMessage:message];
     
     NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
@@ -472,6 +513,7 @@
     message.channelId = self.channelId;
     message.targetId = self.targetId;
     message.conversationType = ConversationType_ULTRAGROUP;
+    [self applyMiTemplateConfigToRecallMessage:message];
     
     NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
@@ -488,6 +530,12 @@
     } else {
         [self showAlertTitle:nil message:@"请测试自己发的消息"];
     }
+}
+
+- (void)applyMiTemplateConfigToRecallMessage:(RCMessage *)message {
+    RCMessagePushConfig *pushConfig = message.messagePushConfig ?: [[RCMessagePushConfig alloc] init];
+    RCDApplyMiTemplateConfig(pushConfig);
+    message.messagePushConfig = pushConfig;
 }
 
 /**

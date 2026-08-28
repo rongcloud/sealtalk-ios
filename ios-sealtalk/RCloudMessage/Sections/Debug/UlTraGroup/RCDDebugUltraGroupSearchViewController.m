@@ -14,7 +14,7 @@
 #import "RCDSearchResultViewCell.h"
 
 #import "RCDSearchResultModel.h"
-#import "RCDDebugUlTraGroupChatViewController.h"
+#import "RCDDebugUltraGroupChatViewController.h"
 
 @interface RCDDebugUltraGroupSearchViewController () <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
 

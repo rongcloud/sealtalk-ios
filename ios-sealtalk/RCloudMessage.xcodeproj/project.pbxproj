@@ -408,7 +408,7 @@
 		9C27480F22A0E3E4001A4413 /* RCDDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C27480E22A0E3E4001A4413 /* RCDDBManager.m */; };
 		9C6B9630229E8A8900442B5B /* RCDDBHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6B962F229E8A8900442B5B /* RCDDBHelper.m */; };
 		9CD3911B4816819FA7BA7A15 /* RCDOpenClawBotManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9736A0862413BAC45A4779 /* RCDOpenClawBotManager.m */; };
-		9F7614A02779B81800131616 /* RCDDebugUlTraGroupDefine.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */; };
+		9F7614A02779B81800131616 /* RCDDebugUltraGroupDefine.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F76149F2779B81600131616 /* RCDDebugUltraGroupDefine.m */; };
 		9FCF7DB1277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */; };
 		A20131ED22F28C1200C24160 /* RCDPokeAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A20131EC22F28C1200C24160 /* RCDPokeAlertView.m */; };
 		A20131F622F2D99400C24160 /* RCDPokeMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A20131F522F2D99400C24160 /* RCDPokeMessage.m */; };
@@ -528,6 +528,7 @@
 		B25452DC805ECB07415B461D /* RCDOpenClawBotSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E075DB66458835334A7ECA61 /* RCDOpenClawBotSelectViewController.m */; };
 		B6D2FAD8AF36D9F7005479AD /* RCDOpenClawIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1343F93664B270E51321C6D6 /* RCDOpenClawIntroViewController.m */; };
 		BFFEB323D1794028823DD4F4 /* RCDOpenClawBotListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB25C3768FDE443E8C2AEB9E /* RCDOpenClawBotListCell.m */; };
+		C0D3B0012F00000000000001 /* RCDContactCardMessageCellReferenceContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C0D3B0012F00000000000003 /* RCDContactCardMessageCellReferenceContentView.m */; };
 		C103C2F45F9E52E181915548 /* Pods_SealTalkNotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A4D0467FA1DCB2099870924 /* Pods_SealTalkNotificationService.framework */; };
 		C582815D357144699B3073D4 /* RCDOpenClawBot.m in Sources */ = {isa = PBXBuildFile; fileRef = 353197913BD2C87230403694 /* RCDOpenClawBot.m */; };
 		C9D3DDAD295BEEAC0057F6E1 /* RCDDebugFileIconViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D3DDAC295BEEAC0057F6E1 /* RCDDebugFileIconViewController.m */; };
@@ -549,7 +550,6 @@
 		F1E2A7722B46BC8300E78CBB /* RCDCombineV2MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A7702B46BC8300E78CBB /* RCDCombineV2MessageCell.m */; };
 		F1E2A7752B47D64100E78CBB /* RCDCombineV2Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A7742B47D64100E78CBB /* RCDCombineV2Utility.m */; };
 		F1E2A7782B47EBA500E78CBB /* RCDCombineV2PreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E2A7772B47EBA500E78CBB /* RCDCombineV2PreviewController.m */; };
-		C0D3B0012F00000000000001 /* RCDContactCardMessageCellReferenceContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C0D3B0012F00000000000003 /* RCDContactCardMessageCellReferenceContentView.m */; };
 		F1E7784C21A622B00005C37D /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1E7784B21A622B00005C37D /* UserNotifications.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F880EA791D0808B300FD5CC4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F880EA781D0808B300FD5CC4 /* VideoToolbox.framework */; };
 		F8AD4A551CAE56A4006C1CBB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8AD4A541CAE56A4006C1CBB /* PushKit.framework */; };
@@ -1525,7 +1525,7 @@
 		9C6B962F229E8A8900442B5B /* RCDDBHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDBHelper.m; sourceTree = "<group>"; };
 		9F5B65AC30CF492225DBFE53 /* RCDOpenClawGroupBotListViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawGroupBotListViewModel.m; sourceTree = "<group>"; };
 		9F76149E2779B81600131616 /* RCDDebugUltraGroupDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupDefine.h; sourceTree = "<group>"; };
-		9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUlTraGroupDefine.m; sourceTree = "<group>"; };
+		9F76149F2779B81600131616 /* RCDDebugUltraGroupDefine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupDefine.m; sourceTree = "<group>"; };
 		9FCF7DAF277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupSendMessage.h; sourceTree = "<group>"; };
 		9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugUltraGroupSendMessage.m; sourceTree = "<group>"; };
 		A20131EB22F28C1200C24160 /* RCDPokeAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDPokeAlertView.h; sourceTree = "<group>"; };
@@ -1773,6 +1773,8 @@
 		B3B4485E22377DEF6C20B592 /* RCDOpenClawBotSelectViewModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawBotSelectViewModel.m; sourceTree = "<group>"; };
 		B4C5D6E7F8091A2B3C4D5E6F /* RCDOpenClawSearchView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCDOpenClawSearchView.m; sourceTree = "<group>"; };
 		B522702D3AB4425183AB6509 /* RCDOpenClawBotActionCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCDOpenClawBotActionCell.h; sourceTree = "<group>"; };
+		C0D3B0012F00000000000002 /* RCDContactCardMessageCellReferenceContentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDContactCardMessageCellReferenceContentView.h; sourceTree = "<group>"; };
+		C0D3B0012F00000000000003 /* RCDContactCardMessageCellReferenceContentView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDContactCardMessageCellReferenceContentView.m; sourceTree = "<group>"; };
 		C9D3DDAB295BEEAC0057F6E1 /* RCDDebugFileIconViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugFileIconViewController.h; sourceTree = "<group>"; };
 		C9D3DDAC295BEEAC0057F6E1 /* RCDDebugFileIconViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDDebugFileIconViewController.m; sourceTree = "<group>"; };
 		C9D3DDB3295C16620057F6E1 /* RCDDebugUltraGroupSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDDebugUltraGroupSearchViewController.h; sourceTree = "<group>"; };
@@ -1820,8 +1822,6 @@
 		F1D550412B4CE84800BE7DB6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F1E2A7702B46BC8300E78CBB /* RCDCombineV2MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDCombineV2MessageCell.m; sourceTree = "<group>"; };
 		F1E2A7712B46BC8300E78CBB /* RCDCombineV2MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDCombineV2MessageCell.h; sourceTree = "<group>"; };
-		C0D3B0012F00000000000002 /* RCDContactCardMessageCellReferenceContentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDContactCardMessageCellReferenceContentView.h; sourceTree = "<group>"; };
-		C0D3B0012F00000000000003 /* RCDContactCardMessageCellReferenceContentView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCDContactCardMessageCellReferenceContentView.m; sourceTree = "<group>"; };
 		F1E2A7732B47D64000E78CBB /* RCDCombineV2Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDCombineV2Utility.h; sourceTree = "<group>"; };
 		F1E2A7742B47D64100E78CBB /* RCDCombineV2Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDCombineV2Utility.m; sourceTree = "<group>"; };
 		F1E2A7762B47EBA500E78CBB /* RCDCombineV2PreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCDCombineV2PreviewController.h; sourceTree = "<group>"; };
@@ -3241,7 +3241,7 @@
 				C9D3DDAA295BEE800057F6E1 /* FileIcon */,
 				007322962858623000B51977 /* Category */,
 				00CEE55528043B540079C6AE /* CommonChatroom */,
-				3BD65C27274F2BBB0035F190 /* UlTraGroup */,
+				3BD65C27274F2BBB0035F190 /* UltraGroup */,
 				A27E8261263A877400A7DF26 /* MessageShortage */,
 				A2910AA025E5036D005651E2 /* GroupReadReceipt */,
 				3B3563122570B1580095A2AF /* MessagePushConfig */,
@@ -3672,7 +3672,7 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		3BD65C27274F2BBB0035F190 /* UlTraGroup */ = {
+		3BD65C27274F2BBB0035F190 /* UltraGroup */ = {
 			isa = PBXGroup;
 			children = (
 				007558A5285C65CF0082F0EB /* ChannelSetting */,
@@ -3689,7 +3689,7 @@
 				C9D3DDC8295C23390057F6E1 /* RCDDebugUltraGroupChatSearchViewController.h */,
 				C9D3DDC9295C23390057F6E1 /* RCDDebugUltraGroupChatSearchViewController.m */,
 				9F76149E2779B81600131616 /* RCDDebugUltraGroupDefine.h */,
-				9F76149F2779B81600131616 /* RCDDebugUlTraGroupDefine.m */,
+				9F76149F2779B81600131616 /* RCDDebugUltraGroupDefine.m */,
 				9FCF7DAF277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.h */,
 				9FCF7DB0277AFCC500AC7A1D /* RCDDebugUltraGroupSendMessage.m */,
 				D5A189FE27C8C6560088BA7E /* RCDDebugNotificationQuietHoursSettingViewController.h */,
@@ -3699,7 +3699,7 @@
 				00C94E1D27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.h */,
 				00C94E1E27F6FDCC0028FE33 /* RCDDebugUltraGroupUnreadMessageViewController.m */,
 			);
-			path = UlTraGroup;
+			path = UltraGroup;
 			sourceTree = "<group>";
 		};
 		3BEB4F6322C3805B003923CC /* Message */ = {
@@ -5736,7 +5736,7 @@
 				00850C08296E5DD60066E25C /* RCDUserGroupCreateView.m in Sources */,
 				00277C2E27D0BDDE00D8653D /* RCDTranslationViewController.m in Sources */,
 				00CEE55B28043C460079C6AE /* RCDDebugComChatViewController.m in Sources */,
-				9F7614A02779B81800131616 /* RCDDebugUlTraGroupDefine.m in Sources */,
+				9F7614A02779B81800131616 /* RCDDebugUltraGroupDefine.m in Sources */,
 				A201320422F2DD1400C24160 /* RCDPokeMessageCell.m in Sources */,
 				3CF199D72B146D860009E699 /* RCDDebugMessageAuditInfoViewController.m in Sources */,
 				009F40F02EDEC31A0005E868 /* RCNDSearchContext.m in Sources */,

@@ -16,6 +16,21 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     RCDInterruptionLevel_critical = 4
 };
 
+static NSString * const kMiTemplateEnabledKey = @"pushConfig-android-mi-template-enabled";
+static NSString * const kMiTemplateIdKey = @"pushConfig-android-mi-template-id";
+static NSString * const kMiTemplateParamKey = @"pushConfig-android-mi-template-param";
+static NSString * const kMiTemplateIdDefault = @"P12491";
+static NSString * const kMiTemplateParamDefault = @"{\"keywords1\":\"测试群\",\"keywords2\":\"张三\",\"keywords3\":\"测试消息\"}";
+
+// 音视频通话小米私信模板（与 IM 消息模板隔离，模板内容不同，独立开关/ID/参数）
+static NSString * const kCallMiTemplateEnabledKey = @"pushConfig-call-mi-template-enabled";
+static NSString * const kCallMiTemplateIdKey = @"pushConfig-call-mi-template-id";
+static NSString * const kCallInviteMiTemplateParamKey = @"pushConfig-call-invite-mi-template-param";
+static NSString * const kCallHangupMiTemplateParamKey = @"pushConfig-call-hangup-mi-template-param";
+static NSString * const kCallMiTemplateIdDefault = @"M10142";
+static NSString * const kCallInviteMiTemplateParamDefault = @"{\"keywords1\":\"张三\",\"keywords2\":\"语音通话\"}";
+static NSString * const kCallHangupMiTemplateParamDefault = @"{\"keywords1\":\"张三\",\"keywords2\":\"通话已结束\"}";
+
 @interface RCDDebugMessagePushConfigController ()
 
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -27,6 +42,8 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
 @property (nonatomic, strong) UIButton *disableTitleBtn;
 
 @property (nonatomic, strong) UIButton *forceShowDetailBtn;
+
+@property (nonatomic, strong) UIButton *enableMiTemplateBtn;
 
 @property (nonatomic, strong) UITextField *notificationIdTF;
 
@@ -50,6 +67,10 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
 @property (nonatomic, strong) UITextField *apnsCollapseIdTF;
 
 @property (nonatomic, strong) UITextField *channelIdMiTF;
+
+@property (nonatomic, strong) UITextField *templateIdMiTF;
+
+@property (nonatomic, strong) UITextField *templateParamMiTF;
 
 @property (nonatomic, strong) UITextField *channelIdHWTF;
 
@@ -81,6 +102,12 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
 @property (nonatomic, strong) UITextField *imageUrlHMOSTF;
 
 @property (nonatomic, strong) UITextField *categoryHMOSTF;
+
+// 音视频通话小米私信模板
+@property (nonatomic, strong) UIButton *enableCallMiTemplateBtn;
+@property (nonatomic, strong) UITextField *callTemplateIdMiTF;
+@property (nonatomic, strong) UITextField *callInviteTemplateParamMiTF;
+@property (nonatomic, strong) UITextField *callHangupTemplateParamMiTF;
 
 
 @property (nonatomic, strong) RCMessagePushConfig *pushConfig;
@@ -123,6 +150,9 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     [self.contentView addSubview:self.categoryTF];
     [self.contentView addSubview:self.apnsCollapseIdTF];
     [self.contentView addSubview:self.channelIdMiTF];
+    [self.contentView addSubview:self.enableMiTemplateBtn];
+    [self.contentView addSubview:self.templateIdMiTF];
+    [self.contentView addSubview:self.templateParamMiTF];
     [self.contentView addSubview:self.channelIdHWTF];
     [self.contentView addSubview:self.categoryHWTF];
     [self.contentView addSubview:self.channelIdOPPOTF];
@@ -139,6 +169,11 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
 
     [self.contentView addSubview:self.imageUrlHMOSTF];
     [self.contentView addSubview:self.categoryHMOSTF];
+
+    [self.contentView addSubview:self.enableCallMiTemplateBtn];
+    [self.contentView addSubview:self.callTemplateIdMiTF];
+    [self.contentView addSubview:self.callInviteTemplateParamMiTF];
+    [self.contentView addSubview:self.callHangupTemplateParamMiTF];
     
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.right.bottom.equalTo(self.view);
@@ -223,9 +258,24 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
         make.top.equalTo(self.notificationIdTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
+
+    [self.enableMiTemplateBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.channelIdMiTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.templateIdMiTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.enableMiTemplateBtn.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.templateParamMiTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.templateIdMiTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
     
     [self.channelIdHWTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.channelIdMiTF.mas_bottom).offset(10);
+        make.top.equalTo(self.templateParamMiTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
     }];
     
@@ -299,6 +349,26 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     [self.categoryHMOSTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.imageUrlHMOSTF.mas_bottom).offset(10);
         make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.enableCallMiTemplateBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.categoryHMOSTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.callTemplateIdMiTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.enableCallMiTemplateBtn.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.callInviteTemplateParamMiTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.callTemplateIdMiTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
+    }];
+
+    [self.callHangupTemplateParamMiTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.callInviteTemplateParamMiTF.mas_bottom).offset(10);
+        make.height.left.right.equalTo(self.disableTitleBtn);
         make.bottom.equalTo(self.contentView);
     }];
 }
@@ -335,6 +405,9 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
         self.categoryTF.text = self.pushConfig.iOSConfig.category;
         self.apnsCollapseIdTF.text = self.pushConfig.iOSConfig.apnsCollapseId;
         self.channelIdMiTF.text = self.pushConfig.androidConfig.channelIdMi;
+        self.enableMiTemplateBtn.selected = [[[NSUserDefaults standardUserDefaults] objectForKey:kMiTemplateEnabledKey] boolValue];
+        self.templateIdMiTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:kMiTemplateIdKey] ?: kMiTemplateIdDefault;
+        self.templateParamMiTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:kMiTemplateParamKey] ?: kMiTemplateParamDefault;
         self.channelIdHWTF.text = self.pushConfig.androidConfig.channelIdHW;
         self.categoryHWTF.text = self.pushConfig.androidConfig.categoryHW;
         self.channelIdOPPOTF.text = self.pushConfig.androidConfig.channelIdOPPO;
@@ -348,6 +421,14 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
         self.fcmChannelIdTF.text = self.pushConfig.androidConfig.fcmChannelId;
         self.importanceHonorTF.text = self.pushConfig.androidConfig.importanceHonor;
         self.imageUrlHonorTF.text = self.pushConfig.androidConfig.imageUrlHonor;
+        [self updateMiTemplateInputState];
+
+        // 音视频通话小米模板
+        self.enableCallMiTemplateBtn.selected = [[[NSUserDefaults standardUserDefaults] objectForKey:kCallMiTemplateEnabledKey] boolValue];
+        self.callTemplateIdMiTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:kCallMiTemplateIdKey] ?: kCallMiTemplateIdDefault;
+        self.callInviteTemplateParamMiTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:kCallInviteMiTemplateParamKey] ?: kCallInviteMiTemplateParamDefault;
+        self.callHangupTemplateParamMiTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:kCallHangupMiTemplateParamKey] ?: kCallHangupMiTemplateParamDefault;
+        [self updateCallMiTemplateInputState];
     }
     
     if (self.config) {
@@ -403,6 +484,53 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     self.forceShowDetailBtn.selected = !self.forceShowDetailBtn.selected;
 }
 
+- (void)toggleMiTemplate {
+    self.enableMiTemplateBtn.selected = !self.enableMiTemplateBtn.selected;
+    [self updateMiTemplateInputState];
+}
+
+- (void)updateMiTemplateInputState {
+    BOOL enabled = self.enableMiTemplateBtn.selected;
+    self.templateIdMiTF.enabled = enabled;
+    self.templateParamMiTF.enabled = enabled;
+}
+
+- (void)toggleCallMiTemplate {
+    self.enableCallMiTemplateBtn.selected = !self.enableCallMiTemplateBtn.selected;
+    [self updateCallMiTemplateInputState];
+}
+
+- (void)updateCallMiTemplateInputState {
+    BOOL enabled = self.enableCallMiTemplateBtn.selected;
+    self.callTemplateIdMiTF.enabled = enabled;
+    self.callInviteTemplateParamMiTF.enabled = enabled;
+    self.callHangupTemplateParamMiTF.enabled = enabled;
+}
+
+- (NSDictionary<NSString *, NSString *> *)miTemplateParamsFromText:(NSString *)text error:(NSError **)error {
+    NSData *data = [text dataUsingEncoding:NSUTF8StringEncoding];
+    if (data.length == 0) {
+        return @{};
+    }
+    id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+    if (![object isKindOfClass:[NSDictionary class]]) {
+        if (error && !*error) {
+            *error = [NSError errorWithDomain:@"RCDDebugMessagePushConfig" code:1 userInfo:@{NSLocalizedDescriptionKey : @"模板参数必须是 JSON 对象"}];
+        }
+        return nil;
+    }
+    NSDictionary *dictionary = object;
+    for (id key in dictionary) {
+        if (![key isKindOfClass:[NSString class]] || ![dictionary[key] isKindOfClass:[NSString class]]) {
+            if (error && !*error) {
+                *error = [NSError errorWithDomain:@"RCDDebugMessagePushConfig" code:2 userInfo:@{NSLocalizedDescriptionKey : @"模板参数的键和值都必须是字符串"}];
+            }
+            return nil;
+        }
+    }
+    return dictionary;
+}
+
 - (void)save {
     
     RCMessagePushConfig *pushConfig = [[RCMessagePushConfig alloc] init];
@@ -418,6 +546,21 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     pushConfig.iOSConfig.interruptionLevel = [self p_interruptionLevelToString:[self.interruptionLevelTF.text integerValue]];
     pushConfig.androidConfig.notificationId = self.notificationIdTF.text;
     pushConfig.androidConfig.channelIdMi = self.channelIdMiTF.text;
+    if (self.enableMiTemplateBtn.selected) {
+        NSString *templateId = [self.templateIdMiTF.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (templateId.length > 0) {
+            pushConfig.androidConfig.templateIdMi = templateId;
+        }
+        if (self.templateParamMiTF.text.length > 0) {
+            NSError *error = nil;
+            NSDictionary *templateParams = [self miTemplateParamsFromText:self.templateParamMiTF.text error:&error];
+            if (!templateParams) {
+                [self showMiTemplateError:error.localizedDescription ?: @"小米模板参数格式错误"];
+                return;
+            }
+            pushConfig.androidConfig.templateParamMi = templateParams;
+        }
+    }
     pushConfig.androidConfig.channelIdHW = self.channelIdHWTF.text;
     pushConfig.androidConfig.categoryHW = self.categoryHWTF.text;
     pushConfig.androidConfig.channelIdOPPO = self.channelIdOPPOTF.text;
@@ -436,6 +579,25 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     // HMOS
     pushConfig.hmosConfig.imageUrl = self.imageUrlHMOSTF.text;
     pushConfig.hmosConfig.category = self.categoryHMOSTF.text;
+
+    // 音视频通话小米模板：开启时校验呼叫/挂断参数 JSON，非法则阻断保存并提示
+    if (self.enableCallMiTemplateBtn.selected) {
+        if (self.callInviteTemplateParamMiTF.text.length > 0) {
+            NSError *error = nil;
+            if (![self miTemplateParamsFromText:self.callInviteTemplateParamMiTF.text error:&error]) {
+                [self showMiTemplateError:error.localizedDescription ?: @"通话呼叫模板参数格式错误"];
+                return;
+            }
+        }
+        if (self.callHangupTemplateParamMiTF.text.length > 0) {
+            NSError *error = nil;
+            if (![self miTemplateParamsFromText:self.callHangupTemplateParamMiTF.text error:&error]) {
+                [self showMiTemplateError:error.localizedDescription ?: @"通话挂断模板参数格式错误"];
+                return;
+            }
+        }
+    }
+
     [self saveToUserDefaults:pushConfig];
     
     RCMessageConfig *config = [[RCMessageConfig alloc] init];
@@ -464,6 +626,9 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.notificationId forKey:@"pushConfig-android-id"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdMi forKey:@"pushConfig-android-mi"];
+    [[NSUserDefaults standardUserDefaults] setObject:@(self.enableMiTemplateBtn.selected) forKey:kMiTemplateEnabledKey];
+    [[NSUserDefaults standardUserDefaults] setObject:self.templateIdMiTF.text forKey:kMiTemplateIdKey];
+    [[NSUserDefaults standardUserDefaults] setObject:self.templateParamMiTF.text forKey:kMiTemplateParamKey];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdHW forKey:@"pushConfig-android-hw"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.categoryHW forKey:@"pushConfig-android-hw-category"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.androidConfig.channelIdOPPO forKey:@"pushConfig-android-oppo"];
@@ -482,6 +647,18 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     // HMOS
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.hmosConfig.category forKey:@"pushConfig-HarmonyOS-category"];
     [[NSUserDefaults standardUserDefaults] setObject:pushConfig.hmosConfig.imageUrl forKey:@"pushConfig-HarmonyOS-imageUrl"];
+
+    // 音视频通话小米模板（开关 + 模板 ID + 呼叫/挂断参数原始文本）
+    [[NSUserDefaults standardUserDefaults] setObject:@(self.enableCallMiTemplateBtn.selected) forKey:kCallMiTemplateEnabledKey];
+    [[NSUserDefaults standardUserDefaults] setObject:self.callTemplateIdMiTF.text forKey:kCallMiTemplateIdKey];
+    [[NSUserDefaults standardUserDefaults] setObject:self.callInviteTemplateParamMiTF.text forKey:kCallInviteMiTemplateParamKey];
+    [[NSUserDefaults standardUserDefaults] setObject:self.callHangupTemplateParamMiTF.text forKey:kCallHangupMiTemplateParamKey];
+}
+
+- (void)showMiTemplateError:(NSString *)message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"配置错误" message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)saveConfigToUserDefaults:(RCMessageConfig *)config {
@@ -720,6 +897,39 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
     return _channelIdMiTF;
 }
 
+- (UIButton *)enableMiTemplateBtn {
+    if (!_enableMiTemplateBtn) {
+        _enableMiTemplateBtn = [[UIButton alloc] init];
+        [_enableMiTemplateBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_enableMiTemplateBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+        [_enableMiTemplateBtn setTitle:@"□ 小米私信模板" forState:UIControlStateNormal];
+        [_enableMiTemplateBtn setTitle:@"✅ 小米私信模板" forState:UIControlStateSelected];
+        [_enableMiTemplateBtn addTarget:self action:@selector(toggleMiTemplate) forControlEvents:UIControlEventTouchUpInside];
+        _enableMiTemplateBtn.layer.borderWidth = 1;
+        _enableMiTemplateBtn.layer.cornerRadius = 8;
+    }
+    return _enableMiTemplateBtn;
+}
+
+- (UITextField *)templateIdMiTF {
+    if (!_templateIdMiTF) {
+        _templateIdMiTF = [[UITextField alloc] init];
+        _templateIdMiTF.placeholder = @"小米私信模板 ID，默认 P12491";
+        _templateIdMiTF.layer.borderWidth = 1;
+    }
+    return _templateIdMiTF;
+}
+
+- (UITextField *)templateParamMiTF {
+    if (!_templateParamMiTF) {
+        _templateParamMiTF = [[UITextField alloc] init];
+        _templateParamMiTF.placeholder = @"小米私信模板参数 JSON";
+        _templateParamMiTF.layer.borderWidth = 1;
+        _templateParamMiTF.autocorrectionType = UITextAutocorrectionTypeNo;
+    }
+    return _templateParamMiTF;
+}
+
 - (UITextField *)channelIdHWTF {
     if (!_channelIdHWTF) {
         _channelIdHWTF = [[UITextField alloc] init];
@@ -836,6 +1046,49 @@ typedef NS_ENUM(NSInteger, RCDInterruptionLevel) {
         _imageUrlHonorTF.layer.borderWidth = 1;
     }
     return _imageUrlHonorTF;
+}
+
+- (UIButton *)enableCallMiTemplateBtn {
+    if (!_enableCallMiTemplateBtn) {
+        _enableCallMiTemplateBtn = [[UIButton alloc] init];
+        [_enableCallMiTemplateBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_enableCallMiTemplateBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+        [_enableCallMiTemplateBtn setTitle:@"□ 音视频通话小米私信模板" forState:UIControlStateNormal];
+        [_enableCallMiTemplateBtn setTitle:@"✅ 音视频通话小米私信模板" forState:UIControlStateSelected];
+        [_enableCallMiTemplateBtn addTarget:self action:@selector(toggleCallMiTemplate) forControlEvents:UIControlEventTouchUpInside];
+        _enableCallMiTemplateBtn.layer.borderWidth = 1;
+        _enableCallMiTemplateBtn.layer.cornerRadius = 8;
+    }
+    return _enableCallMiTemplateBtn;
+}
+
+- (UITextField *)callTemplateIdMiTF {
+    if (!_callTemplateIdMiTF) {
+        _callTemplateIdMiTF = [[UITextField alloc] init];
+        _callTemplateIdMiTF.placeholder = @"通话小米私信模板 ID，默认 M10142";
+        _callTemplateIdMiTF.layer.borderWidth = 1;
+    }
+    return _callTemplateIdMiTF;
+}
+
+- (UITextField *)callInviteTemplateParamMiTF {
+    if (!_callInviteTemplateParamMiTF) {
+        _callInviteTemplateParamMiTF = [[UITextField alloc] init];
+        _callInviteTemplateParamMiTF.placeholder = @"通话呼叫模板参数 JSON";
+        _callInviteTemplateParamMiTF.layer.borderWidth = 1;
+        _callInviteTemplateParamMiTF.autocorrectionType = UITextAutocorrectionTypeNo;
+    }
+    return _callInviteTemplateParamMiTF;
+}
+
+- (UITextField *)callHangupTemplateParamMiTF {
+    if (!_callHangupTemplateParamMiTF) {
+        _callHangupTemplateParamMiTF = [[UITextField alloc] init];
+        _callHangupTemplateParamMiTF.placeholder = @"通话挂断模板参数 JSON";
+        _callHangupTemplateParamMiTF.layer.borderWidth = 1;
+        _callHangupTemplateParamMiTF.autocorrectionType = UITextAutocorrectionTypeNo;
+    }
+    return _callHangupTemplateParamMiTF;
 }
 
 - (UITextField *)imageUrlHMOSTF {
