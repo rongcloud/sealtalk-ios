@@ -38,9 +38,7 @@
 - (void)setDataModel:(RCConversationModel *)model {
     model.unreadMessageCount = [RCDGroupManager getGroupNoticeUnreadCount];
     [super setDataModel:model];
-    NSUserDefaults *std = [NSUserDefaults standardUserDefaults];
-    BOOL ret = [std boolForKey:RCDDebugHideSenderName];
-    self.hideSenderName = ret;
+    self.hideSenderName = YES;
     UIImageView *imageView = (UIImageView *)self.headerImageView;
     imageView.image = [UIImage imageNamed:@"group_notice"];
     self.conversationTitle.text = RCDLocalizedString(@"GroupNoti");

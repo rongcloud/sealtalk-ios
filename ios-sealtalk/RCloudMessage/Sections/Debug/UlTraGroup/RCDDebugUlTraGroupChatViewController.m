@@ -7,33 +7,6 @@
 //
 
 #import "RCDDebugUltraGroupChatViewController.h"
-
-static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults boolForKey:@"pushConfig-android-mi-template-enabled"]) {
-        return;
-    }
-    NSString *templateId = [defaults stringForKey:@"pushConfig-android-mi-template-id"];
-    NSString *templateParam = [defaults stringForKey:@"pushConfig-android-mi-template-param"];
-    if (templateId.length > 0) {
-        pushConfig.androidConfig.templateIdMi = templateId;
-    }
-    if (templateParam.length == 0) {
-        return;
-    }
-    NSData *data = [templateParam dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error = nil;
-    id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (error || ![object isKindOfClass:[NSDictionary class]]) {
-        return;
-    }
-    for (id key in (NSDictionary *)object) {
-        if (![key isKindOfClass:[NSString class]] || ![object[key] isKindOfClass:[NSString class]]) {
-            return;
-        }
-    }
-    pushConfig.androidConfig.templateParamMi = object;
-}
 #import "RCDDebugChatSettingViewController.h"
 #import "RCDUIBarButtonItem.h"
 #import "NormalAlertView.h"
@@ -44,18 +17,8 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
 #import "RCDChooseUserController.h"
 #import "RCDUGChannelSettingViewController.h"
 
-@protocol RCDDebugConversationQuoteApplying <NSObject>
-- (BOOL)applyQuoteInfoIfActiveToMessage:(RCMessage *)message;
-@end
-
-@protocol RCDDebugConversationEditApplying <NSObject>
-- (void)edit_refreshUIMessagesEditedStatus:(NSArray<RCMessageModel *> *)models;
-@end
-
 @interface RCConversationViewController ()<RCDUGChannelTypeDelegate,RCUserGroupStatusDelegate>
 @property (nonatomic, strong) id dataSource;
-@property (nonatomic, strong, readonly) id<RCDDebugConversationQuoteApplying> util;
-- (BOOL)applyQuoteInfoIfActiveToMessage:(RCMessage *)message;
 - (void)reloadRecalledMessage:(long)recalledMsgId;
 - (void)didReceiveMessageNotification:(NSNotification *)notification;
 @end
@@ -139,17 +102,16 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100002) {
         // 图文消息
-        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:@"图文消息标题" digest:@"图文消息内容详情" imageURL:@"www.wegenmi.com" url:@"www.wegenmi.com" extra:@""];
+        RCRichContentMessage *message = [RCRichContentMessage messageWithTitle:@"图文消息标题" digest:@"图文消息内容详情" imageURL:@"www.rongcloud.cn" url:@"www.rongcloud.cn" extra:@""];
         [self sendMessage:message pushContent:nil];
     } else if (tag == 100003) {
         RCTextMessage *textMessage = [RCTextMessage messageWithContent:@"这是一条插入的消息"];
-        long long sentTime = [[NSDate date] timeIntervalSince1970] * 1000;
         RCMessage *message = [[RCChannelClient sharedChannelManager] insertOutgoingMessage:self.conversationType
                                                                                   targetId:self.targetId
                                                                                  channelId:self.channelId
                                                                                 sentStatus:SentStatus_READ
                                                                                    content:textMessage
-                                                                                  sentTime:sentTime];
+                                                                                  sentTime:0];
         [self appendAndDisplayMessage:message];
     } else {
         [super pluginBoardView:pluginBoardView clickedItemWithTag:tag];
@@ -256,15 +218,6 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
 
 
 #pragma mark - 单条消息推送属性设置
-- (void)applyQuoteInfoIfNeededToDebugMessage:(RCMessage *)message {
-    SEL selector = @selector(applyQuoteInfoIfActiveToMessage:);
-    if ([RCConversationViewController instancesRespondToSelector:selector]) {
-        [self applyQuoteInfoIfActiveToMessage:message];
-        return;
-    }
-    [self.util applyQuoteInfoIfActiveToMessage:message];
-}
-
 - (void)sendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
     [[RCChannelClient sharedChannelManager] sendUltraGroupTypingStatus:self.targetId
                                                              channelId:self.channelId
@@ -273,19 +226,7 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
     } error:^(RCErrorCode status) {
         [self showToastMsg:[NSString stringWithFormat:@"发送正在输入的状态失败：%@",@(status)]];
     }];
-
-    [self sendDebugMessage:messageContent pushContent:pushContent];
-}
-
-- (void)onlySendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
-    if (messageContent.destructDuration > 0) {
-        pushContent = RCLocalizedString(@"BurnAfterRead");
-    }
-
-    [self sendDebugMessage:messageContent pushContent:pushContent];
-}
-
-- (void)sendDebugMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
+    
     RCMessagePushConfig *pushConfig = [self getPushConfig];
     RCMessageConfig *config = [self getConfig];
     if (self.targetId == nil) {
@@ -299,7 +240,6 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
     message.messagePushConfig = pushConfig;
     message.messageConfig = config;
     message.channelId = self.channelId;
-    [self applyQuoteInfoIfNeededToDebugMessage:message];
     
     if ([messageContent isKindOfClass:[RCMediaMessageContent class]]) {
         [[RCIM sharedRCIM] sendMediaMessage:message pushContent:pushContent pushData:nil progress:nil successBlock:nil errorBlock:^(RCErrorCode nErrorCode, RCMessage *errorMessage) {
@@ -339,7 +279,6 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
 
     pushConfig.androidConfig.notificationId = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-id"];
     pushConfig.androidConfig.channelIdMi = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-mi"];
-    RCDApplyMiTemplateConfig(pushConfig);
     pushConfig.androidConfig.channelIdHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw"];
     pushConfig.androidConfig.categoryHW = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-hw-category"];
     pushConfig.androidConfig.channelIdOPPO = [[NSUserDefaults standardUserDefaults] objectForKey:@"pushConfig-android-oppo"];
@@ -487,7 +426,6 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
     message.channelId = self.channelId;
     message.targetId = self.targetId;
     message.conversationType = ConversationType_ULTRAGROUP;
-    [self applyMiTemplateConfigToRecallMessage:message];
     
     NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
@@ -513,7 +451,6 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
     message.channelId = self.channelId;
     message.targetId = self.targetId;
     message.conversationType = ConversationType_ULTRAGROUP;
-    [self applyMiTemplateConfigToRecallMessage:message];
     
     NSString *currentUserId = [RCCoreClient sharedCoreClient].currentUserInfo.userId;
     NSString *senderUserId = self.menuSelectModel.senderUserId;
@@ -530,12 +467,6 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
     } else {
         [self showAlertTitle:nil message:@"请测试自己发的消息"];
     }
-}
-
-- (void)applyMiTemplateConfigToRecallMessage:(RCMessage *)message {
-    RCMessagePushConfig *pushConfig = message.messagePushConfig ?: [[RCMessagePushConfig alloc] init];
-    RCDApplyMiTemplateConfig(pushConfig);
-    message.messagePushConfig = pushConfig;
 }
 
 /**
@@ -901,39 +832,17 @@ static void RCDApplyMiTemplateConfig(RCMessagePushConfig *pushConfig) {
     if (!self.conversationDataRepository || self.conversationDataRepository.count == 0) {
         return;
     }
-    NSMutableArray<RCMessageModel *> *models = [NSMutableArray array];
-    for (RCMessage *message in messages) {
-        if (message.conversationType != self.conversationType ||
-            ![message.targetId isEqualToString:self.targetId] ||
-            (self.channelId.length > 0 && ![message.channelId isEqualToString:self.channelId])) {
-            continue;
-        }
-        RCMessageModel *model = [RCMessageModel modelWithMessage:message];
-        if (model) {
-            [models addObject:model];
-        }
-    }
-    if (models.count == 0) {
-        return;
-    }
-    if ([self.dataSource respondsToSelector:@selector(edit_refreshUIMessagesEditedStatus:)]) {
-        [(id<RCDDebugConversationEditApplying>)self.dataSource edit_refreshUIMessagesEditedStatus:models];
-        return;
-    }
-
     NSMutableArray *indexPaths = [NSMutableArray new];
     for (int j = 0; j<self.conversationDataRepository.count; j++) {
         RCMessageModel *model = self.conversationDataRepository[j];
-        for (RCMessageModel *msgModel in models) {
-            BOOL sameMessageUId = model.messageUId.length > 0 && [model.messageUId isEqualToString:msgModel.messageUId];
-            BOOL sameMessageId = model.messageUId.length == 0 && model.messageId == msgModel.messageId;
-            if (sameMessageUId || sameMessageId) {
+        for (int i = 0; i < messages.count; i++) {
+            RCMessage * msg = messages[i];
+            if (model.messageId == msg.messageId) {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:0];
                 [indexPaths addObject:indexPath];
-                if (msgModel.modifyInfo.content) {
-                    msgModel.content = msgModel.modifyInfo.content;
-                }
-                [self.conversationDataRepository replaceObjectAtIndex:j withObject:msgModel];
+                RCMessage *message = [[RCCoreClient sharedCoreClient] getMessage:model.messageId];
+                RCMessageModel *model = [RCMessageModel modelWithMessage:message];
+                [self.conversationDataRepository replaceObjectAtIndex:j withObject:model];
             }
         }
     }

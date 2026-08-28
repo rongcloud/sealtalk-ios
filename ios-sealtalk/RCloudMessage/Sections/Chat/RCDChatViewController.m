@@ -9,9 +9,6 @@
 #import "RCDChatViewController.h"
 #import "RCDAddFriendViewController.h"
 #import "RCDGroupSettingsTableViewController.h"
-#import "RCDOpenClawBot.h"
-#import "RCDOpenClawBotManager.h"
-#import "RCDOpenClawBotTokenViewController.h"
 #import "RCDPersonDetailViewController.h"
 #import "RCDPrivateSettingsTableViewController.h"
 #import "RCDReceiptDetailsTableViewController.h"
@@ -50,7 +47,6 @@
 #import "RCDCombineV2MessageCell.h"
 #import "RCDCombineV2Utility.h"
 #import "RCDCombineV2PreviewController.h"
-#import "RCDContactCardMessageCellReferenceContentView.h"
 
 /*******************实时位置共享***************/
 #import <objc/runtime.h>
@@ -64,27 +60,20 @@
 
 #import "RCDDebugSliceResumeDownloadVC.h"
 
-#import "RCDReceiptDetailsMessageView.h"
-#import "RCNDQRForwardConversationViewController.h"
-#import "RCDNavigationViewController.h"
-
 static const NSInteger kRealTimeMaxParticipants = 5; // 实时位置支持的最大共享人数
 static const char *kRealTimeLocationKey = "kRealTimeLocationKey";
 static const char *kRealTimeLocationStatusViewKey = "kRealTimeLocationStatusViewKey";
 
-static BOOL RCDContactCardReferenceEnabled(void) {
-    return [DEFAULTS boolForKey:RCDDebugEnableContactCardReferenceKey];
-}
+#define PLUGIN_BOARD_ITEM_POKE_TAG 20000
 
-@interface RCConversationViewController ()<RCNDQRForwardConversationViewModelDelegate>
+@interface RCConversationViewController ()
 // 小视频录制失败回调
 - (void)sightDidRecordFailedWith:(NSError *)error status:(NSInteger)status;
 - (void)didSendingMessageNotification:(NSNotification *)notification;
 - (void)deleteMessages;
-- (BOOL)isDisplayOnlineStatus;
 @end
 
-@interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate, RCMessageReadDetailViewControllerDataSource>
+@interface RCDChatViewController () <RCMessageCellDelegate, RCDQuicklySendManagerDelegate, UIGestureRecognizerDelegate, RealTimeLocationStatusViewDelegate, RCRealTimeLocationObserver, RCMessageBlockDelegate, RCChatRoomMemberDelegate>
 @property (nonatomic, strong) RCDGroupInfo *groupInfo;
 @property (nonatomic, assign) BOOL isShow;
 @property (nonatomic, assign) BOOL loading;
@@ -96,7 +85,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
 @property (nonatomic, assign) BOOL hidePortrait;
 @property (nonatomic, copy) NSString *leftBackTitle;
 @property (nonatomic, assign) BOOL updateRightNaviBar;
-@property (nonatomic, strong) UIImageView *imageViewBG;
 @end
 
 @implementation RCDChatViewController
@@ -130,23 +118,10 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     self.disableSystemEmoji = enable;
     
     self.needDeleteRemoteMessage = ![DEFAULTS boolForKey:RCDDebugDisableDeleteRemoteMessage];
-    self.hidesBottomBarWhenPushed = YES; 
-
-}
-
-- (BOOL)isDisplayOnlineStatus {
-    if (self.conversationType == ConversationType_PRIVATE && [RCDOpenClawBotManager isOpenClawBotId:self.targetId]) {
-        return NO;
-    }
-    return [super isDisplayOnlineStatus];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view insertSubview:self.imageViewBG atIndex:0];
-    CGRect frame = self.view.bounds;
-    frame.origin = self.conversationMessageCollectionView.frame.origin;
-    self.imageViewBG.frame = frame;
     self.updateRightNaviBar = YES;
     self.loading = NO;
     self.enableSaveNewPhotoToLocalSystem = YES;
@@ -186,19 +161,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *hidePortrait = [userDefault valueForKey:RCDDebugHidePortraitEnable];
     self.hidePortrait = [hidePortrait boolValue];
-    [self clearMiddleViewControllers];
-}
-
-- (void)clearMiddleViewControllers {
-    if (!self.needPopToRootView) {
-        return;
-    }
-    NSMutableArray *viewControllers = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
-    // 如果导航控制器中的视图控制器数量大于2（包含根视图控制器和当前视图控制器），移除中间的视图控制器
-    if (viewControllers.count > 2) {
-        NSMutableArray *newViewControllers = [NSMutableArray arrayWithObjects:viewControllers.firstObject, viewControllers.lastObject, nil]; // 保留根视图控制器和当前视图控制器
-        self.navigationController.viewControllers = newViewControllers;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -230,8 +192,7 @@ static BOOL RCDContactCardReferenceEnabled(void) {
             NSString *phrase = [NSString stringWithFormat:@"常用语 -> %d", i];
             [array addObject:phrase];
         }
-        [array addObjectsFromArray:@[@"我最近想抽个周末去周边短途游，纠结去海边还是去古镇，你平时短途游更偏爱哪种呀？有没有什么推荐的地方？",
-                                     @"哈哈，突然大脑短路了，刚才聊到哪儿来着？我这人一紧张就容易忘事儿"]];
+      
         [self.chatSessionInputBarControl setCommonPhrasesList:array];
         if(self.defaultInputType == RCChatSessionInputBarInputDestructMode ) {
             [self.chatSessionInputBarControl setDefaultInputType:self.defaultInputType];
@@ -386,14 +347,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     return YES;
 }
 
-#pragma mark - RCMessageReadDetailViewControllerDataSource
-
-- (UIView *)viewController:(RCMessageReadDetailViewController *)viewController headerViewWithMessage:(RCMessageModel *)messageModel {
-    RCDReceiptDetailsMessageView *view = [[RCDReceiptDetailsMessageView alloc] init];
-    view.message = messageModel;
-    return view;
-}
-
 #pragma mark - over methods
 
 - (void)sendMessage:(RCMessageContent *)messageContent pushContent:(NSString *)pushContent {
@@ -423,40 +376,12 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     [self registerClass:RCDTipMessageCell.class forMessageClass:RCDChatNotificationMessage.class];
     [self registerClass:RCDPokeMessageCell.class forMessageClass:RCDPokeMessage.class];
     [self registerClass:[RCDCombineV2MessageCell class] forMessageClass:[RCCombineV2Message class]];
-    if (RCDContactCardReferenceEnabled()) {
-        [self registerMessageCellReferenceContentViewClass:[RCDContactCardMessageCellReferenceContentView class]
-                                forMessageClass:[RCContactCardMessage class]];
-    }
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     NSNumber *value = [userDefault valueForKey:RCDDebugTextAsyncDrawEnable];
     self.drawAsyncEnable = [value boolValue];
     if ([value boolValue]) { //异步绘制
         [self registerClass:[RCComplexTextMessageCell class] forMessageClass:[RCTextMessage class]];
     }
-}
-
-- (RCReferenceInputBarView *)referenceInputBarViewForMessageModel:(RCMessageModel *)messageModel {
-    if (!RCDContactCardReferenceEnabled()) {
-        return nil;
-    }
-    if (![messageModel.content isKindOfClass:[RCContactCardMessage class]]) {
-        return nil;
-    }
-    RCDContactCardInputReferenceView *view =
-        [[RCDContactCardInputReferenceView alloc] initWithFrame:CGRectMake(0, 0, 0, 60)];
-
-    __weak typeof(self) weakSelf = self;
-    view.cancelHandler = ^{
-        [weakSelf cancelReference];
-    };
-    return view;
-}
-
-- (BOOL)shouldShowReferenceMenuItemForMessageModel:(RCMessageModel *)messageModel {
-    if (RCDContactCardReferenceEnabled() && [messageModel.content isKindOfClass:[RCContactCardMessage class]]) {
-        return YES;
-    }
-    return [super shouldShowReferenceMenuItemForMessageModel:messageModel];
 }
 
 - (void)didTapMessageCell:(RCMessageModel *)model {
@@ -523,9 +448,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
 }
 
 - (void)didTapCellPortrait:(NSString *)userId {
-    if ([self pushOpenClawBotDetailIfNeededForUserId:userId]) {
-        return;
-    }
     if (self.conversationType == ConversationType_GROUP || self.conversationType == ConversationType_PRIVATE ||
         self.conversationType == ConversationType_CHATROOM) {
         __weak typeof(self) weakSelf = self;
@@ -536,19 +458,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
                                              });
                                          }];
     }
-}
-
-- (BOOL)pushOpenClawBotDetailIfNeededForUserId:(NSString *)userId {
-    if (self.conversationType != ConversationType_PRIVATE || ![userId isEqualToString:self.targetId]) {
-        return NO;
-    }
-    RCDOpenClawBot *bot = [RCDOpenClawBotManager botWithBotId:self.targetId];
-    if (!bot) {
-        return NO;
-    }
-    RCDOpenClawBotTokenViewController *vc = [[RCDOpenClawBotTokenViewController alloc] initWithBot:bot created:NO];
-    [self.navigationController pushViewController:vc animated:YES];
-    return YES;
 }
 
 - (void)resendMessageWithModel:(RCMessageModel *)model {
@@ -628,7 +537,8 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     if (memberDetail.groupNickname.length > 0) {
         userInfo.name = memberDetail.groupNickname;
     }
-    [self addMentionedUserToCurrentInput:userInfo];
+    [self.chatSessionInputBarControl addMentionedUser:userInfo];
+    [self.chatSessionInputBarControl.inputTextView becomeFirstResponder];
 }
 
 - (RCMessage *)willAppendAndDisplayMessage:(RCMessage *)message {
@@ -751,16 +661,12 @@ static BOOL RCDContactCardReferenceEnabled(void) {
 
 - (void)showChooseUserViewController:(void (^)(RCUserInfo *selectedUserInfo))selectedBlock
                               cancel:(void (^)(void))cancelBlock {
-    if ([RCIM sharedRCIM].currentDataSourceType == RCDataSourceTypeInfoManagement) {
-        [super showChooseUserViewController:selectedBlock cancel:cancelBlock];
-    } else {
-        RCDChooseUserController *userListVC = [[RCDChooseUserController alloc] initWithGroupId:self.targetId];
-        userListVC.selectedBlock = selectedBlock;
-        userListVC.cancelBlock = cancelBlock;
-        UINavigationController *rootVC = [[UINavigationController alloc] initWithRootViewController:userListVC];
-        rootVC.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self.navigationController presentViewController:rootVC animated:YES completion:nil];
-    }
+    RCDChooseUserController *userListVC = [[RCDChooseUserController alloc] initWithGroupId:self.targetId];
+    userListVC.selectedBlock = selectedBlock;
+    userListVC.cancelBlock = cancelBlock;
+    UINavigationController *rootVC = [[UINavigationController alloc] initWithRootViewController:userListVC];
+    rootVC.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self.navigationController presentViewController:rootVC animated:YES completion:nil];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
@@ -791,20 +697,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     return [DEFAULTS boolForKey:RCDDebugBlockedCommonPhrasesButton];
 }
 
-- (void)noMoreMessageToFetch {
-    BOOL debugModeSearch = [[NSUserDefaults standardUserDefaults] boolForKey:RCDDebugEnableNoMoreMessageToFetchKey];
-    if (debugModeSearch) {
-        [self showToastMsg:@"没有更多历史消息"];
-    }
-}
-
-- (void)didTapReceiptStatusView:(RCMessageModel *)model {
-    RCMessageReadDetailViewModel *viewModel = [[RCMessageReadDetailViewModel alloc] initWithMessageModel:model config:nil];
-    RCMessageReadDetailViewController *vc = [[RCMessageReadDetailViewController alloc] initWithViewModel:viewModel];
-    vc.dataSource = self;
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
 #pragma mark - target action
 /**
  *  此处使用自定义设置，开发者可以根据需求自己实现
@@ -812,12 +704,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
  */
 - (void)rightBarButtonItemClicked:(id)sender {
     if (self.conversationType == ConversationType_PRIVATE) {
-        RCDOpenClawBot *bot = [RCDOpenClawBotManager botWithBotId:self.targetId];
-        if (bot) {
-            RCDOpenClawBotTokenViewController *vc = [[RCDOpenClawBotTokenViewController alloc] initWithBot:bot created:NO];
-            [self.navigationController pushViewController:vc animated:YES];
-            return;
-        }
         RCDFriendInfo *friendInfo = [RCDUserInfoManager getFriendInfo:self.targetId];
         if (friendInfo && friendInfo.status != RCDFriendStatusAgree && friendInfo.status != RCDFriendStatusBlock) {
             [self pushFriendVC:friendInfo];
@@ -961,13 +847,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
         [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_VOIP_TAG];
         [self.chatSessionInputBarControl.pluginBoardView removeItemWithTag:PLUGIN_BOARD_ITEM_VIDEO_VOIP_TAG];
     }
-    if ([RCIMKitThemeManager currentInnerThemesType] == RCIMKitInnerThemesTypeLively) {
-        RCPluginBoardView *pluginBoardView = self.chatSessionInputBarControl.pluginBoardView;
-        [pluginBoardView updateItemWithTag:PLUGIN_BOARD_ITEM_VOICE_INPUT_TAG
-                               normalImage:[UIImage imageNamed:@"conversation_plugin_ifly"]
-                          highlightedImage:[UIImage imageNamed:@"conversation_plugin_ifly_highlight"]
-                                     title:nil];
-    }
 }
 
 - (void)insertMessageDemo {
@@ -1027,36 +906,27 @@ static BOOL RCDContactCardReferenceEnabled(void) {
         self.conversationType != ConversationType_PUBLICSERVICE) {
         //加号区域增加发送文件功能，Kit中已经默认实现了该功能，但是为了SDK向后兼容性，目前SDK默认不开启该入口，可以参考以下代码在加号区域中增加发送文件功能。
         RCPluginBoardView *pluginBoardView = self.chatSessionInputBarControl.pluginBoardView;
-        [pluginBoardView insertItem:RCDynamicImage(@"conversation_plugin_item_file_img",@"plugin_item_file")
-                   highlightedImage:RCDynamicImage(@"conversation_plugin_item_file_highlighted_img",@"plugin_item_file_highlighted")
+        [pluginBoardView insertItem:RCResourceImage(@"plugin_item_file")
+                   highlightedImage:RCResourceImage(@"plugin_item_file_highlighted")
                               title:RCLocalizedString(@"File")
                             atIndex:3
                                 tag:PLUGIN_BOARD_ITEM_FILE_TAG];
     }
     if (self.conversationType == ConversationType_PRIVATE || self.conversationType == ConversationType_GROUP) {
-         [self.chatSessionInputBarControl.pluginBoardView insertItem:[UIImage imageNamed:@"plugin_item_poke"]
-                                                    highlightedImage:[UIImage imageNamed:@"plugin_item_poke_highlighted"]
+        [self.chatSessionInputBarControl.pluginBoardView insertItem:[UIImage imageNamed:@"plugin_item_poke"]
+                                                   highlightedImage:[UIImage imageNamed:@"plugin_item_poke_highlighted"]
                                                               title:RCDLocalizedString(@"Poke")
                                                                 tag:PLUGIN_BOARD_ITEM_POKE_TAG];
-        
     }
 }
 
 - (void)pushPersonDetailVC:(RCDUserInfo *)user {
-    if ([RCIM sharedRCIM].currentDataSourceType == RCDataSourceTypeInfoManagement) {
-        RCProfileViewModel *viewModel = [RCUserProfileViewModel viewModelWithUserId:user.userId];
-        RCProfileViewController *vc = [[RCProfileViewController alloc] initWithViewModel:viewModel];
-        [self.navigationController pushViewController:vc
-                                             animated:YES];
-        
+    if (self.conversationType == ConversationType_GROUP) {
+        UIViewController *vc = [RCDPersonDetailViewController configVC:user.userId groupId:self.targetId];
+        [self.navigationController pushViewController:vc animated:YES];
     } else {
-        if (self.conversationType == ConversationType_GROUP) {
-            UIViewController *vc = [RCDPersonDetailViewController configVC:user.userId groupId:self.targetId];
-            [self.navigationController pushViewController:vc animated:YES];
-        } else {
-            UIViewController *vc = [RCDPersonDetailViewController configVC:user.userId groupId:nil];
-            [self.navigationController pushViewController:vc animated:YES];
-        }
+        UIViewController *vc = [RCDPersonDetailViewController configVC:user.userId groupId:nil];
+        [self.navigationController pushViewController:vc animated:YES];
     }
 }
 
@@ -1126,11 +996,6 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     }
     //打开单聊强制从demo server 获取用户信息更新本地数据库
     if (self.conversationType == ConversationType_PRIVATE) {
-        RCDOpenClawBot *bot = [RCDOpenClawBotManager botWithBotId:self.targetId];
-        if (bot) {
-            self.navigationItem.title = bot.name.length > 0 ? bot.name : [RCDOpenClawBotManager defaultBotName];
-            return;
-        }
         if (![self.targetId isEqualToString:[RCIM sharedRCIM].currentUserInfo.userId]) {
             __weak typeof(self) weakSelf = self;
             [RCDUserInfoManager
@@ -1182,10 +1047,7 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     } else if(self.conversationType == ConversationType_PRIVATE){
         RCUserInfo *userInfo = [[RCIM sharedRCIM] getUserInfoCache:self.targetId];
         if (userInfo) {
-            NSString *name = [RCKitUtility getDisplayName:userInfo];
-            if (name.length > 0) {
-                self.title = name;
-            }
+            self.title = [RCKitUtility getDisplayName:userInfo];
         }
     }
     else if(self.conversationType == ConversationType_CHATROOM){
@@ -1217,7 +1079,7 @@ static BOOL RCDContactCardReferenceEnabled(void) {
         }
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];
     } else if (self.conversationType == ConversationType_CHATROOM) {
-        self.navigationItem.rightBarButtonItem = nil;;
+        [self setRightNavigationItem:nil];
     } else {
         [self setRightNavigationItem:[UIImage imageNamed:@"Setting"]];
     }
@@ -1277,10 +1139,8 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     if (image) {
         self.conversationMessageCollectionView.backgroundColor = [UIColor clearColor];
         image = [RCKitUtility fixOrientation:image];
-//        self.view.layer.contents = (id)image.CGImage;
+        self.view.layer.contents = (id)image.CGImage;
     }
-    self.imageViewBG.image = image;
-
 }
 
 // 创建防欺诈提示条
@@ -1367,38 +1227,15 @@ static BOOL RCDContactCardReferenceEnabled(void) {
             [RCDCombineV2Utility forwardCombineV2MessageForConversations:conversationList withMessages:self.selectedMessages];
             [self onEndForwardMessage:nil];
         };
-        if ([[RCIM sharedRCIM] currentDataSourceType] == RCDataSourceTypeInfoProvider) {
-            RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
-            UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
-            navi.modalPresentationStyle = UIModalPresentationFullScreen;
-            [self.navigationController presentViewController:navi animated:YES completion:nil];
-        } else {
-            RCNDQRForwardConversationViewModel *vm = [RCNDQRForwardConversationViewModel new];
-            vm.forwardDelegate = self;
-            RCNDQRForwardConversationViewController *forwardSelectedVC = [[RCNDQRForwardConversationViewController alloc] initWithViewModel:vm];
-            RCDNavigationViewController *navi = [[RCDNavigationViewController alloc] initWithRootViewController:forwardSelectedVC];
-            navi.modalPresentationStyle = UIModalPresentationFullScreen;
-            [self presentViewController:navi animated:YES completion:nil];
-        }
+        RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
+        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
+        navi.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self.navigationController presentViewController:navi animated:YES completion:nil];
     } else {
         [RCAlertView showAlertController:nil message:RCDLocalizedString(@"Forwarding_is_not_supported") cancelTitle:RCDLocalizedString(@"confirm")];
     }
 }
 
-- (void)didSendingMessageNotification:(NSNotification *)notification {
-    [super didSendingMessageNotification:notification];
-    NSDictionary *statusDic = notification.userInfo;
-    NSNumber *error = statusDic[@"error"];
-    if (error) {
-        RCErrorCode errorCode = [error intValue];
-        if (errorCode == RC_FILE_SIZE_EXCEED_LIMIT) {
-            [self showToastMsg:RCDLocalizedString(@"media_file_size_limit")];
-        }  else if (errorCode == INVALID_PARAMETER_SIZE_NOT_FOUND) {
-            [self showToastMsg:@"开启限制未传 size 参数"];
-        }
-    }
-
-}
 - (void)onEndForwardMessage:(NSNotification *)notification {
     //置为 NO,将消息 cell 重置为初始状态
     self.allowsMessageCellSelection = NO;
@@ -1413,28 +1250,10 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     ^(NSArray<RCConversation *> *_Nonnull conversationList) {
         completedBlock(conversationList);
     };
-    if ([[RCIM sharedRCIM] currentDataSourceType] == RCDataSourceTypeInfoProvider) {
-        RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
-        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
-        navi.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self.navigationController presentViewController:navi animated:YES completion:nil];
-    } else {
-        RCNDQRForwardConversationViewModel *vm = [RCNDQRForwardConversationViewModel new];
-        vm.forwardDelegate = self;
-        RCNDQRForwardConversationViewController *forwardSelectedVC = [[RCNDQRForwardConversationViewController alloc] initWithViewModel:vm];
-        RCDNavigationViewController *navi = [[RCDNavigationViewController alloc] initWithRootViewController:forwardSelectedVC];
-        navi.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self presentViewController:navi animated:YES completion:nil];
-    }
-    
-}
-#pragma mark - RCNDQRForwardConversationViewModelDelegate
-- (void)userDidSelectedForwardViewModel:(RCNDQRForwardSelectCellViewModel *)viewModel
-                   parentViewController:(nonnull UIViewController *)controller{
-    [controller.navigationController dismissViewControllerAnimated:YES
-                                                        completion:^{
-            [[RCDForwardManager sharedInstance] showForwardAlertViewWith:viewModel inViewController:nil];
-    }];
+    RCDForwardSelectedViewController *forwardSelectedVC = [[RCDForwardSelectedViewController alloc] init];
+    UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:forwardSelectedVC];
+    navi.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self.navigationController presentViewController:navi animated:YES completion:nil];
 }
 
 - (void)userDidTakeScreenshot:(NSNotification *)notification {
@@ -1523,15 +1342,14 @@ static BOOL RCDContactCardReferenceEnabled(void) {
             participants = [self.realTimeLocation getParticipants];
             if (participants.count == 1) {
                 NSString *userId = participants[0];
-                [[RCIM sharedRCIM] getUserInfo:userId complete:^(RCUserInfo * _Nonnull userInfo) {
-                                    NSString *displayName = [RCKitUtility getDisplayName:userInfo];
-                                    if (displayName.length) {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            [weakSelf.realTimeLocationStatusView updateText:[NSString stringWithFormat:RTLLocalizedString(@"someone_location_sharing"), displayName]];
-                                        });
-                                    }
+                [[RCIM sharedRCIM].userInfoDataSource getUserInfoWithUserId:userId completion:^(RCUserInfo *userInfo) {
+                    NSString *displayName = [RCKitUtility getDisplayName:userInfo];
+                    if (displayName.length) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.realTimeLocationStatusView updateText:[NSString stringWithFormat:RTLLocalizedString(@"someone_location_sharing"), displayName]];
+                        });
+                    }
                 }];
-                               
             } else {
                 if (participants.count < 1)
                     [self.realTimeLocationStatusView removeFromSuperview];
@@ -1649,14 +1467,14 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     return objc_getAssociatedObject(self, kRealTimeLocationKey);
 }
 
-//- (void)setRealTimeLocationStatusView:(RealTimeLocationStatusView *)realTimeLocationStatusView {
-//    objc_setAssociatedObject(self, kRealTimeLocationStatusViewKey, realTimeLocationStatusView,
-//                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//}
-//
-//- (RealTimeLocationStatusView *)realTimeLocationStatusView {
-//    return objc_getAssociatedObject(self, kRealTimeLocationStatusViewKey);
-//}
+- (void)setRealTimeLocationStatusView:(RealTimeLocationStatusView *)realTimeLocationStatusView {
+    objc_setAssociatedObject(self, kRealTimeLocationStatusViewKey, realTimeLocationStatusView,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (RealTimeLocationStatusView *)realTimeLocationStatusView {
+    return objc_getAssociatedObject(self, kRealTimeLocationStatusViewKey);
+}
 
 #pragma mark - 通知处理
 - (void)appWillTerminate {
@@ -1825,10 +1643,4 @@ static BOOL RCDContactCardReferenceEnabled(void) {
     return text;
 }
 
-- (UIImageView *)imageViewBG {
-    if (!_imageViewBG) {
-        _imageViewBG = [UIImageView new];
-    }
-    return _imageViewBG;
-}
 @end

@@ -21,8 +21,6 @@ NSString *const RCDGroupOwnerTransfer = @"Transfer";
 NSString *const RCDGroupMemberJoin = @"Join";
 NSString *const RCDGroupMemberManagerSet = @"SetManager";
 NSString *const RCDGroupMemberManagerRemove = @"RemoveManager";
-NSString *const RCDGroupMemberManagerRemoveDisplay = @"RemoveManagerDisplay";
-
 NSString *const RCDGroupMemberProtectionOpen = @"openMemberProtection";
 NSString *const RCDGroupMemberProtectionClose = @"closeMemberProtection";
 @interface RCDGroupNotificationMessage ()
@@ -35,35 +33,6 @@ NSString *const RCDGroupMemberProtectionClose = @"closeMemberProtection";
     return MessagePersistent_ISPERSISTED;
 }
 
-- (NSData *)encode {
-    NSMutableDictionary *dict = [self encodeBaseData];
-    if (self.operation) {
-        [dict setObject:self.operation forKey:@"operation"];
-    }
-    if (self.operatorUserId) {
-        [dict setObject:self.operatorUserId forKey:@"operatorUserId"];
-    }
-    
-    NSMutableDictionary *dataDict = [NSMutableDictionary dictionary];
-    if (self.operationName) {
-        [dataDict setObject:self.operationName forKey:@"operatorNickname"];
-    }
-    if (self.targetUserIds) {
-        [dataDict setObject:self.targetUserIds forKey:@"targetUserIds"];
-    }
-    if (self.targetGroupName) {
-        [dataDict setObject:self.targetGroupName forKey:@"targetGroupName"];
-    }
-    if (self.targetUserNames) {
-        [dataDict setObject:self.targetUserNames forKey:@"targetUserDisplayNames"];
-    }
-    if (dataDict.count > 0) {
-        [dict setObject:dataDict forKey:@"data"];
-    }
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:nil];
-    return jsonData;
-}
-
 - (void)decodeWithData:(NSData *)data {
     __autoreleasing NSError *__error = nil;
     if (!data) {
@@ -74,13 +43,10 @@ NSString *const RCDGroupMemberProtectionClose = @"closeMemberProtection";
     if (!__error && dict) {
         self.operation = [dict objectForKey:@"operation"];
         self.operatorUserId = [dict objectForKey:@"operatorUserId"];
-        NSDictionary *dataDic = dict[@"data"];
-        if ([dataDic isKindOfClass:NSDictionary.class]) {
-            self.operationName = dataDic[@"operatorNickname"];
-            self.targetUserIds = dataDic[@"targetUserIds"];
-            self.targetGroupName = dataDic[@"targetGroupName"];
-            self.targetUserNames = dict[@"data"][@"targetUserDisplayNames"];
-        }
+        self.operationName = dict[@"data"][@"operatorNickname"];
+        self.targetUserIds = dict[@"data"][@"targetUserIds"];
+        self.targetGroupName = dict[@"data"][@"targetGroupName"];
+        self.targetUserNames = dict[@"data"][@"targetUserDisplayNames"];
         self.extra = dict[@"extra"];
     } else {
         self.rawJSONData = data;

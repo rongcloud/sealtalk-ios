@@ -49,6 +49,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.tabBarController.navigationItem.title = @"";
+    self.tabBarController.navigationItem.rightBarButtonItems = nil;
     [self refreshFrame];
     if (!self.isFirst) {
         [self refreshData];

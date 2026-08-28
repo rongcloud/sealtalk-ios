@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, RCDEnvironmentCategory) {
     RCDEnvironmentCategoryDefault, //默认
-    RCDEnvironmentCategorySingapore, // 新加坡
+    RCDEnvironmentCategorySigapore, // 新加坡
     RCDEnvironmentCategoryNorthAmerican, // 北美
     RCDEnvironmentCategoryTest // 
 };

@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <RongIMKit/RongIMKit.h>
-#import "RCNDQRForwardSelectCellViewModel.h"
 
 @protocol RCDForwardAlertViewDelegate;
 @class RCDForwardCellModel;
@@ -16,7 +15,6 @@
 #pragma mark - init
 + (instancetype)alertViewWithModel:(RCConversation *)model;
 + (instancetype)alertViewWithSelectedContacts:(NSArray *)selectedContacts;
-+ (instancetype)alertViewWithForwardViewModel:(RCNDQRForwardSelectCellViewModel *)model;
 
 #pragma mark - show
 - (void)show;

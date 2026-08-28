@@ -42,8 +42,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationItem.title = RCDLocalizedString(@"chatroom");
-
+    self.tabBarController.navigationItem.title = RCDLocalizedString(@"chatroom");
+    self.tabBarController.navigationItem.rightBarButtonItems = nil;
 }
 
 #pragma mark - Table view data source

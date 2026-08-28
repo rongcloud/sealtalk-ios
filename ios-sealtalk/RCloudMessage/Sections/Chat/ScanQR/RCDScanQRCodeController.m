@@ -166,9 +166,8 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info {
     videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     videoPreviewLayer.frame = self.view.layer.bounds;
     [self.view.layer insertSublayer:videoPreviewLayer atIndex:0];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self.session startRunning];
-    });
+
+    [self.session startRunning];
 }
 
 - (void)pushImagePicker {
@@ -183,9 +182,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info {
     // 校验相册权限
     [RCDQRCodeManager rcd_checkAlbumAuthorizationStatusWithGrand:^(BOOL granted) {
         if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self pushImagePicker];
-            });
+            [self pushImagePicker];
         }
     }];
 }

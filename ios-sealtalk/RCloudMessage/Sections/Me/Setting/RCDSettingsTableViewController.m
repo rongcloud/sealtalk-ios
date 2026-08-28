@@ -8,7 +8,7 @@
 
 #import "RCDSettingsTableViewController.h"
 #import "RCDBaseSettingTableViewCell.h"
-#import "RCNDLoginViewController.h"
+#import "RCDLoginViewController.h"
 #import "RCDMessageNotifySettingTableViewController.h"
 #import "RCDPrivacyTableViewController.h"
 #import "RCDPushSettingViewController.h"
@@ -203,7 +203,7 @@
     [RCDNotificationServiceDefaults removeObjectForKey:RCDIMTokenKey];
     [DEFAULTS synchronize];
 
-    RCNDLoginViewController *loginVC = [[RCNDLoginViewController alloc] init];
+    RCDLoginViewController *loginVC = [[RCDLoginViewController alloc] init];
     UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:loginVC];
     self.view.window.rootViewController = navi;
     [[RCIM sharedRCIM] logout];
