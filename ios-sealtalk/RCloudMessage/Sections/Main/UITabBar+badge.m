@@ -44,6 +44,13 @@
         tabFrame.size.height = 49.0;
     }
     CGRect itemsFrame = [self getTabBarItemFrame:index];
+    if (CGRectIsEmpty(itemsFrame)) {// 老版本xcode编译到iOS26， 按照原有方式遍历
+        if (@available(iOS 26.0, *)) { // iOS26改变试图层级， 需要特殊处理
+            itemsFrame = [self getTabBarItemFrameForIOS26:index];
+        }
+    }
+   
+
     CGFloat x = itemsFrame.origin.x + itemsFrame.size.width/2 + 4;
     CGFloat y = 3;
     if (badgeValue > 0) {
@@ -54,6 +61,17 @@
             width = 30;
         }
         decideFrame = CGRectMake(x, y, width, 16);
+        if (@available(iOS 26.0, *)) {// iOS 26 做特别偏移
+            CGFloat offset = 0;
+            for (UIView *view in self.subviews) {
+                NSString *className = NSStringFromClass(view.class);
+                if ([className containsString:@"TabBarPlatterView"]) {
+                    offset = view.frame.origin.x;
+                    decideFrame = CGRectMake(x+offset, y+4, width, 16);
+                    break;
+                }
+            }
+          }
     } else {
         decideFrame = CGRectMake(x, y, 10, 10);
     }
@@ -87,8 +105,39 @@
 }
 
 #pragma mark - privite
+- (CGRect)getTabBarItemFrameForIOS26:(NSInteger)targetIndex {
+    if (targetIndex == NSNotFound) {
+        return CGRectZero;
+    }
+    
+    // 递归查找所有UITabBarButton
+    NSMutableArray<UIView *> *tabButtons = [NSMutableArray array];
+    [self findTabButtonsInView:self intoArray:tabButtons];
+    
+    if (targetIndex < tabButtons.count) {
+        return tabButtons[targetIndex].frame;
+    }
+    
+    return CGRectZero;
+}
+
+- (void)findTabButtonsInView:(UIView *)view intoArray:(NSMutableArray<UIView *> *)array {
+    for (UIView *subview in view.subviews) {
+        NSString *className = NSStringFromClass([subview class]);
+        NSString *targetName = @"TabBarButton";
+        if (@available(iOS 26.0, *)) {
+            targetName = @"TabButton";
+        }
+        if ([className containsString:targetName]) {
+            [array addObject:subview];
+        } else {
+            [self findTabButtonsInView:subview intoArray:array];
+        }
+    }
+}
 
 - (CGRect)getTabBarItemFrame:(NSInteger)index{
+  
     NSInteger i = 0;
     CGRect itemFrame = CGRectZero;
     for (UIView *view in self.subviews) {

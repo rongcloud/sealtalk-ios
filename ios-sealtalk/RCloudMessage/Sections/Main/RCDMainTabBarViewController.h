@@ -13,5 +13,5 @@
 + (NSInteger)currentTabBarItemIndex;
 
 @property (nonatomic, assign) NSUInteger selectedTabBarIndex;
-
+- (void)updateBadgeValueForTabBarItem;
 @end

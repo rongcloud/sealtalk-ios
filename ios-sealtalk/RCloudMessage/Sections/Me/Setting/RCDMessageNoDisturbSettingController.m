@@ -7,12 +7,13 @@
 //
 
 #import "RCDMessageNoDisturbSettingController.h"
+#import "RCDBaseSettingTableViewCell.h"
 #import <RongIMKit/RongIMKit.h>
 
 @interface RCDMessageNoDisturbSettingController ()
 @property (nonatomic, strong) NSIndexPath *indexPath;
-@property (nonatomic, copy) NSString *start;
-@property (nonatomic, copy) NSString *end;
+@property (nonatomic, copy) NSString *startTime;
+@property (nonatomic, copy) NSString *endTime;
 @property (nonatomic, assign) BOOL displaySetting;
 @property (nonatomic, strong) UIDatePicker *datePicker;
 @property (nonatomic, strong) NSIndexPath *startIndexPath;
@@ -37,18 +38,14 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    UITableViewCell *startCell = [self.tableView cellForRowAtIndexPath:self.startIndexPath];
-    UITableViewCell *endCell = [self.tableView cellForRowAtIndexPath:self.endIndexPath];
-    NSString *startTime = startCell.detailTextLabel.text;
-    NSString *endTime = endCell.detailTextLabel.text;
     if (self.swch.on) {
-        if (startTime.length == 0 || endTime.length == 0 || (startTime == _start && endTime == _end)) {
+        if (self.startTime.length == 0 || self.endTime.length == 0) {
             return;
         }
         NSDateFormatter *formatterE = [[NSDateFormatter alloc] init];
         [formatterE setDateFormat:@"HH:mm:ss"];
-        NSDate *startDate = [formatterE dateFromString:startTime];
-        NSDate *endDate = [formatterE dateFromString:endTime];
+        NSDate *startDate = [formatterE dateFromString:self.startTime];
+        NSDate *endDate = [formatterE dateFromString:self.endTime];
         double timeDiff = [endDate timeIntervalSinceDate:startDate];
         if (timeDiff < 0) {
             startDate = [NSDate dateWithTimeInterval:-24 * 60 * 60 sinceDate:startDate];
@@ -56,14 +53,18 @@
         }
 
         int timeDif = timeDiff / 60;
-        [[RCCoreClient sharedCoreClient] setNotificationQuietHours:startTime
-            spanMins:timeDif
-            success:^{
+        RCNotificationQuietHoursSetting *setting = [RCNotificationQuietHoursSetting new];
+        setting.timezone = [NSTimeZone localTimeZone].name;
+        setting.startTime = self.startTime;
+        setting.spanMins = timeDif;
+        setting.level = RCPushNotificationQuietHoursLevelMention;
+        NSLog(@"zgh timezone: %@, startTime:%@",setting.timezone, setting.startTime);
+        [[RCChannelClient sharedChannelManager] setNotificationQuietHoursWithSetting:setting success:^{
                 [DEFAULTS
-                    setObject:startTime
+                    setObject:self.startTime
                        forKey:[NSString stringWithFormat:@"startTime_%@", [RCIM sharedRCIM].currentUserInfo.userId]];
                 [DEFAULTS
-                    setObject:endTime
+                    setObject:self.endTime
                        forKey:[NSString stringWithFormat:@"endTime_%@", [RCIM sharedRCIM].currentUserInfo.userId]];
             }
             error:^(RCErrorCode status) {
@@ -78,12 +79,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.displaySetting = NO;
     [self getNoDisturbStaus];
 }
 
 - (void)getNoDisturbStaus {
-    __weak typeof(self) weakSelf = self;
     [[RCCoreClient sharedCoreClient] getNotificationQuietHours:^(NSString *startTime, int spanMins) {
         NSDateFormatter *formatterE = [[NSDateFormatter alloc] init];
         [formatterE setDateFormat:@"HH:mm:ss"];
@@ -92,16 +91,9 @@
         NSString *endTime = [formatterE stringFromDate:endDate];
         if (spanMins > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UITableViewCell *startCell = [weakSelf.tableView cellForRowAtIndexPath:self.startIndexPath];
-                UITableViewCell *endCell = [weakSelf.tableView cellForRowAtIndexPath:self.endIndexPath];
-                weakSelf.swch.on = YES;
-                startCell.detailTextLabel.text = startTime;
-                endCell.detailTextLabel.text = endTime;
-                weakSelf.displaySetting = YES;
-                [weakSelf.tableView reloadData];
-                [weakSelf.tableView selectRowAtIndexPath:weakSelf.startIndexPath
-                                                animated:YES
-                                          scrollPosition:UITableViewScrollPositionMiddle];
+                self.startTime = startTime;
+                self.endTime = endTime;
+                [self reloadList:YES];
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -117,14 +109,10 @@
 }
 
 - (void)setQuietHours {
-    UITableViewCell *startCell = [self.tableView cellForRowAtIndexPath:self.startIndexPath];
-    UITableViewCell *endCell = [self.tableView cellForRowAtIndexPath:self.endIndexPath];
-    NSString *startTimeStr = startCell.detailTextLabel.text;
-    NSString *endTimeStr = endCell.detailTextLabel.text;
     NSDateFormatter *formatterF = [[NSDateFormatter alloc] init];
     [formatterF setDateFormat:@"HH:mm:ss"];
-    NSDate *startDate = [formatterF dateFromString:startTimeStr];
-    NSDate *endDate = [formatterF dateFromString:endTimeStr];
+    NSDate *startDate = [formatterF dateFromString:self.startTime];
+    NSDate *endDate = [formatterF dateFromString:self.endTime];
 
     double timeDiff = [endDate timeIntervalSinceDate:startDate];
     NSDate *laterTime = [startDate laterDate:endDate];
@@ -139,10 +127,12 @@
 
     int timeDif = timeDiff / 60;
 
-    __weak typeof(self) blockSelf = self;
-    [[RCCoreClient sharedCoreClient] setNotificationQuietHours:startTimeStr
-        spanMins:timeDif
-        success:^{
+    RCNotificationQuietHoursSetting *setting = [RCNotificationQuietHoursSetting new];
+    setting.timezone = [NSTimeZone localTimeZone].name;
+    setting.startTime = self.startTime;
+    setting.spanMins = timeDif;
+    setting.level = RCPushNotificationQuietHoursLevelMention;
+    [[RCChannelClient sharedChannelManager] setNotificationQuietHoursWithSetting:setting success:^{
 
         }
         error:^(RCErrorCode status) {
@@ -150,22 +140,22 @@
                 [self showAlert:RCDLocalizedString(@"alert")
                            message:RCDLocalizedString(@"set_fail")
                     cancelBtnTitle:RCDLocalizedString(@"cancel")];
-                blockSelf.swch.on = NO;
+                self.swch.on = NO;
+                [self reloadList:NO];
             });
         }];
 }
 
 - (void)removeQuietHours {
-    __weak typeof(self) blockSelf = self;
     [[RCCoreClient sharedCoreClient] removeNotificationQuietHours:^{
 
-    }
-        error:^(RCErrorCode status) {
+    } error:^(RCErrorCode status) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self showAlert:RCDLocalizedString(@"alert")
                            message:RCDLocalizedString(@"shut_down_failed")
                     cancelBtnTitle:RCDLocalizedString(@"cancel")];
-                blockSelf.swch.on = YES;
+                self.swch.on = YES;
+                [self reloadList:YES];
             });
         }];
 }
@@ -179,31 +169,33 @@
 }
 
 - (void)updateUIAtErrorStatus {
-    NSString *startT =
+    self.startTime =
         [DEFAULTS objectForKey:[NSString stringWithFormat:@"startTime_%@", [RCIM sharedRCIM].currentUserInfo.userId]];
-    NSString *endT =
+    self.endTime =
         [DEFAULTS objectForKey:[NSString stringWithFormat:@"endTime_%@", [RCIM sharedRCIM].currentUserInfo.userId]];
-    UITableViewCell *startCell = [self.tableView cellForRowAtIndexPath:self.startIndexPath];
-    UITableViewCell *endCell = [self.tableView cellForRowAtIndexPath:self.endIndexPath];
-    if (startT && endT) {
-        startCell.detailTextLabel.text = startT;
-        endCell.detailTextLabel.text = endT;
-    } else {
-        startCell.detailTextLabel.text = @"23:00:00";
-        endCell.detailTextLabel.text = @"07:00:00";
+    if (!self.startTime && !self.endTime) {
+        self.startTime = @"23:00:00";
+        self.endTime = @"07:00:00";
     }
     self.swch.on = NO;
+    [self reloadList:NO];
 }
 
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    if (self.displaySetting) {
+        if (self.indexPath) {
+            return 3;
+        } else {
+            return 2;
+        }
+    } else {
+        return 1;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0)
-        return 1;
-    else if (section == 1) {
+    if (section == 1) {
         return 2;
     }
     return 1;
@@ -211,7 +203,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 1) {
-        return 70;
+        return 50;
     }
     return 0.01;
 }
@@ -222,7 +214,7 @@
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 0)];
         view.backgroundColor = self.tableView.backgroundColor;
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(20, -5, view.frame.size.width - 40, 70);
+        label.frame = CGRectMake(12, -15, view.frame.size.width - 40, 50);
         label.numberOfLines = 0;
         label.font = [UIFont systemFontOfSize:14];
         label.textColor = [UIColor grayColor];
@@ -241,101 +233,79 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCellReuseIdentifier"];
+    RCDBaseSettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCellReuseIdentifier"];
     if (!cell) {
-        cell =
-            [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"MyCellReuseIdentifier"];
+        cell = [[RCDBaseSettingTableViewCell alloc] init];
     }
+
     if (indexPath.section == 0) {
+        [cell setCellStyle:SwitchStyle];
         cell.backgroundColor = [RCDUtilities generateDynamicColor:HEXCOLOR(0xffffff)
                                                         darkColor:[HEXCOLOR(0x1c1c1e) colorWithAlphaComponent:0.4]];
         cell.textLabel.textColor = RCDDYCOLOR(0x262626, 0x9f9f9f);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textLabel.text = RCDLocalizedString(@"Turn_on_message_do_not_disturb");
-        [self.swch setFrame:CGRectMake(self.view.frame.size.width - self.swch.frame.size.width - 15, 6, 0, 0)];
-        [self.swch addTarget:self action:@selector(setSwitchState:) forControlEvents:UIControlEventValueChanged];
-        [cell.contentView addSubview:self.swch];
-        cell.detailTextLabel.text = @"";
+        cell.leftLabel.text  = RCDLocalizedString(@"Turn_on_message_do_not_disturb");
+        [cell.switchButton addTarget:self action:@selector(setSwitchState:) forControlEvents:UIControlEventValueChanged];
+        cell.switchButton.on = self.displaySetting;
+        self.swch = cell.switchButton;
     } else if (indexPath.section == 1) {
+        [cell setCellStyle:DefaultStyle_RightLabel_WithoutRightArrow];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if (indexPath.row == 0) {
-            cell.textLabel.text = RCDLocalizedString(@"Start_time");
+            cell.leftLabel.text = RCDLocalizedString(@"Start_time");
+            cell.rightLabel.text = self.startTime;
         } else {
-            cell.textLabel.text = RCDLocalizedString(@"end_time");
+            cell.leftLabel.text = RCDLocalizedString(@"end_time");
+            cell.rightLabel.text = self.endTime;
         }
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     } else {
-        cell.textLabel.text = @"";
-        cell.detailTextLabel.text = @"";
+        [cell setCellStyle:OnlyDisplayLeftLabelStyle];
+
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         [cell.contentView addSubview:self.datePicker];
     }
-    if (self.displaySetting == NO) {
-        cell.hidden = YES;
-        if (indexPath.section == 0 && indexPath.row == 0) {
-            cell.hidden = NO;
-        }
-        return cell;
-    }
-    cell.hidden = NO;
     return cell;
 }
 
 #pragma mark - Table view Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ((indexPath.section == 0 && indexPath.row == 0)) {
-        if (_indexPath == nil) {
-            if (self.displaySetting == YES) {
-                [self.tableView selectRowAtIndexPath:self.startIndexPath
-                                            animated:NO
-                                      scrollPosition:UITableViewScrollPositionMiddle];
-            }
-            return;
-        }
-        [self.tableView selectRowAtIndexPath:_indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    if (indexPath.section != 1) {
+        [self.tableView selectRowAtIndexPath:_indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+        return;
     }
-
-    if (indexPath.section == 1) {
-        _indexPath = indexPath;
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        // 点击 cell 时 datePicker 滚动到相应的位置
-        NSString *dateString = cell.detailTextLabel.text;
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"HH:mm:ss"];
-        NSDate *date = [formatter dateFromString:dateString];
-        [self.datePicker setDate:date];
-    }
+    self.indexPath = indexPath;
+    RCDBaseSettingTableViewCell *cell = (RCDBaseSettingTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    // 点击 cell 时 datePicker 滚动到相应的位置
+    NSString *dateString = cell.rightLabel.text;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss"];
+    NSDate *date = [formatter dateFromString:dateString];
+    [self.datePicker setDate:date];
+    [self reloadList:self.displaySetting];
 }
 
 #pragma mark - datePickerValueChanged
 - (void)datePickerValueChanged:(UIDatePicker *)datePicker {
-    if (_indexPath == nil) {
-        _indexPath = self.startIndexPath;
+    if (!_indexPath) {
+        return;
     }
-    [self.tableView selectRowAtIndexPath:_indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"HH:mm:ss"];
     NSString *currentDateStr = [dateFormatter stringFromDate:datePicker.date];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:_indexPath];
-    cell.detailTextLabel.text = currentDateStr;
-    UITableViewCell *startCell = [self.tableView cellForRowAtIndexPath:self.startIndexPath];
-    UITableViewCell *endCell = [self.tableView cellForRowAtIndexPath:self.endIndexPath];
-    NSDate *startTime = [dateFormatter dateFromString:startCell.detailTextLabel.text];
-    NSDate *endTime = [dateFormatter dateFromString:endCell.detailTextLabel.text];
-    if (startTime == nil || endTime == nil) {
-        return;
+    if (_indexPath.section == self.startIndexPath.section && _indexPath.row == self.startIndexPath.row) {
+        self.startTime = currentDateStr;
+    } else if (_indexPath.section == self.endIndexPath.section && _indexPath.row == self.endIndexPath.row) {
+        self.endTime = currentDateStr;
     }
+    [self reloadList:self.displaySetting];
 }
 
 #pragma mark - setSwitchState
 - (void)setSwitchState:(UISwitch *)swich {
-    if (swich.on == YES) {
-        self.displaySetting = YES;
-    } else {
-        self.displaySetting = NO;
-    }
-    [self.tableView reloadData];
-    [self.tableView selectRowAtIndexPath:self.startIndexPath
-                                animated:YES
-                          scrollPosition:UITableViewScrollPositionMiddle];
+    [self reloadList:swich.on];
     [self updateQuietHoursIfNeed];
 }
 
@@ -353,6 +323,14 @@
           message:(NSString *)message
    cancelBtnTitle:(NSString *)cBtnTitle {
     [RCAlertView showAlertController:title message:message cancelTitle:cBtnTitle inViewController:self];
+}
+
+- (void)reloadList:(BOOL)displaySetting {
+    self.displaySetting = displaySetting;
+    [self.tableView reloadData];
+    if (self.displaySetting && self.indexPath) {
+        [self.tableView selectRowAtIndexPath:self.indexPath animated:YES scrollPosition:(UITableViewScrollPositionNone)];
+    }
 }
 
 #pragma mark - getter

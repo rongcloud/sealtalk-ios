@@ -9,6 +9,7 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-MCShareExtensionKey = @"group.cn.rongcloud.rcim.share"
+MCShareExtensionKey = @"group.cn.rongcloud.rcim.shareextension"
+
 
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) MCShareExtensionKey='$(MCShareExtensionKey)'

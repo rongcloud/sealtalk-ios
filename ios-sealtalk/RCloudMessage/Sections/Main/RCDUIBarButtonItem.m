@@ -25,17 +25,15 @@
 
 //初始化包含图片的UIBarButtonItem
 - (RCDUIBarButtonItem *)initContainImage:(UIImage *)buttonImage target:(id)target action:(SEL)method {
-    self = [[RCDUIBarButtonItem alloc] init];
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
-    self.button = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.button.frame = view.bounds;
-    UIImageView *image = [[UIImageView alloc] initWithImage:buttonImage];
-    image.frame = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
-    [self.button addSubview:image];
-    [self.button addTarget:target action:method forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:self.button];
-    self.customView = view;
-
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setImage:buttonImage
+         forState:UIControlStateNormal];
+    [btn addTarget:target
+            action:method
+  forControlEvents:UIControlEventTouchUpInside];
+    self = [super initWithCustomView:btn];
+    self.button = btn;
     return self;
 }
 
@@ -45,11 +43,12 @@
                                 buttonFrame:(CGRect)buttonFrame
                                      target:(id)target
                                      action:(SEL)method {
-    self = [[RCDUIBarButtonItem alloc] init];
-    self.button = [[UIButton alloc] initWithFrame:buttonFrame];
-    [self.button setTitle:buttonTitle forState:UIControlStateNormal];
-    [self.button setTitleColor:titleColor forState:UIControlStateNormal];
-    [self.button addTarget:target action:method forControlEvents:UIControlEventTouchUpInside];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setTitle:buttonTitle forState:UIControlStateNormal];
+    [button setTitleColor:titleColor forState:UIControlStateNormal];
+    [button addTarget:target action:method forControlEvents:UIControlEventTouchUpInside];
+    self = [super initWithCustomView:button];
+    self.button = button;
     self.customView = self.button;
     return self;
 }

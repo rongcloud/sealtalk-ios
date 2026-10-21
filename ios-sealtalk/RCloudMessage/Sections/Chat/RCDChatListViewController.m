@@ -430,11 +430,12 @@
                       target:self
                       action:@selector(pushToQRScan)]
     ];
+    UIWindow *window = [RCKitUtility getKeyWindow];
     CGRect navigationBarRect = self.navigationController.navigationBar.frame;
     CGRect targetFrame = CGRectMake(self.view.frame.size.width - 30, navigationBarRect.origin.y-navigationBarRect.size.height-24, 100, 80);
     [KxMenu setTintColor:HEXCOLOR(0x000000)];
     [KxMenu setTitleFont:[UIFont systemFontOfSize:17]];
-    [KxMenu showMenuInView:self.tabBarController.navigationController.navigationBar.superview
+    [KxMenu showMenuInView:window
                   fromRect:targetFrame
                  menuItems:menuItems];
 }

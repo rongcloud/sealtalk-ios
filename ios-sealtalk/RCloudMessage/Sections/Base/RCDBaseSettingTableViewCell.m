@@ -175,7 +175,7 @@
         self.rightLabel.hidden = YES;
         self.rightArrow.hidden = YES;
         self.switchButton.hidden = NO;
-        constraints = @"H:|-10-[_leftLabel]-(>=10)-[_switchButton(50)]-10-|";
+        constraints = @"H:|-10-[_leftLabel]-(>=10)-[_switchButton]-10-|";
     } break;
     default:
         break;

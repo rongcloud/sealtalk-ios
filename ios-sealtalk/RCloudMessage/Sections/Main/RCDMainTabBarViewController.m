@@ -54,13 +54,13 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
     self.view.backgroundColor = RCDDYCOLOR(0xffffff, 0x1c1c1c);
     [self rcdinitTabImages];
     [self setControllers];
-    [self setTabBarItems];
     self.delegate = self;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(changeSelectedIndex:)
                                                  name:@"ChangeTabBarIndex"
                                                object:nil];
     [self configureTranslationLanguange];
+    [self setControllers];
 }
 
 - (void)checkUltraGroup {
@@ -72,11 +72,11 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 - (void)configureTranslationLanguange {
     RCTransationPersistModel *model = [RCTransationPersistModel loadTranslationConfig];
     if ([model.srcLanguage isKindOfClass:[NSString class]]
-            && [model.targetLanguage isKindOfClass:[NSString class]]) {
-            RCKitTranslationConfig *translationConfig = [[RCKitTranslationConfig alloc] initWithSrcLanguage:model.srcLanguage
-                                                                                             targetLanguage:model.targetLanguage];
-            [RCKitConfig defaultConfig].message.translationConfig = translationConfig;
-        }
+        && [model.targetLanguage isKindOfClass:[NSString class]]) {
+        RCKitTranslationConfig *translationConfig = [[RCKitTranslationConfig alloc] initWithSrcLanguage:model.srcLanguage
+                                                                                         targetLanguage:model.targetLanguage];
+        [RCKitConfig defaultConfig].message.translationConfig = translationConfig;
+    }
 }
 
 - (BOOL)shouldAutorotate{
@@ -89,48 +89,65 @@ static NSInteger RCD_MAIN_TAB_INDEX = 0;
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    [self setTabBarItems];
 }
 
 - (void)setControllers {
+    NSArray *viewControllers = nil;
     RCDChatListViewController *chatVC = [[RCDChatListViewController alloc] init];
     RCDContactViewController *contactVC = [[RCDContactViewController alloc] init];
     RCDSquareTableViewController *discoveryVC = [[RCDSquareTableViewController alloc] init];
     RCDMeTableViewController *meVC = [[RCDMeTableViewController alloc] init];
     if (self.ultraGroupEnable) {
         RCDUltraGroupController *ultraGroupVC = [[RCDUltraGroupController alloc] init];
-        self.viewControllers = @[chatVC, ultraGroupVC, contactVC, discoveryVC, meVC ];
+        viewControllers = @[chatVC, ultraGroupVC, contactVC, discoveryVC, meVC ];
     } else {
-        self.viewControllers = @[chatVC, contactVC, discoveryVC, meVC ];
+        viewControllers = @[chatVC, contactVC, discoveryVC, meVC ];
     }
+    [self setTabBarItems:viewControllers];
+    self.viewControllers = viewControllers;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.viewControllers
-        enumerateObjectsUsingBlock:^(__kindof UIViewController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            if ([obj isKindOfClass:[RCDChatListViewController class]]) {
-                RCDChatListViewController *chatListVC = (RCDChatListViewController *)obj;
-                [chatListVC updateBadgeValueForTabBarItem];
-            }
-        }];
+    [self updateBadgeValueForTabBarItem];
 }
 
-- (void)setTabBarItems {
-    [self.viewControllers
+- (void)updateBadgeValueForTabBarItem {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.viewControllers
+            enumerateObjectsUsingBlock:^(__kindof UIViewController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+               if([obj isKindOfClass:[UIViewController class]]) {
+//                   UINavigationController *navi = (UINavigationController *)objNavi;
+//                   UIViewController *obj = [navi.childViewControllers firstObject];
+                   if ([obj isKindOfClass:[RCDChatListViewController class]]) {
+                       RCDChatListViewController *chatListVC = (RCDChatListViewController *)obj;
+                       [chatListVC updateBadgeValueForTabBarItem];
+                       *stop = YES;
+                   }
+               }
+           }];
+    });
+  
+}
+- (void)setTabBarItems:(NSArray *)viewControllers  {
+    
+    [viewControllers
         enumerateObjectsUsingBlock:^(__kindof UIViewController *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
-
-            if ([obj isKindOfClass:[RCDChatListViewController class]] || [obj isKindOfClass:[RCDContactViewController class]] || [obj isKindOfClass:[RCDSquareTableViewController class]] || [obj isKindOfClass:[RCDMeTableViewController class]] || [obj isKindOfClass:[RCDUltraGroupController class]]) {
+        if([obj isKindOfClass:[UIViewController class]]) {
+//            UINavigationController *navi = (UINavigationController *)objNavi;
+//            obj = [navi.childViewControllers firstObject];
+            if ([obj isKindOfClass:[RCDChatListViewController class]] || [obj isKindOfClass:[RCDContactViewController class]] || [obj isKindOfClass:[RCDSquareTableViewController class]] || [obj isKindOfClass:[ RCDMeTableViewController class]] || [obj isKindOfClass:[RCDUltraGroupController class]]) {
                 obj.tabBarItem.title = self.tabTitleArr[idx];
                 obj.tabBarItem.image =
-                    [[UIImage imageNamed:self.imageArr[idx]]  imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                [[UIImage imageNamed:self.imageArr[idx]]  imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
                 obj.tabBarItem.selectedImage =
-                    [[UIImage imageNamed:self.selectImageArr[idx]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                [[UIImage imageNamed:self.selectImageArr[idx]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
             } else {
                 NSLog(@"Unknown TabBarController");
             }
             [obj.tabBarController.tabBar bringBadgeToFrontOnItemIndex:(int)idx];
-        }];
+        }
+    }];
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController
