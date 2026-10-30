@@ -8,6 +8,7 @@
 
 #import "RCAnnotationView.h"
 #import "RTLUtilities.h"
+#import <RongIMKit/RongIMKit.h>
 
 @implementation RCAnnotationView
 float fromValue = 0.0f;
@@ -28,10 +29,15 @@ float fromValue = 0.0f;
     if ([keyPath isEqualToString:@"imageUrl"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (![[change objectForKey:@"new"] isKindOfClass:[NSNull class]]) {
-                [RTLUtilities
-                     setImageWithURL:[NSURL URLWithString:[change objectForKey:@"new"]]
-                    placeholderImage:[RTLUtilities imageNamed:@"default_portrait_msg" ofBundle:@"RongCloud.bundle"]
-                           imageView:_imageView];
+                NSString *urlString = [change objectForKey:@"new"];
+//                if (urlString.length) {
+                    [RTLUtilities
+                         setImageWithURL:[NSURL URLWithString:urlString]
+                        placeholderImage:RCDynamicImage(@"conversation-list_cell_portrait_msg_img",@"default_portrait_msg")
+                               imageView:_imageView];
+//                }
+                
+               
             }
         });
     }
@@ -56,7 +62,7 @@ float fromValue = 0.0f;
     self.centerOffset = CGPointMake(0, 0);
     _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, -35, 40, 40)];
     [RTLUtilities setImageWithURL:[NSURL URLWithString:self.imageUrl]
-                 placeholderImage:[RTLUtilities imageNamed:@"default_portrait_msg" ofBundle:@"RongCloud.bundle"]
+                 placeholderImage:RCDynamicImage(@"conversation-list_cell_portrait_msg_img",@"default_portrait_msg")
                         imageView:_imageView];
     _imageView.layer.cornerRadius = 20.0;
     _imageView.layer.masksToBounds = YES;

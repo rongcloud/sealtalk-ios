@@ -10,7 +10,7 @@
 #import "RCDCommonDefine.h"
 #import "RCDUtilities.h"
 #import "RCDSemanticContext.h"
-
+#import <RongIMKit/RongIMKit.h>
 @interface RCDNavigationViewController ()
 
 @end
@@ -23,7 +23,10 @@
         self.view.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
         self.navigationBar.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
     }
-  
+//    self.view.backgroundColor = RCDynamicColor(@"auxiliary_background_1_color", @"0xFFFFFF", @"0x000000");
+//  
+//    // 设置导航栏透明
+//    [self setupTransparentNavigationBar];
 
     __weak RCDNavigationViewController *weakSelf = self;
 
@@ -33,6 +36,26 @@
         self.delegate = weakSelf;
 
         self.interactivePopGestureRecognizer.enabled = YES;
+    }
+}
+
+- (void)setupTransparentNavigationBar {
+    if (@available(iOS 15.0, *)) {
+        // iOS 15+ 使用 UINavigationBarAppearance
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance configureWithTransparentBackground]; // 透明背景
+        // 如果需要完全透明（包括模糊效果也去掉）
+        appearance.backgroundColor = [UIColor clearColor];
+        appearance.shadowColor = [UIColor clearColor]; // 去掉底部分割线
+        
+        self.navigationBar.standardAppearance = appearance;
+        self.navigationBar.scrollEdgeAppearance = appearance;
+    } else {
+        // iOS 15 以下版本
+        [self.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
+        self.navigationBar.shadowImage = [[UIImage alloc] init]; // 去掉底部分割线
+        self.navigationBar.translucent = YES; // 设置为半透明
+        self.navigationBar.backgroundColor = [UIColor clearColor];
     }
 }
 
@@ -48,7 +71,9 @@
     if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)] && animated == YES) {
         self.interactivePopGestureRecognizer.enabled = NO;
     }
-
+    if (self.childViewControllers.count==1) {
+            viewController.hidesBottomBarWhenPushed = YES; //viewController是将要被push的控制器
+        }
     [super pushViewController:viewController animated:animated];
 }
 

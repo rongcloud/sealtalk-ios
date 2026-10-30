@@ -312,8 +312,7 @@
 - (UIView *)bgView {
     if (!_bgView) {
         _bgView = [[UIView alloc] init];
-        _bgView.backgroundColor = [RCDUtilities generateDynamicColor:HEXCOLOR(0xfAfafa)
-                                                           darkColor:HEXCOLOR(0x2c2c2c)];
+        _bgView.backgroundColor = RCDynamicColor(@"common_background_color", @"0xFAFAFA", @"0x2c2c2c");
         _bgView.layer.masksToBounds = YES;
         _bgView.layer.cornerRadius = 6;
     }
@@ -331,8 +330,7 @@
     if (!_infolabel) {
         _infolabel = [[UILabel alloc] init];
         _infolabel.font = [UIFont systemFontOfSize:15];
-        _infolabel.textColor = [RCDUtilities generateDynamicColor:HEXCOLOR(0x111f2c)
-                                                        darkColor:[HEXCOLOR(0xffffff) colorWithAlphaComponent:0.8]];
+        _infolabel.textColor =RCDynamicColor(@"text_secondary_color", @"0x111f2c", @"0xAAAAAA");
         _infolabel.textAlignment = NSTextAlignmentCenter;
         if (self.type == ConversationType_GROUP) {
             RCGroup *group = [[RCIM sharedRCIM] getGroupInfoCache:self.targetId];
@@ -349,7 +347,7 @@
     if (!_sendLabel) {
         _sendLabel = [[UILabel alloc] init];
         _sendLabel.font = [UIFont systemFontOfSize:17];
-        _sendLabel.textColor = RCDDYCOLOR(0x333333, 0x9f9f9f);
+        _sendLabel.textColor = RCDynamicColor(@"text_primary_color", @"0x333333", @"0x9f9f9f");
         _sendLabel.text = RCDLocalizedString(@"SendTo");
     }
     return _sendLabel;
@@ -378,12 +376,12 @@
     if (!_inputTextField) {
         _inputTextField = [[UITextField alloc] init];
         _inputTextField.font = [UIFont systemFontOfSize:15];
-        _inputTextField.textColor = RCDDYCOLOR(0x333333, 0x9f9f9f);
+        _inputTextField.textColor = RCDynamicColor(@"text_primary_color", @"0x343434", @"0x9f9f9f");
         _inputTextField.placeholder = RCDLocalizedString(@"PokeInputPlaceholder");
         NSAttributedString *attrString =
             [[NSAttributedString alloc] initWithString:_inputTextField.placeholder
                                             attributes:@{
-                                                NSForegroundColorAttributeName : [RCDUtilities generateDynamicColor:HEXCOLOR(0xA0A5Ab) darkColor:[HEXCOLOR(0xffffff) colorWithAlphaComponent:0.4]],
+                NSForegroundColorAttributeName : RCDynamicColor(@"text_secondary_color", @"0xA0A5Ab", @"0xffffff66"),
                                                 NSFontAttributeName : _inputTextField.font
                                             }];
         _inputTextField.attributedPlaceholder = attrString;
@@ -396,7 +394,7 @@
     if (!_cancelButton) {
         _cancelButton = [[UIButton alloc] init];
         [_cancelButton setTitle:RCDLocalizedString(@"cancel") forState:UIControlStateNormal];
-        [_cancelButton setTitleColor:RCDDYCOLOR(0x111f2c, 0xAAAAAA) forState:(UIControlStateNormal)];
+        [_cancelButton setTitleColor:RCDynamicColor(@"text_secondary_color", @"0x111f2c", @"0xAAAAAA") forState:(UIControlStateNormal)];
         [_cancelButton addTarget:self action:@selector(onCanelPressed) forControlEvents:UIControlEventTouchUpInside];
         [_cancelButton.titleLabel setFont:[UIFont systemFontOfSize:15]];
     }
@@ -407,7 +405,7 @@
     if (!_confirmButton) {
         _confirmButton = [[UIButton alloc] init];
         [_confirmButton setTitle:RCDLocalizedString(@"confirm") forState:UIControlStateNormal];
-        [_confirmButton setTitleColor:RCDDYCOLOR(0x0099ff, 0x007acc) forState:(UIControlStateNormal)];
+        [_confirmButton setTitleColor:RCDynamicColor(@"primary_color",@"0x0099ff", @"0x007acc") forState:(UIControlStateNormal)];
         [_confirmButton addTarget:self action:@selector(onConfirmPressed) forControlEvents:UIControlEventTouchUpInside];
         [_confirmButton.titleLabel setFont:[UIFont systemFontOfSize:15]];
     }
@@ -416,7 +414,7 @@
 
 - (UIView *)getLineView {
     UIView *view = [[UIView alloc] init];
-    view.backgroundColor = RCDDYCOLOR(0xe5e6e7, 0x323232);
+    view.backgroundColor = RCDynamicColor(@"line_background_color", @"0xe5e6e7", @"0x323232");
     return view;
 }
 @end

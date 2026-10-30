@@ -11,14 +11,15 @@
 
 #define RONGCLOUD_IM_APPKEY @"n19jmcy59f1q9" // online key
 #define SERVICE_ID @"service"
-#define DEMO_SERVER @"https://sealtalk.rongcloud.cn/server-api/"
+#define DEMO_SERVER @"https://sealtalk-cn.wegenmi.com/server-api/"
 #define RONGCLOUD_NAVI_SERVER @""
 #define RONGCLOUD_FILE_SERVER @""
 #define RONGCLOUD_STATS_SERVER @""
 
 #define RCDGroupNoticeTargetId @"__group_apply__"
 #define RCDOpenQRCodeUrlNotification @"RCDOpenQRCodeUrlNotification"
-#define RCDQRCodeContentInfoUrl @"https://sealtalk.rongcloud.cn/download"
+/// 此域名用于生成添加好友二维码，在 SealTalk App 中扫一扫使用，域名本身并无实际访问功能
+#define RCDQRCodeContentInfoUrl @"http://web.sealtalk.im/download"
 
 #define RCDLoginCookieExpiredNotification @"RCDLoginCookieExpiredNotification"
 

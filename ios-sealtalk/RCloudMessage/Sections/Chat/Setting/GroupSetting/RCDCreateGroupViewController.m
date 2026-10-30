@@ -238,6 +238,7 @@
     chatVC.targetId = groupId;
     chatVC.conversationType = ConversationType_GROUP;
     chatVC.title = groupName;
+    chatVC.enableNewComingMessageIcon = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.navigationController pushViewController:chatVC animated:YES];
     });

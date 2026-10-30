@@ -440,7 +440,7 @@
         self.tipVStackView.hidden = NO;
     }
     [self.view bringSubviewToFront:self.tipVStackView];
-    self.tipIcon.image = RCResourceImage(@"combine_loading");
+    self.tipIcon.image = RCDynamicImage(@"conversation_msg_combine_loading_img", @"combine_loading");
     self.tipLabel.text = RCLocalizedString(@"CombineMessageLoading");
 }
 
@@ -450,7 +450,7 @@
         self.tipVStackView.hidden = NO;
     }
     [self rc_stopAnimation];
-    self.tipIcon.image = RCResourceImage(@"combine_loading");
+    self.tipIcon.image = RCDynamicImage(@"conversation_msg_combine_loading_img", @"combine_loading");
     self.tipLabel.text = RCLocalizedString(@"CombineMessageLoading");
 }
 

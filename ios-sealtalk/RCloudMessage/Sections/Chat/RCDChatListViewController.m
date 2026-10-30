@@ -24,20 +24,24 @@
 #import "RCDContactNotificationMessage.h"
 #import "RCDScanQRCodeController.h"
 #import "RCDAddFriendListViewController.h"
+#import "RCDOpenClawIntroViewController.h"
 #import "RCDGroupNoticeListController.h"
 #import "RCDGroupConversationCell.h"
 #import "RCDChatNotificationMessage.h"
 #import "RCDUtilities.h"
 #import "RCDNavigationViewController.h"
 #import "RCDGroupManager.h"
+#import "RCNDSearchViewController.h"
+#import "RCNDChatListHeaderView.h"
+#import "RCNDContactViewController.h"
 
-@interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate, RCIMClientReceiveMessageDelegate>
+@interface RCDChatListViewController () <UISearchBarDelegate, RCDSearchViewDelegate, RCIMClientReceiveMessageDelegate, RCSearchBarViewModelDelegate>
 @property (nonatomic, strong) RCDNavigationViewController *searchNavigationController;
-@property (nonatomic, strong) UIView *headerView;
-@property (nonatomic, strong) RCDSearchBar *searchBar;
+@property (nonatomic, strong) RCNDChatListHeaderView *headerView;
 @property (nonatomic, assign) NSUInteger index;
 @property (nonatomic, assign) BOOL isClick;
 @property (nonatomic, copy) NSString *tabarBadge;
+@property (nonatomic, strong) RCSearchBarViewModel *searchBarViewModel;
 @end
 
 @implementation RCDChatListViewController
@@ -68,7 +72,6 @@
     [self initSubviews];
     [self setTabBarStyle];
     [self registerNotification];
-    [self getFriendRequesteds];
     [[RCCoreClient sharedCoreClient] addReceiveMessageDelegate: self];
 
 }
@@ -99,7 +102,7 @@
 }
 
 - (void)updateSubviews:(CGSize)size {
-    self.searchBar.frame = CGRectMake(0, 0, size.width, 44);
+//    self.searchBar.frame = CGRectMake(0, 0, size.width, 44);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -108,6 +111,19 @@
     [self setNaviItem];
     RCUserInfo *groupNotify = [[RCUserInfo alloc] initWithUserId:@"__system__" name:@"" portrait:nil];
     [[RCIM sharedRCIM] refreshUserInfoCache:groupNotify withUserId:@"__system__"];
+    NSUserDefaults *std = [NSUserDefaults standardUserDefaults];
+    
+    BOOL disableUnkownMessage = [std boolForKey:RCDDebugDisableUnknownMessage];
+    RCKitConfigCenter.message.showUnkownMessage = !disableUnkownMessage;
+    
+    BOOL showUnkownMessageNotification = [std boolForKey:RCDDebugShowUnkownMessageNotification];
+    RCKitConfigCenter.message.showUnkownMessageNotificaiton = showUnkownMessageNotification;
+    RCKitConfigCenter.message.enableQuoteV2 = [std boolForKey:RCDDebugEnableQuoteV2Key];
+    id quoteWhiteList = [std objectForKey:RCDDebugQuoteMessageTypeWhiteListKey];
+    if ([quoteWhiteList isKindOfClass:[NSArray class]]) {
+        RCKitConfigCenter.message.quoteMessageTypeWhiteList = [quoteWhiteList copy];
+    }
+    [self updateBadgeValueForTabBarItem];
 }
 
 - (void)dealloc {
@@ -129,6 +145,30 @@
 #pragma mark - RCDSearchViewDelegate
 - (void)searchViewControllerDidClickCancel {
     [self.searchNavigationController dismissViewControllerAnimated:NO completion:nil];
+}
+
+
+#pragma mark - SearchBar
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    if ([RCIM sharedRCIM].currentDataSourceType == RCDataSourceTypeInfoManagement) {
+        RCNDSearchViewModel *vm = [[RCNDSearchViewModel alloc] init];
+        RCNDSearchViewController *searchViewController = [[RCNDSearchViewController alloc] initWithViewModel:vm];
+        RCDNavigationViewController *searchNavigationController = [[RCDNavigationViewController alloc] initWithRootViewController:searchViewController];
+        searchNavigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:searchNavigationController animated:NO completion:^{
+            
+        }];
+    } else {
+        RCDSearchViewController *searchViewController = [[RCDSearchViewController alloc] init];
+        self.searchNavigationController = [[RCDNavigationViewController alloc] initWithRootViewController:searchViewController];
+        searchViewController.delegate = self;
+        self.searchNavigationController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:self.searchNavigationController animated:NO completion:^{
+            
+        }];
+    }
+   
+    return NO;
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -289,7 +329,7 @@
             groupId = cell.model.targetId;
         }
         ((RCConversationCell *)cell).hideSenderName = YES;
-        if ([cell.model.lastestMessage isMemberOfClass:[RCDGroupNotificationMessage class]]) {
+        if ([cell.model.lastestMessage isKindOfClass:[RCDGroupNotificationMessage class]]) {
             RCDGroupNotificationMessage *message = (RCDGroupNotificationMessage *)cell.model.lastestMessage;
             ((RCConversationCell *)cell).messageContentLabel.text = [message getDigest:groupId];
         } else if ([cell.model.lastestMessage isMemberOfClass:RCDChatNotificationMessage.class]) {
@@ -310,7 +350,7 @@
                 groupId = cell.model.targetId;
             }
             ((RCConversationCell *)cell).hideSenderName = YES;
-            if ([cell.model.lastestMessage isMemberOfClass:[RCDGroupNotificationMessage class]]) {
+            if ([cell.model.lastestMessage isKindOfClass:[RCDGroupNotificationMessage class]]) {
                 RCDGroupNotificationMessage *message = (RCDGroupNotificationMessage *)cell.model.lastestMessage;
                 ((RCConversationCell *)cell).messageContentLabel.text = [message getDigest:groupId];
             } else if ([cell.model.lastestMessage isMemberOfClass:RCDChatNotificationMessage.class]) {
@@ -425,6 +465,11 @@
                       target:self
                       action:@selector(pushAddFriend:)],
 
+        [KxMenuItem menuItem:RCDLocalizedString(@"OpenClawMenuTitle")
+                       image:[UIImage imageNamed:@"config"]
+                      target:self
+                      action:@selector(showOpenClawAssistant)],
+
         [KxMenuItem menuItem:RCDLocalizedString(@"qr_scan")
                        image:[UIImage imageNamed:@"scan"]
                       target:self
@@ -438,6 +483,11 @@
     [KxMenu showMenuInView:window
                   fromRect:targetFrame
                  menuItems:menuItems];
+}
+
+- (void)showOpenClawAssistant {
+    RCDOpenClawIntroViewController *vc = [[RCDOpenClawIntroViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)gotoNextConversation {
@@ -556,6 +606,7 @@
         self.tabarBadge = badge;
     }
     __weak typeof(self) __weakSelf = self;
+
     dispatch_async(dispatch_get_main_queue(), ^{
         if (count > 0) {
             [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:0 badgeValue:count];
@@ -568,15 +619,7 @@
 }
 
 - (void)updateBadgeForTabBarItem {
-    __weak typeof(self) __weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        int allRequesteds = [RCDUserInfoManager getFriendRequesteds];
-        if (allRequesteds > 0) {
-            [__weakSelf.tabBarController.tabBar showBadgeOnItemIndex:1];
-        } else {
-            [__weakSelf.tabBarController.tabBar hideBadgeOnItemIndex:1];
-        }
-    });
+   
 }
 
 
@@ -591,12 +634,24 @@
  *  @param sender sender description
  */
 - (void)pushChat:(id)sender {
-    RCDContactSelectedTableViewController *contactSelectedVC =
-        [[RCDContactSelectedTableViewController alloc] initWithTitle:RCDLocalizedString(@"select_contact")
-                                           isAllowsMultipleSelection:NO];
-    [self.navigationController pushViewController:contactSelectedVC animated:YES];
-}
+    if ([[RCIM sharedRCIM]currentDataSourceType] == RCDataSourceTypeInfoProvider) {
+        RCDContactSelectedTableViewController *contactSelectedVC =
+            [[RCDContactSelectedTableViewController alloc] initWithTitle:RCDLocalizedString(@"select_contact")
+                                               isAllowsMultipleSelection:NO];
+        [self.navigationController pushViewController:contactSelectedVC animated:YES];
+    } else {
+        RCNDContactViewModel *vm = [RCNDContactViewModel new];
+//        vm.forwardDelegate = self;
+        RCNDContactViewController *contactSelectedVC = [[RCNDContactViewController alloc] initWithViewModel:vm];
+        [self.navigationController pushViewController:contactSelectedVC animated:YES];
 
+    }
+ 
+}
+//- (void)userDidSelectedForwardViewModel:(RCNDQRForwardSelectCellViewModel *)viewModel
+//                   parentViewController:(UIViewController *)controller; {
+//    
+//}
 - (void)pushChatVC:(RCConversationModel *)model {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     BOOL enable = [[userDefault valueForKey:RCDDebugDisableSystemEmoji] boolValue];
@@ -643,6 +698,7 @@
  *  @param sender sender description
  */
 - (void)pushAddFriend:(id)sender {
+    
     RCDAddFriendListViewController *addFriendListVC = [[RCDAddFriendListViewController alloc] init];
     [self.navigationController pushViewController:addFriendListVC animated:YES];
 }
@@ -657,14 +713,8 @@
     [self.navigationController pushViewController:qrcodeVC animated:YES];
 }
 
-- (void)getFriendRequesteds {
-    int allRequesteds = [RCDUserInfoManager getFriendRequesteds];
-    if (allRequesteds > 0) {
-        [self.tabBarController.tabBar showBadgeOnItemIndex:1];
-    }
-}
-
 - (void)setTabBarStyle {
+    return;
     [[UITabBarItem appearance]
         setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:RCDDYCOLOR(0x999999, 0xffffff),
                                                                           UITextAttributeTextColor, nil]
@@ -682,10 +732,9 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationController.navigationBar.translucent = NO;
     //设置tableView样式
-    self.conversationListTableView.separatorColor = RCDDYCOLOR(0xE3E5E6, 0x272727);
     self.conversationListTableView.tableFooterView = [UIView new];
-    [self.headerView addSubview:self.searchBar];
     self.conversationListTableView.tableHeaderView = self.headerView;
+    [self.headerView configureSearchBar:self.searchBarViewModel.searchBar];
     // 设置在NavigatorBar中显示连接中的提示
     self.showConnectingStatusOnNavigatorBar = YES;
     //定位未读数会话
@@ -694,8 +743,8 @@
 
 - (void)setNaviItem {
     RCDUIBarButtonItem *rightBtn = [[RCDUIBarButtonItem alloc] initContainImage:[UIImage imageNamed:@"add"] target:self action:@selector(showMenu)];
-    self.tabBarController.navigationItem.rightBarButtonItems = @[ rightBtn ];
-    self.tabBarController.navigationItem.title = RCDLocalizedString(@"Messages");
+    self.navigationItem.rightBarButtonItems = @[ rightBtn ];
+    self.navigationItem.title = RCDLocalizedString(@"Messages");
 }
 #pragma mark - RCIMClientReceiveMessageDelegate
 
@@ -711,24 +760,17 @@
     }
 }
 #pragma mark - geter & setter
-- (RCDSearchBar *)searchBar {
-    if (!_searchBar) {
-        _searchBar =
-            [[RCDSearchBar alloc] initWithFrame:CGRectMake(0, 0, self.conversationListTableView.frame.size.width,
-                                                           self.headerView.frame.size.height)];
-        _searchBar.delegate = self;
-        _searchBar.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+- (RCSearchBarViewModel *)searchBarViewModel {
+    if (!_searchBarViewModel) {
+        _searchBarViewModel = [RCSearchBarViewModel new];
+        _searchBarViewModel.delegate = self;
     }
-    return _searchBar;
+    return _searchBarViewModel;
 }
-
-- (UIView *)headerView {
+- (RCNDChatListHeaderView *)headerView {
     if (!_headerView) {
-        _headerView =
-            [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.conversationListTableView.frame.size.width, 44)];
-        if (@available(iOS 11.0, *)) {
-            _headerView.frame = CGRectMake(0, 0, self.conversationListTableView.frame.size.width, 56);
-        }
+        CGRect frame = CGRectMake(0, 0, self.conversationListTableView.frame.size.width, 68);
+        _headerView = [[RCNDChatListHeaderView alloc] initWithFrame:frame];
     }
     return _headerView;
 }

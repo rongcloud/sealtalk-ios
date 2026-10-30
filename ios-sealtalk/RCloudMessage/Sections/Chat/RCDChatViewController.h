@@ -7,6 +7,7 @@
 //
 
 #import <RongIMKit/RongIMKit.h>
+#define PLUGIN_BOARD_ITEM_POKE_TAG 20000
 
 @interface RCDChatViewController : RCConversationViewController
 @property (nonatomic, assign) BOOL needPopToRootView;
